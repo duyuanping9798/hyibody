@@ -1,10 +1,11 @@
+import { STRINGS } from './i18n';
 import { useState } from 'react';
-import zh from '../../content/i18n/zh.json';
 import { searchStructures } from '../data/search';
 import { useUiStore } from './store';
 
 /** 搜索框：中英文子串匹配，点选后选中并聚焦（KICKOFF 第 6 节）。 */
 export function SearchBox() {
+  const t = STRINGS[useUiStore((s) => s.lang)];
   const manifest = useUiStore((s) => s.manifest);
   const select = useUiStore((s) => s.select);
   const focus = useUiStore((s) => s.focus);
@@ -18,13 +19,13 @@ export function SearchBox() {
       <input
         type="search"
         value={query}
-        placeholder={zh.searchPlaceholder}
-        aria-label={zh.searchPlaceholder}
+        placeholder={t.searchPlaceholder}
+        aria-label={t.searchPlaceholder}
         onChange={(e) => setQuery(e.target.value)}
       />
       {query.trim() !== '' && (
         <div className="hyi-search-results" data-testid="search-results">
-          {hits.length === 0 && <div className="hyi-search-empty">{zh.searchNoResult}</div>}
+          {hits.length === 0 && <div className="hyi-search-empty">{t.searchNoResult}</div>}
           {hits.map((hit) => (
             <button
               key={hit.slug}

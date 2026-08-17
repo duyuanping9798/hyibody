@@ -1,5 +1,5 @@
+import { STRINGS } from './i18n';
 import { useEffect, useRef, useState } from 'react';
-import zh from '../../content/i18n/zh.json';
 import { attractLayer } from '../viewer/animation';
 import { getViewer, useUiStore } from './store';
 
@@ -10,6 +10,7 @@ import { getViewer, useUiStore } from './store';
  * - 大按钮样式由 body.hyi-kiosk 的 CSS 承担
  */
 export function Kiosk({ idleSeconds }: { idleSeconds: number }) {
+  const t = STRINGS[useUiStore((s) => s.lang)];
   const loadState = useUiStore((s) => s.loadState);
   const [attract, setAttract] = useState(false);
   const attractRef = useRef(attract);
@@ -64,8 +65,8 @@ export function Kiosk({ idleSeconds }: { idleSeconds: number }) {
   if (!attract) return null;
   return (
     <div className="hyi-attract" data-testid="kiosk-attract">
-      <h1>{zh.brand}</h1>
-      <p>{zh.kioskAttract}</p>
+      <h1>{t.brand}</h1>
+      <p>{t.kioskAttract}</p>
     </div>
   );
 }

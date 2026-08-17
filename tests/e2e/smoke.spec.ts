@@ -96,6 +96,20 @@ test('heartbeat tour plays from the menu', async ({ page }) => {
   await expect(player).not.toBeVisible();
 });
 
+/** M2-5 冒烟：中英切换按钮实时切换界面语言。 */
+test('language toggle switches UI to English and back', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
+    timeout: 60_000,
+  });
+  await expect(page.locator('header')).toContainText('人体透视科普');
+  await page.getByRole('button', { name: 'EN', exact: true }).click();
+  await expect(page.locator('header')).toContainText('See-through Human Anatomy');
+  await expect(page.getByRole('button', { name: 'Tours' })).toBeVisible();
+  await page.getByRole('button', { name: '中文', exact: true }).click();
+  await expect(page.locator('header')).toContainText('人体透视科普');
+});
+
 /** M2-2/M2-3 冒烟：Kiosk 闲置吸引动画出现（?idle=2 加速），分享弹层出二维码。 */
 test('kiosk attract mode and share dialog', async ({ page }) => {
   await page.goto('/?kiosk=1&idle=2');

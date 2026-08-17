@@ -1,4 +1,4 @@
-import zh from '../../content/i18n/zh.json';
+import { STRINGS } from './i18n';
 import type { ViewPresetId } from '../viewer/camera';
 import type { ClipAxis } from '../viewer/clipping';
 import { useUiStore } from './store';
@@ -8,6 +8,7 @@ const CLIP_AXES: ClipAxis[] = ['x', 'y', 'z'];
 
 /** 预设视角 + 剖切控制 + 恢复（KICKOFF 第 6 节：6 个预设视角、单剖切面）。 */
 export function ViewTools() {
+  const t = STRINGS[useUiStore((s) => s.lang)];
   const clip = useUiStore((s) => s.clip);
   const hiddenCount = useUiStore((s) => s.hiddenCount);
   const isolated = useUiStore((s) => s.isolated);
@@ -18,23 +19,23 @@ export function ViewTools() {
   return (
     <>
       <section>
-        <h3>{zh.presetsTitle}</h3>
+        <h3>{t.presetsTitle}</h3>
         <div className="hyi-preset-grid">
           {PRESET_IDS.map((id) => (
             <button key={id} className="hyi-btn" onClick={() => applyPreset(id)}>
-              {zh.presets[id]}
+              {t.presets[id]}
             </button>
           ))}
         </div>
       </section>
       <section>
-        <h3>{zh.clipTitle}</h3>
+        <h3>{t.clipTitle}</h3>
         <div className="hyi-clip-row">
           <button
             className={`hyi-btn${clip === null ? ' active' : ''}`}
             onClick={() => setClip(null)}
           >
-            {zh.clipOff}
+            {t.clipOff}
           </button>
           {CLIP_AXES.map((axis) => (
             <button
@@ -42,7 +43,7 @@ export function ViewTools() {
               className={`hyi-btn${clip?.axis === axis ? ' active' : ''}`}
               onClick={() => setClip({ axis, pos: clip?.axis === axis ? clip.pos : 0 })}
             >
-              {zh.clipAxis[axis]}
+              {t.clipAxis[axis]}
             </button>
           ))}
         </div>
@@ -54,7 +55,7 @@ export function ViewTools() {
             max={1}
             step={0.01}
             value={clip.pos}
-            aria-label={zh.clipTitle}
+            aria-label={t.clipTitle}
             onChange={(e) => setClip({ axis: clip.axis, pos: Number(e.target.value) })}
           />
         )}
@@ -62,8 +63,8 @@ export function ViewTools() {
       {(hiddenCount > 0 || isolated) && (
         <section>
           <button className="hyi-btn" onClick={resetVisibility}>
-            {zh.actionRestore}
-            {hiddenCount > 0 ? `（${zh.hiddenCount.replace('{n}', String(hiddenCount))}）` : ''}
+            {t.actionRestore}
+            {hiddenCount > 0 ? `（${t.hiddenCount.replace('{n}', String(hiddenCount))}）` : ''}
           </button>
         </section>
       )}

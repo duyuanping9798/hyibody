@@ -1,8 +1,9 @@
-import zh from '../../content/i18n/zh.json';
+import { STRINGS } from './i18n';
 import { useUiStore } from './store';
 
 /** 分层滑块：0–1 连续值，各系统按 layers.ts 的映射淡入淡出（KICKOFF 第 6 节核心交互）。 */
 export function LayerSlider() {
+  const t = STRINGS[useUiStore((s) => s.lang)];
   const layer = useUiStore((s) => s.layer);
   const setLayer = useUiStore((s) => s.setLayer);
   return (
@@ -14,16 +15,16 @@ export function LayerSlider() {
         max={1}
         step={0.001}
         value={layer}
-        aria-label={zh.layerSlider}
+        aria-label={t.layerSlider}
         onChange={(e) => setLayer(Number(e.target.value))}
       />
       <div className="hyi-layer-labels">
-        <span>{zh.systems.skin}</span>
-        <span>{zh.systems.muscles}</span>
-        <span>{zh.systems.skeleton}</span>
-        <span>{zh.systems.organs}</span>
+        <span>{t.systems.skin}</span>
+        <span>{t.systems.muscles}</span>
+        <span>{t.systems.skeleton}</span>
+        <span>{t.systems.organs}</span>
         <span>
-          {zh.systems.vessels}/{zh.systems.nerves}
+          {t.systems.vessels}/{t.systems.nerves}
         </span>
       </div>
     </div>

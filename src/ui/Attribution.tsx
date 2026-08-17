@@ -1,8 +1,9 @@
-import zh from '../../content/i18n/zh.json';
+import { STRINGS } from './i18n';
 import { useUiStore } from './store';
 
 /** 署名页：manifest.attribution + 许可证要点（KICKOFF 第 6 节；文本以 docs/ATTRIBUTION.md 为准）。 */
 export function Attribution() {
+  const t = STRINGS[useUiStore((s) => s.lang)];
   const open = useUiStore((s) => s.attributionOpen);
   const manifest = useUiStore((s) => s.manifest);
   const setOpen = useUiStore((s) => s.setAttributionOpen);
@@ -11,7 +12,7 @@ export function Attribution() {
   return (
     <div className="hyi-attribution-backdrop" onClick={() => setOpen(false)}>
       <div className="hyi-panel hyi-attribution" onClick={(e) => e.stopPropagation()}>
-        <h2>{zh.attribution}</h2>
+        <h2>{t.attribution}</h2>
         {manifest.attribution.map((line) => (
           <p key={line}>{line}</p>
         ))}
@@ -26,7 +27,7 @@ export function Attribution() {
           </a>
         </p>
         <button className="hyi-btn" onClick={() => setOpen(false)}>
-          {zh.close}
+          {t.close}
         </button>
       </div>
     </div>
