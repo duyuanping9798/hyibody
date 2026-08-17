@@ -8,6 +8,7 @@ import { LayerSlider } from './LayerSlider';
 import { SearchBox } from './SearchBox';
 import { bindViewer, toUrlState, useUiStore } from './store';
 import { SystemPanel } from './SystemPanel';
+import { TourMenu, TourPlayer } from './TourPlayer';
 import { ViewTools } from './ViewTools';
 import './ui.css';
 
@@ -45,6 +46,7 @@ export function App() {
   const setAttributionOpen = useUiStore((s) => s.setAttributionOpen);
   const activePanel = useUiStore((s) => s.activePanel);
   const togglePanel = useUiStore((s) => s.togglePanel);
+  const tour = useUiStore((s) => s.tour);
   useUrlSync();
 
   useEffect(() => {
@@ -109,6 +111,7 @@ export function App() {
       {loadState === 'ready' && !isPlaceholder && (
         <>
           <div className="hyi-topbar">
+            <TourMenu />
             <button className="hyi-btn" onClick={() => setAttributionOpen(true)}>
               {zh.attribution}
             </button>
@@ -136,8 +139,8 @@ export function App() {
               {zh.presetsTitle}
             </button>
           </div>
-          <InfoCard />
-          <LayerSlider />
+          {!tour && <InfoCard />}
+          {tour ? <TourPlayer /> : <LayerSlider />}
           <Attribution />
         </>
       )}

@@ -1,4 +1,5 @@
 import zh from '../../content/i18n/zh.json';
+import { definitionsZh } from '../data/definitions';
 import type { SystemId } from '../data/types';
 import { useUiStore } from './store';
 
@@ -25,7 +26,7 @@ export function InfoCard() {
         {info.en}
         {info.fma.length > 0 && <span> · {info.fma[0]}</span>}
       </p>
-      <p className="blurb">{zh.infoBlurbPending}</p>
+      <p className="blurb">{definitionsZh[selected] ?? zh.infoBlurbPending}</p>
       <p className="meta">
         {zh.systems[system]} · {zh.regions[info.region]} · {zh.sourceLabel}：{zh.sourceBp3d}
       </p>

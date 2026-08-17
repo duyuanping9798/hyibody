@@ -46,8 +46,19 @@
   },
   "clipTitle": "剖切",
   "clipOff": "关闭",
-  "clipAxis": { "x": "左右", "y": "前后", "z": "上下" },
+  "clipAxis": {
+    "x": "左右",
+    "y": "前后",
+    "z": "上下"
+  },
   "systemsTitle": "系统",
   "systemLoading": "加载中…",
-  "close": "关闭"
+  "close": "关闭",
+  "toursTitle": "故事线",
+  "tourPrev": "上一步",
+  "tourNext": "下一步",
+  "tourFinish": "结束",
+  "tourPlay": "播放",
+  "tourPause": "暂停",
+  "tourExit": "退出"
 }

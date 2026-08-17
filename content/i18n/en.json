@@ -46,8 +46,19 @@
   },
   "clipTitle": "Clip",
   "clipOff": "Off",
-  "clipAxis": { "x": "L-R", "y": "F-B", "z": "U-D" },
+  "clipAxis": {
+    "x": "L-R",
+    "y": "F-B",
+    "z": "U-D"
+  },
   "systemsTitle": "Systems",
   "systemLoading": "loading…",
-  "close": "Close"
+  "close": "Close",
+  "toursTitle": "Tours",
+  "tourPrev": "Back",
+  "tourNext": "Next",
+  "tourFinish": "Finish",
+  "tourPlay": "Play",
+  "tourPause": "Pause",
+  "tourExit": "Exit"
 }
