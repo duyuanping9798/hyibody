@@ -28,3 +28,14 @@ jobs:
         run: pnpm test
       - if: steps.check.outputs.has == 'true'
         run: pnpm build
+      # 数据流水线：单元测试 + 已提交产物校验（M1-5，仅需轻量纯 Python 依赖）
+      - if: steps.check.outputs.has == 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - if: steps.check.outputs.has == 'true'
+        run: pip install -q pyyaml numpy pytest pygltflib
+      - if: steps.check.outputs.has == 'true'
+        run: pnpm pipeline:test
+      - if: steps.check.outputs.has == 'true'
+        run: python3 pipeline/validate.py --require-manifest
