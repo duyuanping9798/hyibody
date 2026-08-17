@@ -1,6 +1,7 @@
 import { create } from 'zustand';
-import type { Manifest, SystemId } from '../data/types';
+import { SYSTEM_IDS, type Manifest, type SystemId } from '../data/types';
 import type { ViewerUrlState } from '../data/urlState';
+import { TourEngine, type Tour, type TourStep } from '../tours/engine';
 import type { ClipAxis } from '../viewer/clipping';
 import type { ViewPresetId } from '../viewer/camera';
 import type { HyiViewer } from '../viewer/HyiViewer';
@@ -20,6 +21,12 @@ interface UiState {
   hiddenCount: number;
   clip: { axis: ClipAxis; pos: number } | null;
   attributionOpen: boolean;
+  /** 小屏抽屉：当前展开的工具面板（桌面端两块面板常驻，忽略此值） */
+  activePanel: 'systems' | 'views' | null;
+  /** 故事线播放状态（M2-1） */
+  tour: Tour | null;
+  tourIndex: number;
+  tourPlaying: boolean;
 
   setLoadState(s: LoadState): void;
   setManifest(m: Manifest): void;
@@ -35,10 +42,51 @@ interface UiState {
   applyPreset(id: ViewPresetId): void;
   focus(slug: string): void;
   setAttributionOpen(open: boolean): void;
+  togglePanel(panel: 'systems' | 'views'): void;
+  startTour(tour: Tour): void;
+  exitTour(): void;
+  tourNext(): void;
+  tourPrev(): void;
+  tourToggle(): void;
   applyUrlState(s: ViewerUrlState): void;
 }
 
 let viewer: HyiViewer | null = null;
+const tourEngine = new TourEngine();
+
+/** 把一步故事线应用到画面：分层、显隐覆盖、选中与对准。 */
+function applyTourStep(step: TourStep): void {
+  const st = useUiStore.getState();
+  st.setLayer(step.layer);
+  for (const id of SYSTEM_IDS) {
+    const want = step.systems?.[id] ?? true;
+    if (st.systemsVisible[id] !== want) st.toggleSystem(id);
+  }
+  if (step.preset) st.applyPreset(step.preset);
+  if (step.selected) {
+    st.select(step.selected);
+    if (step.focus !== false && !step.preset) st.focus(step.selected);
+  } else {
+    st.select(null);
+  }
+}
+
+tourEngine.addEventListener('step', (e) => {
+  const { step } = (e as CustomEvent<{ index: number; step: TourStep | null }>).detail;
+  if (step) applyTourStep(step);
+  useUiStore.setState({ tourIndex: tourEngine.currentIndex });
+});
+tourEngine.addEventListener('play', () => useUiStore.setState({ tourPlaying: true }));
+tourEngine.addEventListener('pause', () => useUiStore.setState({ tourPlaying: false }));
+tourEngine.addEventListener('end', () => {
+  const st = useUiStore.getState();
+  st.select(null);
+  st.resetVisibility();
+  for (const id of SYSTEM_IDS) {
+    if (!st.systemsVisible[id]) st.toggleSystem(id);
+  }
+  useUiStore.setState({ tour: null, tourIndex: 0, tourPlaying: false });
+});
 
 /** App 挂载 viewer 后调用；canvas 侧的选中事件也在这里回写 store。 */
 export function bindViewer(v: HyiViewer | null): void {
@@ -46,7 +94,8 @@ export function bindViewer(v: HyiViewer | null): void {
   if (!v) return;
   v.addEventListener('select', (e) => {
     const slug = (e as CustomEvent<{ slug: string | null }>).detail.slug;
-    useUiStore.setState({ selected: slug });
+    // 选中结构时收起小屏抽屉面板，避免与信息卡叠在一起（桌面端不受影响）
+    useUiStore.setState(slug ? { selected: slug, activePanel: null } : { selected: slug });
   });
   v.addEventListener('systemloaded', (e) => {
     const system = (e as CustomEvent<{ system: string }>).detail.system;
@@ -88,6 +137,10 @@ export const useUiStore = create<UiState>((set, get) => ({
   hiddenCount: 0,
   clip: null,
   attributionOpen: false,
+  activePanel: null,
+  tour: null,
+  tourIndex: 0,
+  tourPlaying: false,
 
   setLoadState: (loadState) => set({ loadState }),
   setManifest: (manifest) =>
@@ -136,6 +189,19 @@ export const useUiStore = create<UiState>((set, get) => ({
     viewer?.focus(slug);
   },
   setAttributionOpen: (attributionOpen) => set({ attributionOpen }),
+  togglePanel: (panel) => set((s) => ({ activePanel: s.activePanel === panel ? null : panel })),
+
+  startTour: (tour) => {
+    set({ tour, tourIndex: 0, tourPlaying: true, activePanel: null });
+    tourEngine.start(tour);
+  },
+  exitTour: () => tourEngine.stop(),
+  tourNext: () => tourEngine.next(),
+  tourPrev: () => tourEngine.prev(),
+  tourToggle: () => {
+    if (tourEngine.isPlaying) tourEngine.pause();
+    else tourEngine.play();
+  },
 
   applyUrlState: (s) => {
     const st = get();

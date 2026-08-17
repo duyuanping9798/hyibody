@@ -1,0 +1,52 @@
+{
+  "id": "nerve",
+  "title": { "zh": "一根神经的旅程", "en": "Journey of a Nerve Signal" },
+  "steps": [
+    {
+      "text": {
+        "zh": "一切指令的源头：大脑。860 亿个神经元只占体重的 2%，却消耗全身 20% 的能量。",
+        "en": "Every command starts in the brain — 86 billion neurons, 2% of your weight, 20% of your energy."
+      },
+      "layer": 0.9,
+      "selected": "brain",
+      "durationMs": 9000
+    },
+    {
+      "text": {
+        "zh": "颅底藏着豌豆大的垂体——腺体\"总司令\"，用激素远程指挥生长、代谢与情绪。",
+        "en": "At the skull base hides the pea-sized pituitary — commander of hormones for growth, metabolism and mood."
+      },
+      "layer": 0.9,
+      "selected": "pituitary_gland",
+      "durationMs": 9000
+    },
+    {
+      "text": {
+        "zh": "视神经像两条\"视频电缆\"，各由一百多万根纤维组成，把眼睛拍到的世界实时传回大脑。",
+        "en": "The optic nerves are twin video cables — over a million fibers each, streaming the world to your brain."
+      },
+      "layer": 0.9,
+      "selected": "optic_nerves",
+      "durationMs": 9000
+    },
+    {
+      "text": {
+        "zh": "指令沿脊髓一路向下：这条藏在椎骨管道里的\"信息高速路\"，是大脑与全身之间的必经之路。",
+        "en": "Commands race down the spinal cord — the information highway sheltered inside your vertebrae."
+      },
+      "layer": 0.9,
+      "selected": "spinal_cord",
+      "systems": { "skeleton": false },
+      "durationMs": 10000
+    },
+    {
+      "text": {
+        "zh": "从脊髓出发，信号经周围神经奔向每块肌肉与皮肤——从起念到动指尖，只要百分之一秒。（周围神经的三维数据将在后续版本补充）",
+        "en": "From the cord, signals fan out through peripheral nerves to every muscle — thought to fingertip in a hundredth of a second."
+      },
+      "layer": 0.75,
+      "selected": "spinal_cord",
+      "durationMs": 10000
+    }
+  ]
+}

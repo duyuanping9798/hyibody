@@ -1,0 +1,69 @@
+{
+  "id": "heartbeat",
+  "title": { "zh": "心跳与血液的旅程", "en": "Journey of a Heartbeat" },
+  "steps": [
+    {
+      "text": {
+        "zh": "旅程从胸腔正中偏左的心脏开始——这台拳头大小的泵，每天跳动约 10 万次。",
+        "en": "Our journey starts at the heart — a fist-sized pump beating about 100,000 times a day."
+      },
+      "layer": 0.6,
+      "selected": "heart",
+      "durationMs": 9000
+    },
+    {
+      "text": {
+        "zh": "心脏自己也要\"吃饭\"：冠状动脉贴着心脏表面爬行，为心肌供血。它一旦堵塞，就是心肌梗死。",
+        "en": "The heart feeds itself through the coronary arteries hugging its surface — a blockage here means a heart attack."
+      },
+      "layer": 0.75,
+      "selected": "coronary_arteries",
+      "durationMs": 9000
+    },
+    {
+      "text": {
+        "zh": "左心室猛地收缩，血液冲进全身最粗的动脉——主动脉，压力足以把血喷起一米多高。",
+        "en": "With each contraction, blood surges into the aorta — the body's widest artery."
+      },
+      "layer": 0.85,
+      "selected": "aorta",
+      "durationMs": 9000
+    },
+    {
+      "text": {
+        "zh": "一部分血液向上奔向大脑：颈总动脉在脖子两侧搏动，你现在就能用手指摸到这条生命线。",
+        "en": "Part of the flow races up the common carotid arteries — feel your neck and you'll find this lifeline pulsing."
+      },
+      "layer": 0.85,
+      "selected": "common_carotid_arteries",
+      "durationMs": 9000
+    },
+    {
+      "text": {
+        "zh": "把氧气送到全身后，血液顺着静脉网\"回家\"：下半身的血汇入全身最粗的静脉——下腔静脉。",
+        "en": "Oxygen delivered, blood returns home through the veins — the lower body drains into the inferior vena cava."
+      },
+      "layer": 0.85,
+      "selected": "inferior_vena_cava",
+      "durationMs": 9000
+    },
+    {
+      "text": {
+        "zh": "回到右心的血液缺氧发暗，被送上肺动脉干——这是全身唯一运送\"静脉血\"的动脉。",
+        "en": "Back at the right heart, oxygen-poor blood is pumped into the pulmonary trunk — the only artery carrying venous blood."
+      },
+      "layer": 0.8,
+      "selected": "pulmonary_trunk",
+      "durationMs": 9000
+    },
+    {
+      "text": {
+        "zh": "在肺里换上新鲜氧气，血液经肺静脉回到左心，下一次心跳又将启程——这一整圈只需约一分钟。",
+        "en": "Refreshed with oxygen in the lungs, blood returns via the pulmonary veins — the whole loop takes about a minute."
+      },
+      "layer": 0.55,
+      "selected": "lung_left",
+      "durationMs": 10000
+    }
+  ]
+}

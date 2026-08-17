@@ -8,6 +8,7 @@ import { LayerSlider } from './LayerSlider';
 import { SearchBox } from './SearchBox';
 import { bindViewer, toUrlState, useUiStore } from './store';
 import { SystemPanel } from './SystemPanel';
+import { TourMenu, TourPlayer } from './TourPlayer';
 import { ViewTools } from './ViewTools';
 import './ui.css';
 
@@ -43,6 +44,9 @@ export function App() {
   const loadState = useUiStore((s) => s.loadState);
   const manifest = useUiStore((s) => s.manifest);
   const setAttributionOpen = useUiStore((s) => s.setAttributionOpen);
+  const activePanel = useUiStore((s) => s.activePanel);
+  const togglePanel = useUiStore((s) => s.togglePanel);
+  const tour = useUiStore((s) => s.tour);
   useUrlSync();
 
   useEffect(() => {
@@ -107,21 +111,36 @@ export function App() {
       {loadState === 'ready' && !isPlaceholder && (
         <>
           <div className="hyi-topbar">
+            <TourMenu />
             <button className="hyi-btn" onClick={() => setAttributionOpen(true)}>
               {zh.attribution}
             </button>
           </div>
           <SearchBox />
-          <div className="hyi-side">
-            <div className="hyi-panel">
+          <div className={`hyi-side panel-${activePanel ?? 'none'}`}>
+            <div className="hyi-panel hyi-sec-systems">
               <SystemPanel />
             </div>
-            <div className="hyi-panel">
+            <div className="hyi-panel hyi-sec-views">
               <ViewTools />
             </div>
           </div>
-          <InfoCard />
-          <LayerSlider />
+          <div className="hyi-mobile-tabs">
+            <button
+              className={`hyi-btn${activePanel === 'systems' ? ' active' : ''}`}
+              onClick={() => togglePanel('systems')}
+            >
+              {zh.systemsTitle}
+            </button>
+            <button
+              className={`hyi-btn${activePanel === 'views' ? ' active' : ''}`}
+              onClick={() => togglePanel('views')}
+            >
+              {zh.presetsTitle}
+            </button>
+          </div>
+          {!tour && <InfoCard />}
+          {tour ? <TourPlayer /> : <LayerSlider />}
           <Attribution />
         </>
       )}

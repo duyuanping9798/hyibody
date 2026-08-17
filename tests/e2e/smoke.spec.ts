@@ -65,3 +65,57 @@ test('layer state and selection restore from share URL', async ({ page }) => {
   );
   await page.screenshot({ path: 'test-results/smoke-layered.png' });
 });
+
+/** M2-1 故事线冒烟：从菜单启动"心跳"之旅，第一步文案出现，可下一步。 */
+test('heartbeat tour plays from the menu', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
+    timeout: 60_000,
+  });
+
+  await page.getByRole('button', { name: '故事线' }).click();
+  await page.getByTestId('tour-list').getByRole('button', { name: '心跳与血液的旅程' }).click();
+
+  const player = page.getByTestId('tour-player');
+  await expect(player).toBeVisible();
+  await expect(player).toContainText('心跳与血液的旅程');
+
+  // 先暂停自动播放，再手动步进（避免 9s/步 的自动推进造成竞态）
+  await player.getByRole('button', { name: '暂停' }).click();
+  const progress = player.locator('.progress');
+  const before = Number((await progress.innerText()).split('/')[0]);
+  await player.getByRole('button', { name: '下一步' }).click();
+  await expect(progress).toHaveText(`${before + 1} / 7`);
+
+  await page.evaluate(
+    () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))),
+  );
+  await page.screenshot({ path: 'test-results/smoke-tour.png' });
+
+  await player.getByRole('button', { name: '退出' }).click();
+  await expect(player).not.toBeVisible();
+});
+
+/** M1-7 移动端冒烟：竖屏视口下抽屉面板可唤出、信息卡可见、留存截图。 */
+test.describe('mobile viewport', () => {
+  test.use({ viewport: { width: 390, height: 844 }, hasTouch: true });
+
+  test('drawer panels and info card usable on small screen', async ({ page }) => {
+    const state = encodeUrlState({ layer: 0.62, selected: 'skull' });
+    await page.goto(`/?v=${state}`);
+    await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
+      timeout: 60_000,
+    });
+
+    await expect(page.getByTestId('info-card')).toBeVisible({ timeout: 20_000 });
+    await expect(page.getByTestId('info-card')).toContainText('颅骨');
+
+    // 抽屉：默认收起 → 点标签展开系统面板
+    const systemsTab = page.getByRole('button', { name: '系统', exact: true });
+    await expect(systemsTab).toBeVisible();
+    await systemsTab.click();
+    await expect(page.getByRole('button', { name: '皮肤 显示/隐藏' })).toBeVisible();
+
+    await page.screenshot({ path: 'test-results/smoke-mobile.png' });
+  });
+});

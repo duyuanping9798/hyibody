@@ -1,0 +1,69 @@
+{
+  "id": "digestion",
+  "title": { "zh": "食物去哪了", "en": "Where Does Food Go?" },
+  "steps": [
+    {
+      "text": {
+        "zh": "一口饭的冒险从舌头开始：八块肌肉组成的\"多面手\"把食物搅拌成团，推向咽喉。",
+        "en": "A bite's adventure begins at the tongue — eight muscles knead food into a ball and push it back."
+      },
+      "layer": 0.6,
+      "selected": "tongue",
+      "durationMs": 9000
+    },
+    {
+      "text": {
+        "zh": "食管接手：这条 25 厘米的肌肉滑梯用波浪式收缩把食物送进胃里——就算倒立，饭也照样能咽下去。",
+        "en": "The esophagus takes over, squeezing food downward in waves — it works even upside-down."
+      },
+      "layer": 0.7,
+      "selected": "esophagus",
+      "durationMs": 9000
+    },
+    {
+      "text": {
+        "zh": "胃是一台强酸搅拌机：胃酸浓到能溶解金属，胃壁靠每隔几天换一层新黏膜保护自己。",
+        "en": "The stomach is an acid mixer — strong enough to dissolve metal, protected by a lining renewed every few days."
+      },
+      "layer": 0.7,
+      "selected": "stomach",
+      "durationMs": 9000
+    },
+    {
+      "text": {
+        "zh": "两位幕后帮手上场：肝脏分泌胆汁乳化油脂，胰腺送来消化酶分解蛋白质和淀粉。",
+        "en": "Two helpers join in: the liver sends bile to break down fat, while the pancreas delivers digestive enzymes."
+      },
+      "layer": 0.7,
+      "selected": "liver",
+      "durationMs": 9000
+    },
+    {
+      "text": {
+        "zh": "重头戏在小肠：5–6 米长的\"吸收长廊\"盘在腹腔里，内壁绒毛展开接近一个网球场，营养几乎全在这里进入血液。",
+        "en": "The main act: 5–6 meters of small intestine, whose villi unfold to nearly a tennis court of absorbing surface."
+      },
+      "layer": 0.7,
+      "selected": "small_intestine",
+      "durationMs": 10000
+    },
+    {
+      "text": {
+        "zh": "吸收的营养并不直接进入全身——肝门静脉先把它们押送到肝脏\"安检加工\"，再放行进入循环。",
+        "en": "Absorbed nutrients don't go straight to the body — the portal vein routes them to the liver for processing first."
+      },
+      "layer": 0.85,
+      "selected": "hepatic_portal_vein",
+      "durationMs": 9000
+    },
+    {
+      "text": {
+        "zh": "最后一站大肠：回收水分、聚集菌群，残渣变成粪便排出体外。整趟旅程走完，大约要 一到两天。",
+        "en": "Last stop, the large intestine: water is reclaimed and what remains leaves the body — the full trip takes a day or two."
+      },
+      "layer": 0.7,
+      "selected": "large_intestine",
+      "durationMs": 10000
+    }
+  ]
+}

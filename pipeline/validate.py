@@ -35,6 +35,8 @@ MAX_FILE_BYTES = 50_000_000  # 仓库单文件上限（CLAUDE.md）
 MAX_TOTAL_BYTES = 40_000_000  # 全部资产
 MAX_FIRST_SCREEN_BYTES = 5_000_000  # 首屏：皮肤 + 骨骼 + manifest
 MAX_TOTAL_TRIANGLES = 1_500_000
+# 每结构一份材质一次绘制 + 背景/描边等开销余量，静态估算不超过同屏 600 draw call
+MAX_STRUCTURES_FOR_DRAWCALLS = 580
 VALID_SOURCES = ("bp3d", "bp3d_partof", "hra", "cc0")
 
 
@@ -191,6 +193,12 @@ def validate_assets(manifest: dict, chk: Checker) -> None:
         chk.error(f"首屏包 {first_screen / 1e6:.2f} MB 超过 5 MB 预算")
     if total_tris > MAX_TOTAL_TRIANGLES:
         chk.error(f"总三角面 {total_tris} 超过 150 万预算")
+    n_structures = len(manifest["structures"])
+    if n_structures > MAX_STRUCTURES_FOR_DRAWCALLS:
+        chk.error(
+            f"结构数 {n_structures} 超过 {MAX_STRUCTURES_FOR_DRAWCALLS}"
+            "（同屏 draw call ≤ 600 预算的静态估算）"
+        )
     print(
         f"资产：{total_bytes / 1e6:.2f} MB（首屏 {first_screen / 1e6:.2f} MB），"
         f"三角面 {total_tris}"
