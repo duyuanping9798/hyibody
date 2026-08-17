@@ -1,0 +1,1275 @@
+# 结构分组定义（M1-2，issue #2）——select.py 的输入，人可编辑。
+#
+# 每组把若干 BP3D 概念（英文名精确匹配，或 patterns 正则匹配）合并为一个可点击结构。
+# set: isa（细分部件，默认）| partof（复合器官，补齐 isa 缺的整器官）。
+# 元素文件按 FJ id 去重，因此聚合概念与其子部件概念重复匹配不会导致网格重复。
+# 概念名均已对照 4.0 版 *_parts_list_e.txt 核实；匹配不到的组会在 select.py 报告中列出。
+#
+# 挑选规则（KICKOFF 第 7 节）：科普可辨认优先。骨骼：颅骨整体、椎骨按颈/胸/腰分组、
+# 肋骨整体、腕骨/跗骨各一组、四肢长骨单列。已知缺口（BP3D 4.0 两集皆无）：尾骨、
+# 甲状腺、子宫/卵巢（男性模型）、坐骨神经等周围神经、背阔肌/咬肌等部分浅层肌。
+
+defaults:
+  target_faces:
+    skin: 8000
+    muscles: 1200
+    skeleton: 1200
+    organs: 3000
+    vessels: 1200
+    nerves: 2000
+
+groups:
+  # ================= 皮肤 =================
+  - slug: skin
+    zh: 皮肤
+    en: Skin
+    system: skin
+    region: whole
+    side: none
+    priority: 1
+    target_faces: 8000
+    concepts: [skin]
+
+  # ================= 骨骼（约 35 组）=================
+  - slug: skull
+    zh: 颅骨
+    en: Skull
+    system: skeleton
+    region: head
+    side: none
+    priority: 1
+    target_faces: 8000
+    concepts:
+      - frontal bone
+      - parietal bone
+      - occipital bone
+      - temporal bone
+      - sphenoid bone
+      - ethmoid
+      - zygomatic bone
+      - maxilla
+      - nasal bone
+      - lacrimal bone
+      - palatine bone
+      - vomer
+      - inferior nasal concha
+    note: 不含下颌骨与舌骨（单列）；听小骨、牙齿太碎不收。
+  - slug: mandible
+    zh: 下颌骨
+    en: Mandible
+    system: skeleton
+    region: head
+    side: none
+    priority: 1
+    target_faces: 2000
+    concepts: [mandible]
+  - slug: hyoid
+    zh: 舌骨
+    en: Hyoid bone
+    system: skeleton
+    region: neck
+    side: none
+    priority: 2
+    target_faces: 800
+    concepts: [hyoid bone]
+  - slug: cervical_vertebrae
+    zh: 颈椎
+    en: Cervical vertebrae
+    system: skeleton
+    region: neck
+    side: none
+    priority: 1
+    target_faces: 3000
+    concepts: [cervical vertebra]
+  - slug: thoracic_vertebrae
+    zh: 胸椎
+    en: Thoracic vertebrae
+    system: skeleton
+    region: thorax
+    side: none
+    priority: 1
+    target_faces: 4000
+    concepts: [thoracic vertebra]
+  - slug: lumbar_vertebrae
+    zh: 腰椎
+    en: Lumbar vertebrae
+    system: skeleton
+    region: abdomen
+    side: none
+    priority: 1
+    target_faces: 3000
+    concepts: [lumbar vertebra]
+  - slug: sacrum
+    zh: 骶骨
+    en: Sacrum
+    system: skeleton
+    region: pelvis
+    side: none
+    priority: 1
+    target_faces: 1500
+    concepts: [sacrum]
+    note: BP3D 4.0 无独立尾骨网格（缺口，记录于 STATUS）。
+  - slug: intervertebral_disks
+    zh: 椎间盘
+    en: Intervertebral disks
+    system: skeleton
+    region: whole
+    side: none
+    priority: 3
+    target_faces: 3000
+    concepts: [intervertebral disk]
+  - slug: ribs
+    zh: 肋骨
+    en: Ribs
+    system: skeleton
+    region: thorax
+    side: both
+    priority: 1
+    target_faces: 6000
+    concepts: [rib]
+  - slug: costal_cartilages
+    zh: 肋软骨
+    en: Costal cartilages
+    system: skeleton
+    region: thorax
+    side: both
+    priority: 2
+    target_faces: 2000
+    concepts: [costal cartilage]
+  - slug: sternum
+    zh: 胸骨
+    en: Sternum
+    system: skeleton
+    region: thorax
+    side: none
+    priority: 1
+    target_faces: 1200
+    concepts:
+      - manubrium
+      - body of sternum
+      - xiphoid process
+  - slug: clavicle_right
+    zh: 右锁骨
+    en: Right clavicle
+    system: skeleton
+    region: upper_limb
+    side: right
+    priority: 1
+    target_faces: 800
+    concepts: [right clavicle]
+  - slug: clavicle_left
+    zh: 左锁骨
+    en: Left clavicle
+    system: skeleton
+    region: upper_limb
+    side: left
+    priority: 1
+    target_faces: 800
+    concepts: [left clavicle]
+  - slug: scapula_right
+    zh: 右肩胛骨
+    en: Right scapula
+    system: skeleton
+    region: upper_limb
+    side: right
+    priority: 1
+    target_faces: 1500
+    concepts: [right scapula]
+  - slug: scapula_left
+    zh: 左肩胛骨
+    en: Left scapula
+    system: skeleton
+    region: upper_limb
+    side: left
+    priority: 1
+    target_faces: 1500
+    concepts: [left scapula]
+  - slug: humerus_right
+    zh: 右肱骨
+    en: Right humerus
+    system: skeleton
+    region: upper_limb
+    side: right
+    priority: 1
+    target_faces: 1500
+    concepts: [right humerus]
+  - slug: humerus_left
+    zh: 左肱骨
+    en: Left humerus
+    system: skeleton
+    region: upper_limb
+    side: left
+    priority: 1
+    target_faces: 1500
+    concepts: [left humerus]
+  - slug: radius_right
+    zh: 右桡骨
+    en: Right radius
+    system: skeleton
+    region: upper_limb
+    side: right
+    priority: 1
+    target_faces: 1200
+    concepts: [right radius]
+  - slug: radius_left
+    zh: 左桡骨
+    en: Left radius
+    system: skeleton
+    region: upper_limb
+    side: left
+    priority: 1
+    target_faces: 1200
+    concepts: [left radius]
+  - slug: ulna_right
+    zh: 右尺骨
+    en: Right ulna
+    system: skeleton
+    region: upper_limb
+    side: right
+    priority: 1
+    target_faces: 1200
+    concepts: [right ulna]
+  - slug: ulna_left
+    zh: 左尺骨
+    en: Left ulna
+    system: skeleton
+    region: upper_limb
+    side: left
+    priority: 1
+    target_faces: 1200
+    concepts: [left ulna]
+  - slug: carpal_bones
+    zh: 腕骨
+    en: Carpal bones
+    system: skeleton
+    region: upper_limb
+    side: both
+    priority: 2
+    target_faces: 2500
+    concepts: [carpal bone]
+  - slug: hand_bones
+    zh: 手骨（掌骨与指骨）
+    en: Hand bones (metacarpals and phalanges)
+    system: skeleton
+    region: upper_limb
+    side: both
+    priority: 2
+    target_faces: 4000
+    concepts:
+      - metacarpal bone
+      - phalanx of finger
+  - slug: hip_bone_right
+    zh: 右髋骨
+    en: Right hip bone
+    system: skeleton
+    region: pelvis
+    side: right
+    priority: 1
+    target_faces: 2000
+    concepts: [right hip bone]
+  - slug: hip_bone_left
+    zh: 左髋骨
+    en: Left hip bone
+    system: skeleton
+    region: pelvis
+    side: left
+    priority: 1
+    target_faces: 2000
+    concepts: [left hip bone]
+  - slug: femur_right
+    zh: 右股骨
+    en: Right femur
+    system: skeleton
+    region: lower_limb
+    side: right
+    priority: 1
+    target_faces: 1500
+    concepts: [right femur]
+  - slug: femur_left
+    zh: 左股骨
+    en: Left femur
+    system: skeleton
+    region: lower_limb
+    side: left
+    priority: 1
+    target_faces: 1500
+    concepts: [left femur]
+  - slug: patella_right
+    zh: 右髌骨
+    en: Right patella
+    system: skeleton
+    region: lower_limb
+    side: right
+    priority: 2
+    target_faces: 600
+    concepts: [right patella]
+  - slug: patella_left
+    zh: 左髌骨
+    en: Left patella
+    system: skeleton
+    region: lower_limb
+    side: left
+    priority: 2
+    target_faces: 600
+    concepts: [left patella]
+  - slug: tibia_right
+    zh: 右胫骨
+    en: Right tibia
+    system: skeleton
+    region: lower_limb
+    side: right
+    priority: 1
+    target_faces: 1200
+    concepts: [right tibia]
+  - slug: tibia_left
+    zh: 左胫骨
+    en: Left tibia
+    system: skeleton
+    region: lower_limb
+    side: left
+    priority: 1
+    target_faces: 1200
+    concepts: [left tibia]
+  - slug: fibula_right
+    zh: 右腓骨
+    en: Right fibula
+    system: skeleton
+    region: lower_limb
+    side: right
+    priority: 1
+    target_faces: 1000
+    concepts: [right fibula]
+  - slug: fibula_left
+    zh: 左腓骨
+    en: Left fibula
+    system: skeleton
+    region: lower_limb
+    side: left
+    priority: 1
+    target_faces: 1000
+    concepts: [left fibula]
+  - slug: tarsal_bones
+    zh: 跗骨
+    en: Tarsal bones
+    system: skeleton
+    region: lower_limb
+    side: both
+    priority: 2
+    target_faces: 2500
+    concepts: [tarsal bone]
+  - slug: foot_bones
+    zh: 足骨（跖骨与趾骨）
+    en: Foot bones (metatarsals and phalanges)
+    system: skeleton
+    region: lower_limb
+    side: both
+    priority: 2
+    target_faces: 4000
+    concepts:
+      - metatarsal bone
+      - phalanx of toe
+
+  # ================= 器官（约 20，整器官多取自 partof 集）=================
+  - slug: heart
+    zh: 心脏
+    en: Heart
+    system: organs
+    region: thorax
+    side: none
+    set: partof
+    priority: 1
+    target_faces: 8000
+    concepts: [heart]
+  - slug: lung_right
+    zh: 右肺
+    en: Right lung
+    system: organs
+    region: thorax
+    side: right
+    set: partof
+    priority: 1
+    target_faces: 5000
+    concepts: [right lung]
+  - slug: lung_left
+    zh: 左肺
+    en: Left lung
+    system: organs
+    region: thorax
+    side: left
+    set: partof
+    priority: 1
+    target_faces: 5000
+    concepts: [left lung]
+  - slug: trachea
+    zh: 气管
+    en: Trachea
+    system: organs
+    region: neck
+    side: none
+    priority: 1
+    target_faces: 1500
+    concepts: [trachea]
+  - slug: esophagus
+    zh: 食管
+    en: Esophagus
+    system: organs
+    region: thorax
+    side: none
+    priority: 1
+    target_faces: 1500
+    concepts: [esophagus]
+  - slug: stomach
+    zh: 胃
+    en: Stomach
+    system: organs
+    region: abdomen
+    side: none
+    priority: 1
+    target_faces: 3000
+    concepts: [stomach]
+  - slug: liver
+    zh: 肝
+    en: Liver
+    system: organs
+    region: abdomen
+    side: none
+    set: partof
+    priority: 1
+    target_faces: 5000
+    concepts: [liver]
+  - slug: gallbladder
+    zh: 胆囊
+    en: Gallbladder
+    system: organs
+    region: abdomen
+    side: none
+    priority: 1
+    target_faces: 800
+    concepts: [gallbladder]
+  - slug: pancreas
+    zh: 胰腺
+    en: Pancreas
+    system: organs
+    region: abdomen
+    side: none
+    priority: 1
+    target_faces: 1500
+    concepts: [pancreas]
+  - slug: spleen
+    zh: 脾
+    en: Spleen
+    system: organs
+    region: abdomen
+    side: none
+    priority: 1
+    target_faces: 1500
+    concepts: [spleen]
+  - slug: kidneys
+    zh: 肾
+    en: Kidneys
+    system: organs
+    region: abdomen
+    side: both
+    priority: 1
+    target_faces: 3000
+    concepts: [kidney]
+  - slug: urinary_bladder
+    zh: 膀胱
+    en: Urinary bladder
+    system: organs
+    region: pelvis
+    side: none
+    priority: 1
+    target_faces: 1500
+    concepts: [urinary bladder]
+  - slug: small_intestine
+    zh: 小肠
+    en: Small intestine
+    system: organs
+    region: abdomen
+    side: none
+    set: partof
+    priority: 1
+    target_faces: 8000
+    concepts: [small intestine]
+  - slug: large_intestine
+    zh: 大肠
+    en: Large intestine
+    system: organs
+    region: abdomen
+    side: none
+    set: partof
+    priority: 1
+    target_faces: 8000
+    concepts: [large intestine]
+  - slug: duodenum
+    zh: 十二指肠
+    en: Duodenum
+    system: organs
+    region: abdomen
+    side: none
+    priority: 3
+    target_faces: 1500
+    concepts: [duodenum]
+    note: 与小肠整体重叠，人类二选一。
+  - slug: rectum
+    zh: 直肠
+    en: Rectum
+    system: organs
+    region: pelvis
+    side: none
+    priority: 3
+    target_faces: 1000
+    concepts: [rectum]
+    note: 与大肠整体重叠，人类二选一。
+  - slug: tongue
+    zh: 舌
+    en: Tongue
+    system: organs
+    region: head
+    side: none
+    priority: 2
+    target_faces: 1200
+    concepts: [tongue]
+  # 甲状腺：BP3D 4.0 两集均无腺体网格（只有甲状腺动脉），缺口记录于 STATUS。
+  - slug: prostate
+    zh: 前列腺
+    en: Prostate
+    system: organs
+    region: pelvis
+    side: none
+    priority: 2
+    target_faces: 800
+    concepts: [prostate]
+    note: BP3D 为男性模型，无子宫/卵巢（缺口记录于 STATUS）。
+  - slug: testes
+    zh: 睾丸
+    en: Testes
+    system: organs
+    region: pelvis
+    side: both
+    priority: 3
+    target_faces: 800
+    concepts: [testis]
+
+  # ================= 血管(约 25 组) =================
+  - slug: aorta
+    zh: 主动脉
+    en: Aorta
+    system: vessels
+    region: whole
+    side: none
+    set: partof
+    priority: 1
+    target_faces: 3000
+    concepts: [aorta]
+    note: isa 集无主动脉主干整体，取 partof 集（KICKOFF 已知局限）。
+  - slug: pulmonary_trunk
+    zh: 肺动脉干
+    en: Pulmonary trunk
+    system: vessels
+    region: thorax
+    side: none
+    priority: 1
+    target_faces: 1200
+    concepts: [pulmonary trunk]
+  - slug: pulmonary_arteries
+    zh: 肺动脉
+    en: Pulmonary arteries
+    system: vessels
+    region: thorax
+    side: both
+    priority: 2
+    target_faces: 2000
+    patterns: ['^(left|right) pulmonary artery$']
+  - slug: pulmonary_veins
+    zh: 肺静脉
+    en: Pulmonary veins
+    system: vessels
+    region: thorax
+    side: both
+    priority: 2
+    target_faces: 2000
+    patterns: ['^(left|right) (superior |inferior )?pulmonary vein$']
+  - slug: coronary_arteries
+    zh: 冠状动脉
+    en: Coronary arteries
+    system: vessels
+    region: thorax
+    side: both
+    priority: 1
+    target_faces: 2000
+    # 4.0 版无 "left/right coronary artery" 整体概念，只有 trunk 与各分支
+    patterns: ['^.*(trunk|branch) of (left|right) coronary artery$']
+  - slug: superior_vena_cava
+    zh: 上腔静脉
+    en: Superior vena cava
+    system: vessels
+    region: thorax
+    side: none
+    priority: 1
+    target_faces: 1000
+    concepts: [superior vena cava]
+  - slug: inferior_vena_cava
+    zh: 下腔静脉
+    en: Inferior vena cava
+    system: vessels
+    region: abdomen
+    side: none
+    priority: 1
+    target_faces: 1500
+    concepts: [inferior vena cava]
+  - slug: common_carotid_arteries
+    zh: 颈总动脉
+    en: Common carotid arteries
+    system: vessels
+    region: neck
+    side: both
+    priority: 1
+    target_faces: 1200
+    concepts: [common carotid artery]
+  - slug: internal_carotid_arteries
+    zh: 颈内动脉
+    en: Internal carotid arteries
+    system: vessels
+    region: neck
+    side: both
+    priority: 2
+    target_faces: 1200
+    concepts: [internal carotid artery]
+  - slug: internal_jugular_veins
+    zh: 颈内静脉
+    en: Internal jugular veins
+    system: vessels
+    region: neck
+    side: both
+    priority: 1
+    target_faces: 1200
+    concepts: [internal jugular vein]
+  - slug: vertebral_arteries
+    zh: 椎动脉
+    en: Vertebral arteries
+    system: vessels
+    region: neck
+    side: both
+    priority: 2
+    target_faces: 1200
+    concepts: [vertebral artery]
+  - slug: brachiocephalic_trunk
+    zh: 头臂干
+    en: Brachiocephalic trunk
+    system: vessels
+    region: thorax
+    side: none
+    priority: 2
+    target_faces: 600
+    concepts: [brachiocephalic artery]
+  - slug: brachiocephalic_veins
+    zh: 头臂静脉
+    en: Brachiocephalic veins
+    system: vessels
+    region: thorax
+    side: both
+    priority: 2
+    target_faces: 1000
+    concepts: [brachiocephalic vein]
+  - slug: subclavian_arteries
+    zh: 锁骨下动脉
+    en: Subclavian arteries
+    system: vessels
+    region: thorax
+    side: both
+    priority: 2
+    target_faces: 1200
+    concepts: [subclavian artery]
+  - slug: subclavian_veins
+    zh: 锁骨下静脉
+    en: Subclavian veins
+    system: vessels
+    region: thorax
+    side: both
+    priority: 2
+    target_faces: 1000
+    concepts: [subclavian vein]
+  - slug: axillary_brachial_arteries
+    zh: 腋动脉与肱动脉
+    en: Axillary and brachial arteries
+    system: vessels
+    region: upper_limb
+    side: both
+    priority: 2
+    target_faces: 1500
+    concepts: [axillary artery, brachial artery]
+  - slug: forearm_arteries
+    zh: 桡动脉与尺动脉
+    en: Radial and ulnar arteries
+    system: vessels
+    region: upper_limb
+    side: both
+    priority: 3
+    target_faces: 1500
+    concepts: [radial artery, ulnar artery]
+  - slug: celiac_trunk
+    zh: 腹腔干
+    en: Celiac trunk
+    system: vessels
+    region: abdomen
+    side: none
+    priority: 2
+    target_faces: 800
+    patterns: ['^celiac trunk$']
+  - slug: mesenteric_arteries
+    zh: 肠系膜动脉
+    en: Mesenteric arteries
+    system: vessels
+    region: abdomen
+    side: none
+    priority: 2
+    target_faces: 2000
+    patterns: ['^(superior|inferior) mesenteric artery$']
+  - slug: hepatic_portal_vein
+    zh: 肝门静脉
+    en: Hepatic portal vein
+    system: vessels
+    region: abdomen
+    side: none
+    priority: 1
+    target_faces: 1200
+    concepts: [hepatic portal vein]
+  - slug: renal_arteries
+    zh: 肾动脉
+    en: Renal arteries
+    system: vessels
+    region: abdomen
+    side: both
+    priority: 2
+    target_faces: 1000
+    concepts: [renal artery]
+  - slug: renal_veins
+    zh: 肾静脉
+    en: Renal veins
+    system: vessels
+    region: abdomen
+    side: both
+    priority: 2
+    target_faces: 1000
+    concepts: [renal vein]
+  - slug: iliac_arteries
+    zh: 髂动脉
+    en: Iliac arteries
+    system: vessels
+    region: pelvis
+    side: both
+    priority: 2
+    target_faces: 2000
+    concepts: [common iliac artery, external iliac artery, internal iliac artery]
+  - slug: femoral_arteries
+    zh: 股动脉
+    en: Femoral arteries
+    system: vessels
+    region: lower_limb
+    side: both
+    priority: 1
+    target_faces: 1200
+    concepts: [femoral artery]
+  - slug: femoral_veins
+    zh: 股静脉
+    en: Femoral veins
+    system: vessels
+    region: lower_limb
+    side: both
+    priority: 2
+    target_faces: 1200
+    concepts: [femoral vein]
+  - slug: popliteal_arteries
+    zh: 腘动脉
+    en: Popliteal arteries
+    system: vessels
+    region: lower_limb
+    side: both
+    priority: 2
+    target_faces: 1000
+    concepts: [popliteal artery]
+  - slug: tibial_arteries
+    zh: 胫前动脉与胫后动脉
+    en: Anterior and posterior tibial arteries
+    system: vessels
+    region: lower_limb
+    side: both
+    priority: 3
+    target_faces: 1500
+    patterns: ['^(anterior|posterior) tibial artery$']
+  - slug: great_saphenous_veins
+    zh: 大隐静脉
+    en: Great saphenous veins
+    system: vessels
+    region: lower_limb
+    side: both
+    priority: 2
+    target_faces: 1500
+    concepts: [great saphenous vein]
+  - slug: azygos_vein
+    zh: 奇静脉
+    en: Azygos vein
+    system: vessels
+    region: thorax
+    side: none
+    priority: 3
+    target_faces: 800
+    concepts: [azygos vein]
+
+  # ============ 神经（BP3D 4.0 无单独周围神经网格，见 note）============
+  - slug: brain
+    zh: 脑
+    en: Brain
+    system: nerves
+    region: head
+    side: none
+    set: partof
+    priority: 1
+    target_faces: 8000
+    concepts: [brain]
+    note: isa 集无整脑；KICKOFF 神经示例含脑与脊髓，故归 nerves 层。
+  - slug: cerebellum
+    zh: 小脑
+    en: Cerebellum
+    system: nerves
+    region: head
+    side: none
+    priority: 3
+    target_faces: 3000
+    concepts: [cerebellum]
+    note: 与整脑重叠，人类二选一。
+  - slug: brainstem
+    zh: 脑干
+    en: Brainstem
+    system: nerves
+    region: head
+    side: none
+    set: partof
+    priority: 3
+    target_faces: 2000
+    concepts: [brainstem]
+    note: 与整脑重叠，人类二选一。
+  - slug: spinal_cord
+    zh: 脊髓
+    en: Spinal cord
+    system: nerves
+    region: whole
+    side: none
+    set: partof
+    priority: 1
+    target_faces: 3000
+    concepts: [spinal cord]
+  - slug: optic_nerves
+    zh: 视神经
+    en: Optic nerves
+    system: nerves
+    region: head
+    side: both
+    priority: 2
+    target_faces: 800
+    concepts: [optic nerve]
+  - slug: nervous_system
+    zh: 神经系统（整体）
+    en: Nervous system (whole)
+    system: nerves
+    region: whole
+    side: none
+    set: partof
+    priority: 3
+    target_faces: 8000
+    concepts: [nervous system]
+    note: >-
+      BP3D 4.0 两集均无坐骨神经、臂丛等单独周围神经网格；此复合体仅作分层显示，
+      与脑/脊髓重叠。周围神经补源（HRA 等）待 M2 在 DECISIONS.md 决策。
+
+  # ================= 肌肉（约 45 组，浅层大肌为主）=================
+  - slug: sternocleidomastoid
+    zh: 胸锁乳突肌
+    en: Sternocleidomastoid
+    system: muscles
+    region: neck
+    side: both
+    priority: 1
+    target_faces: 1200
+    concepts: [sternocleidomastoid]
+  - slug: platysma
+    zh: 颈阔肌
+    en: Platysma
+    system: muscles
+    region: neck
+    side: both
+    priority: 3
+    target_faces: 1200
+    concepts: [platysma]
+  - slug: trapezius
+    zh: 斜方肌
+    en: Trapezius
+    system: muscles
+    region: thorax
+    side: both
+    priority: 1
+    target_faces: 2000
+    patterns: ['^(ascending|transverse|descending) part of trapezius$']
+  - slug: deltoid
+    zh: 三角肌
+    en: Deltoid
+    system: muscles
+    region: upper_limb
+    side: both
+    priority: 1
+    target_faces: 2000
+    patterns: ['^(clavicular|acromial|spinal) part of deltoid$']
+  - slug: pectoralis_major
+    zh: 胸大肌
+    en: Pectoralis major
+    system: muscles
+    region: thorax
+    side: both
+    priority: 1
+    target_faces: 2000
+    patterns: ['^(clavicular|sternocostal|abdominal) part of pectoralis major$']
+  - slug: pectoralis_minor
+    zh: 胸小肌
+    en: Pectoralis minor
+    system: muscles
+    region: thorax
+    side: both
+    priority: 2
+    target_faces: 1000
+    concepts: [pectoralis minor]
+  - slug: serratus_anterior
+    zh: 前锯肌
+    en: Serratus anterior
+    system: muscles
+    region: thorax
+    side: both
+    priority: 2
+    target_faces: 1500
+    concepts: [serratus anterior]
+  - slug: intercostal_muscles
+    zh: 肋间肌
+    en: Intercostal muscles
+    system: muscles
+    region: thorax
+    side: both
+    priority: 2
+    target_faces: 3000
+    concepts: [external intercostal muscle, internal intercostal muscle]
+  - slug: diaphragm
+    zh: 膈肌
+    en: Diaphragm
+    system: muscles
+    region: thorax
+    side: none
+    priority: 1
+    target_faces: 2000
+    concepts: [diaphragm]
+  - slug: external_oblique
+    zh: 腹外斜肌
+    en: External oblique
+    system: muscles
+    region: abdomen
+    side: both
+    priority: 1
+    target_faces: 2000
+    concepts: [external oblique]
+  # 腹直肌 / 背阔肌 / 咬肌 / 颞肌：BP3D 4.0 两集均无网格（浅层肌缺口），记录于 STATUS。
+  - slug: erector_spinae
+    zh: 竖脊肌
+    en: Erector spinae
+    system: muscles
+    region: whole
+    side: both
+    priority: 2
+    target_faces: 3000
+    concepts:
+      - iliocostalis lumborum
+      - iliocostalis thoracis
+      - iliocostalis cervicis
+      - longissimus thoracis
+      - longissimus cervicis
+      - longissimus capitis
+    patterns: ['^spinalis (thoracis|cervicis|capitis)$']
+  - slug: levator_scapulae
+    zh: 肩胛提肌
+    en: Levator scapulae
+    system: muscles
+    region: neck
+    side: both
+    priority: 3
+    target_faces: 800
+    concepts: [levator scapulae]
+  - slug: splenius_capitis
+    zh: 头夹肌
+    en: Splenius capitis
+    system: muscles
+    region: neck
+    side: both
+    priority: 3
+    target_faces: 800
+    concepts: [splenius capitis]
+  - slug: supraspinatus
+    zh: 冈上肌
+    en: Supraspinatus
+    system: muscles
+    region: upper_limb
+    side: both
+    priority: 3
+    target_faces: 800
+    concepts: [supraspinatus]
+  - slug: infraspinatus
+    zh: 冈下肌
+    en: Infraspinatus
+    system: muscles
+    region: upper_limb
+    side: both
+    priority: 2
+    target_faces: 1000
+    concepts: [infraspinatus]
+  - slug: teres_major
+    zh: 大圆肌
+    en: Teres major
+    system: muscles
+    region: upper_limb
+    side: both
+    priority: 3
+    target_faces: 800
+    concepts: [teres major]
+  - slug: biceps_brachii
+    zh: 肱二头肌
+    en: Biceps brachii
+    system: muscles
+    region: upper_limb
+    side: both
+    priority: 1
+    target_faces: 1500
+    patterns: ['^(short|long) head of biceps brachii$']
+  - slug: triceps_brachii
+    zh: 肱三头肌
+    en: Triceps brachii
+    system: muscles
+    region: upper_limb
+    side: both
+    priority: 1
+    target_faces: 1500
+    patterns: ['^(long|lateral|medial) head of triceps brachii$']
+  - slug: brachialis
+    zh: 肱肌
+    en: Brachialis
+    system: muscles
+    region: upper_limb
+    side: both
+    priority: 2
+    target_faces: 1000
+    concepts: [brachialis]
+  - slug: brachioradialis
+    zh: 肱桡肌
+    en: Brachioradialis
+    system: muscles
+    region: upper_limb
+    side: both
+    priority: 2
+    target_faces: 1000
+    concepts: [brachioradialis]
+  - slug: flexor_carpi_radialis
+    zh: 桡侧腕屈肌
+    en: Flexor carpi radialis
+    system: muscles
+    region: upper_limb
+    side: both
+    priority: 3
+    target_faces: 800
+    concepts: [flexor carpi radialis]
+  - slug: palmaris_longus
+    zh: 掌长肌
+    en: Palmaris longus
+    system: muscles
+    region: upper_limb
+    side: both
+    priority: 3
+    target_faces: 800
+    concepts: [palmaris longus]
+  - slug: flexor_digitorum_superficialis
+    zh: 指浅屈肌
+    en: Flexor digitorum superficialis
+    system: muscles
+    region: upper_limb
+    side: both
+    priority: 3
+    target_faces: 1000
+    concepts: [flexor digitorum superficialis]
+  - slug: extensor_digitorum
+    zh: 指伸肌
+    en: Extensor digitorum
+    system: muscles
+    region: upper_limb
+    side: both
+    priority: 3
+    target_faces: 1000
+    concepts: [extensor digitorum]
+  - slug: psoas_major
+    zh: 腰大肌
+    en: Psoas major
+    system: muscles
+    region: abdomen
+    side: both
+    priority: 2
+    target_faces: 1200
+    concepts: [psoas major]
+  - slug: iliacus
+    zh: 髂肌
+    en: Iliacus
+    system: muscles
+    region: pelvis
+    side: both
+    priority: 2
+    target_faces: 1000
+    concepts: [iliacus]
+  - slug: gluteus_maximus
+    zh: 臀大肌
+    en: Gluteus maximus
+    system: muscles
+    region: pelvis
+    side: both
+    priority: 1
+    target_faces: 2000
+    concepts: [gluteus maximus]
+  - slug: gluteus_medius
+    zh: 臀中肌
+    en: Gluteus medius
+    system: muscles
+    region: pelvis
+    side: both
+    priority: 2
+    target_faces: 1200
+    concepts: [gluteus medius]
+  - slug: tensor_fasciae_latae
+    zh: 阔筋膜张肌
+    en: Tensor fasciae latae
+    system: muscles
+    region: lower_limb
+    side: both
+    priority: 3
+    target_faces: 800
+    concepts: [tensor fasciae latae]
+  - slug: sartorius
+    zh: 缝匠肌
+    en: Sartorius
+    system: muscles
+    region: lower_limb
+    side: both
+    priority: 2
+    target_faces: 1200
+    concepts: [sartorius]
+  - slug: rectus_femoris
+    zh: 股直肌
+    en: Rectus femoris
+    system: muscles
+    region: lower_limb
+    side: both
+    priority: 1
+    target_faces: 1500
+    concepts: [rectus femoris]
+  - slug: vastus_muscles
+    zh: 股外侧肌与股内侧肌
+    en: Vastus muscles
+    system: muscles
+    region: lower_limb
+    side: both
+    priority: 2
+    target_faces: 2000
+    concepts: [vastus lateralis, vastus medialis, vastus intermedius]
+    note: 与股直肌合为股四头肌；分开列便于人类取舍。
+  - slug: adductor_muscles
+    zh: 内收肌群
+    en: Adductor muscles
+    system: muscles
+    region: lower_limb
+    side: both
+    priority: 2
+    target_faces: 2000
+    concepts: [adductor longus, adductor magnus, gracilis]
+  - slug: hamstrings
+    zh: 腘绳肌
+    en: Hamstrings
+    system: muscles
+    region: lower_limb
+    side: both
+    priority: 1
+    target_faces: 2000
+    concepts: [semitendinosus, semimembranosus]
+    patterns: ['^(short|long) head of biceps femoris$']
+  - slug: gastrocnemius
+    zh: 腓肠肌
+    en: Gastrocnemius
+    system: muscles
+    region: lower_limb
+    side: both
+    priority: 1
+    target_faces: 1500
+    patterns: ['^(medial|lateral) head of gastrocnemius$']
+  - slug: soleus
+    zh: 比目鱼肌
+    en: Soleus
+    system: muscles
+    region: lower_limb
+    side: both
+    priority: 2
+    target_faces: 1200
+    concepts: [soleus]
+  - slug: calcaneal_tendon
+    zh: 跟腱
+    en: Calcaneal tendon
+    system: muscles
+    region: lower_limb
+    side: both
+    priority: 2
+    target_faces: 600
+    concepts: [calcaneal tendon]
+  - slug: tibialis_anterior
+    zh: 胫骨前肌
+    en: Tibialis anterior
+    system: muscles
+    region: lower_limb
+    side: both
+    priority: 2
+    target_faces: 1000
+    concepts: [tibialis anterior]
+  - slug: tibialis_posterior
+    zh: 胫骨后肌
+    en: Tibialis posterior
+    system: muscles
+    region: lower_limb
+    side: both
+    priority: 3
+    target_faces: 800
+    concepts: [tibialis posterior]
+  - slug: fibularis_longus
+    zh: 腓骨长肌
+    en: Fibularis longus
+    system: muscles
+    region: lower_limb
+    side: both
+    priority: 3
+    target_faces: 800
+    concepts: [fibularis longus]
+  - slug: extensor_digitorum_longus
+    zh: 趾长伸肌
+    en: Extensor digitorum longus
+    system: muscles
+    region: lower_limb
+    side: both
+    priority: 3
+    target_faces: 800
+    concepts: [extensor digitorum longus]
+  - slug: flexor_digitorum_longus
+    zh: 趾长屈肌
+    en: Flexor digitorum longus
+    system: muscles
+    region: lower_limb
+    side: both
+    priority: 3
+    target_faces: 800
+    concepts: [flexor digitorum longus]

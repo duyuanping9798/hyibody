@@ -1,0 +1,60 @@
+# BodyParts3D 4.0 数据源清单（M1-1，issue #1）
+# 直链解析自 NBDC LSDB 存档站下载页：
+#   https://dbarchive.biosciencedbc.jp/en/bodyparts3d/download.html
+# 存档站 /data/bodyparts3d/LATEST/ 即 4.0 终版（BodyParts3D 已停止更新，存档固定）。
+# sha256 为 2026-08-17 实际下载后计算；download.py 校验不符即报错退出。
+dataset: BodyParts3D 4.0
+license:
+  name: CC BY 4.0
+  url: https://dbarchive.biosciencedbc.jp/en/bodyparts3d/lic.html
+  attribution: >-
+    BodyParts3D, © The Database Center for Life Science licensed under CC
+    Attribution 4.0 International
+  snapshot: docs/licenses/利用許諾 - BodyParts3D _ LSDB Archive.pdf
+base_url: https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST
+files:
+  # ---- isa 集：细分部件（概念 id 为 FMA*，网格文件为 FJ*.obj，99% 减面版）----
+  - name: isa_parts_list_e.txt
+    kind: table
+    set: isa
+    bytes: 128086
+    sha256: ab7796deedd49205e77f3609a1cb8c53e2bbee14ecb5c9a6ca05227469780513
+  - name: isa_inclusion_relation_list.txt
+    kind: table
+    set: isa
+    bytes: 207664
+    sha256: 26e7d818e03a8c909fe09c561f38d0d513423c87681f9450a803bc38f5b07564
+  - name: isa_element_parts.txt
+    kind: table
+    set: isa
+    bytes: 1142159
+    sha256: a3de74423f943b0d724ae8f59b3a817f87c423a544f8db98113b1980817cbeaf
+  - name: isa_BP3D_4.0_obj_99.zip
+    kind: obj_zip
+    set: isa
+    bytes: 142903898
+    sha256: 40665852c49f218326590e204db91064a1ecfc3c6f8cbd7bbbcaac62c7cd409e
+    # 解压后得到 isa_BP3D_4.0_obj_99/FJ*.obj
+    extract_dir: isa_BP3D_4.0_obj_99
+  # ---- partof 集：复合器官（整心、整肺、胸骨、脑等，用于补齐 isa 集缺的整器官）----
+  - name: partof_parts_list_e.txt
+    kind: table
+    set: partof
+    bytes: 59351
+    sha256: 9224080557053e6f1322f1e13ab27f0ecde0db19bb3b505f0631afad230eeebd
+  - name: partof_inclusion_relation_list.txt
+    kind: table
+    set: partof
+    bytes: 91241
+    sha256: 1b40738270931e3c1d955ce34e0fce0d8d10d8c5ad543463e40b4b4c0243007c
+  - name: partof_element_parts.txt
+    kind: table
+    set: partof
+    bytes: 651179
+    sha256: 3f5f6df1028eb122b30de77c711597b6bb8e5541658e5985859fd228adbf88ea
+  - name: partof_BP3D_4.0_obj_99.zip
+    kind: obj_zip
+    set: partof
+    bytes: 64888505
+    sha256: 9fbc713fffeee924a5a657d9813d84d7eb957bded63adb854931dd5e3eb61c97
+    extract_dir: partof_BP3D_4.0_obj_99

@@ -12,7 +12,16 @@
 - 2026-08-17 · ESLint 增加规则：`src/viewer|data|tours` 禁止 import React · 把 CLAUDE.md 的目录约定变成机器可查的硬约束。
 - 2026-08-17 · M0 占位资产（placeholder.glb + manifest.json）不提交 git，改为 dev/test/build 前自动生成 · 本会话的 git 推送通道只读，二进制无法经 GitHub API 文本通道提交；且占位资产本就是临时产物。M1 起真实流水线产物按 CLAUDE.md 约定提交到 `public/assets/`（届时若推送仍受限需人类处理，见 STATUS 待办）。
 
+- 2026-08-17 · M1 数据流水线：结构分组定义放在人可编辑的 `pipeline/config/groups.yaml`（概念英文名精确匹配 + 正则），select.py 据此解析 BP3D 表生成候选清单 · 让"挑选规则"本身可审阅、可迭代，人类改配置即可重新生成候选，无需读代码。
+- 2026-08-17 · isa 集缺整器官（整心/整肺/整脑/肝/主动脉主干/胸骨等）时直接用 partof 集补齐（`source: bp3d_partof`），不等 M2 · partof 集与 isa 集同源同许可证，KICKOFF 第 4 节本就为此下载；骨骼中胸骨用 isa 的柄/体/剑突三件合并。
+- 2026-08-17 · glb 优化链固定为 gltf-transform `dedup → weld → quantize → meshopt`，不用 `optimize` 一键命令 · `optimize` 默认会 join 节点，破坏"节点名 = slug + extras"的结构标识；分步执行可控且 extras 实测保留。
+- 2026-08-17 · 查看器 GLTFLoader 注册 MeshoptDecoder（three 内置 `meshopt_decoder.module.js`）· 流水线产物用 EXT_meshopt_compression；KHR_mesh_quantization 为 GLTFLoader 原生支持。
+- 2026-08-17 · `pipeline/select.py` 文件名与 Python 标准库 `select` 模块同名（KICKOFF 规定文件名不变）：各入口脚本把 `pipeline/` 移到 `sys.path` 末尾、run_all 用 importlib 别名加载 · 避免 `subprocess` 等标准库在导入 `select` 时被遮蔽。
+- 2026-08-17 · 居中偏移取 isa 集全部 2,234 件网格包围盒中心（`work/global_center.json`），而非当前所选结构 · 偏移与挑选结果解耦，各系统分批处理也能对齐。
+
 ## 待定（不做，等人类点头）
+
+- BodyParts3D 4.0 数据缺口（两集均无网格，候选清单已如实缺席）：尾骨、甲状腺、子宫/卵巢（男性模型）、坐骨神经/臂丛等全部周围神经（isa 集只有眼周细支神经，partof 集只有"nervous system"复合体）、腹直肌/背阔肌/咬肌/颞肌等部分浅层肌。M2 若需补齐，候选来源为 HuBMAP HRA（已在允许清单）或恢复 BP3D 3.0 数据源——后者需先在此记录并确认许可证。
 
 - `prototype/` 目录未随启动包上传，仓库中暂缺。KICKOFF 描述的关键结论（6 glb / 173 万面 / 18 draw call、菲涅尔 X-ray、Kiosk 样式）已在文档中保留；若人类手头有原型文件，建议上传到 `prototype/`（只读参考）。
 - KICKOFF 第 3 节列出的 `src/viewer/picking.ts、clipping.ts、highlight.ts、labels.ts` 与 `src/ui/` 各面板组件未在 M0 创建空壳，避免无用空文件；将随 M1-6（查看器核心）与对应 issue 实现。

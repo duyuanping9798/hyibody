@@ -10,11 +10,12 @@ coverage/
 # pipeline data (never commit raw data, see CLAUDE.md)
 pipeline/raw/
 pipeline/work/
+__pycache__/
+.pytest_cache/
 
-# M0: placeholder assets are generated at build time (scripts/generate-placeholder.mjs).
-# M1 pipeline outputs will be committed here instead — remove these lines then.
+# placeholder glb is generated at build time only when no pipeline manifest exists
+# (scripts/generate-placeholder.mjs); pipeline outputs in public/assets/ are committed.
 public/assets/placeholder.glb
-public/assets/manifest.json
 
 # misc
 .DS_Store

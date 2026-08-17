@@ -1,0 +1,735 @@
+{
+  "version": "0.0.1",
+  "generatedAt": "2026-08-17T10:36:22+00:00",
+  "systems": [
+    {
+      "id": "skeleton",
+      "file": "assets/skeleton.glb",
+      "bytes": 519688,
+      "structures": [
+        "skull",
+        "mandible",
+        "hyoid",
+        "cervical_vertebrae",
+        "thoracic_vertebrae",
+        "lumbar_vertebrae",
+        "sacrum",
+        "intervertebral_disks",
+        "ribs",
+        "costal_cartilages",
+        "sternum",
+        "clavicle_right",
+        "clavicle_left",
+        "scapula_right",
+        "scapula_left",
+        "humerus_right",
+        "humerus_left",
+        "radius_right",
+        "radius_left",
+        "ulna_right",
+        "ulna_left",
+        "carpal_bones",
+        "hand_bones",
+        "hip_bone_right",
+        "hip_bone_left",
+        "femur_right",
+        "femur_left",
+        "patella_right",
+        "patella_left",
+        "tibia_right",
+        "tibia_left",
+        "fibula_right",
+        "fibula_left",
+        "tarsal_bones",
+        "foot_bones"
+      ]
+    }
+  ],
+  "structures": {
+    "skull": {
+      "zh": "颅骨",
+      "en": "Skull",
+      "system": "skeleton",
+      "region": "head",
+      "side": "none",
+      "fma": [
+        "FMA52734",
+        "FMA9613",
+        "FMA52735",
+        "FMA52737",
+        "FMA52736",
+        "FMA52740",
+        "FMA52747",
+        "FMA9711",
+        "FMA52745",
+        "FMA52741",
+        "FMA52746",
+        "FMA9710",
+        "FMA54736"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -75.72,
+        -90.15,
+        677.16,
+        76.06,
+        119.44,
+        849.35
+      ]
+    },
+    "mandible": {
+      "zh": "下颌骨",
+      "en": "Mandible",
+      "system": "skeleton",
+      "region": "head",
+      "side": "none",
+      "fma": [
+        "FMA52748"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -53.13,
+        -73.03,
+        634.81,
+        53.17,
+        10.94,
+        719.3
+      ]
+    },
+    "hyoid": {
+      "zh": "舌骨",
+      "en": "Hyoid bone",
+      "system": "skeleton",
+      "region": "neck",
+      "side": "none",
+      "fma": [
+        "FMA52749"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -18.96,
+        -28.3,
+        635.64,
+        18.91,
+        6.34,
+        654.06
+      ]
+    },
+    "cervical_vertebrae": {
+      "zh": "颈椎",
+      "en": "Cervical vertebrae",
+      "system": "skeleton",
+      "region": "neck",
+      "side": "none",
+      "fma": [
+        "FMA9915"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -40.66,
+        9.09,
+        577.96,
+        40.67,
+        79.43,
+        694.67
+      ]
+    },
+    "thoracic_vertebrae": {
+      "zh": "胸椎",
+      "en": "Thoracic vertebrae",
+      "system": "skeleton",
+      "region": "thorax",
+      "side": "none",
+      "fma": [
+        "FMA9139"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -36.73,
+        -0.66,
+        262.95,
+        36.79,
+        100.79,
+        589.71
+      ]
+    },
+    "lumbar_vertebrae": {
+      "zh": "腰椎",
+      "en": "Lumbar vertebrae",
+      "system": "skeleton",
+      "region": "abdomen",
+      "side": "none",
+      "fma": [
+        "FMA9921"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -50.25,
+        -14.77,
+        117.94,
+        50.38,
+        82.03,
+        284.94
+      ]
+    },
+    "sacrum": {
+      "zh": "骶骨",
+      "en": "Sacrum",
+      "system": "skeleton",
+      "region": "pelvis",
+      "side": "none",
+      "fma": [
+        "FMA16202"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -59.22,
+        19.27,
+        -4.2,
+        58.79,
+        108.12,
+        140.47
+      ]
+    },
+    "intervertebral_disks": {
+      "zh": "椎间盘",
+      "en": "Intervertebral disks",
+      "system": "skeleton",
+      "region": "whole",
+      "side": "none",
+      "fma": [
+        "FMA10446"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -24.77,
+        -14.96,
+        108.26,
+        24.54,
+        70.28,
+        664.31
+      ]
+    },
+    "ribs": {
+      "zh": "肋骨",
+      "en": "Ribs",
+      "system": "skeleton",
+      "region": "thorax",
+      "side": "both",
+      "fma": [
+        "FMA7574"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -136.68,
+        -97.1,
+        221.46,
+        136.66,
+        97.22,
+        583.78
+      ]
+    },
+    "costal_cartilages": {
+      "zh": "肋软骨",
+      "en": "Costal cartilages",
+      "system": "skeleton",
+      "region": "thorax",
+      "side": "both",
+      "fma": [
+        "FMA7591"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -109.23,
+        -112.42,
+        315.79,
+        109.15,
+        -21.34,
+        533.52
+      ]
+    },
+    "sternum": {
+      "zh": "胸骨",
+      "en": "Sternum",
+      "system": "skeleton",
+      "region": "thorax",
+      "side": "none",
+      "fma": [
+        "FMA7486",
+        "FMA7487",
+        "FMA7488"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -26.64,
+        -112.93,
+        377.19,
+        27.94,
+        -29.89,
+        538.78
+      ]
+    },
+    "clavicle_right": {
+      "zh": "右锁骨",
+      "en": "Right clavicle",
+      "system": "skeleton",
+      "region": "upper_limb",
+      "side": "right",
+      "fma": [
+        "FMA13322"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -144.59,
+        -46.18,
+        521.86,
+        -9.09,
+        46.37,
+        568.68
+      ]
+    },
+    "clavicle_left": {
+      "zh": "左锁骨",
+      "en": "Left clavicle",
+      "system": "skeleton",
+      "region": "upper_limb",
+      "side": "left",
+      "fma": [
+        "FMA13323"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        9.09,
+        -46.3,
+        521.78,
+        144.57,
+        46.3,
+        568.42
+      ]
+    },
+    "scapula_right": {
+      "zh": "右肩胛骨",
+      "en": "Right scapula",
+      "system": "skeleton",
+      "region": "upper_limb",
+      "side": "right",
+      "fma": [
+        "FMA13395"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -165.85,
+        -2.12,
+        397.26,
+        -56.3,
+        105.93,
+        563.18
+      ]
+    },
+    "scapula_left": {
+      "zh": "左肩胛骨",
+      "en": "Left scapula",
+      "system": "skeleton",
+      "region": "upper_limb",
+      "side": "left",
+      "fma": [
+        "FMA13396"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        57.6,
+        -2.16,
+        397.11,
+        167.1,
+        105.86,
+        563.18
+      ]
+    },
+    "humerus_right": {
+      "zh": "右肱骨",
+      "en": "Right humerus",
+      "system": "skeleton",
+      "region": "upper_limb",
+      "side": "right",
+      "fma": [
+        "FMA23130"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -240.23,
+        0.41,
+        242.43,
+        -139.43,
+        49.9,
+        549.81
+      ]
+    },
+    "humerus_left": {
+      "zh": "左肱骨",
+      "en": "Left humerus",
+      "system": "skeleton",
+      "region": "upper_limb",
+      "side": "left",
+      "fma": [
+        "FMA23131"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        140.64,
+        0.47,
+        242.57,
+        241.51,
+        49.87,
+        549.75
+      ]
+    },
+    "radius_right": {
+      "zh": "右桡骨",
+      "en": "Right radius",
+      "system": "skeleton",
+      "region": "upper_limb",
+      "side": "right",
+      "fma": [
+        "FMA23464"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -278.89,
+        -26.14,
+        19.08,
+        -219.19,
+        39.67,
+        248.29
+      ]
+    },
+    "radius_left": {
+      "zh": "左桡骨",
+      "en": "Left radius",
+      "system": "skeleton",
+      "region": "upper_limb",
+      "side": "left",
+      "fma": [
+        "FMA23465"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        220.48,
+        -26.48,
+        19.4,
+        279.79,
+        39.3,
+        248.25
+      ]
+    },
+    "ulna_right": {
+      "zh": "右尺骨",
+      "en": "Right ulna",
+      "system": "skeleton",
+      "region": "upper_limb",
+      "side": "right",
+      "fma": [
+        "FMA23467"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -246.53,
+        -22.73,
+        18.41,
+        -196.23,
+        55.97,
+        265.69
+      ]
+    },
+    "ulna_left": {
+      "zh": "左尺骨",
+      "en": "Left ulna",
+      "system": "skeleton",
+      "region": "upper_limb",
+      "side": "left",
+      "fma": [
+        "FMA23468"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        197.54,
+        -22.51,
+        18.26,
+        247.77,
+        56.22,
+        265.71
+      ]
+    },
+    "carpal_bones": {
+      "zh": "腕骨",
+      "en": "Carpal bones",
+      "system": "skeleton",
+      "region": "upper_limb",
+      "side": "both",
+      "fma": [
+        "FMA23889"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -281.01,
+        -36.83,
+        -5.6,
+        282.49,
+        -9.76,
+        25.03
+      ]
+    },
+    "hand_bones": {
+      "zh": "手骨（掌骨与指骨）",
+      "en": "Hand bones (metacarpals and phalanges)",
+      "system": "skeleton",
+      "region": "upper_limb",
+      "side": "both",
+      "fma": [
+        "FMA9612",
+        "FMA23914"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -323.35,
+        -94.78,
+        -133.75,
+        324.68,
+        -11.44,
+        10.64
+      ]
+    },
+    "hip_bone_right": {
+      "zh": "右髋骨",
+      "en": "Right hip bone",
+      "system": "skeleton",
+      "region": "pelvis",
+      "side": "right",
+      "fma": [
+        "FMA16586"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -144.23,
+        -38.17,
+        -34.61,
+        -2.14,
+        99.65,
+        171.11
+      ]
+    },
+    "hip_bone_left": {
+      "zh": "左髋骨",
+      "en": "Left hip bone",
+      "system": "skeleton",
+      "region": "pelvis",
+      "side": "left",
+      "fma": [
+        "FMA16587"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        3.37,
+        -38.33,
+        -34.72,
+        145.4,
+        99.45,
+        171.38
+      ]
+    },
+    "femur_right": {
+      "zh": "右股骨",
+      "en": "Right femur",
+      "system": "skeleton",
+      "region": "lower_limb",
+      "side": "right",
+      "fma": [
+        "FMA24474"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -149.55,
+        -11.49,
+        -418.65,
+        -31.12,
+        51.23,
+        47.56
+      ]
+    },
+    "femur_left": {
+      "zh": "左股骨",
+      "en": "Left femur",
+      "system": "skeleton",
+      "region": "lower_limb",
+      "side": "left",
+      "fma": [
+        "FMA24475"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        32.74,
+        -11.6,
+        -418.74,
+        151.02,
+        51.32,
+        47.52
+      ]
+    },
+    "patella_right": {
+      "zh": "右髌骨",
+      "en": "Right patella",
+      "system": "skeleton",
+      "region": "lower_limb",
+      "side": "right",
+      "fma": [
+        "FMA24486"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -101.64,
+        -21.96,
+        -425.27,
+        -59.97,
+        -0.22,
+        -385.96
+      ]
+    },
+    "patella_left": {
+      "zh": "左髌骨",
+      "en": "Left patella",
+      "system": "skeleton",
+      "region": "lower_limb",
+      "side": "left",
+      "fma": [
+        "FMA24487"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        61.24,
+        -21.98,
+        -425.26,
+        102.87,
+        -0.13,
+        -386.0
+      ]
+    },
+    "tibia_right": {
+      "zh": "右胫骨",
+      "en": "Right tibia",
+      "system": "skeleton",
+      "region": "lower_limb",
+      "side": "right",
+      "fma": [
+        "FMA24477"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -108.68,
+        -14.07,
+        -792.78,
+        -34.57,
+        48.69,
+        -412.87
+      ]
+    },
+    "tibia_left": {
+      "zh": "左胫骨",
+      "en": "Left tibia",
+      "system": "skeleton",
+      "region": "lower_limb",
+      "side": "left",
+      "fma": [
+        "FMA24478"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        35.68,
+        -13.75,
+        -792.73,
+        110.27,
+        48.8,
+        -412.84
+      ]
+    },
+    "fibula_right": {
+      "zh": "右腓骨",
+      "en": "Right fibula",
+      "system": "skeleton",
+      "region": "lower_limb",
+      "side": "right",
+      "fma": [
+        "FMA24480"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -119.52,
+        22.6,
+        -812.06,
+        -83.76,
+        52.28,
+        -427.66
+      ]
+    },
+    "fibula_left": {
+      "zh": "左腓骨",
+      "en": "Left fibula",
+      "system": "skeleton",
+      "region": "lower_limb",
+      "side": "left",
+      "fma": [
+        "FMA24481"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        85.18,
+        22.65,
+        -811.92,
+        120.75,
+        52.2,
+        -427.7
+      ]
+    },
+    "tarsal_bones": {
+      "zh": "跗骨",
+      "en": "Tarsal bones",
+      "system": "skeleton",
+      "region": "lower_limb",
+      "side": "both",
+      "fma": [
+        "FMA24491"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -114.51,
+        -39.72,
+        -855.35,
+        115.83,
+        77.08,
+        -783.6
+      ]
+    },
+    "foot_bones": {
+      "zh": "足骨（跖骨与趾骨）",
+      "en": "Foot bones (metatarsals and phalanges)",
+      "system": "skeleton",
+      "region": "lower_limb",
+      "side": "both",
+      "fma": [
+        "FMA24492",
+        "FMA24493"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -168.67,
+        -135.34,
+        -857.26,
+        170.12,
+        11.51,
+        -805.02
+      ]
+    }
+  },
+  "attribution": [
+    "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+    "数据来源：BodyParts3D 4.0（NBDC LSDB 存档站），CC BY 4.0。"
+  ]
+}

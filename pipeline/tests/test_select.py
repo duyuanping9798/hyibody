@@ -1,0 +1,124 @@
+"""select 匹配引擎与配置文件校验测试。"""
+
+import importlib.util
+import sys
+from pathlib import Path
+
+import pytest
+
+import bp3d
+
+_DIR = Path(__file__).resolve().parent.parent
+
+
+def _load(name: str):
+    alias = f"hyibody_{name}"
+    if alias in sys.modules:
+        return sys.modules[alias]
+    spec = importlib.util.spec_from_file_location(alias, _DIR / f"{name}.py")
+    mod = importlib.util.module_from_spec(spec)
+    sys.modules[alias] = mod
+    spec.loader.exec_module(mod)
+    return mod
+
+
+select = _load("select")
+
+
+@pytest.fixture
+def dataset():
+    concepts = {
+        "FMA1": bp3d.Concept("FMA1", "BP1", "femur"),
+        "FMA2": bp3d.Concept("FMA2", "BP2", "right femur"),
+        "FMA3": bp3d.Concept("FMA3", "BP3", "short head of biceps brachii"),
+        "FMA4": bp3d.Concept("FMA4", "BP4", "long head of biceps brachii"),
+    }
+    elements = {
+        "FMA1": ["FJ10", "FJ11"],
+        "FMA2": ["FJ10"],
+        "FMA3": ["FJ20"],
+        "FMA4": ["FJ21", "FJ20"],
+    }
+    return bp3d.Bp3dSet(name="isa", concepts=concepts, elements=elements)
+
+
+def test_resolve_exact_names(dataset):
+    res = select.resolve_group({"concepts": ["Femur"]}, dataset)
+    assert [c.fma for c in res["concepts"]] == ["FMA1"]
+    assert res["elements"] == ["FJ10", "FJ11"]
+    assert not res["missing_names"]
+
+
+def test_resolve_dedups_elements_across_concepts(dataset):
+    # femur 聚合概念与 right femur 共享 FJ10，元素必须去重
+    res = select.resolve_group({"concepts": ["femur", "right femur"]}, dataset)
+    assert res["elements"] == ["FJ10", "FJ11"]
+
+
+def test_resolve_patterns(dataset):
+    res = select.resolve_group(
+        {"patterns": [r"^(short|long) head of biceps brachii$"]}, dataset
+    )
+    assert {c.fma for c in res["concepts"]} == {"FMA3", "FMA4"}
+    assert res["elements"] == ["FJ20", "FJ21"]
+
+
+def test_resolve_reports_missing(dataset):
+    res = select.resolve_group(
+        {"concepts": ["no such thing"], "patterns": ["^nothing here$"]}, dataset
+    )
+    assert res["missing_names"] == ["no such thing"]
+    assert res["unmatched_patterns"] == ["^nothing here$"]
+    assert res["elements"] == []
+
+
+def test_build_candidates_drops_empty_group(dataset):
+    groups_cfg = {
+        "defaults": {"target_faces": {"skeleton": 1200}},
+        "groups": [
+            {
+                "slug": "femur_right",
+                "zh": "右股骨",
+                "en": "Right femur",
+                "system": "skeleton",
+                "region": "lower_limb",
+                "side": "right",
+                "priority": 1,
+                "concepts": ["right femur"],
+            },
+            {
+                "slug": "missing",
+                "zh": "无",
+                "en": "Missing",
+                "system": "skeleton",
+                "region": "whole",
+                "side": "none",
+                "priority": 3,
+                "concepts": ["no such thing"],
+            },
+        ],
+    }
+    stats = {"isa/FJ10": {"faces": 100, "vertices": 52, "bbox": [0, 0, 0, 10, 20, 30]}}
+    entries, report = select.build_candidates(groups_cfg, {"isa": dataset}, stats)
+    assert [e["slug"] for e in entries] == ["femur_right"]
+    assert entries[0]["fma"] == ["FMA2"]
+    assert entries[0]["source"] == "bp3d"
+    assert entries[0]["target_faces"] == 1200
+    assert entries[0]["meta"]["faces_raw"] == 100
+    assert entries[0]["meta"]["volume_cm3"] == 6.0
+    assert report["dropped"][0]["slug"] == "missing"
+
+
+def test_load_groups_real_config():
+    cfg = select.load_groups()
+    slugs = [g["slug"] for g in cfg["groups"]]
+    assert len(slugs) == len(set(slugs))
+    assert "skull" in slugs and "femur_left" in slugs
+
+
+def test_load_sources_real_config():
+    cfg = bp3d.load_sources()
+    assert len(cfg["files"]) == 8
+    assert {e["set"] for e in cfg["files"]} == {"isa", "partof"}
+    assert any(e["kind"] == "obj_zip" for e in cfg["files"])
+    assert "BodyParts3D" in cfg["license"]["attribution"]
