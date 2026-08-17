@@ -25,6 +25,7 @@
     "pipeline:test": "python3 -m pytest pipeline/tests -q"
   },
   "dependencies": {
+    "qrcode": "^1.5.4",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "three": "^0.185.0",
@@ -35,6 +36,7 @@
     "@gltf-transform/core": "^4.0.0",
     "@playwright/test": "^1.55.0",
     "@types/node": "^22.0.0",
+    "@types/qrcode": "^1.5.6",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@types/three": "^0.185.0",

@@ -60,5 +60,9 @@
   "tourFinish": "Finish",
   "tourPlay": "Play",
   "tourPause": "Pause",
-  "tourExit": "Exit"
+  "tourExit": "Exit",
+  "shareTitle": "Share",
+  "shareCopy": "Copy link",
+  "shareCopied": "Copied ✓",
+  "kioskAttract": "Touch the screen to explore your body"
 }

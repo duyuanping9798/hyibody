@@ -389,6 +389,12 @@ export class HyiViewer extends EventTarget {
     this.flyTo(pose.pos, pose.target);
   }
 
+  /** Kiosk 吸引动画用：开关相机自动旋转。 */
+  setAutoRotate(enabled: boolean, speed = 1.2): void {
+    this.rig.controls.autoRotate = enabled;
+    this.rig.controls.autoRotateSpeed = speed;
+  }
+
   private flyTo(pos: Vector3, target: Vector3): void {
     this.rig.controls.autoRotate = false;
     this.flight = {

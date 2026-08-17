@@ -1,16 +1,26 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import zh from '../../content/i18n/zh.json';
 import { decodeUrlState, encodeUrlState } from '../data/urlState';
 import { HyiViewer } from '../viewer/HyiViewer';
 import { Attribution } from './Attribution';
 import { InfoCard } from './InfoCard';
+import { Kiosk } from './Kiosk';
 import { LayerSlider } from './LayerSlider';
 import { SearchBox } from './SearchBox';
+import { ShareDialog } from './ShareDialog';
 import { bindViewer, toUrlState, useUiStore } from './store';
 import { SystemPanel } from './SystemPanel';
 import { TourMenu, TourPlayer } from './TourPlayer';
 import { ViewTools } from './ViewTools';
 import './ui.css';
+
+/** Kiosk 参数：?kiosk=1（或分享状态里带 kiosk）开启；?idle=秒 调闲置阈值。 */
+function readKioskParams(): { kiosk: boolean; idleSeconds: number } {
+  const params = new URLSearchParams(window.location.search);
+  const kiosk = params.get('kiosk') === '1' || decodeUrlState(params.get('v')).kiosk === true;
+  const idle = Number(params.get('idle'));
+  return { kiosk, idleSeconds: Number.isFinite(idle) && idle >= 2 ? idle : 60 };
+}
 
 /** 状态变化后把 ?v= 写回地址栏（防抖，replaceState 不产生历史记录）。 */
 function useUrlSync(): void {
@@ -47,6 +57,8 @@ export function App() {
   const activePanel = useUiStore((s) => s.activePanel);
   const togglePanel = useUiStore((s) => s.togglePanel);
   const tour = useUiStore((s) => s.tour);
+  const [shareOpen, setShareOpen] = useState(false);
+  const [{ kiosk, idleSeconds }] = useState(readKioskParams);
   useUrlSync();
 
   useEffect(() => {
@@ -112,6 +124,9 @@ export function App() {
         <>
           <div className="hyi-topbar">
             <TourMenu />
+            <button className="hyi-btn" onClick={() => setShareOpen(true)}>
+              {zh.shareTitle}
+            </button>
             <button className="hyi-btn" onClick={() => setAttributionOpen(true)}>
               {zh.attribution}
             </button>
@@ -142,6 +157,8 @@ export function App() {
           {!tour && <InfoCard />}
           {tour ? <TourPlayer /> : <LayerSlider />}
           <Attribution />
+          {shareOpen && <ShareDialog onClose={() => setShareOpen(false)} />}
+          {kiosk && <Kiosk idleSeconds={idleSeconds} />}
         </>
       )}
       {loadState === 'ready' && isPlaceholder && (
