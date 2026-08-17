@@ -43,6 +43,8 @@ export function App() {
   const loadState = useUiStore((s) => s.loadState);
   const manifest = useUiStore((s) => s.manifest);
   const setAttributionOpen = useUiStore((s) => s.setAttributionOpen);
+  const activePanel = useUiStore((s) => s.activePanel);
+  const togglePanel = useUiStore((s) => s.togglePanel);
   useUrlSync();
 
   useEffect(() => {
@@ -112,13 +114,27 @@ export function App() {
             </button>
           </div>
           <SearchBox />
-          <div className="hyi-side">
-            <div className="hyi-panel">
+          <div className={`hyi-side panel-${activePanel ?? 'none'}`}>
+            <div className="hyi-panel hyi-sec-systems">
               <SystemPanel />
             </div>
-            <div className="hyi-panel">
+            <div className="hyi-panel hyi-sec-views">
               <ViewTools />
             </div>
+          </div>
+          <div className="hyi-mobile-tabs">
+            <button
+              className={`hyi-btn${activePanel === 'systems' ? ' active' : ''}`}
+              onClick={() => togglePanel('systems')}
+            >
+              {zh.systemsTitle}
+            </button>
+            <button
+              className={`hyi-btn${activePanel === 'views' ? ' active' : ''}`}
+              onClick={() => togglePanel('views')}
+            >
+              {zh.presetsTitle}
+            </button>
           </div>
           <InfoCard />
           <LayerSlider />

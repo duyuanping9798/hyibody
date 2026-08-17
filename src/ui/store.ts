@@ -20,6 +20,8 @@ interface UiState {
   hiddenCount: number;
   clip: { axis: ClipAxis; pos: number } | null;
   attributionOpen: boolean;
+  /** 小屏抽屉：当前展开的工具面板（桌面端两块面板常驻，忽略此值） */
+  activePanel: 'systems' | 'views' | null;
 
   setLoadState(s: LoadState): void;
   setManifest(m: Manifest): void;
@@ -35,6 +37,7 @@ interface UiState {
   applyPreset(id: ViewPresetId): void;
   focus(slug: string): void;
   setAttributionOpen(open: boolean): void;
+  togglePanel(panel: 'systems' | 'views'): void;
   applyUrlState(s: ViewerUrlState): void;
 }
 
@@ -46,7 +49,8 @@ export function bindViewer(v: HyiViewer | null): void {
   if (!v) return;
   v.addEventListener('select', (e) => {
     const slug = (e as CustomEvent<{ slug: string | null }>).detail.slug;
-    useUiStore.setState({ selected: slug });
+    // 选中结构时收起小屏抽屉面板，避免与信息卡叠在一起（桌面端不受影响）
+    useUiStore.setState(slug ? { selected: slug, activePanel: null } : { selected: slug });
   });
   v.addEventListener('systemloaded', (e) => {
     const system = (e as CustomEvent<{ system: string }>).detail.system;
@@ -88,6 +92,7 @@ export const useUiStore = create<UiState>((set, get) => ({
   hiddenCount: 0,
   clip: null,
   attributionOpen: false,
+  activePanel: null,
 
   setLoadState: (loadState) => set({ loadState }),
   setManifest: (manifest) =>
@@ -136,6 +141,7 @@ export const useUiStore = create<UiState>((set, get) => ({
     viewer?.focus(slug);
   },
   setAttributionOpen: (attributionOpen) => set({ attributionOpen }),
+  togglePanel: (panel) => set((s) => ({ activePanel: s.activePanel === panel ? null : panel })),
 
   applyUrlState: (s) => {
     const st = get();

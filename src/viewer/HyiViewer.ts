@@ -344,11 +344,21 @@ export class HyiViewer extends EventTarget {
       applyHighlight(entry.mesh, 'selected');
       this.outline.geometry = entry.mesh.geometry;
       this.outline.visible = true;
+      this.aimAt(entry);
     } else {
       this.outline.visible = false;
     }
     this.applyVisibility();
     this.dispatchEvent(new CustomEvent('select', { detail: { slug: entry ? slug : null } }));
+  }
+
+  /** 选中后相机平滑对准（保持当前距离与方向，只移目标点——KICKOFF 第 6 节）。 */
+  private aimAt(entry: StructureEntry): void {
+    const box = entry.mesh.geometry.boundingBox;
+    if (!box) return;
+    const center = box.getCenter(new Vector3());
+    const offset = this.rig.camera.position.clone().sub(this.rig.controls.target);
+    this.flyTo(center.clone().add(offset), center);
   }
 
   getSelected(): string | null {

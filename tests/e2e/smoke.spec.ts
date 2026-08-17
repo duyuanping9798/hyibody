@@ -65,3 +65,27 @@ test('layer state and selection restore from share URL', async ({ page }) => {
   );
   await page.screenshot({ path: 'test-results/smoke-layered.png' });
 });
+
+/** M1-7 移动端冒烟：竖屏视口下抽屉面板可唤出、信息卡可见、留存截图。 */
+test.describe('mobile viewport', () => {
+  test.use({ viewport: { width: 390, height: 844 }, hasTouch: true });
+
+  test('drawer panels and info card usable on small screen', async ({ page }) => {
+    const state = encodeUrlState({ layer: 0.62, selected: 'skull' });
+    await page.goto(`/?v=${state}`);
+    await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
+      timeout: 60_000,
+    });
+
+    await expect(page.getByTestId('info-card')).toBeVisible({ timeout: 20_000 });
+    await expect(page.getByTestId('info-card')).toContainText('颅骨');
+
+    // 抽屉：默认收起 → 点标签展开系统面板
+    const systemsTab = page.getByRole('button', { name: '系统', exact: true });
+    await expect(systemsTab).toBeVisible();
+    await systemsTab.click();
+    await expect(page.getByRole('button', { name: '皮肤 显示/隐藏' })).toBeVisible();
+
+    await page.screenshot({ path: 'test-results/smoke-mobile.png' });
+  });
+});

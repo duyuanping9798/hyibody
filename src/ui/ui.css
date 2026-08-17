@@ -275,22 +275,74 @@
   gap: 6px;
 }
 
+.hyi-mobile-tabs {
+  display: none;
+}
+
+/* 小屏（手机）：右侧面板改抽屉，标签按钮唤出；信息卡改底部全宽卡片 */
 @media (max-width: 720px) {
+  .hyi-mobile-tabs {
+    display: flex;
+    position: absolute;
+    right: 8px;
+    bottom: 96px;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 5;
+  }
+  .hyi-mobile-tabs .hyi-btn {
+    min-width: 52px;
+    min-height: 48px;
+    font-size: 13px;
+  }
   .hyi-side {
     top: auto;
-    bottom: 84px;
-    right: 8px;
-    width: 170px;
-    max-height: 45%;
+    bottom: 96px;
+    left: 8px;
+    right: 68px;
+    width: auto;
+    max-height: 46%;
+    z-index: 4;
+  }
+  .hyi-side .hyi-panel {
+    display: none;
+  }
+  .hyi-side.panel-systems .hyi-sec-systems {
+    display: block;
+  }
+  .hyi-side.panel-views .hyi-sec-views {
+    display: block;
   }
   .hyi-info {
     left: 8px;
-    right: auto;
-    bottom: 84px;
-    width: min(260px, calc(100% - 190px));
+    right: 68px;
+    bottom: 96px;
+    width: auto;
+    z-index: 6;
   }
   .hyi-search {
     top: 56px;
     left: 8px;
+    width: calc(100% - 16px);
+  }
+  .hyi-layer-slider {
+    width: calc(100% - 16px);
+    bottom: 10px;
+  }
+}
+
+/* 触屏设备：点按目标不小于 44px */
+@media (pointer: coarse) {
+  .hyi-btn {
+    min-height: 44px;
+    padding: 8px 12px;
+  }
+  .hyi-eye {
+    font-size: 18px;
+    padding: 6px;
+  }
+  .hyi-range::-webkit-slider-thumb {
+    width: 22px;
+    height: 22px;
   }
 }
