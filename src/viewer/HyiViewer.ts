@@ -4,10 +4,13 @@ import {
   Box3,
   Clock,
   DirectionalLight,
+  DoubleSide,
+  FrontSide,
   Group,
   Mesh,
   PMREMGenerator,
   Scene,
+  ShaderMaterial,
   SphereGeometry,
   Vector3,
   WebGLRenderer,
@@ -19,6 +22,7 @@ import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { loadManifest } from '../data/manifest';
 import type { Manifest, SystemId } from '../data/types';
+import { ANIMATED_STRUCTURES } from './animation';
 import {
   createCameraRig,
   poseForBox,
@@ -444,6 +448,34 @@ export class HyiViewer extends EventTarget {
     this.hovered = null;
   };
 
+  // ---- 器官微动画（心跳/呼吸；respect prefers-reduced-motion）-------------
+
+  private readonly reducedMotion =
+    typeof window.matchMedia === 'function' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /** 绕结构自身中心做微缩放：scale=s 时把 position 设为 center×(1−s)。 */
+  private animateOrgans(elapsed: number): void {
+    if (this.reducedMotion) return;
+    for (const [slug, scaleFn] of Object.entries(ANIMATED_STRUCTURES)) {
+      const entry = this.structures.get(slug);
+      const box = entry?.mesh.geometry.boundingBox;
+      if (!entry || !box || !entry.material.visible) continue;
+      const s = scaleFn(elapsed);
+      const center = box.getCenter(new Vector3());
+      entry.mesh.scale.setScalar(s);
+      entry.mesh.position.copy(center).multiplyScalar(1 - s);
+    }
+    // 选中描边跟随动画中的网格
+    if (this.outline.visible && this.state.selected) {
+      const sel = this.structures.get(this.state.selected);
+      if (sel) {
+        this.outline.position.copy(sel.mesh.position);
+        this.outline.scale.copy(sel.mesh.scale);
+      }
+    }
+  }
+
   // ---- 剖切 ----------------------------------------------------------------
 
   setClip(clip: { axis: ClipAxis; pos: number } | null): void {
@@ -460,6 +492,10 @@ export class HyiViewer extends EventTarget {
     const planes = this.clipPlane ? [this.clipPlane] : null;
     for (const entry of this.structures.values()) {
       entry.material.clippingPlanes = planes;
+      // 剖切时双面渲染，露出内壁形成"实心"断面感（X-ray 材质本就双面）
+      if (!(entry.material instanceof ShaderMaterial)) {
+        entry.material.side = planes ? DoubleSide : FrontSide;
+      }
     }
     (this.outline.material as Material).clippingPlanes = planes;
   }
@@ -488,6 +524,7 @@ export class HyiViewer extends EventTarget {
   private tick(): void {
     if (this.disposed) return;
     const dt = this.clock.getDelta();
+    this.animateOrgans(this.clock.elapsedTime);
     if (this.flight) {
       this.flight.t = Math.min(1, this.flight.t + dt / 0.6);
       const k = 1 - Math.pow(1 - this.flight.t, 3); // easeOutCubic
