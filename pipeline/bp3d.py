@@ -36,10 +36,11 @@ REGIONS = ("head", "neck", "thorax", "abdomen", "pelvis", "upper_limb", "lower_l
 SIDES = ("left", "right", "none", "both")
 SOURCE_SETS = {"bp3d": "isa", "bp3d_partof": "partof"}
 
-# 面数预算（CLAUDE.md）：单结构 500–3,000，大器官上限 8,000
+# 面数预算（CLAUDE.md，2026-08-17 观感升级修订——见 docs/DECISIONS.md）：
+# 单结构 500–6,000，大结构（多件合并组/整器官/皮肤）上限 24,000；总量仍 ≤ 150 万
 FACES_MIN = 500
-FACES_MAX = 3000
-FACES_MAX_LARGE = 8000
+FACES_MAX = 6000
+FACES_MAX_LARGE = 24000
 
 
 @dataclass(frozen=True)

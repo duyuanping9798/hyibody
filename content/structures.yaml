@@ -2,7 +2,8 @@
 # 由 structures.candidates.yaml 审阅定稿：140 候选中删 5 条"整体 vs 部分"重叠
 # （十二指肠/直肠 → 归小肠/大肠整体；小脑/脑干/神经系统复合体 → 归整脑+脊髓）。
 # 左右侧合并为一条、椎骨按颈/胸/腰合组（总数约 135，未凑 KICKOFF 的 300–600，
-# 决策见 docs/DECISIONS.md）。重新生成候选：改 pipeline/config/groups.yaml 后跑
+# 决策见 docs/DECISIONS.md）。2026-08-17 观感升级：目标面数 ×3（预算修订见
+# DECISIONS.md）。重新生成候选：改 pipeline/config/groups.yaml 后跑
 # python3 pipeline/select.py，再人工比对本文件。
 - slug: skin
   zh: 皮肤
@@ -13,7 +14,7 @@
   fma:
     - FMA7163
   source: bp3d
-  target_faces: 8000
+  target_faces: 24000
   priority: 1
 - slug: skull
   zh: 颅骨
@@ -36,7 +37,7 @@
     - FMA9710
     - FMA54736
   source: bp3d
-  target_faces: 8000
+  target_faces: 20000
   priority: 1
 - slug: mandible
   zh: 下颌骨
@@ -47,7 +48,7 @@
   fma:
     - FMA52748
   source: bp3d
-  target_faces: 2000
+  target_faces: 6000
   priority: 1
 - slug: hyoid
   zh: 舌骨
@@ -58,7 +59,7 @@
   fma:
     - FMA52749
   source: bp3d
-  target_faces: 800
+  target_faces: 2400
   priority: 2
 - slug: cervical_vertebrae
   zh: 颈椎
@@ -69,7 +70,7 @@
   fma:
     - FMA9915
   source: bp3d
-  target_faces: 3000
+  target_faces: 6000
   priority: 1
 - slug: thoracic_vertebrae
   zh: 胸椎
@@ -80,7 +81,7 @@
   fma:
     - FMA9139
   source: bp3d
-  target_faces: 4000
+  target_faces: 6000
   priority: 1
 - slug: lumbar_vertebrae
   zh: 腰椎
@@ -91,7 +92,7 @@
   fma:
     - FMA9921
   source: bp3d
-  target_faces: 3000
+  target_faces: 6000
   priority: 1
 - slug: sacrum
   zh: 骶骨
@@ -102,7 +103,7 @@
   fma:
     - FMA16202
   source: bp3d
-  target_faces: 1500
+  target_faces: 4500
   priority: 1
 - slug: intervertebral_disks
   zh: 椎间盘
@@ -113,7 +114,7 @@
   fma:
     - FMA10446
   source: bp3d
-  target_faces: 3000
+  target_faces: 6000
   priority: 3
 - slug: ribs
   zh: 肋骨
@@ -124,7 +125,7 @@
   fma:
     - FMA7574
   source: bp3d
-  target_faces: 6000
+  target_faces: 18000
   priority: 1
 - slug: costal_cartilages
   zh: 肋软骨
@@ -135,7 +136,7 @@
   fma:
     - FMA7591
   source: bp3d
-  target_faces: 2000
+  target_faces: 6000
   priority: 2
 - slug: sternum
   zh: 胸骨
@@ -148,7 +149,7 @@
     - FMA7487
     - FMA7488
   source: bp3d
-  target_faces: 1200
+  target_faces: 3600
   priority: 1
 - slug: clavicle_right
   zh: 右锁骨
@@ -159,7 +160,7 @@
   fma:
     - FMA13322
   source: bp3d
-  target_faces: 800
+  target_faces: 2400
   priority: 1
 - slug: clavicle_left
   zh: 左锁骨
@@ -170,7 +171,7 @@
   fma:
     - FMA13323
   source: bp3d
-  target_faces: 800
+  target_faces: 2400
   priority: 1
 - slug: scapula_right
   zh: 右肩胛骨
@@ -181,7 +182,7 @@
   fma:
     - FMA13395
   source: bp3d
-  target_faces: 1500
+  target_faces: 4500
   priority: 1
 - slug: scapula_left
   zh: 左肩胛骨
@@ -192,7 +193,7 @@
   fma:
     - FMA13396
   source: bp3d
-  target_faces: 1500
+  target_faces: 4500
   priority: 1
 - slug: humerus_right
   zh: 右肱骨
@@ -203,7 +204,7 @@
   fma:
     - FMA23130
   source: bp3d
-  target_faces: 1500
+  target_faces: 4500
   priority: 1
 - slug: humerus_left
   zh: 左肱骨
@@ -214,7 +215,7 @@
   fma:
     - FMA23131
   source: bp3d
-  target_faces: 1500
+  target_faces: 4500
   priority: 1
 - slug: radius_right
   zh: 右桡骨
@@ -225,7 +226,7 @@
   fma:
     - FMA23464
   source: bp3d
-  target_faces: 1200
+  target_faces: 3600
   priority: 1
 - slug: radius_left
   zh: 左桡骨
@@ -236,7 +237,7 @@
   fma:
     - FMA23465
   source: bp3d
-  target_faces: 1200
+  target_faces: 3600
   priority: 1
 - slug: ulna_right
   zh: 右尺骨
@@ -247,7 +248,7 @@
   fma:
     - FMA23467
   source: bp3d
-  target_faces: 1200
+  target_faces: 3600
   priority: 1
 - slug: ulna_left
   zh: 左尺骨
@@ -258,7 +259,7 @@
   fma:
     - FMA23468
   source: bp3d
-  target_faces: 1200
+  target_faces: 3600
   priority: 1
 - slug: carpal_bones
   zh: 腕骨
@@ -269,7 +270,7 @@
   fma:
     - FMA23889
   source: bp3d
-  target_faces: 2500
+  target_faces: 7500
   priority: 2
 - slug: hand_bones
   zh: 手骨（掌骨与指骨）
@@ -281,7 +282,7 @@
     - FMA9612
     - FMA23914
   source: bp3d
-  target_faces: 4000
+  target_faces: 12000
   priority: 2
 - slug: hip_bone_right
   zh: 右髋骨
@@ -292,7 +293,7 @@
   fma:
     - FMA16586
   source: bp3d
-  target_faces: 2000
+  target_faces: 6000
   priority: 1
 - slug: hip_bone_left
   zh: 左髋骨
@@ -303,7 +304,7 @@
   fma:
     - FMA16587
   source: bp3d
-  target_faces: 2000
+  target_faces: 6000
   priority: 1
 - slug: femur_right
   zh: 右股骨
@@ -314,7 +315,7 @@
   fma:
     - FMA24474
   source: bp3d
-  target_faces: 1500
+  target_faces: 4500
   priority: 1
 - slug: femur_left
   zh: 左股骨
@@ -325,7 +326,7 @@
   fma:
     - FMA24475
   source: bp3d
-  target_faces: 1500
+  target_faces: 4500
   priority: 1
 - slug: patella_right
   zh: 右髌骨
@@ -336,7 +337,7 @@
   fma:
     - FMA24486
   source: bp3d
-  target_faces: 600
+  target_faces: 1800
   priority: 2
 - slug: patella_left
   zh: 左髌骨
@@ -347,7 +348,7 @@
   fma:
     - FMA24487
   source: bp3d
-  target_faces: 600
+  target_faces: 1800
   priority: 2
 - slug: tibia_right
   zh: 右胫骨
@@ -358,7 +359,7 @@
   fma:
     - FMA24477
   source: bp3d
-  target_faces: 1200
+  target_faces: 3600
   priority: 1
 - slug: tibia_left
   zh: 左胫骨
@@ -369,7 +370,7 @@
   fma:
     - FMA24478
   source: bp3d
-  target_faces: 1200
+  target_faces: 3600
   priority: 1
 - slug: fibula_right
   zh: 右腓骨
@@ -380,7 +381,7 @@
   fma:
     - FMA24480
   source: bp3d
-  target_faces: 1000
+  target_faces: 3000
   priority: 1
 - slug: fibula_left
   zh: 左腓骨
@@ -391,7 +392,7 @@
   fma:
     - FMA24481
   source: bp3d
-  target_faces: 1000
+  target_faces: 3000
   priority: 1
 - slug: tarsal_bones
   zh: 跗骨
@@ -402,7 +403,7 @@
   fma:
     - FMA24491
   source: bp3d
-  target_faces: 2500
+  target_faces: 7500
   priority: 2
 - slug: foot_bones
   zh: 足骨（跖骨与趾骨）
@@ -414,7 +415,7 @@
     - FMA24492
     - FMA24493
   source: bp3d
-  target_faces: 4000
+  target_faces: 12000
   priority: 2
 - slug: heart
   zh: 心脏
@@ -425,7 +426,7 @@
   fma:
     - FMA7088
   source: bp3d_partof
-  target_faces: 8000
+  target_faces: 20000
   priority: 1
 - slug: lung_right
   zh: 右肺
@@ -436,7 +437,7 @@
   fma:
     - FMA7309
   source: bp3d_partof
-  target_faces: 5000
+  target_faces: 15000
   priority: 1
 - slug: lung_left
   zh: 左肺
@@ -447,7 +448,7 @@
   fma:
     - FMA7310
   source: bp3d_partof
-  target_faces: 5000
+  target_faces: 15000
   priority: 1
 - slug: trachea
   zh: 气管
@@ -458,7 +459,7 @@
   fma:
     - FMA7394
   source: bp3d
-  target_faces: 1500
+  target_faces: 4500
   priority: 1
 - slug: esophagus
   zh: 食管
@@ -469,7 +470,7 @@
   fma:
     - FMA7131
   source: bp3d
-  target_faces: 1500
+  target_faces: 4500
   priority: 1
 - slug: stomach
   zh: 胃
@@ -480,7 +481,7 @@
   fma:
     - FMA7148
   source: bp3d
-  target_faces: 3000
+  target_faces: 6000
   priority: 1
 - slug: liver
   zh: 肝
@@ -491,7 +492,7 @@
   fma:
     - FMA7197
   source: bp3d_partof
-  target_faces: 5000
+  target_faces: 15000
   priority: 1
 - slug: gallbladder
   zh: 胆囊
@@ -502,7 +503,7 @@
   fma:
     - FMA7202
   source: bp3d
-  target_faces: 800
+  target_faces: 2400
   priority: 1
 - slug: pancreas
   zh: 胰腺
@@ -513,7 +514,7 @@
   fma:
     - FMA7198
   source: bp3d
-  target_faces: 1500
+  target_faces: 4500
   priority: 1
 - slug: spleen
   zh: 脾
@@ -524,7 +525,7 @@
   fma:
     - FMA7196
   source: bp3d
-  target_faces: 1500
+  target_faces: 4500
   priority: 1
 - slug: kidneys
   zh: 肾
@@ -535,7 +536,7 @@
   fma:
     - FMA7203
   source: bp3d
-  target_faces: 3000
+  target_faces: 9000
   priority: 1
 - slug: urinary_bladder
   zh: 膀胱
@@ -546,7 +547,7 @@
   fma:
     - FMA15900
   source: bp3d
-  target_faces: 1500
+  target_faces: 4500
   priority: 1
 - slug: small_intestine
   zh: 小肠
@@ -557,7 +558,7 @@
   fma:
     - FMA7200
   source: bp3d_partof
-  target_faces: 8000
+  target_faces: 20000
   priority: 1
 - slug: large_intestine
   zh: 大肠
@@ -568,7 +569,7 @@
   fma:
     - FMA7201
   source: bp3d_partof
-  target_faces: 8000
+  target_faces: 20000
   priority: 1
 - slug: tongue
   zh: 舌
@@ -579,7 +580,7 @@
   fma:
     - FMA54640
   source: bp3d
-  target_faces: 1200
+  target_faces: 3600
   priority: 2
 - slug: appendix
   zh: 阑尾
@@ -590,7 +591,7 @@
   fma:
     - FMA14542
   source: bp3d
-  target_faces: 600
+  target_faces: 1800
   priority: 2
 - slug: adrenal_glands
   zh: 肾上腺
@@ -601,7 +602,7 @@
   fma:
     - FMA9604
   source: bp3d
-  target_faces: 800
+  target_faces: 2400
   priority: 2
 - slug: ureters
   zh: 输尿管
@@ -612,7 +613,7 @@
   fma:
     - FMA9704
   source: bp3d
-  target_faces: 800
+  target_faces: 2400
   priority: 2
 - slug: pituitary_gland
   zh: 垂体
@@ -623,7 +624,7 @@
   fma:
     - FMA13889
   source: bp3d
-  target_faces: 500
+  target_faces: 1500
   priority: 2
 - slug: larynx_cartilages
   zh: 喉软骨（含喉结）
@@ -636,7 +637,7 @@
     - FMA9615
     - FMA55130
   source: bp3d
-  target_faces: 1200
+  target_faces: 3600
   priority: 2
 - slug: thymus
   zh: 胸腺
@@ -647,7 +648,7 @@
   fma:
     - FMA9607
   source: bp3d_partof
-  target_faces: 800
+  target_faces: 2400
   priority: 3
 - slug: prostate
   zh: 前列腺
@@ -658,7 +659,7 @@
   fma:
     - FMA9600
   source: bp3d
-  target_faces: 800
+  target_faces: 2400
   priority: 2
 - slug: testes
   zh: 睾丸
@@ -669,7 +670,7 @@
   fma:
     - FMA7210
   source: bp3d
-  target_faces: 800
+  target_faces: 2400
   priority: 3
 - slug: aorta
   zh: 主动脉
@@ -680,7 +681,7 @@
   fma:
     - FMA3734
   source: bp3d_partof
-  target_faces: 3000
+  target_faces: 9000
   priority: 1
 - slug: pulmonary_trunk
   zh: 肺动脉干
@@ -691,7 +692,7 @@
   fma:
     - FMA8612
   source: bp3d
-  target_faces: 1200
+  target_faces: 3600
   priority: 1
 - slug: pulmonary_arteries
   zh: 肺动脉
@@ -703,7 +704,7 @@
     - FMA50872
     - FMA50873
   source: bp3d
-  target_faces: 2000
+  target_faces: 6000
   priority: 2
 - slug: pulmonary_veins
   zh: 肺静脉
@@ -717,7 +718,7 @@
     - FMA49914
     - FMA49916
   source: bp3d
-  target_faces: 2000
+  target_faces: 6000
   priority: 2
 - slug: coronary_arteries
   zh: 冠状动脉
@@ -748,7 +749,7 @@
     - FMA66328
     - FMA74912
   source: bp3d
-  target_faces: 2000
+  target_faces: 6000
   priority: 1
 - slug: superior_vena_cava
   zh: 上腔静脉
@@ -759,7 +760,7 @@
   fma:
     - FMA4720
   source: bp3d
-  target_faces: 1000
+  target_faces: 3000
   priority: 1
 - slug: inferior_vena_cava
   zh: 下腔静脉
@@ -770,7 +771,7 @@
   fma:
     - FMA10951
   source: bp3d
-  target_faces: 1500
+  target_faces: 4500
   priority: 1
 - slug: common_carotid_arteries
   zh: 颈总动脉
@@ -781,7 +782,7 @@
   fma:
     - FMA3939
   source: bp3d
-  target_faces: 1200
+  target_faces: 3600
   priority: 1
 - slug: internal_carotid_arteries
   zh: 颈内动脉
@@ -792,7 +793,7 @@
   fma:
     - FMA3947
   source: bp3d
-  target_faces: 1200
+  target_faces: 3600
   priority: 2
 - slug: internal_jugular_veins
   zh: 颈内静脉
@@ -803,7 +804,7 @@
   fma:
     - FMA4724
   source: bp3d
-  target_faces: 1200
+  target_faces: 3600
   priority: 1
 - slug: vertebral_arteries
   zh: 椎动脉
@@ -814,7 +815,7 @@
   fma:
     - FMA3956
   source: bp3d
-  target_faces: 1200
+  target_faces: 3600
   priority: 2
 - slug: brachiocephalic_trunk
   zh: 头臂干
@@ -825,7 +826,7 @@
   fma:
     - FMA3932
   source: bp3d
-  target_faces: 600
+  target_faces: 1800
   priority: 2
 - slug: brachiocephalic_veins
   zh: 头臂静脉
@@ -836,7 +837,7 @@
   fma:
     - FMA4723
   source: bp3d
-  target_faces: 1000
+  target_faces: 3000
   priority: 2
 - slug: subclavian_arteries
   zh: 锁骨下动脉
@@ -847,7 +848,7 @@
   fma:
     - FMA3951
   source: bp3d
-  target_faces: 1200
+  target_faces: 3600
   priority: 2
 - slug: subclavian_veins
   zh: 锁骨下静脉
@@ -858,7 +859,7 @@
   fma:
     - FMA4725
   source: bp3d
-  target_faces: 1000
+  target_faces: 3000
   priority: 2
 - slug: axillary_brachial_arteries
   zh: 腋动脉与肱动脉
@@ -870,7 +871,7 @@
     - FMA22654
     - FMA22689
   source: bp3d
-  target_faces: 1500
+  target_faces: 4500
   priority: 2
 - slug: forearm_arteries
   zh: 桡动脉与尺动脉
@@ -882,7 +883,7 @@
     - FMA22730
     - FMA22796
   source: bp3d
-  target_faces: 1500
+  target_faces: 4500
   priority: 3
 - slug: celiac_trunk
   zh: 腹腔干
@@ -893,7 +894,7 @@
   fma:
     - FMA14812
   source: bp3d
-  target_faces: 800
+  target_faces: 2400
   priority: 2
 - slug: mesenteric_arteries
   zh: 肠系膜动脉
@@ -905,7 +906,7 @@
     - FMA14749
     - FMA14750
   source: bp3d
-  target_faces: 2000
+  target_faces: 6000
   priority: 2
 - slug: celiac_branches
   zh: 肝总动脉与脾动脉
@@ -917,7 +918,7 @@
     - FMA14771
     - FMA14773
   source: bp3d
-  target_faces: 1200
+  target_faces: 3600
   priority: 3
 - slug: portal_tributaries
   zh: 门静脉属支（脾静脉与肠系膜静脉）
@@ -930,7 +931,7 @@
     - FMA14332
     - FMA15391
   source: bp3d
-  target_faces: 1500
+  target_faces: 4500
   priority: 3
 - slug: hepatic_portal_vein
   zh: 肝门静脉
@@ -941,7 +942,7 @@
   fma:
     - FMA50735
   source: bp3d
-  target_faces: 1200
+  target_faces: 3600
   priority: 1
 - slug: renal_arteries
   zh: 肾动脉
@@ -952,7 +953,7 @@
   fma:
     - FMA14751
   source: bp3d
-  target_faces: 1000
+  target_faces: 3000
   priority: 2
 - slug: renal_veins
   zh: 肾静脉
@@ -963,7 +964,7 @@
   fma:
     - FMA14334
   source: bp3d
-  target_faces: 1000
+  target_faces: 3000
   priority: 2
 - slug: iliac_arteries
   zh: 髂动脉
@@ -976,7 +977,7 @@
     - FMA18805
     - FMA18808
   source: bp3d
-  target_faces: 2000
+  target_faces: 6000
   priority: 2
 - slug: femoral_arteries
   zh: 股动脉
@@ -987,7 +988,7 @@
   fma:
     - FMA70248
   source: bp3d
-  target_faces: 1200
+  target_faces: 3600
   priority: 1
 - slug: femoral_veins
   zh: 股静脉
@@ -998,7 +999,7 @@
   fma:
     - FMA21185
   source: bp3d
-  target_faces: 1200
+  target_faces: 3600
   priority: 2
 - slug: popliteal_arteries
   zh: 腘动脉
@@ -1009,7 +1010,7 @@
   fma:
     - FMA77155
   source: bp3d
-  target_faces: 1000
+  target_faces: 3000
   priority: 2
 - slug: tibial_arteries
   zh: 胫前动脉与胫后动脉
@@ -1021,7 +1022,7 @@
     - FMA43894
     - FMA43895
   source: bp3d
-  target_faces: 1500
+  target_faces: 4500
   priority: 3
 - slug: great_saphenous_veins
   zh: 大隐静脉
@@ -1032,7 +1033,7 @@
   fma:
     - FMA21376
   source: bp3d
-  target_faces: 1500
+  target_faces: 4500
   priority: 2
 - slug: azygos_vein
   zh: 奇静脉
@@ -1043,7 +1044,7 @@
   fma:
     - FMA4838
   source: bp3d
-  target_faces: 800
+  target_faces: 2400
   priority: 3
 - slug: brain
   zh: 脑
@@ -1054,7 +1055,7 @@
   fma:
     - FMA50801
   source: bp3d_partof
-  target_faces: 8000
+  target_faces: 20000
   priority: 1
 - slug: spinal_cord
   zh: 脊髓
@@ -1065,7 +1066,7 @@
   fma:
     - FMA7647
   source: bp3d_partof
-  target_faces: 3000
+  target_faces: 9000
   priority: 1
 - slug: optic_nerves
   zh: 视神经
@@ -1076,7 +1077,7 @@
   fma:
     - FMA50863
   source: bp3d
-  target_faces: 800
+  target_faces: 2400
   priority: 2
 - slug: sternocleidomastoid
   zh: 胸锁乳突肌
@@ -1087,7 +1088,7 @@
   fma:
     - FMA13407
   source: bp3d
-  target_faces: 1200
+  target_faces: 3600
   priority: 1
 - slug: platysma
   zh: 颈阔肌
@@ -1098,7 +1099,7 @@
   fma:
     - FMA45738
   source: bp3d
-  target_faces: 1200
+  target_faces: 3600
   priority: 3
 - slug: trapezius
   zh: 斜方肌
@@ -1111,7 +1112,7 @@
     - FMA32556
     - FMA32557
   source: bp3d
-  target_faces: 2000
+  target_faces: 6000
   priority: 1
 - slug: deltoid
   zh: 三角肌
@@ -1124,7 +1125,7 @@
     - FMA34678
     - FMA34679
   source: bp3d
-  target_faces: 2000
+  target_faces: 6000
   priority: 1
 - slug: pectoralis_major
   zh: 胸大肌
@@ -1137,7 +1138,7 @@
     - FMA34696
     - FMA34699
   source: bp3d
-  target_faces: 2000
+  target_faces: 6000
   priority: 1
 - slug: pectoralis_minor
   zh: 胸小肌
@@ -1148,7 +1149,7 @@
   fma:
     - FMA13109
   source: bp3d
-  target_faces: 1000
+  target_faces: 3000
   priority: 2
 - slug: serratus_anterior
   zh: 前锯肌
@@ -1159,7 +1160,7 @@
   fma:
     - FMA13397
   source: bp3d
-  target_faces: 1500
+  target_faces: 4500
   priority: 2
 - slug: intercostal_muscles
   zh: 肋间肌
@@ -1171,7 +1172,7 @@
     - FMA9756
     - FMA9757
   source: bp3d
-  target_faces: 3000
+  target_faces: 9000
   priority: 2
 - slug: diaphragm
   zh: 膈肌
@@ -1182,7 +1183,7 @@
   fma:
     - FMA13295
   source: bp3d
-  target_faces: 2000
+  target_faces: 6000
   priority: 1
 - slug: external_oblique
   zh: 腹外斜肌
@@ -1193,7 +1194,7 @@
   fma:
     - FMA13335
   source: bp3d
-  target_faces: 2000
+  target_faces: 6000
   priority: 1
 - slug: erector_spinae
   zh: 竖脊肌
@@ -1210,7 +1211,7 @@
     - FMA22714
     - FMA22765
   source: bp3d
-  target_faces: 3000
+  target_faces: 9000
   priority: 2
 - slug: levator_scapulae
   zh: 肩胛提肌
@@ -1221,7 +1222,7 @@
   fma:
     - FMA32519
   source: bp3d
-  target_faces: 800
+  target_faces: 2400
   priority: 3
 - slug: splenius_capitis
   zh: 头夹肌
@@ -1232,7 +1233,7 @@
   fma:
     - FMA22653
   source: bp3d
-  target_faces: 800
+  target_faces: 2400
   priority: 3
 - slug: supraspinatus
   zh: 冈上肌
@@ -1243,7 +1244,7 @@
   fma:
     - FMA9629
   source: bp3d
-  target_faces: 800
+  target_faces: 2400
   priority: 3
 - slug: infraspinatus
   zh: 冈下肌
@@ -1254,7 +1255,7 @@
   fma:
     - FMA32546
   source: bp3d
-  target_faces: 1000
+  target_faces: 3000
   priority: 2
 - slug: teres_major
   zh: 大圆肌
@@ -1265,7 +1266,7 @@
   fma:
     - FMA32549
   source: bp3d
-  target_faces: 800
+  target_faces: 2400
   priority: 3
 - slug: biceps_brachii
   zh: 肱二头肌
@@ -1277,7 +1278,7 @@
     - FMA37682
     - FMA37683
   source: bp3d
-  target_faces: 1500
+  target_faces: 4500
   priority: 1
 - slug: triceps_brachii
   zh: 肱三头肌
@@ -1290,7 +1291,7 @@
     - FMA37693
     - FMA37694
   source: bp3d
-  target_faces: 1500
+  target_faces: 4500
   priority: 1
 - slug: brachialis
   zh: 肱肌
@@ -1301,7 +1302,7 @@
   fma:
     - FMA37667
   source: bp3d
-  target_faces: 1000
+  target_faces: 3000
   priority: 2
 - slug: brachioradialis
   zh: 肱桡肌
@@ -1312,7 +1313,7 @@
   fma:
     - FMA38485
   source: bp3d
-  target_faces: 1000
+  target_faces: 3000
   priority: 2
 - slug: flexor_carpi_radialis
   zh: 桡侧腕屈肌
@@ -1323,7 +1324,7 @@
   fma:
     - FMA38459
   source: bp3d
-  target_faces: 800
+  target_faces: 2400
   priority: 3
 - slug: palmaris_longus
   zh: 掌长肌
@@ -1334,7 +1335,7 @@
   fma:
     - FMA38462
   source: bp3d
-  target_faces: 800
+  target_faces: 2400
   priority: 3
 - slug: flexor_digitorum_superficialis
   zh: 指浅屈肌
@@ -1345,7 +1346,7 @@
   fma:
     - FMA38469
   source: bp3d
-  target_faces: 1000
+  target_faces: 3000
   priority: 3
 - slug: extensor_digitorum
   zh: 指伸肌
@@ -1356,7 +1357,7 @@
   fma:
     - FMA38500
   source: bp3d
-  target_faces: 1000
+  target_faces: 3000
   priority: 3
 - slug: psoas_major
   zh: 腰大肌
@@ -1367,7 +1368,7 @@
   fma:
     - FMA18060
   source: bp3d
-  target_faces: 1200
+  target_faces: 3600
   priority: 2
 - slug: iliacus
   zh: 髂肌
@@ -1378,7 +1379,7 @@
   fma:
     - FMA22310
   source: bp3d
-  target_faces: 1000
+  target_faces: 3000
   priority: 2
 - slug: gluteus_maximus
   zh: 臀大肌
@@ -1389,7 +1390,7 @@
   fma:
     - FMA22314
   source: bp3d
-  target_faces: 2000
+  target_faces: 6000
   priority: 1
 - slug: gluteus_medius
   zh: 臀中肌
@@ -1400,7 +1401,7 @@
   fma:
     - FMA22315
   source: bp3d
-  target_faces: 1200
+  target_faces: 3600
   priority: 2
 - slug: tensor_fasciae_latae
   zh: 阔筋膜张肌
@@ -1411,7 +1412,7 @@
   fma:
     - FMA22423
   source: bp3d
-  target_faces: 800
+  target_faces: 2400
   priority: 3
 - slug: sartorius
   zh: 缝匠肌
@@ -1422,7 +1423,7 @@
   fma:
     - FMA22353
   source: bp3d
-  target_faces: 1200
+  target_faces: 3600
   priority: 2
 - slug: rectus_femoris
   zh: 股直肌
@@ -1433,7 +1434,7 @@
   fma:
     - FMA22430
   source: bp3d
-  target_faces: 1500
+  target_faces: 4500
   priority: 1
 - slug: vastus_muscles
   zh: 股外侧肌与股内侧肌
@@ -1446,7 +1447,7 @@
     - FMA22432
     - FMA22433
   source: bp3d
-  target_faces: 2000
+  target_faces: 6000
   priority: 2
 - slug: adductor_muscles
   zh: 内收肌群
@@ -1459,7 +1460,7 @@
     - FMA22443
     - FMA43882
   source: bp3d
-  target_faces: 2000
+  target_faces: 6000
   priority: 2
 - slug: hamstrings
   zh: 腘绳肌
@@ -1473,7 +1474,7 @@
     - FMA45887
     - FMA45890
   source: bp3d
-  target_faces: 2000
+  target_faces: 6000
   priority: 1
 - slug: gastrocnemius
   zh: 腓肠肌
@@ -1485,7 +1486,7 @@
     - FMA45956
     - FMA45959
   source: bp3d
-  target_faces: 1500
+  target_faces: 4500
   priority: 1
 - slug: soleus
   zh: 比目鱼肌
@@ -1496,7 +1497,7 @@
   fma:
     - FMA22542
   source: bp3d
-  target_faces: 1200
+  target_faces: 3600
   priority: 2
 - slug: calcaneal_tendon
   zh: 跟腱
@@ -1507,7 +1508,7 @@
   fma:
     - FMA51061
   source: bp3d
-  target_faces: 600
+  target_faces: 1800
   priority: 2
 - slug: tibialis_anterior
   zh: 胫骨前肌
@@ -1518,7 +1519,7 @@
   fma:
     - FMA22532
   source: bp3d
-  target_faces: 1000
+  target_faces: 3000
   priority: 2
 - slug: tibialis_posterior
   zh: 胫骨后肌
@@ -1529,7 +1530,7 @@
   fma:
     - FMA51099
   source: bp3d
-  target_faces: 800
+  target_faces: 2400
   priority: 3
 - slug: fibularis_longus
   zh: 腓骨长肌
@@ -1540,7 +1541,7 @@
   fma:
     - FMA22539
   source: bp3d
-  target_faces: 800
+  target_faces: 2400
   priority: 3
 - slug: extensor_digitorum_longus
   zh: 趾长伸肌
@@ -1551,7 +1552,7 @@
   fma:
     - FMA22534
   source: bp3d
-  target_faces: 800
+  target_faces: 2400
   priority: 3
 - slug: flexor_digitorum_longus
   zh: 趾长屈肌
@@ -1562,5 +1563,5 @@
   fma:
     - FMA51071
   source: bp3d
-  target_faces: 800
+  target_faces: 2400
   priority: 3

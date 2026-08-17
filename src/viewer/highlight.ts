@@ -3,10 +3,10 @@ import { Color, MeshStandardMaterial, ShaderMaterial, type Mesh } from 'three';
 export type HighlightLevel = 'none' | 'hover' | 'selected';
 
 const EMISSIVE: Record<HighlightLevel, [number, number]> = {
-  // [emissive 强度, X-ray uHighlight]
+  // [emissive 强度, X-ray uHighlight]；选中主要靠反壳描边，自发光只做轻提亮
   none: [0, 0],
-  hover: [0.35, 0.35],
-  selected: [0.85, 0.7],
+  hover: [0.3, 0.35],
+  selected: [0.35, 0.5],
 };
 
 const HIGHLIGHT_COLOR = new Color(0x4fe3e0); // 青色强调（原型视觉基调）

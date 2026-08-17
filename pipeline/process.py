@@ -42,6 +42,18 @@ def simplify_mesh(vertices: np.ndarray, faces: np.ndarray, target_faces: int) ->
     return np.asarray(out_v, dtype=np.float32), np.asarray(out_f, dtype=np.uint32)
 
 
+# 软组织减面后做轻度 Taubin 平滑（保体积不收缩），消掉低模碎裂感；骨骼/血管保持棱线
+SMOOTH_SYSTEMS = ("skin", "muscles", "organs")
+
+
+def smooth_mesh(vertices: np.ndarray, faces: np.ndarray) -> np.ndarray:
+    import trimesh
+
+    mesh = trimesh.Trimesh(vertices=vertices.astype(np.float64), faces=faces, process=False)
+    trimesh.smoothing.filter_taubin(mesh, lamb=0.5, nu=0.53, iterations=8)
+    return np.asarray(mesh.vertices, dtype=np.float32)
+
+
 def merge_elements(set_name: str, elements: list[str]) -> "trimesh.Trimesh":
     """加载并拼接一组 FJ obj，焊接顶点、去退化面。"""
     import trimesh
@@ -93,6 +105,8 @@ def process_structure(entry: dict, center: np.ndarray) -> dict | None:
         np.asarray(mesh.faces, dtype=np.int64),
         int(entry["target_faces"]),
     )
+    if entry["system"] in SMOOTH_SYSTEMS:
+        v = smooth_mesh(v, f)
     v = v - center.astype(np.float32)
     bbox = np.concatenate([v.min(axis=0), v.max(axis=0)]).astype(float)
 
