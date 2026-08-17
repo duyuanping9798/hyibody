@@ -16,7 +16,7 @@
 - Playwright 无头截图冒烟测试（`tests/e2e/smoke.spec.ts`：等 ready 标记 → 读回像素验证画面非空 → 存截图）
 - `.github/workflows/ci.yml + pages.yml`（KICKOFF 附录版本，pnpm 版本改由 packageManager 字段决定）
 - 文档：CLAUDE.md、docs/KICKOFF.md 入库；STATUS / DECISIONS / ATTRIBUTION 初稿；README 重写
-- M1（7 个）、M2（6 个）任务已整理成 `docs/issues-backlog.md`（GitHub 集成暂无 issue 写权限，见下方待办 1；权限修复后由下个会话逐条建成 issue）
+- M1（7 个）、M2（6 个）issue 已创建（#1–#13），标签 M1/M2
 
 ## 未完成 / 下一步
 
@@ -26,10 +26,9 @@
 
 ## 给人类的待办
 
-1. **⚠️ 修复 Claude GitHub App 权限（最优先）**：本会话对仓库只有读权限——git push、建分支、写文件、建 issue、开 PR 全部被 403 拒绝。请打开 <https://github.com/settings/installations>，找到 Claude 应用 → Configure：确认 `hyibody` 在 Repository access 里，且 Repository permissions 含 **Contents: Read and write**、**Issues: Read and write**、**Pull requests: Read and write**（有待批准的权限更新请点接受）。修好后在 claude.ai/code 会话里说"继续"，代码会自动推上去。
-2. **（若暂不修权限）手工上传 M0 成果**：会话已导出 `hyibody-m0.zip`（Claude 会话里可下载），解压后在仓库页 Add file → Upload files 全部拖入提交到 main（`.github` 是隐藏文件夹，Mac 按 Cmd+Shift+. 显示；拖不进就按 zip 内 `.github/workflows/` 的内容用 Create new file 手工建两个文件——**不要用 KICKOFF 附录版**，附录里 `version: 9` 与 package.json 的 pnpm@10 冲突）。
-3. **Pages 设置**：仓库已是 Public（免费计划可用 Pages）；确认 Settings → Pages → Source 已选 **GitHub Actions**。合并/上传到 main 后 Pages 自动发布，用手机和电脑打开 `https://duyuanping9798.github.io/hyibody/` 确认能看到占位人形并可拖动旋转。
-4. **上传 prototype/**（可选但推荐）：启动包里的 `prototype/process.py、index.html、shot.mjs` 不在仓库中，网页端 Add file → Upload files 传到 `prototype/` 目录，供后续会话参考。
-5. **BodyParts3D 许可证快照**：把 <https://dbarchive.biosciencedbc.jp/en/bodyparts3d/lic.html> 另存为 PDF 上传到 `docs/licenses/`（会话 2 之前完成即可）。
-6. **云环境**：会话 2 开始前按 KICKOFF 第 2 节建好 `hyibody` 云环境（Custom 域名列表 + setup script + `VITE_BASE=/hyibody/`），流水线要联网下载 BP3D 数据。
-7. **会话 2**：粘贴 KICKOFF 第 9 节"会话 2"指令，做数据流水线（对应 issues-backlog 的 M1-1 … M1-5；开始前先让它把 backlog 建成 issue）。
+1. **合并 PR**：看 Actions 变绿、浏览 diff 后合并到 main。
+2. **Pages 验证**：确认 Settings → Pages → Source 已选 **GitHub Actions**（仓库已是 Public，免费计划可用）。合并后 Pages 自动发布，用手机和电脑打开 `https://duyuanping9798.github.io/hyibody/` 确认能看到占位人形并可拖动旋转。
+3. **上传 prototype/**（可选但推荐）：启动包里的 `prototype/process.py、index.html、shot.mjs` 不在仓库中，网页端 Add file → Upload files 传到 `prototype/` 目录，供后续会话参考。
+4. **BodyParts3D 许可证快照**：把 <https://dbarchive.biosciencedbc.jp/en/bodyparts3d/lic.html> 另存为 PDF 上传到 `docs/licenses/`（会话 2 之前完成即可）。
+5. **云环境**：会话 2 开始前按 KICKOFF 第 2 节建好 `hyibody` 云环境（Custom 域名列表 + setup script + `VITE_BASE=/hyibody/`），流水线要联网下载 BP3D 数据。
+6. **会话 2**：粘贴 KICKOFF 第 9 节"会话 2"指令，做数据流水线（对应 issue #1–#5）。
