@@ -1,11 +1,14 @@
 import {
+  ACESFilmicToneMapping,
   AmbientLight,
   Box3,
   Clock,
   DirectionalLight,
   Group,
   Mesh,
+  PMREMGenerator,
   Scene,
+  SphereGeometry,
   Vector3,
   WebGLRenderer,
   type Material,
@@ -13,6 +16,7 @@ import {
 } from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { loadManifest } from '../data/manifest';
 import type { Manifest, SystemId } from '../data/types';
 import {
@@ -27,7 +31,9 @@ import { applyHighlight } from './highlight';
 import { computeSystemOpacity, PICKABLE_OPACITY_THRESHOLD } from './layers';
 import {
   colorForStructure,
-  createStructureMaterial,
+  createBackdropMaterial,
+  createOutlineMaterial,
+  createSystemMaterial,
   createXRayMaterial,
   setMaterialOpacity,
 } from './materials';
@@ -109,6 +115,7 @@ export class HyiViewer extends EventTarget {
   private readonly systemGroups = new Map<SystemId, Group>();
   private readonly state = defaultViewerState();
   private hovered: string | null = null;
+  private outline!: Mesh;
   private contentBox = new Box3();
   private clipPlane: Plane | null = null;
   private flight: {
@@ -135,17 +142,32 @@ export class HyiViewer extends EventTarget {
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.setClearColor(0x0b1020, 1);
     this.renderer.localClippingEnabled = true;
+    // 电影级色调映射 + 程序化环境光照（观感升级，无外部 HDR 资源）
+    this.renderer.toneMapping = ACESFilmicToneMapping;
+    this.renderer.toneMappingExposure = 1.12;
     container.appendChild(this.renderer.domElement);
+    const pmrem = new PMREMGenerator(this.renderer);
+    this.scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+    pmrem.dispose();
 
     this.rig = createCameraRig(this.renderer.domElement, 1);
     this.scene.add(this.root);
-    this.scene.add(new AmbientLight(0x8899bb, 0.9));
-    const key = new DirectionalLight(0xffffff, 1.6);
+    this.scene.add(new AmbientLight(0x8899bb, 0.35));
+    const key = new DirectionalLight(0xffffff, 1.1);
     key.position.set(1200, -2000, 1800);
     this.scene.add(key);
-    const rim = new DirectionalLight(0x33ddee, 0.6);
+    const rim = new DirectionalLight(0x33ddee, 0.5);
     rim.position.set(-1500, 1200, 600);
     this.scene.add(rim);
+    // 渐变舞台背景（内翻大球，替代纯色清屏；不参与拾取与取景框）
+    const backdrop = new Mesh(new SphereGeometry(15000, 32, 24), createBackdropMaterial());
+    backdrop.renderOrder = -1;
+    this.scene.add(backdrop);
+    // 选中描边（反壳），select() 时挂到对应网格几何体上
+    this.outline = new Mesh(undefined, createOutlineMaterial(0x4fe3e0));
+    this.outline.visible = false;
+    this.outline.renderOrder = 0;
+    this.scene.add(this.outline);
 
     const dom = this.renderer.domElement;
     dom.addEventListener('pointerdown', this.onPointerDown);
@@ -218,7 +240,7 @@ export class HyiViewer extends EventTarget {
       const material =
         sys === 'skin' || sys === 'muscles'
           ? createXRayMaterial(color, 1)
-          : createStructureMaterial(color);
+          : createSystemMaterial(sys, color);
       mesh.material = material;
       mesh.renderOrder = RENDER_ORDER[sys];
       mesh.geometry.computeBoundingBox();
@@ -318,7 +340,13 @@ export class HyiViewer extends EventTarget {
     if (prev) applyHighlight(prev.mesh, 'none');
     this.state.selected = slug;
     const entry = slug ? this.structures.get(slug) : null;
-    if (entry) applyHighlight(entry.mesh, 'selected');
+    if (entry) {
+      applyHighlight(entry.mesh, 'selected');
+      this.outline.geometry = entry.mesh.geometry;
+      this.outline.visible = true;
+    } else {
+      this.outline.visible = false;
+    }
     this.applyVisibility();
     this.dispatchEvent(new CustomEvent('select', { detail: { slug: entry ? slug : null } }));
   }
@@ -423,6 +451,7 @@ export class HyiViewer extends EventTarget {
     for (const entry of this.structures.values()) {
       entry.material.clippingPlanes = planes;
     }
+    (this.outline.material as Material).clippingPlanes = planes;
   }
 
   // ---- 帧循环等 ------------------------------------------------------------

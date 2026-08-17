@@ -1,7 +1,9 @@
 import {
   AdditiveBlending,
+  BackSide,
   Color,
   DoubleSide,
+  MeshPhysicalMaterial,
   MeshStandardMaterial,
   ShaderMaterial,
   type Material,
@@ -31,6 +33,116 @@ export function createStructureMaterial(color: string | number): MeshStandardMat
     roughness: 0.55,
     metalness: 0.05,
     transparent: true,
+  });
+}
+
+/**
+ * 按系统分质感（环境光照下的观感升级）：骨骼哑光、器官/血管湿润高光带清漆层、
+ * 神经缎面。皮肤/肌肉仍走 X-ray 菲涅尔壳。
+ */
+export function createSystemMaterial(
+  system: SystemId,
+  color: string | number,
+): MeshStandardMaterial {
+  const c = new Color(color);
+  switch (system) {
+    case 'skeleton':
+      return new MeshStandardMaterial({
+        color: c,
+        roughness: 0.62,
+        metalness: 0.02,
+        envMapIntensity: 0.65,
+        transparent: true,
+      });
+    case 'organs':
+      return new MeshPhysicalMaterial({
+        color: c,
+        roughness: 0.38,
+        metalness: 0.0,
+        clearcoat: 0.35,
+        clearcoatRoughness: 0.45,
+        envMapIntensity: 0.9,
+        transparent: true,
+      });
+    case 'vessels':
+      return new MeshPhysicalMaterial({
+        color: c,
+        roughness: 0.3,
+        metalness: 0.0,
+        clearcoat: 0.5,
+        clearcoatRoughness: 0.35,
+        envMapIntensity: 1.0,
+        transparent: true,
+      });
+    case 'nerves':
+      return new MeshStandardMaterial({
+        color: c,
+        roughness: 0.45,
+        metalness: 0.0,
+        envMapIntensity: 0.8,
+        transparent: true,
+      });
+    default:
+      return createStructureMaterial(color);
+  }
+}
+
+/** 选中描边：反壳法——同几何体沿法线外扩、背面渲染，形成稳定轮廓线。 */
+export function createOutlineMaterial(color: string | number, widthMm = 2.2): ShaderMaterial {
+  return new ShaderMaterial({
+    side: BackSide,
+    transparent: true,
+    depthWrite: false,
+    uniforms: {
+      uColor: { value: new Color(color) },
+      uWidth: { value: widthMm },
+      uOpacity: { value: 0.95 },
+    },
+    vertexShader: /* glsl */ `
+      uniform float uWidth;
+      void main() {
+        vec3 displaced = position + normal * uWidth;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(displaced, 1.0);
+      }
+    `,
+    fragmentShader: /* glsl */ `
+      uniform vec3 uColor;
+      uniform float uOpacity;
+      void main() {
+        gl_FragColor = vec4(uColor, uOpacity);
+      }
+    `,
+  });
+}
+
+/** 渐变舞台背景：内翻大球，深色底 + 顶部冷光晕，替代纯色清屏。 */
+export function createBackdropMaterial(): ShaderMaterial {
+  return new ShaderMaterial({
+    side: BackSide,
+    depthWrite: false,
+    uniforms: {
+      uBottom: { value: new Color(0x070b16) },
+      uMid: { value: new Color(0x0b1020) },
+      uTop: { value: new Color(0x14223c) },
+    },
+    vertexShader: /* glsl */ `
+      varying vec3 vPos;
+      void main() {
+        vPos = position;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: /* glsl */ `
+      uniform vec3 uBottom;
+      uniform vec3 uMid;
+      uniform vec3 uTop;
+      varying vec3 vPos;
+      void main() {
+        float h = clamp(vPos.z / length(vPos) * 0.5 + 0.5, 0.0, 1.0);
+        vec3 color = h < 0.5 ? mix(uBottom, uMid, h * 2.0) : mix(uMid, uTop, (h - 0.5) * 2.0);
+        gl_FragColor = vec4(color, 1.0);
+      }
+    `,
   });
 }
 

@@ -11,12 +11,12 @@
 
 defaults:
   target_faces:
-    skin: 8000
-    muscles: 1200
-    skeleton: 1200
-    organs: 3000
-    vessels: 1200
-    nerves: 2000
+    skin: 24000
+    muscles: 3600
+    skeleton: 3600
+    organs: 9000
+    vessels: 3600
+    nerves: 6000
 
 groups:
   # ================= 皮肤 =================
@@ -27,7 +27,7 @@ groups:
     region: whole
     side: none
     priority: 1
-    target_faces: 8000
+    target_faces: 24000
     concepts: [skin]
 
   # ================= 骨骼（约 35 组）=================
@@ -38,7 +38,7 @@ groups:
     region: head
     side: none
     priority: 1
-    target_faces: 8000
+    target_faces: 20000
     concepts:
       - frontal bone
       - parietal bone
@@ -61,7 +61,7 @@ groups:
     region: head
     side: none
     priority: 1
-    target_faces: 2000
+    target_faces: 6000
     concepts: [mandible]
   - slug: hyoid
     zh: 舌骨
@@ -70,7 +70,7 @@ groups:
     region: neck
     side: none
     priority: 2
-    target_faces: 800
+    target_faces: 2400
     concepts: [hyoid bone]
   - slug: cervical_vertebrae
     zh: 颈椎
@@ -79,7 +79,7 @@ groups:
     region: neck
     side: none
     priority: 1
-    target_faces: 3000
+    target_faces: 6000
     concepts: [cervical vertebra]
   - slug: thoracic_vertebrae
     zh: 胸椎
@@ -88,7 +88,7 @@ groups:
     region: thorax
     side: none
     priority: 1
-    target_faces: 4000
+    target_faces: 6000
     concepts: [thoracic vertebra]
   - slug: lumbar_vertebrae
     zh: 腰椎
@@ -97,7 +97,7 @@ groups:
     region: abdomen
     side: none
     priority: 1
-    target_faces: 3000
+    target_faces: 6000
     concepts: [lumbar vertebra]
   - slug: sacrum
     zh: 骶骨
@@ -106,7 +106,7 @@ groups:
     region: pelvis
     side: none
     priority: 1
-    target_faces: 1500
+    target_faces: 4500
     concepts: [sacrum]
     note: BP3D 4.0 无独立尾骨网格（缺口，记录于 STATUS）。
   - slug: intervertebral_disks
@@ -116,7 +116,7 @@ groups:
     region: whole
     side: none
     priority: 3
-    target_faces: 3000
+    target_faces: 6000
     concepts: [intervertebral disk]
   - slug: ribs
     zh: 肋骨
@@ -125,7 +125,7 @@ groups:
     region: thorax
     side: both
     priority: 1
-    target_faces: 6000
+    target_faces: 18000
     concepts: [rib]
   - slug: costal_cartilages
     zh: 肋软骨
@@ -134,7 +134,7 @@ groups:
     region: thorax
     side: both
     priority: 2
-    target_faces: 2000
+    target_faces: 6000
     concepts: [costal cartilage]
   - slug: sternum
     zh: 胸骨
@@ -143,7 +143,7 @@ groups:
     region: thorax
     side: none
     priority: 1
-    target_faces: 1200
+    target_faces: 3600
     concepts:
       - manubrium
       - body of sternum
@@ -155,7 +155,7 @@ groups:
     region: upper_limb
     side: right
     priority: 1
-    target_faces: 800
+    target_faces: 2400
     concepts: [right clavicle]
   - slug: clavicle_left
     zh: 左锁骨
@@ -164,7 +164,7 @@ groups:
     region: upper_limb
     side: left
     priority: 1
-    target_faces: 800
+    target_faces: 2400
     concepts: [left clavicle]
   - slug: scapula_right
     zh: 右肩胛骨
@@ -173,7 +173,7 @@ groups:
     region: upper_limb
     side: right
     priority: 1
-    target_faces: 1500
+    target_faces: 4500
     concepts: [right scapula]
   - slug: scapula_left
     zh: 左肩胛骨
@@ -182,7 +182,7 @@ groups:
     region: upper_limb
     side: left
     priority: 1
-    target_faces: 1500
+    target_faces: 4500
     concepts: [left scapula]
   - slug: humerus_right
     zh: 右肱骨
@@ -191,7 +191,7 @@ groups:
     region: upper_limb
     side: right
     priority: 1
-    target_faces: 1500
+    target_faces: 4500
     concepts: [right humerus]
   - slug: humerus_left
     zh: 左肱骨
@@ -200,7 +200,7 @@ groups:
     region: upper_limb
     side: left
     priority: 1
-    target_faces: 1500
+    target_faces: 4500
     concepts: [left humerus]
   - slug: radius_right
     zh: 右桡骨
@@ -209,7 +209,7 @@ groups:
     region: upper_limb
     side: right
     priority: 1
-    target_faces: 1200
+    target_faces: 3600
     concepts: [right radius]
   - slug: radius_left
     zh: 左桡骨
@@ -218,7 +218,7 @@ groups:
     region: upper_limb
     side: left
     priority: 1
-    target_faces: 1200
+    target_faces: 3600
     concepts: [left radius]
   - slug: ulna_right
     zh: 右尺骨
@@ -227,7 +227,7 @@ groups:
     region: upper_limb
     side: right
     priority: 1
-    target_faces: 1200
+    target_faces: 3600
     concepts: [right ulna]
   - slug: ulna_left
     zh: 左尺骨
@@ -236,7 +236,7 @@ groups:
     region: upper_limb
     side: left
     priority: 1
-    target_faces: 1200
+    target_faces: 3600
     concepts: [left ulna]
   - slug: carpal_bones
     zh: 腕骨
@@ -245,7 +245,7 @@ groups:
     region: upper_limb
     side: both
     priority: 2
-    target_faces: 2500
+    target_faces: 7500
     concepts: [carpal bone]
   - slug: hand_bones
     zh: 手骨（掌骨与指骨）
@@ -254,7 +254,7 @@ groups:
     region: upper_limb
     side: both
     priority: 2
-    target_faces: 4000
+    target_faces: 12000
     concepts:
       - metacarpal bone
       - phalanx of finger
@@ -265,7 +265,7 @@ groups:
     region: pelvis
     side: right
     priority: 1
-    target_faces: 2000
+    target_faces: 6000
     concepts: [right hip bone]
   - slug: hip_bone_left
     zh: 左髋骨
@@ -274,7 +274,7 @@ groups:
     region: pelvis
     side: left
     priority: 1
-    target_faces: 2000
+    target_faces: 6000
     concepts: [left hip bone]
   - slug: femur_right
     zh: 右股骨
@@ -283,7 +283,7 @@ groups:
     region: lower_limb
     side: right
     priority: 1
-    target_faces: 1500
+    target_faces: 4500
     concepts: [right femur]
   - slug: femur_left
     zh: 左股骨
@@ -292,7 +292,7 @@ groups:
     region: lower_limb
     side: left
     priority: 1
-    target_faces: 1500
+    target_faces: 4500
     concepts: [left femur]
   - slug: patella_right
     zh: 右髌骨
@@ -301,7 +301,7 @@ groups:
     region: lower_limb
     side: right
     priority: 2
-    target_faces: 600
+    target_faces: 1800
     concepts: [right patella]
   - slug: patella_left
     zh: 左髌骨
@@ -310,7 +310,7 @@ groups:
     region: lower_limb
     side: left
     priority: 2
-    target_faces: 600
+    target_faces: 1800
     concepts: [left patella]
   - slug: tibia_right
     zh: 右胫骨
@@ -319,7 +319,7 @@ groups:
     region: lower_limb
     side: right
     priority: 1
-    target_faces: 1200
+    target_faces: 3600
     concepts: [right tibia]
   - slug: tibia_left
     zh: 左胫骨
@@ -328,7 +328,7 @@ groups:
     region: lower_limb
     side: left
     priority: 1
-    target_faces: 1200
+    target_faces: 3600
     concepts: [left tibia]
   - slug: fibula_right
     zh: 右腓骨
@@ -337,7 +337,7 @@ groups:
     region: lower_limb
     side: right
     priority: 1
-    target_faces: 1000
+    target_faces: 3000
     concepts: [right fibula]
   - slug: fibula_left
     zh: 左腓骨
@@ -346,7 +346,7 @@ groups:
     region: lower_limb
     side: left
     priority: 1
-    target_faces: 1000
+    target_faces: 3000
     concepts: [left fibula]
   - slug: tarsal_bones
     zh: 跗骨
@@ -355,7 +355,7 @@ groups:
     region: lower_limb
     side: both
     priority: 2
-    target_faces: 2500
+    target_faces: 7500
     concepts: [tarsal bone]
   - slug: foot_bones
     zh: 足骨（跖骨与趾骨）
@@ -364,7 +364,7 @@ groups:
     region: lower_limb
     side: both
     priority: 2
-    target_faces: 4000
+    target_faces: 12000
     concepts:
       - metatarsal bone
       - phalanx of toe
@@ -378,7 +378,7 @@ groups:
     side: none
     set: partof
     priority: 1
-    target_faces: 8000
+    target_faces: 20000
     concepts: [heart]
   - slug: lung_right
     zh: 右肺
@@ -388,7 +388,7 @@ groups:
     side: right
     set: partof
     priority: 1
-    target_faces: 5000
+    target_faces: 15000
     concepts: [right lung]
   - slug: lung_left
     zh: 左肺
@@ -398,7 +398,7 @@ groups:
     side: left
     set: partof
     priority: 1
-    target_faces: 5000
+    target_faces: 15000
     concepts: [left lung]
   - slug: trachea
     zh: 气管
@@ -407,7 +407,7 @@ groups:
     region: neck
     side: none
     priority: 1
-    target_faces: 1500
+    target_faces: 4500
     concepts: [trachea]
   - slug: esophagus
     zh: 食管
@@ -416,7 +416,7 @@ groups:
     region: thorax
     side: none
     priority: 1
-    target_faces: 1500
+    target_faces: 4500
     concepts: [esophagus]
   - slug: stomach
     zh: 胃
@@ -425,7 +425,7 @@ groups:
     region: abdomen
     side: none
     priority: 1
-    target_faces: 3000
+    target_faces: 6000
     concepts: [stomach]
   - slug: liver
     zh: 肝
@@ -435,7 +435,7 @@ groups:
     side: none
     set: partof
     priority: 1
-    target_faces: 5000
+    target_faces: 15000
     concepts: [liver]
   - slug: gallbladder
     zh: 胆囊
@@ -444,7 +444,7 @@ groups:
     region: abdomen
     side: none
     priority: 1
-    target_faces: 800
+    target_faces: 2400
     concepts: [gallbladder]
   - slug: pancreas
     zh: 胰腺
@@ -453,7 +453,7 @@ groups:
     region: abdomen
     side: none
     priority: 1
-    target_faces: 1500
+    target_faces: 4500
     concepts: [pancreas]
   - slug: spleen
     zh: 脾
@@ -462,7 +462,7 @@ groups:
     region: abdomen
     side: none
     priority: 1
-    target_faces: 1500
+    target_faces: 4500
     concepts: [spleen]
   - slug: kidneys
     zh: 肾
@@ -471,7 +471,7 @@ groups:
     region: abdomen
     side: both
     priority: 1
-    target_faces: 3000
+    target_faces: 9000
     concepts: [kidney]
   - slug: urinary_bladder
     zh: 膀胱
@@ -480,7 +480,7 @@ groups:
     region: pelvis
     side: none
     priority: 1
-    target_faces: 1500
+    target_faces: 4500
     concepts: [urinary bladder]
   - slug: small_intestine
     zh: 小肠
@@ -490,7 +490,7 @@ groups:
     side: none
     set: partof
     priority: 1
-    target_faces: 8000
+    target_faces: 20000
     concepts: [small intestine]
   - slug: large_intestine
     zh: 大肠
@@ -500,7 +500,7 @@ groups:
     side: none
     set: partof
     priority: 1
-    target_faces: 8000
+    target_faces: 20000
     concepts: [large intestine]
   - slug: duodenum
     zh: 十二指肠
@@ -509,7 +509,7 @@ groups:
     region: abdomen
     side: none
     priority: 3
-    target_faces: 1500
+    target_faces: 4500
     concepts: [duodenum]
     note: 与小肠整体重叠，人类二选一。
   - slug: rectum
@@ -519,7 +519,7 @@ groups:
     region: pelvis
     side: none
     priority: 3
-    target_faces: 1000
+    target_faces: 3000
     concepts: [rectum]
     note: 与大肠整体重叠，人类二选一。
   - slug: tongue
@@ -529,7 +529,7 @@ groups:
     region: head
     side: none
     priority: 2
-    target_faces: 1200
+    target_faces: 3600
     concepts: [tongue]
   - slug: appendix
     zh: 阑尾
@@ -538,7 +538,7 @@ groups:
     region: abdomen
     side: none
     priority: 2
-    target_faces: 600
+    target_faces: 1800
     concepts: [appendix]
   - slug: adrenal_glands
     zh: 肾上腺
@@ -547,7 +547,7 @@ groups:
     region: abdomen
     side: both
     priority: 2
-    target_faces: 800
+    target_faces: 2400
     concepts: [adrenal gland]
   - slug: ureters
     zh: 输尿管
@@ -556,7 +556,7 @@ groups:
     region: abdomen
     side: both
     priority: 2
-    target_faces: 800
+    target_faces: 2400
     concepts: [ureter]
   - slug: pituitary_gland
     zh: 垂体
@@ -565,7 +565,7 @@ groups:
     region: head
     side: none
     priority: 2
-    target_faces: 500
+    target_faces: 1500
     concepts: [pituitary gland]
   - slug: larynx_cartilages
     zh: 喉软骨（含喉结）
@@ -574,7 +574,7 @@ groups:
     region: neck
     side: none
     priority: 2
-    target_faces: 1200
+    target_faces: 3600
     concepts: [thyroid cartilage, cricoid cartilage, epiglottis]
     note: BP3D 4.0 无整喉概念，以甲状软骨（喉结）+ 环状软骨 + 会厌代表喉。
   - slug: thymus
@@ -585,7 +585,7 @@ groups:
     side: none
     set: partof
     priority: 3
-    target_faces: 800
+    target_faces: 2400
     concepts: [thymus]
   # 甲状腺：BP3D 4.0 两集均无腺体网格（只有甲状腺动脉），缺口记录于 STATUS。
   - slug: prostate
@@ -595,7 +595,7 @@ groups:
     region: pelvis
     side: none
     priority: 2
-    target_faces: 800
+    target_faces: 2400
     concepts: [prostate]
     note: BP3D 为男性模型，无子宫/卵巢（缺口记录于 STATUS）。
   - slug: testes
@@ -605,7 +605,7 @@ groups:
     region: pelvis
     side: both
     priority: 3
-    target_faces: 800
+    target_faces: 2400
     concepts: [testis]
 
   # ================= 血管(约 25 组) =================
@@ -617,7 +617,7 @@ groups:
     side: none
     set: partof
     priority: 1
-    target_faces: 3000
+    target_faces: 9000
     concepts: [aorta]
     note: isa 集无主动脉主干整体，取 partof 集（KICKOFF 已知局限）。
   - slug: pulmonary_trunk
@@ -627,7 +627,7 @@ groups:
     region: thorax
     side: none
     priority: 1
-    target_faces: 1200
+    target_faces: 3600
     concepts: [pulmonary trunk]
   - slug: pulmonary_arteries
     zh: 肺动脉
@@ -636,7 +636,7 @@ groups:
     region: thorax
     side: both
     priority: 2
-    target_faces: 2000
+    target_faces: 6000
     patterns: ['^(left|right) pulmonary artery$']
   - slug: pulmonary_veins
     zh: 肺静脉
@@ -645,7 +645,7 @@ groups:
     region: thorax
     side: both
     priority: 2
-    target_faces: 2000
+    target_faces: 6000
     patterns: ['^(left|right) (superior |inferior )?pulmonary vein$']
   - slug: coronary_arteries
     zh: 冠状动脉
@@ -654,7 +654,7 @@ groups:
     region: thorax
     side: both
     priority: 1
-    target_faces: 2000
+    target_faces: 6000
     # 4.0 版无 "left/right coronary artery" 整体概念，只有 trunk 与各分支
     patterns: ['^.*(trunk|branch) of (left|right) coronary artery$']
   - slug: superior_vena_cava
@@ -664,7 +664,7 @@ groups:
     region: thorax
     side: none
     priority: 1
-    target_faces: 1000
+    target_faces: 3000
     concepts: [superior vena cava]
   - slug: inferior_vena_cava
     zh: 下腔静脉
@@ -673,7 +673,7 @@ groups:
     region: abdomen
     side: none
     priority: 1
-    target_faces: 1500
+    target_faces: 4500
     concepts: [inferior vena cava]
   - slug: common_carotid_arteries
     zh: 颈总动脉
@@ -682,7 +682,7 @@ groups:
     region: neck
     side: both
     priority: 1
-    target_faces: 1200
+    target_faces: 3600
     concepts: [common carotid artery]
   - slug: internal_carotid_arteries
     zh: 颈内动脉
@@ -691,7 +691,7 @@ groups:
     region: neck
     side: both
     priority: 2
-    target_faces: 1200
+    target_faces: 3600
     concepts: [internal carotid artery]
   - slug: internal_jugular_veins
     zh: 颈内静脉
@@ -700,7 +700,7 @@ groups:
     region: neck
     side: both
     priority: 1
-    target_faces: 1200
+    target_faces: 3600
     concepts: [internal jugular vein]
   - slug: vertebral_arteries
     zh: 椎动脉
@@ -709,7 +709,7 @@ groups:
     region: neck
     side: both
     priority: 2
-    target_faces: 1200
+    target_faces: 3600
     concepts: [vertebral artery]
   - slug: brachiocephalic_trunk
     zh: 头臂干
@@ -718,7 +718,7 @@ groups:
     region: thorax
     side: none
     priority: 2
-    target_faces: 600
+    target_faces: 1800
     concepts: [brachiocephalic artery]
   - slug: brachiocephalic_veins
     zh: 头臂静脉
@@ -727,7 +727,7 @@ groups:
     region: thorax
     side: both
     priority: 2
-    target_faces: 1000
+    target_faces: 3000
     concepts: [brachiocephalic vein]
   - slug: subclavian_arteries
     zh: 锁骨下动脉
@@ -736,7 +736,7 @@ groups:
     region: thorax
     side: both
     priority: 2
-    target_faces: 1200
+    target_faces: 3600
     concepts: [subclavian artery]
   - slug: subclavian_veins
     zh: 锁骨下静脉
@@ -745,7 +745,7 @@ groups:
     region: thorax
     side: both
     priority: 2
-    target_faces: 1000
+    target_faces: 3000
     concepts: [subclavian vein]
   - slug: axillary_brachial_arteries
     zh: 腋动脉与肱动脉
@@ -754,7 +754,7 @@ groups:
     region: upper_limb
     side: both
     priority: 2
-    target_faces: 1500
+    target_faces: 4500
     concepts: [axillary artery, brachial artery]
   - slug: forearm_arteries
     zh: 桡动脉与尺动脉
@@ -763,7 +763,7 @@ groups:
     region: upper_limb
     side: both
     priority: 3
-    target_faces: 1500
+    target_faces: 4500
     concepts: [radial artery, ulnar artery]
   - slug: celiac_trunk
     zh: 腹腔干
@@ -772,7 +772,7 @@ groups:
     region: abdomen
     side: none
     priority: 2
-    target_faces: 800
+    target_faces: 2400
     patterns: ['^celiac trunk$']
   - slug: mesenteric_arteries
     zh: 肠系膜动脉
@@ -781,7 +781,7 @@ groups:
     region: abdomen
     side: none
     priority: 2
-    target_faces: 2000
+    target_faces: 6000
     patterns: ['^(superior|inferior) mesenteric artery$']
   - slug: celiac_branches
     zh: 肝总动脉与脾动脉
@@ -790,7 +790,7 @@ groups:
     region: abdomen
     side: none
     priority: 3
-    target_faces: 1200
+    target_faces: 3600
     concepts: [common hepatic artery, splenic artery]
   - slug: portal_tributaries
     zh: 门静脉属支（脾静脉与肠系膜静脉）
@@ -799,7 +799,7 @@ groups:
     region: abdomen
     side: none
     priority: 3
-    target_faces: 1500
+    target_faces: 4500
     concepts: [splenic vein, superior mesenteric vein, inferior mesenteric vein]
   - slug: hepatic_portal_vein
     zh: 肝门静脉
@@ -808,7 +808,7 @@ groups:
     region: abdomen
     side: none
     priority: 1
-    target_faces: 1200
+    target_faces: 3600
     concepts: [hepatic portal vein]
   - slug: renal_arteries
     zh: 肾动脉
@@ -817,7 +817,7 @@ groups:
     region: abdomen
     side: both
     priority: 2
-    target_faces: 1000
+    target_faces: 3000
     concepts: [renal artery]
   - slug: renal_veins
     zh: 肾静脉
@@ -826,7 +826,7 @@ groups:
     region: abdomen
     side: both
     priority: 2
-    target_faces: 1000
+    target_faces: 3000
     concepts: [renal vein]
   - slug: iliac_arteries
     zh: 髂动脉
@@ -835,7 +835,7 @@ groups:
     region: pelvis
     side: both
     priority: 2
-    target_faces: 2000
+    target_faces: 6000
     concepts: [common iliac artery, external iliac artery, internal iliac artery]
   - slug: femoral_arteries
     zh: 股动脉
@@ -844,7 +844,7 @@ groups:
     region: lower_limb
     side: both
     priority: 1
-    target_faces: 1200
+    target_faces: 3600
     concepts: [femoral artery]
   - slug: femoral_veins
     zh: 股静脉
@@ -853,7 +853,7 @@ groups:
     region: lower_limb
     side: both
     priority: 2
-    target_faces: 1200
+    target_faces: 3600
     concepts: [femoral vein]
   - slug: popliteal_arteries
     zh: 腘动脉
@@ -862,7 +862,7 @@ groups:
     region: lower_limb
     side: both
     priority: 2
-    target_faces: 1000
+    target_faces: 3000
     concepts: [popliteal artery]
   - slug: tibial_arteries
     zh: 胫前动脉与胫后动脉
@@ -871,7 +871,7 @@ groups:
     region: lower_limb
     side: both
     priority: 3
-    target_faces: 1500
+    target_faces: 4500
     patterns: ['^(anterior|posterior) tibial artery$']
   - slug: great_saphenous_veins
     zh: 大隐静脉
@@ -880,7 +880,7 @@ groups:
     region: lower_limb
     side: both
     priority: 2
-    target_faces: 1500
+    target_faces: 4500
     concepts: [great saphenous vein]
   - slug: azygos_vein
     zh: 奇静脉
@@ -889,7 +889,7 @@ groups:
     region: thorax
     side: none
     priority: 3
-    target_faces: 800
+    target_faces: 2400
     concepts: [azygos vein]
 
   # ============ 神经（BP3D 4.0 无单独周围神经网格，见 note）============
@@ -901,7 +901,7 @@ groups:
     side: none
     set: partof
     priority: 1
-    target_faces: 8000
+    target_faces: 20000
     concepts: [brain]
     note: isa 集无整脑；KICKOFF 神经示例含脑与脊髓，故归 nerves 层。
   - slug: cerebellum
@@ -911,7 +911,7 @@ groups:
     region: head
     side: none
     priority: 3
-    target_faces: 3000
+    target_faces: 6000
     concepts: [cerebellum]
     note: 与整脑重叠，人类二选一。
   - slug: brainstem
@@ -922,7 +922,7 @@ groups:
     side: none
     set: partof
     priority: 3
-    target_faces: 2000
+    target_faces: 6000
     concepts: [brainstem]
     note: 与整脑重叠，人类二选一。
   - slug: spinal_cord
@@ -933,7 +933,7 @@ groups:
     side: none
     set: partof
     priority: 1
-    target_faces: 3000
+    target_faces: 9000
     concepts: [spinal cord]
   - slug: optic_nerves
     zh: 视神经
@@ -942,7 +942,7 @@ groups:
     region: head
     side: both
     priority: 2
-    target_faces: 800
+    target_faces: 2400
     concepts: [optic nerve]
   - slug: nervous_system
     zh: 神经系统（整体）
@@ -952,7 +952,7 @@ groups:
     side: none
     set: partof
     priority: 3
-    target_faces: 8000
+    target_faces: 20000
     concepts: [nervous system]
     note: >-
       BP3D 4.0 两集均无坐骨神经、臂丛等单独周围神经网格；此复合体仅作分层显示，
@@ -966,7 +966,7 @@ groups:
     region: neck
     side: both
     priority: 1
-    target_faces: 1200
+    target_faces: 3600
     concepts: [sternocleidomastoid]
   - slug: platysma
     zh: 颈阔肌
@@ -975,7 +975,7 @@ groups:
     region: neck
     side: both
     priority: 3
-    target_faces: 1200
+    target_faces: 3600
     concepts: [platysma]
   - slug: trapezius
     zh: 斜方肌
@@ -984,7 +984,7 @@ groups:
     region: thorax
     side: both
     priority: 1
-    target_faces: 2000
+    target_faces: 6000
     patterns: ['^(ascending|transverse|descending) part of trapezius$']
   - slug: deltoid
     zh: 三角肌
@@ -993,7 +993,7 @@ groups:
     region: upper_limb
     side: both
     priority: 1
-    target_faces: 2000
+    target_faces: 6000
     patterns: ['^(clavicular|acromial|spinal) part of deltoid$']
   - slug: pectoralis_major
     zh: 胸大肌
@@ -1002,7 +1002,7 @@ groups:
     region: thorax
     side: both
     priority: 1
-    target_faces: 2000
+    target_faces: 6000
     patterns: ['^(clavicular|sternocostal|abdominal) part of pectoralis major$']
   - slug: pectoralis_minor
     zh: 胸小肌
@@ -1011,7 +1011,7 @@ groups:
     region: thorax
     side: both
     priority: 2
-    target_faces: 1000
+    target_faces: 3000
     concepts: [pectoralis minor]
   - slug: serratus_anterior
     zh: 前锯肌
@@ -1020,7 +1020,7 @@ groups:
     region: thorax
     side: both
     priority: 2
-    target_faces: 1500
+    target_faces: 4500
     concepts: [serratus anterior]
   - slug: intercostal_muscles
     zh: 肋间肌
@@ -1029,7 +1029,7 @@ groups:
     region: thorax
     side: both
     priority: 2
-    target_faces: 3000
+    target_faces: 9000
     concepts: [external intercostal muscle, internal intercostal muscle]
   - slug: diaphragm
     zh: 膈肌
@@ -1038,7 +1038,7 @@ groups:
     region: thorax
     side: none
     priority: 1
-    target_faces: 2000
+    target_faces: 6000
     concepts: [diaphragm]
   - slug: external_oblique
     zh: 腹外斜肌
@@ -1047,7 +1047,7 @@ groups:
     region: abdomen
     side: both
     priority: 1
-    target_faces: 2000
+    target_faces: 6000
     concepts: [external oblique]
   # 腹直肌 / 背阔肌 / 咬肌 / 颞肌：BP3D 4.0 两集均无网格（浅层肌缺口），记录于 STATUS。
   - slug: erector_spinae
@@ -1057,7 +1057,7 @@ groups:
     region: whole
     side: both
     priority: 2
-    target_faces: 3000
+    target_faces: 9000
     concepts:
       - iliocostalis lumborum
       - iliocostalis thoracis
@@ -1073,7 +1073,7 @@ groups:
     region: neck
     side: both
     priority: 3
-    target_faces: 800
+    target_faces: 2400
     concepts: [levator scapulae]
   - slug: splenius_capitis
     zh: 头夹肌
@@ -1082,7 +1082,7 @@ groups:
     region: neck
     side: both
     priority: 3
-    target_faces: 800
+    target_faces: 2400
     concepts: [splenius capitis]
   - slug: supraspinatus
     zh: 冈上肌
@@ -1091,7 +1091,7 @@ groups:
     region: upper_limb
     side: both
     priority: 3
-    target_faces: 800
+    target_faces: 2400
     concepts: [supraspinatus]
   - slug: infraspinatus
     zh: 冈下肌
@@ -1100,7 +1100,7 @@ groups:
     region: upper_limb
     side: both
     priority: 2
-    target_faces: 1000
+    target_faces: 3000
     concepts: [infraspinatus]
   - slug: teres_major
     zh: 大圆肌
@@ -1109,7 +1109,7 @@ groups:
     region: upper_limb
     side: both
     priority: 3
-    target_faces: 800
+    target_faces: 2400
     concepts: [teres major]
   - slug: biceps_brachii
     zh: 肱二头肌
@@ -1118,7 +1118,7 @@ groups:
     region: upper_limb
     side: both
     priority: 1
-    target_faces: 1500
+    target_faces: 4500
     patterns: ['^(short|long) head of biceps brachii$']
   - slug: triceps_brachii
     zh: 肱三头肌
@@ -1127,7 +1127,7 @@ groups:
     region: upper_limb
     side: both
     priority: 1
-    target_faces: 1500
+    target_faces: 4500
     patterns: ['^(long|lateral|medial) head of triceps brachii$']
   - slug: brachialis
     zh: 肱肌
@@ -1136,7 +1136,7 @@ groups:
     region: upper_limb
     side: both
     priority: 2
-    target_faces: 1000
+    target_faces: 3000
     concepts: [brachialis]
   - slug: brachioradialis
     zh: 肱桡肌
@@ -1145,7 +1145,7 @@ groups:
     region: upper_limb
     side: both
     priority: 2
-    target_faces: 1000
+    target_faces: 3000
     concepts: [brachioradialis]
   - slug: flexor_carpi_radialis
     zh: 桡侧腕屈肌
@@ -1154,7 +1154,7 @@ groups:
     region: upper_limb
     side: both
     priority: 3
-    target_faces: 800
+    target_faces: 2400
     concepts: [flexor carpi radialis]
   - slug: palmaris_longus
     zh: 掌长肌
@@ -1163,7 +1163,7 @@ groups:
     region: upper_limb
     side: both
     priority: 3
-    target_faces: 800
+    target_faces: 2400
     concepts: [palmaris longus]
   - slug: flexor_digitorum_superficialis
     zh: 指浅屈肌
@@ -1172,7 +1172,7 @@ groups:
     region: upper_limb
     side: both
     priority: 3
-    target_faces: 1000
+    target_faces: 3000
     concepts: [flexor digitorum superficialis]
   - slug: extensor_digitorum
     zh: 指伸肌
@@ -1181,7 +1181,7 @@ groups:
     region: upper_limb
     side: both
     priority: 3
-    target_faces: 1000
+    target_faces: 3000
     concepts: [extensor digitorum]
   - slug: psoas_major
     zh: 腰大肌
@@ -1190,7 +1190,7 @@ groups:
     region: abdomen
     side: both
     priority: 2
-    target_faces: 1200
+    target_faces: 3600
     concepts: [psoas major]
   - slug: iliacus
     zh: 髂肌
@@ -1199,7 +1199,7 @@ groups:
     region: pelvis
     side: both
     priority: 2
-    target_faces: 1000
+    target_faces: 3000
     concepts: [iliacus]
   - slug: gluteus_maximus
     zh: 臀大肌
@@ -1208,7 +1208,7 @@ groups:
     region: pelvis
     side: both
     priority: 1
-    target_faces: 2000
+    target_faces: 6000
     concepts: [gluteus maximus]
   - slug: gluteus_medius
     zh: 臀中肌
@@ -1217,7 +1217,7 @@ groups:
     region: pelvis
     side: both
     priority: 2
-    target_faces: 1200
+    target_faces: 3600
     concepts: [gluteus medius]
   - slug: tensor_fasciae_latae
     zh: 阔筋膜张肌
@@ -1226,7 +1226,7 @@ groups:
     region: lower_limb
     side: both
     priority: 3
-    target_faces: 800
+    target_faces: 2400
     concepts: [tensor fasciae latae]
   - slug: sartorius
     zh: 缝匠肌
@@ -1235,7 +1235,7 @@ groups:
     region: lower_limb
     side: both
     priority: 2
-    target_faces: 1200
+    target_faces: 3600
     concepts: [sartorius]
   - slug: rectus_femoris
     zh: 股直肌
@@ -1244,7 +1244,7 @@ groups:
     region: lower_limb
     side: both
     priority: 1
-    target_faces: 1500
+    target_faces: 4500
     concepts: [rectus femoris]
   - slug: vastus_muscles
     zh: 股外侧肌与股内侧肌
@@ -1253,7 +1253,7 @@ groups:
     region: lower_limb
     side: both
     priority: 2
-    target_faces: 2000
+    target_faces: 6000
     concepts: [vastus lateralis, vastus medialis, vastus intermedius]
     note: 与股直肌合为股四头肌；分开列便于人类取舍。
   - slug: adductor_muscles
@@ -1263,7 +1263,7 @@ groups:
     region: lower_limb
     side: both
     priority: 2
-    target_faces: 2000
+    target_faces: 6000
     concepts: [adductor longus, adductor magnus, gracilis]
   - slug: hamstrings
     zh: 腘绳肌
@@ -1272,7 +1272,7 @@ groups:
     region: lower_limb
     side: both
     priority: 1
-    target_faces: 2000
+    target_faces: 6000
     concepts: [semitendinosus, semimembranosus]
     patterns: ['^(short|long) head of biceps femoris$']
   - slug: gastrocnemius
@@ -1282,7 +1282,7 @@ groups:
     region: lower_limb
     side: both
     priority: 1
-    target_faces: 1500
+    target_faces: 4500
     patterns: ['^(medial|lateral) head of gastrocnemius$']
   - slug: soleus
     zh: 比目鱼肌
@@ -1291,7 +1291,7 @@ groups:
     region: lower_limb
     side: both
     priority: 2
-    target_faces: 1200
+    target_faces: 3600
     concepts: [soleus]
   - slug: calcaneal_tendon
     zh: 跟腱
@@ -1300,7 +1300,7 @@ groups:
     region: lower_limb
     side: both
     priority: 2
-    target_faces: 600
+    target_faces: 1800
     concepts: [calcaneal tendon]
   - slug: tibialis_anterior
     zh: 胫骨前肌
@@ -1309,7 +1309,7 @@ groups:
     region: lower_limb
     side: both
     priority: 2
-    target_faces: 1000
+    target_faces: 3000
     concepts: [tibialis anterior]
   - slug: tibialis_posterior
     zh: 胫骨后肌
@@ -1318,7 +1318,7 @@ groups:
     region: lower_limb
     side: both
     priority: 3
-    target_faces: 800
+    target_faces: 2400
     concepts: [tibialis posterior]
   - slug: fibularis_longus
     zh: 腓骨长肌
@@ -1327,7 +1327,7 @@ groups:
     region: lower_limb
     side: both
     priority: 3
-    target_faces: 800
+    target_faces: 2400
     concepts: [fibularis longus]
   - slug: extensor_digitorum_longus
     zh: 趾长伸肌
@@ -1336,7 +1336,7 @@ groups:
     region: lower_limb
     side: both
     priority: 3
-    target_faces: 800
+    target_faces: 2400
     concepts: [extensor digitorum longus]
   - slug: flexor_digitorum_longus
     zh: 趾长屈肌
@@ -1345,5 +1345,5 @@ groups:
     region: lower_limb
     side: both
     priority: 3
-    target_faces: 800
+    target_faces: 2400
     concepts: [flexor digitorum longus]
