@@ -102,11 +102,14 @@ test('language toggle switches UI to English and back', async ({ page }) => {
   await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
     timeout: 60_000,
   });
+  const toggle = page.getByRole('button', { name: '切换语言 / Switch language' });
   await expect(page.locator('header')).toContainText('人体透视科普');
-  await page.getByRole('button', { name: 'EN', exact: true }).click();
+  await expect(toggle).toHaveText('EN');
+  await toggle.click();
   await expect(page.locator('header')).toContainText('See-through Human Anatomy');
   await expect(page.getByRole('button', { name: 'Tours' })).toBeVisible();
-  await page.getByRole('button', { name: '中文', exact: true }).click();
+  await expect(toggle).toHaveText('中文');
+  await toggle.click();
   await expect(page.locator('header')).toContainText('人体透视科普');
 });
 
