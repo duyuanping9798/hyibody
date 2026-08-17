@@ -96,6 +96,29 @@ test('heartbeat tour plays from the menu', async ({ page }) => {
   await expect(player).not.toBeVisible();
 });
 
+/** M2-2/M2-3 冒烟：Kiosk 闲置吸引动画出现（?idle=2 加速），分享弹层出二维码。 */
+test('kiosk attract mode and share dialog', async ({ page }) => {
+  await page.goto('/?kiosk=1&idle=2');
+  await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
+    timeout: 60_000,
+  });
+  // 大按钮模式生效
+  await expect(page.locator('body.hyi-kiosk')).toBeAttached();
+  // 2 秒闲置后吸引动画浮层出现
+  await expect(page.getByTestId('kiosk-attract')).toBeVisible({ timeout: 15_000 });
+  await page.screenshot({ path: 'test-results/smoke-kiosk.png' });
+  // 触摸退出吸引动画
+  await page.mouse.click(640, 400);
+  await expect(page.getByTestId('kiosk-attract')).not.toBeVisible();
+
+  // 分享弹层：二维码 canvas 有内容
+  await page.getByRole('button', { name: '分享' }).click();
+  const qr = page.getByTestId('share-qr');
+  await expect(qr).toBeVisible();
+  const size = await qr.evaluate((c) => (c as HTMLCanvasElement).width);
+  expect(size).toBeGreaterThan(100);
+});
+
 /** M1-7 移动端冒烟：竖屏视口下抽屉面板可唤出、信息卡可见、留存截图。 */
 test.describe('mobile viewport', () => {
   test.use({ viewport: { width: 390, height: 844 }, hasTouch: true });

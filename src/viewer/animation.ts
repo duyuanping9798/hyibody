@@ -22,3 +22,18 @@ export const ANIMATED_STRUCTURES: Record<string, (t: number) => number> = {
   lung_left: lungScale,
   lung_right: lungScale,
 };
+
+/**
+ * Kiosk 吸引动画的分层扫描（M2-2）：44 秒一个来回的三角波 0 → 1 → 0，
+ * 端点各停留 4 秒，让"皮肤完整态"和"血管神经态"都能被看清。
+ */
+export function attractLayer(tSeconds: number): number {
+  const period = 44;
+  const hold = 4;
+  const sweep = period / 2 - hold;
+  const t = ((tSeconds % period) + period) % period;
+  if (t < hold) return 0;
+  if (t < hold + sweep) return (t - hold) / sweep;
+  if (t < period / 2 + hold) return 1;
+  return Math.max(0, 1 - (t - period / 2 - hold) / sweep);
+}
