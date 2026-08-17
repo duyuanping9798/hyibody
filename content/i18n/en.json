@@ -4,5 +4,50 @@
   "loading": "Loading model…",
   "loadError": "Failed to load model, please refresh",
   "placeholderNotice": "Placeholder model — real anatomy data arrives with the M1 pipeline",
-  "attribution": "Data sources & attribution"
+  "attribution": "Data sources & attribution",
+  "systems": {
+    "skin": "Skin",
+    "muscles": "Muscles",
+    "skeleton": "Skeleton",
+    "organs": "Organs",
+    "vessels": "Vessels",
+    "nerves": "Nerves"
+  },
+  "regions": {
+    "head": "Head",
+    "neck": "Neck",
+    "thorax": "Thorax",
+    "abdomen": "Abdomen",
+    "pelvis": "Pelvis",
+    "upper_limb": "Upper limb",
+    "lower_limb": "Lower limb",
+    "whole": "Whole body"
+  },
+  "layerSlider": "Peel depth",
+  "searchPlaceholder": "Search structures (zh/en)…",
+  "searchNoResult": "No matching structure",
+  "infoBlurbPending": "One-line description coming soon — contribute in content/definitions.",
+  "sourceLabel": "Source",
+  "sourceBp3d": "BodyParts3D (CC BY 4.0)",
+  "actionIsolate": "Isolate",
+  "actionUnisolate": "Unisolate",
+  "actionHide": "Hide",
+  "actionFocus": "Focus",
+  "actionRestore": "Restore all",
+  "hiddenCount": "{n} structures hidden",
+  "presetsTitle": "Views",
+  "presets": {
+    "front": "Front",
+    "back": "Back",
+    "left": "Left",
+    "right": "Right",
+    "top": "Top",
+    "hero": "Hero"
+  },
+  "clipTitle": "Clip",
+  "clipOff": "Off",
+  "clipAxis": { "x": "L-R", "y": "F-B", "z": "U-D" },
+  "systemsTitle": "Systems",
+  "systemLoading": "loading…",
+  "close": "Close"
 }

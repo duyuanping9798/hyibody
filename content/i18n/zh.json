@@ -4,5 +4,50 @@
   "loading": "模型加载中…",
   "loadError": "模型加载失败，请刷新重试",
   "placeholderNotice": "当前为占位模型，正式解剖数据将在 M1 数据流水线完成后接入",
-  "attribution": "数据来源与署名"
+  "attribution": "数据来源与署名",
+  "systems": {
+    "skin": "皮肤",
+    "muscles": "肌肉",
+    "skeleton": "骨骼",
+    "organs": "器官",
+    "vessels": "血管",
+    "nerves": "神经"
+  },
+  "regions": {
+    "head": "头部",
+    "neck": "颈部",
+    "thorax": "胸部",
+    "abdomen": "腹部",
+    "pelvis": "盆部",
+    "upper_limb": "上肢",
+    "lower_limb": "下肢",
+    "whole": "全身"
+  },
+  "layerSlider": "透视深度",
+  "searchPlaceholder": "搜索结构（中/英文）…",
+  "searchNoResult": "没有匹配的结构",
+  "infoBlurbPending": "一句话科普整理中——欢迎在 content/definitions 里补充。",
+  "sourceLabel": "数据来源",
+  "sourceBp3d": "BodyParts3D（CC BY 4.0）",
+  "actionIsolate": "隔离",
+  "actionUnisolate": "取消隔离",
+  "actionHide": "隐藏",
+  "actionFocus": "聚焦",
+  "actionRestore": "恢复全部",
+  "hiddenCount": "已隐藏 {n} 个结构",
+  "presetsTitle": "视角",
+  "presets": {
+    "front": "正面",
+    "back": "背面",
+    "left": "左侧",
+    "right": "右侧",
+    "top": "顶部",
+    "hero": "透视位"
+  },
+  "clipTitle": "剖切",
+  "clipOff": "关闭",
+  "clipAxis": { "x": "左右", "y": "前后", "z": "上下" },
+  "systemsTitle": "系统",
+  "systemLoading": "加载中…",
+  "close": "关闭"
 }
