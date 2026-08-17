@@ -37,7 +37,8 @@ isa 集缺的整器官（心/肺/肝/脑/主动脉/胸骨等）取 partof 集（
 
 ## 未完成 / 下一步
 
-- 人类定稿 `content/structures.yaml`（见上方挑选方法）
+- ~~定稿 `content/structures.yaml`~~ 已完成：AI 审阅 140 候选 → 删 5 条重叠 →
+  135 条定稿（人类在会话中批准，见 DECISIONS.md），PR diff 中可做最终增删
 - M1-6 查看器核心交互（issue #6）：分层、拾取、信息卡、剖切、搜索、URL 状态
 - M1-7 移动端与性能预算检查（issue #7）
 - 其余系统（皮肤/肌肉/器官/血管/神经）跑流水线：`python3 pipeline/run_all.py
@@ -48,8 +49,8 @@ isa 集缺的整器官（心/肺/肝/脑/主动脉/胸骨等）取 partof 集（
 
 1. **合并本 PR**（issue #1–#5）：看 CI 变绿、浏览 diff（重点：`content/
    structures.candidates.yaml` 与 `docs/DECISIONS.md` 新增决策）后合并。
-2. **审阅候选清单**：按上方"结构挑选方法"定稿 `content/structures.yaml`
-   （可让下一个会话按你的批注代劳，你只做增删）。
+2. **过目 `content/structures.yaml` 定稿**（已按你批准的审阅建议生成，135 条）：
+   在 PR diff 里做最终增删即可；删掉的 5 条重叠结构仍留在候选清单里可随时恢复。
 3. **确认 Pages**：合并后手机/电脑打开站点，应看到真实骨骼（不再是占位人形）。
 4. **CI 未跑 Python 测试**：`.github/workflows/ci.yml` 属预置文件本会话未改；
    如需在 CI 加 `pnpm pipeline:test`（需装 Python 依赖），请人类在网页端编辑或

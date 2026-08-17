@@ -1,0 +1,1566 @@
+# 结构清单（定稿）—— 流水线的正式输入（process/export/validate 优先读本文件）。
+# 由 structures.candidates.yaml 审阅定稿：140 候选中删 5 条"整体 vs 部分"重叠
+# （十二指肠/直肠 → 归小肠/大肠整体；小脑/脑干/神经系统复合体 → 归整脑+脊髓）。
+# 左右侧合并为一条、椎骨按颈/胸/腰合组（总数约 135，未凑 KICKOFF 的 300–600，
+# 决策见 docs/DECISIONS.md）。重新生成候选：改 pipeline/config/groups.yaml 后跑
+# python3 pipeline/select.py，再人工比对本文件。
+- slug: skin
+  zh: 皮肤
+  en: Skin
+  system: skin
+  region: whole
+  side: none
+  fma:
+    - FMA7163
+  source: bp3d
+  target_faces: 8000
+  priority: 1
+- slug: skull
+  zh: 颅骨
+  en: Skull
+  system: skeleton
+  region: head
+  side: none
+  fma:
+    - FMA52734
+    - FMA9613
+    - FMA52735
+    - FMA52737
+    - FMA52736
+    - FMA52740
+    - FMA52747
+    - FMA9711
+    - FMA52745
+    - FMA52741
+    - FMA52746
+    - FMA9710
+    - FMA54736
+  source: bp3d
+  target_faces: 8000
+  priority: 1
+- slug: mandible
+  zh: 下颌骨
+  en: Mandible
+  system: skeleton
+  region: head
+  side: none
+  fma:
+    - FMA52748
+  source: bp3d
+  target_faces: 2000
+  priority: 1
+- slug: hyoid
+  zh: 舌骨
+  en: Hyoid bone
+  system: skeleton
+  region: neck
+  side: none
+  fma:
+    - FMA52749
+  source: bp3d
+  target_faces: 800
+  priority: 2
+- slug: cervical_vertebrae
+  zh: 颈椎
+  en: Cervical vertebrae
+  system: skeleton
+  region: neck
+  side: none
+  fma:
+    - FMA9915
+  source: bp3d
+  target_faces: 3000
+  priority: 1
+- slug: thoracic_vertebrae
+  zh: 胸椎
+  en: Thoracic vertebrae
+  system: skeleton
+  region: thorax
+  side: none
+  fma:
+    - FMA9139
+  source: bp3d
+  target_faces: 4000
+  priority: 1
+- slug: lumbar_vertebrae
+  zh: 腰椎
+  en: Lumbar vertebrae
+  system: skeleton
+  region: abdomen
+  side: none
+  fma:
+    - FMA9921
+  source: bp3d
+  target_faces: 3000
+  priority: 1
+- slug: sacrum
+  zh: 骶骨
+  en: Sacrum
+  system: skeleton
+  region: pelvis
+  side: none
+  fma:
+    - FMA16202
+  source: bp3d
+  target_faces: 1500
+  priority: 1
+- slug: intervertebral_disks
+  zh: 椎间盘
+  en: Intervertebral disks
+  system: skeleton
+  region: whole
+  side: none
+  fma:
+    - FMA10446
+  source: bp3d
+  target_faces: 3000
+  priority: 3
+- slug: ribs
+  zh: 肋骨
+  en: Ribs
+  system: skeleton
+  region: thorax
+  side: both
+  fma:
+    - FMA7574
+  source: bp3d
+  target_faces: 6000
+  priority: 1
+- slug: costal_cartilages
+  zh: 肋软骨
+  en: Costal cartilages
+  system: skeleton
+  region: thorax
+  side: both
+  fma:
+    - FMA7591
+  source: bp3d
+  target_faces: 2000
+  priority: 2
+- slug: sternum
+  zh: 胸骨
+  en: Sternum
+  system: skeleton
+  region: thorax
+  side: none
+  fma:
+    - FMA7486
+    - FMA7487
+    - FMA7488
+  source: bp3d
+  target_faces: 1200
+  priority: 1
+- slug: clavicle_right
+  zh: 右锁骨
+  en: Right clavicle
+  system: skeleton
+  region: upper_limb
+  side: right
+  fma:
+    - FMA13322
+  source: bp3d
+  target_faces: 800
+  priority: 1
+- slug: clavicle_left
+  zh: 左锁骨
+  en: Left clavicle
+  system: skeleton
+  region: upper_limb
+  side: left
+  fma:
+    - FMA13323
+  source: bp3d
+  target_faces: 800
+  priority: 1
+- slug: scapula_right
+  zh: 右肩胛骨
+  en: Right scapula
+  system: skeleton
+  region: upper_limb
+  side: right
+  fma:
+    - FMA13395
+  source: bp3d
+  target_faces: 1500
+  priority: 1
+- slug: scapula_left
+  zh: 左肩胛骨
+  en: Left scapula
+  system: skeleton
+  region: upper_limb
+  side: left
+  fma:
+    - FMA13396
+  source: bp3d
+  target_faces: 1500
+  priority: 1
+- slug: humerus_right
+  zh: 右肱骨
+  en: Right humerus
+  system: skeleton
+  region: upper_limb
+  side: right
+  fma:
+    - FMA23130
+  source: bp3d
+  target_faces: 1500
+  priority: 1
+- slug: humerus_left
+  zh: 左肱骨
+  en: Left humerus
+  system: skeleton
+  region: upper_limb
+  side: left
+  fma:
+    - FMA23131
+  source: bp3d
+  target_faces: 1500
+  priority: 1
+- slug: radius_right
+  zh: 右桡骨
+  en: Right radius
+  system: skeleton
+  region: upper_limb
+  side: right
+  fma:
+    - FMA23464
+  source: bp3d
+  target_faces: 1200
+  priority: 1
+- slug: radius_left
+  zh: 左桡骨
+  en: Left radius
+  system: skeleton
+  region: upper_limb
+  side: left
+  fma:
+    - FMA23465
+  source: bp3d
+  target_faces: 1200
+  priority: 1
+- slug: ulna_right
+  zh: 右尺骨
+  en: Right ulna
+  system: skeleton
+  region: upper_limb
+  side: right
+  fma:
+    - FMA23467
+  source: bp3d
+  target_faces: 1200
+  priority: 1
+- slug: ulna_left
+  zh: 左尺骨
+  en: Left ulna
+  system: skeleton
+  region: upper_limb
+  side: left
+  fma:
+    - FMA23468
+  source: bp3d
+  target_faces: 1200
+  priority: 1
+- slug: carpal_bones
+  zh: 腕骨
+  en: Carpal bones
+  system: skeleton
+  region: upper_limb
+  side: both
+  fma:
+    - FMA23889
+  source: bp3d
+  target_faces: 2500
+  priority: 2
+- slug: hand_bones
+  zh: 手骨（掌骨与指骨）
+  en: Hand bones (metacarpals and phalanges)
+  system: skeleton
+  region: upper_limb
+  side: both
+  fma:
+    - FMA9612
+    - FMA23914
+  source: bp3d
+  target_faces: 4000
+  priority: 2
+- slug: hip_bone_right
+  zh: 右髋骨
+  en: Right hip bone
+  system: skeleton
+  region: pelvis
+  side: right
+  fma:
+    - FMA16586
+  source: bp3d
+  target_faces: 2000
+  priority: 1
+- slug: hip_bone_left
+  zh: 左髋骨
+  en: Left hip bone
+  system: skeleton
+  region: pelvis
+  side: left
+  fma:
+    - FMA16587
+  source: bp3d
+  target_faces: 2000
+  priority: 1
+- slug: femur_right
+  zh: 右股骨
+  en: Right femur
+  system: skeleton
+  region: lower_limb
+  side: right
+  fma:
+    - FMA24474
+  source: bp3d
+  target_faces: 1500
+  priority: 1
+- slug: femur_left
+  zh: 左股骨
+  en: Left femur
+  system: skeleton
+  region: lower_limb
+  side: left
+  fma:
+    - FMA24475
+  source: bp3d
+  target_faces: 1500
+  priority: 1
+- slug: patella_right
+  zh: 右髌骨
+  en: Right patella
+  system: skeleton
+  region: lower_limb
+  side: right
+  fma:
+    - FMA24486
+  source: bp3d
+  target_faces: 600
+  priority: 2
+- slug: patella_left
+  zh: 左髌骨
+  en: Left patella
+  system: skeleton
+  region: lower_limb
+  side: left
+  fma:
+    - FMA24487
+  source: bp3d
+  target_faces: 600
+  priority: 2
+- slug: tibia_right
+  zh: 右胫骨
+  en: Right tibia
+  system: skeleton
+  region: lower_limb
+  side: right
+  fma:
+    - FMA24477
+  source: bp3d
+  target_faces: 1200
+  priority: 1
+- slug: tibia_left
+  zh: 左胫骨
+  en: Left tibia
+  system: skeleton
+  region: lower_limb
+  side: left
+  fma:
+    - FMA24478
+  source: bp3d
+  target_faces: 1200
+  priority: 1
+- slug: fibula_right
+  zh: 右腓骨
+  en: Right fibula
+  system: skeleton
+  region: lower_limb
+  side: right
+  fma:
+    - FMA24480
+  source: bp3d
+  target_faces: 1000
+  priority: 1
+- slug: fibula_left
+  zh: 左腓骨
+  en: Left fibula
+  system: skeleton
+  region: lower_limb
+  side: left
+  fma:
+    - FMA24481
+  source: bp3d
+  target_faces: 1000
+  priority: 1
+- slug: tarsal_bones
+  zh: 跗骨
+  en: Tarsal bones
+  system: skeleton
+  region: lower_limb
+  side: both
+  fma:
+    - FMA24491
+  source: bp3d
+  target_faces: 2500
+  priority: 2
+- slug: foot_bones
+  zh: 足骨（跖骨与趾骨）
+  en: Foot bones (metatarsals and phalanges)
+  system: skeleton
+  region: lower_limb
+  side: both
+  fma:
+    - FMA24492
+    - FMA24493
+  source: bp3d
+  target_faces: 4000
+  priority: 2
+- slug: heart
+  zh: 心脏
+  en: Heart
+  system: organs
+  region: thorax
+  side: none
+  fma:
+    - FMA7088
+  source: bp3d_partof
+  target_faces: 8000
+  priority: 1
+- slug: lung_right
+  zh: 右肺
+  en: Right lung
+  system: organs
+  region: thorax
+  side: right
+  fma:
+    - FMA7309
+  source: bp3d_partof
+  target_faces: 5000
+  priority: 1
+- slug: lung_left
+  zh: 左肺
+  en: Left lung
+  system: organs
+  region: thorax
+  side: left
+  fma:
+    - FMA7310
+  source: bp3d_partof
+  target_faces: 5000
+  priority: 1
+- slug: trachea
+  zh: 气管
+  en: Trachea
+  system: organs
+  region: neck
+  side: none
+  fma:
+    - FMA7394
+  source: bp3d
+  target_faces: 1500
+  priority: 1
+- slug: esophagus
+  zh: 食管
+  en: Esophagus
+  system: organs
+  region: thorax
+  side: none
+  fma:
+    - FMA7131
+  source: bp3d
+  target_faces: 1500
+  priority: 1
+- slug: stomach
+  zh: 胃
+  en: Stomach
+  system: organs
+  region: abdomen
+  side: none
+  fma:
+    - FMA7148
+  source: bp3d
+  target_faces: 3000
+  priority: 1
+- slug: liver
+  zh: 肝
+  en: Liver
+  system: organs
+  region: abdomen
+  side: none
+  fma:
+    - FMA7197
+  source: bp3d_partof
+  target_faces: 5000
+  priority: 1
+- slug: gallbladder
+  zh: 胆囊
+  en: Gallbladder
+  system: organs
+  region: abdomen
+  side: none
+  fma:
+    - FMA7202
+  source: bp3d
+  target_faces: 800
+  priority: 1
+- slug: pancreas
+  zh: 胰腺
+  en: Pancreas
+  system: organs
+  region: abdomen
+  side: none
+  fma:
+    - FMA7198
+  source: bp3d
+  target_faces: 1500
+  priority: 1
+- slug: spleen
+  zh: 脾
+  en: Spleen
+  system: organs
+  region: abdomen
+  side: none
+  fma:
+    - FMA7196
+  source: bp3d
+  target_faces: 1500
+  priority: 1
+- slug: kidneys
+  zh: 肾
+  en: Kidneys
+  system: organs
+  region: abdomen
+  side: both
+  fma:
+    - FMA7203
+  source: bp3d
+  target_faces: 3000
+  priority: 1
+- slug: urinary_bladder
+  zh: 膀胱
+  en: Urinary bladder
+  system: organs
+  region: pelvis
+  side: none
+  fma:
+    - FMA15900
+  source: bp3d
+  target_faces: 1500
+  priority: 1
+- slug: small_intestine
+  zh: 小肠
+  en: Small intestine
+  system: organs
+  region: abdomen
+  side: none
+  fma:
+    - FMA7200
+  source: bp3d_partof
+  target_faces: 8000
+  priority: 1
+- slug: large_intestine
+  zh: 大肠
+  en: Large intestine
+  system: organs
+  region: abdomen
+  side: none
+  fma:
+    - FMA7201
+  source: bp3d_partof
+  target_faces: 8000
+  priority: 1
+- slug: tongue
+  zh: 舌
+  en: Tongue
+  system: organs
+  region: head
+  side: none
+  fma:
+    - FMA54640
+  source: bp3d
+  target_faces: 1200
+  priority: 2
+- slug: appendix
+  zh: 阑尾
+  en: Appendix
+  system: organs
+  region: abdomen
+  side: none
+  fma:
+    - FMA14542
+  source: bp3d
+  target_faces: 600
+  priority: 2
+- slug: adrenal_glands
+  zh: 肾上腺
+  en: Adrenal glands
+  system: organs
+  region: abdomen
+  side: both
+  fma:
+    - FMA9604
+  source: bp3d
+  target_faces: 800
+  priority: 2
+- slug: ureters
+  zh: 输尿管
+  en: Ureters
+  system: organs
+  region: abdomen
+  side: both
+  fma:
+    - FMA9704
+  source: bp3d
+  target_faces: 800
+  priority: 2
+- slug: pituitary_gland
+  zh: 垂体
+  en: Pituitary gland
+  system: organs
+  region: head
+  side: none
+  fma:
+    - FMA13889
+  source: bp3d
+  target_faces: 500
+  priority: 2
+- slug: larynx_cartilages
+  zh: 喉软骨（含喉结）
+  en: Laryngeal cartilages
+  system: organs
+  region: neck
+  side: none
+  fma:
+    - FMA55099
+    - FMA9615
+    - FMA55130
+  source: bp3d
+  target_faces: 1200
+  priority: 2
+- slug: thymus
+  zh: 胸腺
+  en: Thymus
+  system: organs
+  region: thorax
+  side: none
+  fma:
+    - FMA9607
+  source: bp3d_partof
+  target_faces: 800
+  priority: 3
+- slug: prostate
+  zh: 前列腺
+  en: Prostate
+  system: organs
+  region: pelvis
+  side: none
+  fma:
+    - FMA9600
+  source: bp3d
+  target_faces: 800
+  priority: 2
+- slug: testes
+  zh: 睾丸
+  en: Testes
+  system: organs
+  region: pelvis
+  side: both
+  fma:
+    - FMA7210
+  source: bp3d
+  target_faces: 800
+  priority: 3
+- slug: aorta
+  zh: 主动脉
+  en: Aorta
+  system: vessels
+  region: whole
+  side: none
+  fma:
+    - FMA3734
+  source: bp3d_partof
+  target_faces: 3000
+  priority: 1
+- slug: pulmonary_trunk
+  zh: 肺动脉干
+  en: Pulmonary trunk
+  system: vessels
+  region: thorax
+  side: none
+  fma:
+    - FMA8612
+  source: bp3d
+  target_faces: 1200
+  priority: 1
+- slug: pulmonary_arteries
+  zh: 肺动脉
+  en: Pulmonary arteries
+  system: vessels
+  region: thorax
+  side: both
+  fma:
+    - FMA50872
+    - FMA50873
+  source: bp3d
+  target_faces: 2000
+  priority: 2
+- slug: pulmonary_veins
+  zh: 肺静脉
+  en: Pulmonary veins
+  system: vessels
+  region: thorax
+  side: both
+  fma:
+    - FMA49911
+    - FMA49913
+    - FMA49914
+    - FMA49916
+  source: bp3d
+  target_faces: 2000
+  priority: 2
+- slug: coronary_arteries
+  zh: 冠状动脉
+  en: Coronary arteries
+  system: vessels
+  region: thorax
+  side: both
+  fma:
+    - FMA3802
+    - FMA3813
+    - FMA3815
+    - FMA3818
+    - FMA3835
+    - FMA3837
+    - FMA3840
+    - FMA3855
+    - FMA3860
+    - FMA3868
+    - FMA3870
+    - FMA3872
+    - FMA3874
+    - FMA3876
+    - FMA3895
+    - FMA13912
+    - FMA13914
+    - FMA13921
+    - FMA66327
+    - FMA66328
+    - FMA74912
+  source: bp3d
+  target_faces: 2000
+  priority: 1
+- slug: superior_vena_cava
+  zh: 上腔静脉
+  en: Superior vena cava
+  system: vessels
+  region: thorax
+  side: none
+  fma:
+    - FMA4720
+  source: bp3d
+  target_faces: 1000
+  priority: 1
+- slug: inferior_vena_cava
+  zh: 下腔静脉
+  en: Inferior vena cava
+  system: vessels
+  region: abdomen
+  side: none
+  fma:
+    - FMA10951
+  source: bp3d
+  target_faces: 1500
+  priority: 1
+- slug: common_carotid_arteries
+  zh: 颈总动脉
+  en: Common carotid arteries
+  system: vessels
+  region: neck
+  side: both
+  fma:
+    - FMA3939
+  source: bp3d
+  target_faces: 1200
+  priority: 1
+- slug: internal_carotid_arteries
+  zh: 颈内动脉
+  en: Internal carotid arteries
+  system: vessels
+  region: neck
+  side: both
+  fma:
+    - FMA3947
+  source: bp3d
+  target_faces: 1200
+  priority: 2
+- slug: internal_jugular_veins
+  zh: 颈内静脉
+  en: Internal jugular veins
+  system: vessels
+  region: neck
+  side: both
+  fma:
+    - FMA4724
+  source: bp3d
+  target_faces: 1200
+  priority: 1
+- slug: vertebral_arteries
+  zh: 椎动脉
+  en: Vertebral arteries
+  system: vessels
+  region: neck
+  side: both
+  fma:
+    - FMA3956
+  source: bp3d
+  target_faces: 1200
+  priority: 2
+- slug: brachiocephalic_trunk
+  zh: 头臂干
+  en: Brachiocephalic trunk
+  system: vessels
+  region: thorax
+  side: none
+  fma:
+    - FMA3932
+  source: bp3d
+  target_faces: 600
+  priority: 2
+- slug: brachiocephalic_veins
+  zh: 头臂静脉
+  en: Brachiocephalic veins
+  system: vessels
+  region: thorax
+  side: both
+  fma:
+    - FMA4723
+  source: bp3d
+  target_faces: 1000
+  priority: 2
+- slug: subclavian_arteries
+  zh: 锁骨下动脉
+  en: Subclavian arteries
+  system: vessels
+  region: thorax
+  side: both
+  fma:
+    - FMA3951
+  source: bp3d
+  target_faces: 1200
+  priority: 2
+- slug: subclavian_veins
+  zh: 锁骨下静脉
+  en: Subclavian veins
+  system: vessels
+  region: thorax
+  side: both
+  fma:
+    - FMA4725
+  source: bp3d
+  target_faces: 1000
+  priority: 2
+- slug: axillary_brachial_arteries
+  zh: 腋动脉与肱动脉
+  en: Axillary and brachial arteries
+  system: vessels
+  region: upper_limb
+  side: both
+  fma:
+    - FMA22654
+    - FMA22689
+  source: bp3d
+  target_faces: 1500
+  priority: 2
+- slug: forearm_arteries
+  zh: 桡动脉与尺动脉
+  en: Radial and ulnar arteries
+  system: vessels
+  region: upper_limb
+  side: both
+  fma:
+    - FMA22730
+    - FMA22796
+  source: bp3d
+  target_faces: 1500
+  priority: 3
+- slug: celiac_trunk
+  zh: 腹腔干
+  en: Celiac trunk
+  system: vessels
+  region: abdomen
+  side: none
+  fma:
+    - FMA14812
+  source: bp3d
+  target_faces: 800
+  priority: 2
+- slug: mesenteric_arteries
+  zh: 肠系膜动脉
+  en: Mesenteric arteries
+  system: vessels
+  region: abdomen
+  side: none
+  fma:
+    - FMA14749
+    - FMA14750
+  source: bp3d
+  target_faces: 2000
+  priority: 2
+- slug: celiac_branches
+  zh: 肝总动脉与脾动脉
+  en: Common hepatic and splenic arteries
+  system: vessels
+  region: abdomen
+  side: none
+  fma:
+    - FMA14771
+    - FMA14773
+  source: bp3d
+  target_faces: 1200
+  priority: 3
+- slug: portal_tributaries
+  zh: 门静脉属支（脾静脉与肠系膜静脉）
+  en: Portal tributaries
+  system: vessels
+  region: abdomen
+  side: none
+  fma:
+    - FMA14331
+    - FMA14332
+    - FMA15391
+  source: bp3d
+  target_faces: 1500
+  priority: 3
+- slug: hepatic_portal_vein
+  zh: 肝门静脉
+  en: Hepatic portal vein
+  system: vessels
+  region: abdomen
+  side: none
+  fma:
+    - FMA50735
+  source: bp3d
+  target_faces: 1200
+  priority: 1
+- slug: renal_arteries
+  zh: 肾动脉
+  en: Renal arteries
+  system: vessels
+  region: abdomen
+  side: both
+  fma:
+    - FMA14751
+  source: bp3d
+  target_faces: 1000
+  priority: 2
+- slug: renal_veins
+  zh: 肾静脉
+  en: Renal veins
+  system: vessels
+  region: abdomen
+  side: both
+  fma:
+    - FMA14334
+  source: bp3d
+  target_faces: 1000
+  priority: 2
+- slug: iliac_arteries
+  zh: 髂动脉
+  en: Iliac arteries
+  system: vessels
+  region: pelvis
+  side: both
+  fma:
+    - FMA14764
+    - FMA18805
+    - FMA18808
+  source: bp3d
+  target_faces: 2000
+  priority: 2
+- slug: femoral_arteries
+  zh: 股动脉
+  en: Femoral arteries
+  system: vessels
+  region: lower_limb
+  side: both
+  fma:
+    - FMA70248
+  source: bp3d
+  target_faces: 1200
+  priority: 1
+- slug: femoral_veins
+  zh: 股静脉
+  en: Femoral veins
+  system: vessels
+  region: lower_limb
+  side: both
+  fma:
+    - FMA21185
+  source: bp3d
+  target_faces: 1200
+  priority: 2
+- slug: popliteal_arteries
+  zh: 腘动脉
+  en: Popliteal arteries
+  system: vessels
+  region: lower_limb
+  side: both
+  fma:
+    - FMA77155
+  source: bp3d
+  target_faces: 1000
+  priority: 2
+- slug: tibial_arteries
+  zh: 胫前动脉与胫后动脉
+  en: Anterior and posterior tibial arteries
+  system: vessels
+  region: lower_limb
+  side: both
+  fma:
+    - FMA43894
+    - FMA43895
+  source: bp3d
+  target_faces: 1500
+  priority: 3
+- slug: great_saphenous_veins
+  zh: 大隐静脉
+  en: Great saphenous veins
+  system: vessels
+  region: lower_limb
+  side: both
+  fma:
+    - FMA21376
+  source: bp3d
+  target_faces: 1500
+  priority: 2
+- slug: azygos_vein
+  zh: 奇静脉
+  en: Azygos vein
+  system: vessels
+  region: thorax
+  side: none
+  fma:
+    - FMA4838
+  source: bp3d
+  target_faces: 800
+  priority: 3
+- slug: brain
+  zh: 脑
+  en: Brain
+  system: nerves
+  region: head
+  side: none
+  fma:
+    - FMA50801
+  source: bp3d_partof
+  target_faces: 8000
+  priority: 1
+- slug: spinal_cord
+  zh: 脊髓
+  en: Spinal cord
+  system: nerves
+  region: whole
+  side: none
+  fma:
+    - FMA7647
+  source: bp3d_partof
+  target_faces: 3000
+  priority: 1
+- slug: optic_nerves
+  zh: 视神经
+  en: Optic nerves
+  system: nerves
+  region: head
+  side: both
+  fma:
+    - FMA50863
+  source: bp3d
+  target_faces: 800
+  priority: 2
+- slug: sternocleidomastoid
+  zh: 胸锁乳突肌
+  en: Sternocleidomastoid
+  system: muscles
+  region: neck
+  side: both
+  fma:
+    - FMA13407
+  source: bp3d
+  target_faces: 1200
+  priority: 1
+- slug: platysma
+  zh: 颈阔肌
+  en: Platysma
+  system: muscles
+  region: neck
+  side: both
+  fma:
+    - FMA45738
+  source: bp3d
+  target_faces: 1200
+  priority: 3
+- slug: trapezius
+  zh: 斜方肌
+  en: Trapezius
+  system: muscles
+  region: thorax
+  side: both
+  fma:
+    - FMA32555
+    - FMA32556
+    - FMA32557
+  source: bp3d
+  target_faces: 2000
+  priority: 1
+- slug: deltoid
+  zh: 三角肌
+  en: Deltoid
+  system: muscles
+  region: upper_limb
+  side: both
+  fma:
+    - FMA34677
+    - FMA34678
+    - FMA34679
+  source: bp3d
+  target_faces: 2000
+  priority: 1
+- slug: pectoralis_major
+  zh: 胸大肌
+  en: Pectoralis major
+  system: muscles
+  region: thorax
+  side: both
+  fma:
+    - FMA34687
+    - FMA34696
+    - FMA34699
+  source: bp3d
+  target_faces: 2000
+  priority: 1
+- slug: pectoralis_minor
+  zh: 胸小肌
+  en: Pectoralis minor
+  system: muscles
+  region: thorax
+  side: both
+  fma:
+    - FMA13109
+  source: bp3d
+  target_faces: 1000
+  priority: 2
+- slug: serratus_anterior
+  zh: 前锯肌
+  en: Serratus anterior
+  system: muscles
+  region: thorax
+  side: both
+  fma:
+    - FMA13397
+  source: bp3d
+  target_faces: 1500
+  priority: 2
+- slug: intercostal_muscles
+  zh: 肋间肌
+  en: Intercostal muscles
+  system: muscles
+  region: thorax
+  side: both
+  fma:
+    - FMA9756
+    - FMA9757
+  source: bp3d
+  target_faces: 3000
+  priority: 2
+- slug: diaphragm
+  zh: 膈肌
+  en: Diaphragm
+  system: muscles
+  region: thorax
+  side: none
+  fma:
+    - FMA13295
+  source: bp3d
+  target_faces: 2000
+  priority: 1
+- slug: external_oblique
+  zh: 腹外斜肌
+  en: External oblique
+  system: muscles
+  region: abdomen
+  side: both
+  fma:
+    - FMA13335
+  source: bp3d
+  target_faces: 2000
+  priority: 1
+- slug: erector_spinae
+  zh: 竖脊肌
+  en: Erector spinae
+  system: muscles
+  region: whole
+  side: both
+  fma:
+    - FMA22702
+    - FMA22703
+    - FMA22704
+    - FMA22709
+    - FMA22711
+    - FMA22714
+    - FMA22765
+  source: bp3d
+  target_faces: 3000
+  priority: 2
+- slug: levator_scapulae
+  zh: 肩胛提肌
+  en: Levator scapulae
+  system: muscles
+  region: neck
+  side: both
+  fma:
+    - FMA32519
+  source: bp3d
+  target_faces: 800
+  priority: 3
+- slug: splenius_capitis
+  zh: 头夹肌
+  en: Splenius capitis
+  system: muscles
+  region: neck
+  side: both
+  fma:
+    - FMA22653
+  source: bp3d
+  target_faces: 800
+  priority: 3
+- slug: supraspinatus
+  zh: 冈上肌
+  en: Supraspinatus
+  system: muscles
+  region: upper_limb
+  side: both
+  fma:
+    - FMA9629
+  source: bp3d
+  target_faces: 800
+  priority: 3
+- slug: infraspinatus
+  zh: 冈下肌
+  en: Infraspinatus
+  system: muscles
+  region: upper_limb
+  side: both
+  fma:
+    - FMA32546
+  source: bp3d
+  target_faces: 1000
+  priority: 2
+- slug: teres_major
+  zh: 大圆肌
+  en: Teres major
+  system: muscles
+  region: upper_limb
+  side: both
+  fma:
+    - FMA32549
+  source: bp3d
+  target_faces: 800
+  priority: 3
+- slug: biceps_brachii
+  zh: 肱二头肌
+  en: Biceps brachii
+  system: muscles
+  region: upper_limb
+  side: both
+  fma:
+    - FMA37682
+    - FMA37683
+  source: bp3d
+  target_faces: 1500
+  priority: 1
+- slug: triceps_brachii
+  zh: 肱三头肌
+  en: Triceps brachii
+  system: muscles
+  region: upper_limb
+  side: both
+  fma:
+    - FMA37692
+    - FMA37693
+    - FMA37694
+  source: bp3d
+  target_faces: 1500
+  priority: 1
+- slug: brachialis
+  zh: 肱肌
+  en: Brachialis
+  system: muscles
+  region: upper_limb
+  side: both
+  fma:
+    - FMA37667
+  source: bp3d
+  target_faces: 1000
+  priority: 2
+- slug: brachioradialis
+  zh: 肱桡肌
+  en: Brachioradialis
+  system: muscles
+  region: upper_limb
+  side: both
+  fma:
+    - FMA38485
+  source: bp3d
+  target_faces: 1000
+  priority: 2
+- slug: flexor_carpi_radialis
+  zh: 桡侧腕屈肌
+  en: Flexor carpi radialis
+  system: muscles
+  region: upper_limb
+  side: both
+  fma:
+    - FMA38459
+  source: bp3d
+  target_faces: 800
+  priority: 3
+- slug: palmaris_longus
+  zh: 掌长肌
+  en: Palmaris longus
+  system: muscles
+  region: upper_limb
+  side: both
+  fma:
+    - FMA38462
+  source: bp3d
+  target_faces: 800
+  priority: 3
+- slug: flexor_digitorum_superficialis
+  zh: 指浅屈肌
+  en: Flexor digitorum superficialis
+  system: muscles
+  region: upper_limb
+  side: both
+  fma:
+    - FMA38469
+  source: bp3d
+  target_faces: 1000
+  priority: 3
+- slug: extensor_digitorum
+  zh: 指伸肌
+  en: Extensor digitorum
+  system: muscles
+  region: upper_limb
+  side: both
+  fma:
+    - FMA38500
+  source: bp3d
+  target_faces: 1000
+  priority: 3
+- slug: psoas_major
+  zh: 腰大肌
+  en: Psoas major
+  system: muscles
+  region: abdomen
+  side: both
+  fma:
+    - FMA18060
+  source: bp3d
+  target_faces: 1200
+  priority: 2
+- slug: iliacus
+  zh: 髂肌
+  en: Iliacus
+  system: muscles
+  region: pelvis
+  side: both
+  fma:
+    - FMA22310
+  source: bp3d
+  target_faces: 1000
+  priority: 2
+- slug: gluteus_maximus
+  zh: 臀大肌
+  en: Gluteus maximus
+  system: muscles
+  region: pelvis
+  side: both
+  fma:
+    - FMA22314
+  source: bp3d
+  target_faces: 2000
+  priority: 1
+- slug: gluteus_medius
+  zh: 臀中肌
+  en: Gluteus medius
+  system: muscles
+  region: pelvis
+  side: both
+  fma:
+    - FMA22315
+  source: bp3d
+  target_faces: 1200
+  priority: 2
+- slug: tensor_fasciae_latae
+  zh: 阔筋膜张肌
+  en: Tensor fasciae latae
+  system: muscles
+  region: lower_limb
+  side: both
+  fma:
+    - FMA22423
+  source: bp3d
+  target_faces: 800
+  priority: 3
+- slug: sartorius
+  zh: 缝匠肌
+  en: Sartorius
+  system: muscles
+  region: lower_limb
+  side: both
+  fma:
+    - FMA22353
+  source: bp3d
+  target_faces: 1200
+  priority: 2
+- slug: rectus_femoris
+  zh: 股直肌
+  en: Rectus femoris
+  system: muscles
+  region: lower_limb
+  side: both
+  fma:
+    - FMA22430
+  source: bp3d
+  target_faces: 1500
+  priority: 1
+- slug: vastus_muscles
+  zh: 股外侧肌与股内侧肌
+  en: Vastus muscles
+  system: muscles
+  region: lower_limb
+  side: both
+  fma:
+    - FMA22431
+    - FMA22432
+    - FMA22433
+  source: bp3d
+  target_faces: 2000
+  priority: 2
+- slug: adductor_muscles
+  zh: 内收肌群
+  en: Adductor muscles
+  system: muscles
+  region: lower_limb
+  side: both
+  fma:
+    - FMA22441
+    - FMA22443
+    - FMA43882
+  source: bp3d
+  target_faces: 2000
+  priority: 2
+- slug: hamstrings
+  zh: 腘绳肌
+  en: Hamstrings
+  system: muscles
+  region: lower_limb
+  side: both
+  fma:
+    - FMA22357
+    - FMA22438
+    - FMA45887
+    - FMA45890
+  source: bp3d
+  target_faces: 2000
+  priority: 1
+- slug: gastrocnemius
+  zh: 腓肠肌
+  en: Gastrocnemius
+  system: muscles
+  region: lower_limb
+  side: both
+  fma:
+    - FMA45956
+    - FMA45959
+  source: bp3d
+  target_faces: 1500
+  priority: 1
+- slug: soleus
+  zh: 比目鱼肌
+  en: Soleus
+  system: muscles
+  region: lower_limb
+  side: both
+  fma:
+    - FMA22542
+  source: bp3d
+  target_faces: 1200
+  priority: 2
+- slug: calcaneal_tendon
+  zh: 跟腱
+  en: Calcaneal tendon
+  system: muscles
+  region: lower_limb
+  side: both
+  fma:
+    - FMA51061
+  source: bp3d
+  target_faces: 600
+  priority: 2
+- slug: tibialis_anterior
+  zh: 胫骨前肌
+  en: Tibialis anterior
+  system: muscles
+  region: lower_limb
+  side: both
+  fma:
+    - FMA22532
+  source: bp3d
+  target_faces: 1000
+  priority: 2
+- slug: tibialis_posterior
+  zh: 胫骨后肌
+  en: Tibialis posterior
+  system: muscles
+  region: lower_limb
+  side: both
+  fma:
+    - FMA51099
+  source: bp3d
+  target_faces: 800
+  priority: 3
+- slug: fibularis_longus
+  zh: 腓骨长肌
+  en: Fibularis longus
+  system: muscles
+  region: lower_limb
+  side: both
+  fma:
+    - FMA22539
+  source: bp3d
+  target_faces: 800
+  priority: 3
+- slug: extensor_digitorum_longus
+  zh: 趾长伸肌
+  en: Extensor digitorum longus
+  system: muscles
+  region: lower_limb
+  side: both
+  fma:
+    - FMA22534
+  source: bp3d
+  target_faces: 800
+  priority: 3
+- slug: flexor_digitorum_longus
+  zh: 趾长屈肌
+  en: Flexor digitorum longus
+  system: muscles
+  region: lower_limb
+  side: both
+  fma:
+    - FMA51071
+  source: bp3d
+  target_faces: 800
+  priority: 3
