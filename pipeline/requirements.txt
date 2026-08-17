@@ -1,0 +1,11 @@
+trimesh
+numpy
+scipy
+pymeshlab
+fast-simplification
+pygltflib
+pyyaml
+networkx
+tqdm
+rich
+pytest

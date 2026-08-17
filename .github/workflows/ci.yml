@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - id: check
+        run: |
+          if [ -f package.json ]; then echo "has=true" >> "$GITHUB_OUTPUT"; else echo "has=false" >> "$GITHUB_OUTPUT"; echo "package.json 尚不存在，跳过（M0 完成后自动生效）"; fi
+      - if: steps.check.outputs.has == 'true'
+        uses: pnpm/action-setup@v4
+      - if: steps.check.outputs.has == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - if: steps.check.outputs.has == 'true'
+        run: pnpm install --frozen-lockfile
+      - if: steps.check.outputs.has == 'true'
+        run: pnpm lint
+      - if: steps.check.outputs.has == 'true'
+        run: pnpm test
+      - if: steps.check.outputs.has == 'true'
+        run: pnpm build

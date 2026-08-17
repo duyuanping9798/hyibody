@@ -1,0 +1,12 @@
+dist
+node_modules
+pnpm-lock.yaml
+public/assets
+test-results
+playwright-report
+pipeline/raw
+pipeline/work
+prototype
+CLAUDE.md
+docs
+*.md
