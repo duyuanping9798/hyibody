@@ -531,6 +531,62 @@ groups:
     priority: 2
     target_faces: 1200
     concepts: [tongue]
+  - slug: appendix
+    zh: 阑尾
+    en: Appendix
+    system: organs
+    region: abdomen
+    side: none
+    priority: 2
+    target_faces: 600
+    concepts: [appendix]
+  - slug: adrenal_glands
+    zh: 肾上腺
+    en: Adrenal glands
+    system: organs
+    region: abdomen
+    side: both
+    priority: 2
+    target_faces: 800
+    concepts: [adrenal gland]
+  - slug: ureters
+    zh: 输尿管
+    en: Ureters
+    system: organs
+    region: abdomen
+    side: both
+    priority: 2
+    target_faces: 800
+    concepts: [ureter]
+  - slug: pituitary_gland
+    zh: 垂体
+    en: Pituitary gland
+    system: organs
+    region: head
+    side: none
+    priority: 2
+    target_faces: 500
+    concepts: [pituitary gland]
+  - slug: larynx_cartilages
+    zh: 喉软骨（含喉结）
+    en: Laryngeal cartilages
+    system: organs
+    region: neck
+    side: none
+    priority: 2
+    target_faces: 1200
+    concepts: [thyroid cartilage, cricoid cartilage, epiglottis]
+    note: BP3D 4.0 无整喉概念，以甲状软骨（喉结）+ 环状软骨 + 会厌代表喉。
+  - slug: thymus
+    zh: 胸腺
+    en: Thymus
+    system: organs
+    region: thorax
+    side: none
+    set: partof
+    priority: 3
+    target_faces: 800
+    concepts: [thymus]
   # 甲状腺：BP3D 4.0 两集均无腺体网格（只有甲状腺动脉），缺口记录于 STATUS。
   - slug: prostate
     zh: 前列腺
@@ -727,6 +783,24 @@ groups:
     priority: 2
     target_faces: 2000
     patterns: ['^(superior|inferior) mesenteric artery$']
+  - slug: celiac_branches
+    zh: 肝总动脉与脾动脉
+    en: Common hepatic and splenic arteries
+    system: vessels
+    region: abdomen
+    side: none
+    priority: 3
+    target_faces: 1200
+    concepts: [common hepatic artery, splenic artery]
+  - slug: portal_tributaries
+    zh: 门静脉属支（脾静脉与肠系膜静脉）
+    en: Portal tributaries
+    system: vessels
+    region: abdomen
+    side: none
+    priority: 3
+    target_faces: 1500
+    concepts: [splenic vein, superior mesenteric vein, inferior mesenteric vein]
   - slug: hepatic_portal_vein
     zh: 肝门静脉
     en: Hepatic portal vein

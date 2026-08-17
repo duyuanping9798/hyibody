@@ -1139,6 +1139,136 @@
     volume_cm3: 83.8
     parents:
     - heterogeneous cluster
+- slug: appendix
+  zh: 阑尾
+  en: Appendix
+  system: organs
+  region: abdomen
+  side: none
+  fma:
+  - FMA14542
+  source: bp3d
+  target_faces: 600
+  priority: 2
+  meta:
+    elements: 1
+    faces_raw: 442
+    bbox_size_mm:
+    - 69.6
+    - 39.0
+    - 18.1
+    volume_cm3: 49.0
+    parents:
+    - organ with organ cavity
+- slug: adrenal_glands
+  zh: 肾上腺
+  en: Adrenal glands
+  system: organs
+  region: abdomen
+  side: both
+  fma:
+  - FMA9604
+  source: bp3d
+  target_faces: 800
+  priority: 2
+  meta:
+    elements: 2
+    faces_raw: 6290
+    bbox_size_mm:
+    - 138.0
+    - 39.2
+    - 62.7
+    volume_cm3: 339.3
+    parents:
+    - corticomedullary organ
+- slug: ureters
+  zh: 输尿管
+  en: Ureters
+  system: organs
+  region: abdomen
+  side: both
+  fma:
+  - FMA9704
+  source: bp3d
+  target_faces: 800
+  priority: 2
+  meta:
+    elements: 2
+    faces_raw: 3986
+    bbox_size_mm:
+    - 152.2
+    - 59.4
+    - 261.4
+    volume_cm3: 2362.7
+    parents:
+    - organ with organ cavity
+- slug: pituitary_gland
+  zh: 垂体
+  en: Pituitary gland
+  system: organs
+  region: head
+  side: none
+  fma:
+  - FMA13889
+  source: bp3d
+  target_faces: 500
+  priority: 2
+  meta:
+    elements: 1
+    faces_raw: 1164
+    bbox_size_mm:
+    - 12.3
+    - 9.5
+    - 13.0
+    volume_cm3: 1.5
+    parents:
+    - lobular organ
+- slug: larynx_cartilages
+  zh: 喉软骨（含喉结）
+  en: Laryngeal cartilages
+  system: organs
+  region: neck
+  side: none
+  fma:
+  - FMA55099
+  - FMA9615
+  - FMA55130
+  source: bp3d
+  target_faces: 1200
+  priority: 2
+  meta:
+    elements: 4
+    faces_raw: 9616
+    bbox_size_mm:
+    - 38.7
+    - 30.9
+    - 51.0
+    volume_cm3: 61.0
+    parents:
+    - laryngeal cartilage
+    - subdivision of laryngopharynx
+    note: BP3D 4.0 无整喉概念，以甲状软骨（喉结）+ 环状软骨 + 会厌代表喉。
+- slug: thymus
+  zh: 胸腺
+  en: Thymus
+  system: organs
+  region: thorax
+  side: none
+  fma:
+  - FMA9607
+  source: bp3d_partof
+  target_faces: 800
+  priority: 3
+  meta:
+    elements: 2
+    faces_raw: 2080
+    bbox_size_mm:
+    - 46.6
+    - 39.5
+    - 72.2
+    volume_cm3: 133.0
+    parents:
+    - content of anterior mediastinum
 - slug: prostate
   zh: 前列腺
   en: Prostate
@@ -1620,6 +1750,52 @@
     volume_cm3: 484.9
     parents:
     - systemic artery
+- slug: celiac_branches
+  zh: 肝总动脉与脾动脉
+  en: Common hepatic and splenic arteries
+  system: vessels
+  region: abdomen
+  side: none
+  fma:
+  - FMA14771
+  - FMA14773
+  source: bp3d
+  target_faces: 1200
+  priority: 3
+  meta:
+    elements: 5
+    faces_raw: 6792
+    bbox_size_mm:
+    - 115.8
+    - 62.3
+    - 35.0
+    volume_cm3: 252.1
+    parents:
+    - subdivision of celiac artery
+- slug: portal_tributaries
+  zh: 门静脉属支（脾静脉与肠系膜静脉）
+  en: Portal tributaries
+  system: vessels
+  region: abdomen
+  side: none
+  fma:
+  - FMA14331
+  - FMA14332
+  - FMA15391
+  source: bp3d
+  target_faces: 1500
+  priority: 3
+  meta:
+    elements: 3
+    faces_raw: 2954
+    bbox_size_mm:
+    - 162.4
+    - 66.6
+    - 191.4
+    volume_cm3: 2068.4
+    parents:
+    - subdivision of pre-hepatic portal vein
+    - tributary of splenic vein
 - slug: hepatic_portal_vein
   zh: 肝门静脉
   en: Hepatic portal vein
