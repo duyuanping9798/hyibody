@@ -1,0 +1,3053 @@
+# 候选结构清单（select.py 生成，勿手改——改 pipeline/config/groups.yaml 后重跑）。
+# 人类审阅后定稿为 content/structures.yaml：删除不要的条目、按需调整 zh/priority/
+# target_faces；meta 为参考信息（原始面数、包围盒、父概念），定稿时可整块删除。
+# 挑选方法与已知数据缺口见 docs/STATUS.md。
+- slug: skin
+  zh: 皮肤
+  en: Skin
+  system: skin
+  region: whole
+  side: none
+  fma:
+  - FMA7163
+  source: bp3d
+  target_faces: 8000
+  priority: 1
+  meta:
+    elements: 1
+    faces_raw: 203382
+    bbox_size_mm:
+    - 666.9
+    - 292.0
+    - 1719.5
+    volume_cm3: 334898.1
+    parents:
+    - nonparenchymatous organ
+- slug: skull
+  zh: 颅骨
+  en: Skull
+  system: skeleton
+  region: head
+  side: none
+  fma:
+  - FMA52734
+  - FMA9613
+  - FMA52735
+  - FMA52737
+  - FMA52736
+  - FMA52740
+  - FMA52747
+  - FMA9711
+  - FMA52745
+  - FMA52741
+  - FMA52746
+  - FMA9710
+  - FMA54736
+  source: bp3d
+  target_faces: 8000
+  priority: 1
+  meta:
+    elements: 21
+    faces_raw: 121518
+    bbox_size_mm:
+    - 151.0
+    - 208.8
+    - 172.3
+    volume_cm3: 5434.3
+    parents:
+    - flat bone
+    - irregular bone
+    - pneumatized bone
+    note: 不含下颌骨与舌骨（单列）；听小骨、牙齿太碎不收。
+- slug: mandible
+  zh: 下颌骨
+  en: Mandible
+  system: skeleton
+  region: head
+  side: none
+  fma:
+  - FMA52748
+  source: bp3d
+  target_faces: 2000
+  priority: 1
+  meta:
+    elements: 1
+    faces_raw: 5576
+    bbox_size_mm:
+    - 106.4
+    - 84.0
+    - 84.5
+    volume_cm3: 754.8
+    parents:
+    - irregular bone
+- slug: hyoid
+  zh: 舌骨
+  en: Hyoid bone
+  system: skeleton
+  region: neck
+  side: none
+  fma:
+  - FMA52749
+  source: bp3d
+  target_faces: 800
+  priority: 2
+  meta:
+    elements: 2
+    faces_raw: 2392
+    bbox_size_mm:
+    - 37.8
+    - 34.6
+    - 18.5
+    volume_cm3: 24.2
+    parents:
+    - irregular bone
+- slug: cervical_vertebrae
+  zh: 颈椎
+  en: Cervical vertebrae
+  system: skeleton
+  region: neck
+  side: none
+  fma:
+  - FMA9915
+  source: bp3d
+  target_faces: 3000
+  priority: 1
+  meta:
+    elements: 7
+    faces_raw: 15212
+    bbox_size_mm:
+    - 81.6
+    - 70.4
+    - 116.7
+    volume_cm3: 670.5
+    parents:
+    - vertebra
+- slug: thoracic_vertebrae
+  zh: 胸椎
+  en: Thoracic vertebrae
+  system: skeleton
+  region: thorax
+  side: none
+  fma:
+  - FMA9139
+  source: bp3d
+  target_faces: 4000
+  priority: 1
+  meta:
+    elements: 12
+    faces_raw: 28090
+    bbox_size_mm:
+    - 73.7
+    - 101.4
+    - 326.9
+    volume_cm3: 2443.5
+    parents:
+    - vertebra
+- slug: lumbar_vertebrae
+  zh: 腰椎
+  en: Lumbar vertebrae
+  system: skeleton
+  region: abdomen
+  side: none
+  fma:
+  - FMA9921
+  source: bp3d
+  target_faces: 3000
+  priority: 1
+  meta:
+    elements: 5
+    faces_raw: 16862
+    bbox_size_mm:
+    - 100.6
+    - 97.1
+    - 167.4
+    volume_cm3: 1634.8
+    parents:
+    - vertebra
+- slug: sacrum
+  zh: 骶骨
+  en: Sacrum
+  system: skeleton
+  region: pelvis
+  side: none
+  fma:
+  - FMA16202
+  source: bp3d
+  target_faces: 1500
+  priority: 1
+  meta:
+    elements: 1
+    faces_raw: 9922
+    bbox_size_mm:
+    - 117.8
+    - 88.7
+    - 144.4
+    volume_cm3: 1507.5
+    parents:
+    - irregular bone
+    note: BP3D 4.0 无独立尾骨网格（缺口，记录于 STATUS）。
+- slug: intervertebral_disks
+  zh: 椎间盘
+  en: Intervertebral disks
+  system: skeleton
+  region: whole
+  side: none
+  fma:
+  - FMA10446
+  source: bp3d
+  target_faces: 3000
+  priority: 3
+  meta:
+    elements: 23
+    faces_raw: 54134
+    bbox_size_mm:
+    - 49.2
+    - 85.4
+    - 556.1
+    volume_cm3: 2333.9
+    parents:
+    - articular disk of symphysis
+- slug: ribs
+  zh: 肋骨
+  en: Ribs
+  system: skeleton
+  region: thorax
+  side: both
+  fma:
+  - FMA7574
+  source: bp3d
+  target_faces: 6000
+  priority: 1
+  meta:
+    elements: 24
+    faces_raw: 170762
+    bbox_size_mm:
+    - 272.9
+    - 194.0
+    - 362.4
+    volume_cm3: 19189.5
+    parents:
+    - long bone
+- slug: costal_cartilages
+  zh: 肋软骨
+  en: Costal cartilages
+  system: skeleton
+  region: thorax
+  side: both
+  fma:
+  - FMA7591
+  source: bp3d
+  target_faces: 2000
+  priority: 2
+  meta:
+    elements: 14
+    faces_raw: 15234
+    bbox_size_mm:
+    - 218.4
+    - 91.0
+    - 217.7
+    volume_cm3: 4327.9
+    parents:
+    - cartilage organ component
+- slug: sternum
+  zh: 胸骨
+  en: Sternum
+  system: skeleton
+  region: thorax
+  side: none
+  fma:
+  - FMA7486
+  - FMA7487
+  - FMA7488
+  source: bp3d
+  target_faces: 1200
+  priority: 1
+  meta:
+    elements: 3
+    faces_raw: 8114
+    bbox_size_mm:
+    - 54.9
+    - 83.0
+    - 161.2
+    volume_cm3: 734.9
+    parents:
+    - body of organ
+    - process of organ
+    - zone of sternum
+- slug: clavicle_right
+  zh: 右锁骨
+  en: Right clavicle
+  system: skeleton
+  region: upper_limb
+  side: right
+  fma:
+  - FMA13322
+  source: bp3d
+  target_faces: 800
+  priority: 1
+  meta:
+    elements: 1
+    faces_raw: 1146
+    bbox_size_mm:
+    - 135.6
+    - 92.5
+    - 46.8
+    volume_cm3: 587.6
+    parents:
+    - clavicle
+- slug: clavicle_left
+  zh: 左锁骨
+  en: Left clavicle
+  system: skeleton
+  region: upper_limb
+  side: left
+  fma:
+  - FMA13323
+  source: bp3d
+  target_faces: 800
+  priority: 1
+  meta:
+    elements: 1
+    faces_raw: 1176
+    bbox_size_mm:
+    - 135.6
+    - 92.7
+    - 46.7
+    volume_cm3: 586.2
+    parents:
+    - clavicle
+- slug: scapula_right
+  zh: 右肩胛骨
+  en: Right scapula
+  system: skeleton
+  region: upper_limb
+  side: right
+  fma:
+  - FMA13395
+  source: bp3d
+  target_faces: 1500
+  priority: 1
+  meta:
+    elements: 1
+    faces_raw: 26172
+    bbox_size_mm:
+    - 109.4
+    - 107.9
+    - 165.9
+    volume_cm3: 1959.2
+    parents:
+    - scapula
+- slug: scapula_left
+  zh: 左肩胛骨
+  en: Left scapula
+  system: skeleton
+  region: upper_limb
+  side: left
+  fma:
+  - FMA13396
+  source: bp3d
+  target_faces: 1500
+  priority: 1
+  meta:
+    elements: 1
+    faces_raw: 28106
+    bbox_size_mm:
+    - 109.4
+    - 107.9
+    - 165.9
+    volume_cm3: 1958.9
+    parents:
+    - scapula
+- slug: humerus_right
+  zh: 右肱骨
+  en: Right humerus
+  system: skeleton
+  region: upper_limb
+  side: right
+  fma:
+  - FMA23130
+  source: bp3d
+  target_faces: 1500
+  priority: 1
+  meta:
+    elements: 1
+    faces_raw: 3784
+    bbox_size_mm:
+    - 100.8
+    - 49.2
+    - 307.3
+    volume_cm3: 1522.8
+    parents:
+    - humerus
+- slug: humerus_left
+  zh: 左肱骨
+  en: Left humerus
+  system: skeleton
+  region: upper_limb
+  side: left
+  fma:
+  - FMA23131
+  source: bp3d
+  target_faces: 1500
+  priority: 1
+  meta:
+    elements: 1
+    faces_raw: 3844
+    bbox_size_mm:
+    - 100.7
+    - 49.2
+    - 307.3
+    volume_cm3: 1521.5
+    parents:
+    - humerus
+- slug: radius_right
+  zh: 右桡骨
+  en: Right radius
+  system: skeleton
+  region: upper_limb
+  side: right
+  fma:
+  - FMA23464
+  source: bp3d
+  target_faces: 1200
+  priority: 1
+  meta:
+    elements: 1
+    faces_raw: 672
+    bbox_size_mm:
+    - 59.7
+    - 65.8
+    - 229.2
+    volume_cm3: 900.5
+    parents:
+    - radius
+- slug: radius_left
+  zh: 左桡骨
+  en: Left radius
+  system: skeleton
+  region: upper_limb
+  side: left
+  fma:
+  - FMA23465
+  source: bp3d
+  target_faces: 1200
+  priority: 1
+  meta:
+    elements: 1
+    faces_raw: 632
+    bbox_size_mm:
+    - 59.3
+    - 65.8
+    - 228.8
+    volume_cm3: 892.8
+    parents:
+    - radius
+- slug: ulna_right
+  zh: 右尺骨
+  en: Right ulna
+  system: skeleton
+  region: upper_limb
+  side: right
+  fma:
+  - FMA23467
+  source: bp3d
+  target_faces: 1200
+  priority: 1
+  meta:
+    elements: 1
+    faces_raw: 834
+    bbox_size_mm:
+    - 50.3
+    - 78.7
+    - 247.3
+    volume_cm3: 978.8
+    parents:
+    - ulna
+- slug: ulna_left
+  zh: 左尺骨
+  en: Left ulna
+  system: skeleton
+  region: upper_limb
+  side: left
+  fma:
+  - FMA23468
+  source: bp3d
+  target_faces: 1200
+  priority: 1
+  meta:
+    elements: 1
+    faces_raw: 824
+    bbox_size_mm:
+    - 50.2
+    - 78.7
+    - 247.5
+    volume_cm3: 978.5
+    parents:
+    - ulna
+- slug: carpal_bones
+  zh: 腕骨
+  en: Carpal bones
+  system: skeleton
+  region: upper_limb
+  side: both
+  fma:
+  - FMA23889
+  source: bp3d
+  target_faces: 2500
+  priority: 2
+  meta:
+    elements: 16
+    faces_raw: 5506
+    bbox_size_mm:
+    - 563.5
+    - 27.1
+    - 30.5
+    volume_cm3: 466.7
+    parents:
+    - short bone
+- slug: hand_bones
+  zh: 手骨（掌骨与指骨）
+  en: Hand bones (metacarpals and phalanges)
+  system: skeleton
+  region: upper_limb
+  side: both
+  fma:
+  - FMA9612
+  - FMA23914
+  source: bp3d
+  target_faces: 4000
+  priority: 2
+  meta:
+    elements: 38
+    faces_raw: 14442
+    bbox_size_mm:
+    - 647.8
+    - 83.1
+    - 144.3
+    volume_cm3: 7770.9
+    parents:
+    - long bone
+- slug: hip_bone_right
+  zh: 右髋骨
+  en: Right hip bone
+  system: skeleton
+  region: pelvis
+  side: right
+  fma:
+  - FMA16586
+  source: bp3d
+  target_faces: 2000
+  priority: 1
+  meta:
+    elements: 1
+    faces_raw: 2374
+    bbox_size_mm:
+    - 142.1
+    - 137.9
+    - 205.7
+    volume_cm3: 4030.6
+    parents:
+    - hip bone
+- slug: hip_bone_left
+  zh: 左髋骨
+  en: Left hip bone
+  system: skeleton
+  region: pelvis
+  side: left
+  fma:
+  - FMA16587
+  source: bp3d
+  target_faces: 2000
+  priority: 1
+  meta:
+    elements: 1
+    faces_raw: 2332
+    bbox_size_mm:
+    - 142.0
+    - 137.8
+    - 206.1
+    volume_cm3: 4033.2
+    parents:
+    - hip bone
+- slug: femur_right
+  zh: 右股骨
+  en: Right femur
+  system: skeleton
+  region: lower_limb
+  side: right
+  fma:
+  - FMA24474
+  source: bp3d
+  target_faces: 1500
+  priority: 1
+  meta:
+    elements: 1
+    faces_raw: 3102
+    bbox_size_mm:
+    - 118.2
+    - 62.7
+    - 466.1
+    volume_cm3: 3453.4
+    parents:
+    - femur
+- slug: femur_left
+  zh: 左股骨
+  en: Left femur
+  system: skeleton
+  region: lower_limb
+  side: left
+  fma:
+  - FMA24475
+  source: bp3d
+  target_faces: 1500
+  priority: 1
+  meta:
+    elements: 1
+    faces_raw: 3204
+    bbox_size_mm:
+    - 118.3
+    - 62.8
+    - 466.2
+    volume_cm3: 3462.2
+    parents:
+    - femur
+- slug: patella_right
+  zh: 右髌骨
+  en: Right patella
+  system: skeleton
+  region: lower_limb
+  side: right
+  fma:
+  - FMA24486
+  source: bp3d
+  target_faces: 600
+  priority: 2
+  meta:
+    elements: 1
+    faces_raw: 306
+    bbox_size_mm:
+    - 41.7
+    - 21.7
+    - 39.3
+    volume_cm3: 35.6
+    parents:
+    - patella
+- slug: patella_left
+  zh: 左髌骨
+  en: Left patella
+  system: skeleton
+  region: lower_limb
+  side: left
+  fma:
+  - FMA24487
+  source: bp3d
+  target_faces: 600
+  priority: 2
+  meta:
+    elements: 1
+    faces_raw: 310
+    bbox_size_mm:
+    - 41.6
+    - 21.8
+    - 39.3
+    volume_cm3: 35.7
+    parents:
+    - patella
+- slug: tibia_right
+  zh: 右胫骨
+  en: Right tibia
+  system: skeleton
+  region: lower_limb
+  side: right
+  fma:
+  - FMA24477
+  source: bp3d
+  target_faces: 1200
+  priority: 1
+  meta:
+    elements: 1
+    faces_raw: 1664
+    bbox_size_mm:
+    - 74.1
+    - 62.8
+    - 380.0
+    volume_cm3: 1767.9
+    parents:
+    - tibia
+- slug: tibia_left
+  zh: 左胫骨
+  en: Left tibia
+  system: skeleton
+  region: lower_limb
+  side: left
+  fma:
+  - FMA24478
+  source: bp3d
+  target_faces: 1200
+  priority: 1
+  meta:
+    elements: 1
+    faces_raw: 1692
+    bbox_size_mm:
+    - 74.4
+    - 62.5
+    - 380.0
+    volume_cm3: 1768.2
+    parents:
+    - tibia
+- slug: fibula_right
+  zh: 右腓骨
+  en: Right fibula
+  system: skeleton
+  region: lower_limb
+  side: right
+  fma:
+  - FMA24480
+  source: bp3d
+  target_faces: 1000
+  priority: 1
+  meta:
+    elements: 1
+    faces_raw: 1142
+    bbox_size_mm:
+    - 35.8
+    - 29.7
+    - 384.4
+    volume_cm3: 408.7
+    parents:
+    - fibula
+- slug: fibula_left
+  zh: 左腓骨
+  en: Left fibula
+  system: skeleton
+  region: lower_limb
+  side: left
+  fma:
+  - FMA24481
+  source: bp3d
+  target_faces: 1000
+  priority: 1
+  meta:
+    elements: 1
+    faces_raw: 1124
+    bbox_size_mm:
+    - 35.6
+    - 29.6
+    - 384.3
+    volume_cm3: 404.5
+    parents:
+    - fibula
+- slug: tarsal_bones
+  zh: 跗骨
+  en: Tarsal bones
+  system: skeleton
+  region: lower_limb
+  side: both
+  fma:
+  - FMA24491
+  source: bp3d
+  target_faces: 2500
+  priority: 2
+  meta:
+    elements: 14
+    faces_raw: 12734
+    bbox_size_mm:
+    - 230.2
+    - 116.5
+    - 71.6
+    volume_cm3: 1920.6
+    parents:
+    - short bone
+- slug: foot_bones
+  zh: 足骨（跖骨与趾骨）
+  en: Foot bones (metatarsals and phalanges)
+  system: skeleton
+  region: lower_limb
+  side: both
+  fma:
+  - FMA24492
+  - FMA24493
+  source: bp3d
+  target_faces: 4000
+  priority: 2
+  meta:
+    elements: 38
+    faces_raw: 17594
+    bbox_size_mm:
+    - 338.7
+    - 146.8
+    - 52.2
+    volume_cm3: 2593.1
+    parents:
+    - long bone
+- slug: heart
+  zh: 心脏
+  en: Heart
+  system: organs
+  region: thorax
+  side: none
+  fma:
+  - FMA7088
+  source: bp3d_partof
+  target_faces: 8000
+  priority: 1
+  meta:
+    elements: 83
+    faces_raw: 102802
+    bbox_size_mm:
+    - 115.7
+    - 106.3
+    - 104.6
+    volume_cm3: 1286.7
+    parents:
+    - content of middle mediastinum
+- slug: lung_right
+  zh: 右肺
+  en: Right lung
+  system: organs
+  region: thorax
+  side: right
+  fma:
+  - FMA7309
+  source: bp3d_partof
+  target_faces: 5000
+  priority: 1
+  meta:
+    elements: 156
+    faces_raw: 73312
+    bbox_size_mm:
+    - 121.4
+    - 152.9
+    - 333.4
+    volume_cm3: 6186.5
+    parents:
+    - lower respiratory tract
+- slug: lung_left
+  zh: 左肺
+  en: Left lung
+  system: organs
+  region: thorax
+  side: left
+  fma:
+  - FMA7310
+  source: bp3d_partof
+  target_faces: 5000
+  priority: 1
+  meta:
+    elements: 124
+    faces_raw: 41438
+    bbox_size_mm:
+    - 105.8
+    - 157.6
+    - 232.8
+    volume_cm3: 3880.5
+    parents:
+    - left pulmopleural compartment
+- slug: trachea
+  zh: 气管
+  en: Trachea
+  system: organs
+  region: neck
+  side: none
+  fma:
+  - FMA7394
+  source: bp3d
+  target_faces: 1500
+  priority: 1
+  meta:
+    elements: 1
+    faces_raw: 4996
+    bbox_size_mm:
+    - 25.9
+    - 32.8
+    - 110.3
+    volume_cm3: 93.8
+    parents:
+    - segment of tracheobronchial tree
+- slug: esophagus
+  zh: 食管
+  en: Esophagus
+  system: organs
+  region: thorax
+  side: none
+  fma:
+  - FMA7131
+  source: bp3d
+  target_faces: 1500
+  priority: 1
+  meta:
+    elements: 1
+    faces_raw: 578
+    bbox_size_mm:
+    - 32.4
+    - 57.9
+    - 274.4
+    volume_cm3: 514.8
+    parents:
+    - organ with organ cavity
+- slug: stomach
+  zh: 胃
+  en: Stomach
+  system: organs
+  region: abdomen
+  side: none
+  fma:
+  - FMA7148
+  source: bp3d
+  target_faces: 3000
+  priority: 1
+  meta:
+    elements: 1
+    faces_raw: 1810
+    bbox_size_mm:
+    - 134.5
+    - 112.9
+    - 117.0
+    volume_cm3: 1776.3
+    parents:
+    - organ with organ cavity
+- slug: liver
+  zh: 肝
+  en: Liver
+  system: organs
+  region: abdomen
+  side: none
+  fma:
+  - FMA7197
+  source: bp3d_partof
+  target_faces: 5000
+  priority: 1
+  meta:
+    elements: 60
+    faces_raw: 191622
+    bbox_size_mm:
+    - 209.4
+    - 159.1
+    - 155.2
+    volume_cm3: 5170.8
+    parents:
+    - gastrointestinal tract
+- slug: gallbladder
+  zh: 胆囊
+  en: Gallbladder
+  system: organs
+  region: abdomen
+  side: none
+  fma:
+  - FMA7202
+  source: bp3d
+  target_faces: 800
+  priority: 1
+  meta:
+    elements: 1
+    faces_raw: 2396
+    bbox_size_mm:
+    - 36.4
+    - 48.4
+    - 40.4
+    volume_cm3: 71.3
+    parents:
+    - organ with organ cavity
+- slug: pancreas
+  zh: 胰腺
+  en: Pancreas
+  system: organs
+  region: abdomen
+  side: none
+  fma:
+  - FMA7198
+  source: bp3d
+  target_faces: 1500
+  priority: 1
+  meta:
+    elements: 1
+    faces_raw: 4890
+    bbox_size_mm:
+    - 120.6
+    - 51.0
+    - 73.7
+    volume_cm3: 453.2
+    parents:
+    - lobular organ
+- slug: spleen
+  zh: 脾
+  en: Spleen
+  system: organs
+  region: abdomen
+  side: none
+  fma:
+  - FMA7196
+  source: bp3d
+  target_faces: 1500
+  priority: 1
+  meta:
+    elements: 1
+    faces_raw: 1330
+    bbox_size_mm:
+    - 58.2
+    - 95.1
+    - 70.2
+    volume_cm3: 388.8
+    parents:
+    - corticomedullary organ
+- slug: kidneys
+  zh: 肾
+  en: Kidneys
+  system: organs
+  region: abdomen
+  side: both
+  fma:
+  - FMA7203
+  source: bp3d
+  target_faces: 3000
+  priority: 1
+  meta:
+    elements: 2
+    faces_raw: 5292
+    bbox_size_mm:
+    - 178.0
+    - 52.3
+    - 123.6
+    volume_cm3: 1149.8
+    parents:
+    - corticomedullary organ
+- slug: urinary_bladder
+  zh: 膀胱
+  en: Urinary bladder
+  system: organs
+  region: pelvis
+  side: none
+  fma:
+  - FMA15900
+  source: bp3d
+  target_faces: 1500
+  priority: 1
+  meta:
+    elements: 1
+    faces_raw: 226
+    bbox_size_mm:
+    - 66.8
+    - 71.7
+    - 40.3
+    volume_cm3: 192.8
+    parents:
+    - organ with organ cavity
+- slug: small_intestine
+  zh: 小肠
+  en: Small intestine
+  system: organs
+  region: abdomen
+  side: none
+  fma:
+  - FMA7200
+  source: bp3d_partof
+  target_faces: 8000
+  priority: 1
+  meta:
+    elements: 56
+    faces_raw: 16058
+    bbox_size_mm:
+    - 193.7
+    - 79.5
+    - 271.8
+    volume_cm3: 4187.2
+    parents:
+    - gastrointestinal tract
+- slug: large_intestine
+  zh: 大肠
+  en: Large intestine
+  system: organs
+  region: abdomen
+  side: none
+  fma:
+  - FMA7201
+  source: bp3d_partof
+  target_faces: 8000
+  priority: 1
+  meta:
+    elements: 8
+    faces_raw: 59284
+    bbox_size_mm:
+    - 244.3
+    - 185.7
+    - 307.4
+    volume_cm3: 13940.1
+    parents:
+    - gastrointestinal tract
+- slug: duodenum
+  zh: 十二指肠
+  en: Duodenum
+  system: organs
+  region: abdomen
+  side: none
+  fma:
+  - FMA7206
+  source: bp3d
+  target_faces: 1500
+  priority: 3
+  meta:
+    elements: 1
+    faces_raw: 1860
+    bbox_size_mm:
+    - 98.0
+    - 53.0
+    - 91.5
+    volume_cm3: 475.3
+    parents:
+    - organ segment
+    note: 与小肠整体重叠，人类二选一。
+- slug: rectum
+  zh: 直肠
+  en: Rectum
+  system: organs
+  region: pelvis
+  side: none
+  fma:
+  - FMA14544
+  source: bp3d
+  target_faces: 1000
+  priority: 3
+  meta:
+    elements: 1
+    faces_raw: 2118
+    bbox_size_mm:
+    - 61.6
+    - 62.3
+    - 116.6
+    volume_cm3: 447.8
+    parents:
+    - segment of large intestine
+    note: 与大肠整体重叠，人类二选一。
+- slug: tongue
+  zh: 舌
+  en: Tongue
+  system: organs
+  region: head
+  side: none
+  fma:
+  - FMA54640
+  source: bp3d
+  target_faces: 1200
+  priority: 2
+  meta:
+    elements: 1
+    faces_raw: 524
+    bbox_size_mm:
+    - 38.8
+    - 59.4
+    - 36.4
+    volume_cm3: 83.8
+    parents:
+    - heterogeneous cluster
+- slug: appendix
+  zh: 阑尾
+  en: Appendix
+  system: organs
+  region: abdomen
+  side: none
+  fma:
+  - FMA14542
+  source: bp3d
+  target_faces: 600
+  priority: 2
+  meta:
+    elements: 1
+    faces_raw: 442
+    bbox_size_mm:
+    - 69.6
+    - 39.0
+    - 18.1
+    volume_cm3: 49.0
+    parents:
+    - organ with organ cavity
+- slug: adrenal_glands
+  zh: 肾上腺
+  en: Adrenal glands
+  system: organs
+  region: abdomen
+  side: both
+  fma:
+  - FMA9604
+  source: bp3d
+  target_faces: 800
+  priority: 2
+  meta:
+    elements: 2
+    faces_raw: 6290
+    bbox_size_mm:
+    - 138.0
+    - 39.2
+    - 62.7
+    volume_cm3: 339.3
+    parents:
+    - corticomedullary organ
+- slug: ureters
+  zh: 输尿管
+  en: Ureters
+  system: organs
+  region: abdomen
+  side: both
+  fma:
+  - FMA9704
+  source: bp3d
+  target_faces: 800
+  priority: 2
+  meta:
+    elements: 2
+    faces_raw: 3986
+    bbox_size_mm:
+    - 152.2
+    - 59.4
+    - 261.4
+    volume_cm3: 2362.7
+    parents:
+    - organ with organ cavity
+- slug: pituitary_gland
+  zh: 垂体
+  en: Pituitary gland
+  system: organs
+  region: head
+  side: none
+  fma:
+  - FMA13889
+  source: bp3d
+  target_faces: 500
+  priority: 2
+  meta:
+    elements: 1
+    faces_raw: 1164
+    bbox_size_mm:
+    - 12.3
+    - 9.5
+    - 13.0
+    volume_cm3: 1.5
+    parents:
+    - lobular organ
+- slug: larynx_cartilages
+  zh: 喉软骨（含喉结）
+  en: Laryngeal cartilages
+  system: organs
+  region: neck
+  side: none
+  fma:
+  - FMA55099
+  - FMA9615
+  - FMA55130
+  source: bp3d
+  target_faces: 1200
+  priority: 2
+  meta:
+    elements: 4
+    faces_raw: 9616
+    bbox_size_mm:
+    - 38.7
+    - 30.9
+    - 51.0
+    volume_cm3: 61.0
+    parents:
+    - laryngeal cartilage
+    - subdivision of laryngopharynx
+    note: BP3D 4.0 无整喉概念，以甲状软骨（喉结）+ 环状软骨 + 会厌代表喉。
+- slug: thymus
+  zh: 胸腺
+  en: Thymus
+  system: organs
+  region: thorax
+  side: none
+  fma:
+  - FMA9607
+  source: bp3d_partof
+  target_faces: 800
+  priority: 3
+  meta:
+    elements: 2
+    faces_raw: 2080
+    bbox_size_mm:
+    - 46.6
+    - 39.5
+    - 72.2
+    volume_cm3: 133.0
+    parents:
+    - content of anterior mediastinum
+- slug: prostate
+  zh: 前列腺
+  en: Prostate
+  system: organs
+  region: pelvis
+  side: none
+  fma:
+  - FMA9600
+  source: bp3d
+  target_faces: 800
+  priority: 2
+  meta:
+    elements: 1
+    faces_raw: 442
+    bbox_size_mm:
+    - 34.3
+    - 32.0
+    - 20.4
+    volume_cm3: 22.3
+    parents:
+    - lobular organ
+    note: BP3D 为男性模型，无子宫/卵巢（缺口记录于 STATUS）。
+- slug: testes
+  zh: 睾丸
+  en: Testes
+  system: organs
+  region: pelvis
+  side: both
+  fma:
+  - FMA7210
+  source: bp3d
+  target_faces: 800
+  priority: 3
+  meta:
+    elements: 2
+    faces_raw: 422
+    bbox_size_mm:
+    - 58.4
+    - 22.3
+    - 29.2
+    volume_cm3: 38.1
+    parents:
+    - lobular organ
+- slug: aorta
+  zh: 主动脉
+  en: Aorta
+  system: vessels
+  region: whole
+  side: none
+  fma:
+  - FMA3734
+  source: bp3d_partof
+  target_faces: 3000
+  priority: 1
+  meta:
+    elements: 5
+    faces_raw: 10188
+    bbox_size_mm:
+    - 41.7
+    - 92.4
+    - 370.3
+    volume_cm3: 1425.0
+    parents:
+    - systemic arterial tree
+    note: isa 集无主动脉主干整体，取 partof 集（KICKOFF 已知局限）。
+- slug: pulmonary_trunk
+  zh: 肺动脉干
+  en: Pulmonary trunk
+  system: vessels
+  region: thorax
+  side: none
+  fma:
+  - FMA8612
+  source: bp3d
+  target_faces: 1200
+  priority: 1
+  meta:
+    elements: 1
+    faces_raw: 1302
+    bbox_size_mm:
+    - 30.8
+    - 42.3
+    - 37.1
+    volume_cm3: 48.4
+    parents:
+    - pulmonary arterial trunk
+- slug: pulmonary_arteries
+  zh: 肺动脉
+  en: Pulmonary arteries
+  system: vessels
+  region: thorax
+  side: both
+  fma:
+  - FMA50872
+  - FMA50873
+  source: bp3d
+  target_faces: 2000
+  priority: 2
+  meta:
+    elements: 2
+    faces_raw: 6128
+    bbox_size_mm:
+    - 138.0
+    - 78.5
+    - 69.7
+    volume_cm3: 755.1
+    parents:
+    - pulmonary artery
+- slug: pulmonary_veins
+  zh: 肺静脉
+  en: Pulmonary veins
+  system: vessels
+  region: thorax
+  side: both
+  fma:
+  - FMA49911
+  - FMA49913
+  - FMA49914
+  - FMA49916
+  source: bp3d
+  target_faces: 2000
+  priority: 2
+  meta:
+    elements: 7
+    faces_raw: 2598
+    bbox_size_mm:
+    - 119.0
+    - 57.3
+    - 71.7
+    volume_cm3: 488.8
+    parents:
+    - inferior pulmonary vein
+    - superior pulmonary vein
+- slug: coronary_arteries
+  zh: 冠状动脉
+  en: Coronary arteries
+  system: vessels
+  region: thorax
+  side: both
+  fma:
+  - FMA3802
+  - FMA3813
+  - FMA3815
+  - FMA3818
+  - FMA3835
+  - FMA3837
+  - FMA3840
+  - FMA3855
+  - FMA3860
+  - FMA3868
+  - FMA3870
+  - FMA3872
+  - FMA3874
+  - FMA3876
+  - FMA3895
+  - FMA13912
+  - FMA13914
+  - FMA13921
+  - FMA66327
+  - FMA66328
+  - FMA74912
+  source: bp3d
+  target_faces: 2000
+  priority: 1
+  meta:
+    elements: 59
+    faces_raw: 29144
+    bbox_size_mm:
+    - 101.1
+    - 89.5
+    - 86.1
+    volume_cm3: 780.1
+    parents:
+    - anterior branch of anterior interventricular branch of left coronary artery
+    - anterior ventricular branch of right coronary artery
+    - branch of anterior interventricular branch of left coronary artery
+    - branch of left coronary artery
+    - branch of right coronary artery
+    - coronary artery
+    - posterior ventricular branch of right coronary artery
+    - right anterior branch of anterior interventricular branch of left coronary artery
+    - trunk of branch of coronary artery
+    - trunk of coronary artery
+    - ventricular branch of right coronary artery
+- slug: superior_vena_cava
+  zh: 上腔静脉
+  en: Superior vena cava
+  system: vessels
+  region: thorax
+  side: none
+  fma:
+  - FMA4720
+  source: bp3d
+  target_faces: 1000
+  priority: 1
+  meta:
+    elements: 1
+    faces_raw: 598
+    bbox_size_mm:
+    - 22.5
+    - 23.7
+    - 35.0
+    volume_cm3: 18.7
+    parents:
+    - trunk of systemic vein
+- slug: inferior_vena_cava
+  zh: 下腔静脉
+  en: Inferior vena cava
+  system: vessels
+  region: abdomen
+  side: none
+  fma:
+  - FMA10951
+  source: bp3d
+  target_faces: 1500
+  priority: 1
+  meta:
+    elements: 2
+    faces_raw: 3080
+    bbox_size_mm:
+    - 24.8
+    - 25.2
+    - 239.6
+    volume_cm3: 149.8
+    parents:
+    - trunk of systemic vein
+- slug: common_carotid_arteries
+  zh: 颈总动脉
+  en: Common carotid arteries
+  system: vessels
+  region: neck
+  side: both
+  fma:
+  - FMA3939
+  source: bp3d
+  target_faces: 1200
+  priority: 1
+  meta:
+    elements: 2
+    faces_raw: 1054
+    bbox_size_mm:
+    - 44.2
+    - 21.5
+    - 66.3
+    volume_cm3: 63.1
+    parents:
+    - systemic artery
+- slug: internal_carotid_arteries
+  zh: 颈内动脉
+  en: Internal carotid arteries
+  system: vessels
+  region: neck
+  side: both
+  fma:
+  - FMA3947
+  source: bp3d
+  target_faces: 1200
+  priority: 2
+  meta:
+    elements: 2
+    faces_raw: 2544
+    bbox_size_mm:
+    - 74.9
+    - 20.5
+    - 103.2
+    volume_cm3: 158.6
+    parents:
+    - subdivision of common carotid artery
+- slug: internal_jugular_veins
+  zh: 颈内静脉
+  en: Internal jugular veins
+  system: vessels
+  region: neck
+  side: both
+  fma:
+  - FMA4724
+  source: bp3d
+  target_faces: 1200
+  priority: 1
+  meta:
+    elements: 2
+    faces_raw: 506
+    bbox_size_mm:
+    - 62.0
+    - 10.4
+    - 44.3
+    volume_cm3: 28.6
+    parents:
+    - subdivision of brachiocephalic vein
+- slug: vertebral_arteries
+  zh: 椎动脉
+  en: Vertebral arteries
+  system: vessels
+  region: neck
+  side: both
+  fma:
+  - FMA3956
+  source: bp3d
+  target_faces: 1200
+  priority: 2
+  meta:
+    elements: 2
+    faces_raw: 1600
+    bbox_size_mm:
+    - 67.3
+    - 28.3
+    - 107.6
+    volume_cm3: 205.1
+    parents:
+    - subdivision of subclavian artery
+- slug: brachiocephalic_trunk
+  zh: 头臂干
+  en: Brachiocephalic trunk
+  system: vessels
+  region: thorax
+  side: none
+  fma:
+  - FMA3932
+  source: bp3d
+  target_faces: 600
+  priority: 2
+  meta:
+    elements: 1
+    faces_raw: 262
+    bbox_size_mm:
+    - 37.5
+    - 17.7
+    - 38.0
+    volume_cm3: 25.2
+    parents:
+    - systemic artery
+- slug: brachiocephalic_veins
+  zh: 头臂静脉
+  en: Brachiocephalic veins
+  system: vessels
+  region: thorax
+  side: both
+  fma:
+  - FMA4723
+  source: bp3d
+  target_faces: 1000
+  priority: 2
+  meta:
+    elements: 2
+    faces_raw: 1294
+    bbox_size_mm:
+    - 60.0
+    - 23.0
+    - 54.0
+    volume_cm3: 74.4
+    parents:
+    - subdivision of superior vena caval tree
+- slug: subclavian_arteries
+  zh: 锁骨下动脉
+  en: Subclavian arteries
+  system: vessels
+  region: thorax
+  side: both
+  fma:
+  - FMA3951
+  source: bp3d
+  target_faces: 1200
+  priority: 2
+  meta:
+    elements: 2
+    faces_raw: 1098
+    bbox_size_mm:
+    - 168.7
+    - 25.4
+    - 49.1
+    volume_cm3: 210.4
+    parents:
+    - systemic artery
+- slug: subclavian_veins
+  zh: 锁骨下静脉
+  en: Subclavian veins
+  system: vessels
+  region: thorax
+  side: both
+  fma:
+  - FMA4725
+  source: bp3d
+  target_faces: 1000
+  priority: 2
+  meta:
+    elements: 2
+    faces_raw: 802
+    bbox_size_mm:
+    - 181.1
+    - 16.4
+    - 28.3
+    volume_cm3: 83.7
+    parents:
+    - subdivision of brachiocephalic vein
+- slug: axillary_brachial_arteries
+  zh: 腋动脉与肱动脉
+  en: Axillary and brachial arteries
+  system: vessels
+  region: upper_limb
+  side: both
+  fma:
+  - FMA22654
+  - FMA22689
+  source: bp3d
+  target_faces: 1500
+  priority: 2
+  meta:
+    elements: 4
+    faces_raw: 10208
+    bbox_size_mm:
+    - 434.9
+    - 34.1
+    - 319.2
+    volume_cm3: 4731.7
+    parents:
+    - segment of subclavian artery
+- slug: forearm_arteries
+  zh: 桡动脉与尺动脉
+  en: Radial and ulnar arteries
+  system: vessels
+  region: upper_limb
+  side: both
+  fma:
+  - FMA22730
+  - FMA22796
+  source: bp3d
+  target_faces: 1500
+  priority: 3
+  meta:
+    elements: 4
+    faces_raw: 29226
+    bbox_size_mm:
+    - 559.0
+    - 54.1
+    - 233.3
+    volume_cm3: 7053.5
+    parents:
+    - subdivision of subclavian artery
+- slug: celiac_trunk
+  zh: 腹腔干
+  en: Celiac trunk
+  system: vessels
+  region: abdomen
+  side: none
+  fma:
+  - FMA14812
+  source: bp3d
+  target_faces: 800
+  priority: 2
+  meta:
+    elements: 1
+    faces_raw: 238
+    bbox_size_mm:
+    - 11.1
+    - 23.2
+    - 12.2
+    volume_cm3: 3.1
+    parents:
+    - systemic arterial trunk
+- slug: mesenteric_arteries
+  zh: 肠系膜动脉
+  en: Mesenteric arteries
+  system: vessels
+  region: abdomen
+  side: none
+  fma:
+  - FMA14749
+  - FMA14750
+  source: bp3d
+  target_faces: 2000
+  priority: 2
+  meta:
+    elements: 3
+    faces_raw: 2592
+    bbox_size_mm:
+    - 79.4
+    - 39.2
+    - 155.6
+    volume_cm3: 484.9
+    parents:
+    - systemic artery
+- slug: celiac_branches
+  zh: 肝总动脉与脾动脉
+  en: Common hepatic and splenic arteries
+  system: vessels
+  region: abdomen
+  side: none
+  fma:
+  - FMA14771
+  - FMA14773
+  source: bp3d
+  target_faces: 1200
+  priority: 3
+  meta:
+    elements: 5
+    faces_raw: 6792
+    bbox_size_mm:
+    - 115.8
+    - 62.3
+    - 35.0
+    volume_cm3: 252.1
+    parents:
+    - subdivision of celiac artery
+- slug: portal_tributaries
+  zh: 门静脉属支（脾静脉与肠系膜静脉）
+  en: Portal tributaries
+  system: vessels
+  region: abdomen
+  side: none
+  fma:
+  - FMA14331
+  - FMA14332
+  - FMA15391
+  source: bp3d
+  target_faces: 1500
+  priority: 3
+  meta:
+    elements: 3
+    faces_raw: 2954
+    bbox_size_mm:
+    - 162.4
+    - 66.6
+    - 191.4
+    volume_cm3: 2068.4
+    parents:
+    - subdivision of pre-hepatic portal vein
+    - tributary of splenic vein
+- slug: hepatic_portal_vein
+  zh: 肝门静脉
+  en: Hepatic portal vein
+  system: vessels
+  region: abdomen
+  side: none
+  fma:
+  - FMA50735
+  source: bp3d
+  target_faces: 1200
+  priority: 1
+  meta:
+    elements: 1
+    faces_raw: 3582
+    bbox_size_mm:
+    - 14.4
+    - 20.6
+    - 48.8
+    volume_cm3: 14.5
+    parents:
+    - portal vein
+- slug: renal_arteries
+  zh: 肾动脉
+  en: Renal arteries
+  system: vessels
+  region: abdomen
+  side: both
+  fma:
+  - FMA14751
+  source: bp3d
+  target_faces: 1000
+  priority: 2
+  meta:
+    elements: 2
+    faces_raw: 494
+    bbox_size_mm:
+    - 81.8
+    - 23.5
+    - 24.6
+    volume_cm3: 47.3
+    parents:
+    - systemic artery
+- slug: renal_veins
+  zh: 肾静脉
+  en: Renal veins
+  system: vessels
+  region: abdomen
+  side: both
+  fma:
+  - FMA14334
+  source: bp3d
+  target_faces: 1000
+  priority: 2
+  meta:
+    elements: 4
+    faces_raw: 9926
+    bbox_size_mm:
+    - 154.4
+    - 64.7
+    - 93.7
+    volume_cm3: 936.5
+    parents:
+    - subdivision of inferior vena caval tree
+- slug: iliac_arteries
+  zh: 髂动脉
+  en: Iliac arteries
+  system: vessels
+  region: pelvis
+  side: both
+  fma:
+  - FMA14764
+  - FMA18805
+  - FMA18808
+  source: bp3d
+  target_faces: 2000
+  priority: 2
+  meta:
+    elements: 6
+    faces_raw: 1872
+    bbox_size_mm:
+    - 126.7
+    - 141.2
+    - 161.1
+    volume_cm3: 2882.4
+    parents:
+    - systemic artery
+- slug: femoral_arteries
+  zh: 股动脉
+  en: Femoral arteries
+  system: vessels
+  region: lower_limb
+  side: both
+  fma:
+  - FMA70248
+  source: bp3d
+  target_faces: 1200
+  priority: 1
+  meta:
+    elements: 2
+    faces_raw: 1492
+    bbox_size_mm:
+    - 132.1
+    - 57.6
+    - 360.0
+    volume_cm3: 2739.3
+    parents:
+    - subdivision of external iliac artery
+- slug: femoral_veins
+  zh: 股静脉
+  en: Femoral veins
+  system: vessels
+  region: lower_limb
+  side: both
+  fma:
+  - FMA21185
+  source: bp3d
+  target_faces: 1200
+  priority: 2
+  meta:
+    elements: 2
+    faces_raw: 1316
+    bbox_size_mm:
+    - 147.7
+    - 70.9
+    - 323.3
+    volume_cm3: 3384.2
+    parents:
+    - subdivision of external iliac vein
+- slug: popliteal_arteries
+  zh: 腘动脉
+  en: Popliteal arteries
+  system: vessels
+  region: lower_limb
+  side: both
+  fma:
+  - FMA77155
+  source: bp3d
+  target_faces: 1000
+  priority: 2
+  meta:
+    elements: 2
+    faces_raw: 33510
+    bbox_size_mm:
+    - 191.7
+    - 43.1
+    - 197.5
+    volume_cm3: 1631.4
+    parents:
+    - subdivision of external iliac artery
+- slug: tibial_arteries
+  zh: 胫前动脉与胫后动脉
+  en: Anterior and posterior tibial arteries
+  system: vessels
+  region: lower_limb
+  side: both
+  fma:
+  - FMA43894
+  - FMA43895
+  source: bp3d
+  target_faces: 1500
+  priority: 3
+  meta:
+    elements: 4
+    faces_raw: 61094
+    bbox_size_mm:
+    - 211.1
+    - 47.8
+    - 363.2
+    volume_cm3: 3661.6
+    parents:
+    - subdivision of external iliac artery
+- slug: great_saphenous_veins
+  zh: 大隐静脉
+  en: Great saphenous veins
+  system: vessels
+  region: lower_limb
+  side: both
+  fma:
+  - FMA21376
+  source: bp3d
+  target_faces: 1500
+  priority: 2
+  meta:
+    elements: 2
+    faces_raw: 60076
+    bbox_size_mm:
+    - 189.8
+    - 105.9
+    - 822.2
+    volume_cm3: 16519.7
+    parents:
+    - tributary of femoral vein
+- slug: azygos_vein
+  zh: 奇静脉
+  en: Azygos vein
+  system: vessels
+  region: thorax
+  side: none
+  fma:
+  - FMA4838
+  source: bp3d
+  target_faces: 800
+  priority: 3
+  meta:
+    elements: 1
+    faces_raw: 18260
+    bbox_size_mm:
+    - 12.5
+    - 53.2
+    - 217.6
+    volume_cm3: 145.0
+    parents:
+    - subdivision of superior vena caval tree
+- slug: brain
+  zh: 脑
+  en: Brain
+  system: nerves
+  region: head
+  side: none
+  fma:
+  - FMA50801
+  source: bp3d_partof
+  target_faces: 8000
+  priority: 1
+  meta:
+    elements: 59
+    faces_raw: 322262
+    bbox_size_mm:
+    - 138.8
+    - 180.0
+    - 166.0
+    volume_cm3: 4147.5
+    parents:
+    - neuraxis
+    note: isa 集无整脑；KICKOFF 神经示例含脑与脊髓，故归 nerves 层。
+- slug: cerebellum
+  zh: 小脑
+  en: Cerebellum
+  system: nerves
+  region: head
+  side: none
+  fma:
+  - FMA67944
+  source: bp3d
+  target_faces: 3000
+  priority: 3
+  meta:
+    elements: 2
+    faces_raw: 47700
+    bbox_size_mm:
+    - 106.5
+    - 56.3
+    - 53.3
+    volume_cm3: 319.5
+    parents:
+    - segment of neuraxis
+    note: 与整脑重叠，人类二选一。
+- slug: brainstem
+  zh: 脑干
+  en: Brainstem
+  system: nerves
+  region: head
+  side: none
+  fma:
+  - FMA79876
+  source: bp3d_partof
+  target_faces: 2000
+  priority: 3
+  meta:
+    elements: 11
+    faces_raw: 46888
+    bbox_size_mm:
+    - 42.2
+    - 45.7
+    - 81.9
+    volume_cm3: 158.0
+    parents:
+    - basicranial part of head proper
+    note: 与整脑重叠，人类二选一。
+- slug: spinal_cord
+  zh: 脊髓
+  en: Spinal cord
+  system: nerves
+  region: whole
+  side: none
+  fma:
+  - FMA7647
+  source: bp3d_partof
+  target_faces: 3000
+  priority: 1
+  meta:
+    elements: 1
+    faces_raw: 728
+    bbox_size_mm:
+    - 2.2
+    - 13.1
+    - 35.6
+    volume_cm3: 1.0
+    parents:
+    - neuraxis
+- slug: optic_nerves
+  zh: 视神经
+  en: Optic nerves
+  system: nerves
+  region: head
+  side: both
+  fma:
+  - FMA50863
+  source: bp3d
+  target_faces: 800
+  priority: 2
+  meta:
+    elements: 4
+    faces_raw: 8472
+    bbox_size_mm:
+    - 65.3
+    - 49.6
+    - 24.0
+    volume_cm3: 77.8
+    parents:
+    - nerve trunk
+- slug: nervous_system
+  zh: 神经系统（整体）
+  en: Nervous system (whole)
+  system: nerves
+  region: whole
+  side: none
+  fma:
+  - FMA7157
+  source: bp3d_partof
+  target_faces: 8000
+  priority: 3
+  meta:
+    elements: 60
+    faces_raw: 322990
+    bbox_size_mm:
+    - 138.8
+    - 180.0
+    - 171.9
+    volume_cm3: 4294.9
+    parents:
+    - human body
+    note: BP3D 4.0 两集均无坐骨神经、臂丛等单独周围神经网格；此复合体仅作分层显示， 与脑/脊髓重叠。周围神经补源（HRA 等）待 M2 在 DECISIONS.md 决策。
+- slug: sternocleidomastoid
+  zh: 胸锁乳突肌
+  en: Sternocleidomastoid
+  system: muscles
+  region: neck
+  side: both
+  fma:
+  - FMA13407
+  source: bp3d
+  target_faces: 1200
+  priority: 1
+  meta:
+    elements: 2
+    faces_raw: 20568
+    bbox_size_mm:
+    - 124.7
+    - 119.7
+    - 201.2
+    volume_cm3: 3002.5
+    parents:
+    - superficial muscle of neck
+- slug: platysma
+  zh: 颈阔肌
+  en: Platysma
+  system: muscles
+  region: neck
+  side: both
+  fma:
+  - FMA45738
+  source: bp3d
+  target_faces: 1200
+  priority: 3
+  meta:
+    elements: 2
+    faces_raw: 27176
+    bbox_size_mm:
+    - 292.9
+    - 123.8
+    - 148.8
+    volume_cm3: 5393.8
+    parents:
+    - superficial muscle of neck
+- slug: trapezius
+  zh: 斜方肌
+  en: Trapezius
+  system: muscles
+  region: thorax
+  side: both
+  fma:
+  - FMA32555
+  - FMA32556
+  - FMA32557
+  source: bp3d
+  target_faces: 2000
+  priority: 1
+  meta:
+    elements: 6
+    faces_raw: 44196
+    bbox_size_mm:
+    - 326.5
+    - 125.2
+    - 452.2
+    volume_cm3: 18486.3
+    parents:
+    - organ zone
+    - zone of trapezius
+- slug: deltoid
+  zh: 三角肌
+  en: Deltoid
+  system: muscles
+  region: upper_limb
+  side: both
+  fma:
+  - FMA34677
+  - FMA34678
+  - FMA34679
+  source: bp3d
+  target_faces: 2000
+  priority: 1
+  meta:
+    elements: 6
+    faces_raw: 10812
+    bbox_size_mm:
+    - 454.5
+    - 118.6
+    - 167.6
+    volume_cm3: 9036.0
+    parents:
+    - zone of deltoid
+- slug: pectoralis_major
+  zh: 胸大肌
+  en: Pectoralis major
+  system: muscles
+  region: thorax
+  side: both
+  fma:
+  - FMA34687
+  - FMA34696
+  - FMA34699
+  source: bp3d
+  target_faces: 2000
+  priority: 1
+  meta:
+    elements: 6
+    faces_raw: 20992
+    bbox_size_mm:
+    - 388.5
+    - 138.4
+    - 231.1
+    volume_cm3: 12423.5
+    parents:
+    - head of muscle organ
+    - zone of pectoralis major
+- slug: pectoralis_minor
+  zh: 胸小肌
+  en: Pectoralis minor
+  system: muscles
+  region: thorax
+  side: both
+  fma:
+  - FMA13109
+  source: bp3d
+  target_faces: 1000
+  priority: 2
+  meta:
+    elements: 2
+    faces_raw: 18936
+    bbox_size_mm:
+    - 260.4
+    - 92.7
+    - 145.0
+    volume_cm3: 3499.7
+    parents:
+    - pectoral muscle
+- slug: serratus_anterior
+  zh: 前锯肌
+  en: Serratus anterior
+  system: muscles
+  region: thorax
+  side: both
+  fma:
+  - FMA13397
+  source: bp3d
+  target_faces: 1500
+  priority: 2
+  meta:
+    elements: 2
+    faces_raw: 98424
+    bbox_size_mm:
+    - 288.8
+    - 162.9
+    - 270.2
+    volume_cm3: 12708.5
+    parents:
+    - deep extrinsic muscle of shoulder
+- slug: intercostal_muscles
+  zh: 肋间肌
+  en: Intercostal muscles
+  system: muscles
+  region: thorax
+  side: both
+  fma:
+  - FMA9756
+  - FMA9757
+  source: bp3d
+  target_faces: 3000
+  priority: 2
+  meta:
+    elements: 4
+    faces_raw: 377532
+    bbox_size_mm:
+    - 272.3
+    - 206.0
+    - 353.9
+    volume_cm3: 19854.5
+    parents:
+    - intercostal muscle
+- slug: diaphragm
+  zh: 膈肌
+  en: Diaphragm
+  system: muscles
+  region: thorax
+  side: none
+  fma:
+  - FMA13295
+  source: bp3d
+  target_faces: 2000
+  priority: 1
+  meta:
+    elements: 1
+    faces_raw: 68522
+    bbox_size_mm:
+    - 243.2
+    - 179.4
+    - 206.7
+    volume_cm3: 9019.6
+    parents:
+    - muscle of thorax
+- slug: external_oblique
+  zh: 腹外斜肌
+  en: External oblique
+  system: muscles
+  region: abdomen
+  side: both
+  fma:
+  - FMA13335
+  source: bp3d
+  target_faces: 2000
+  priority: 1
+  meta:
+    elements: 2
+    faces_raw: 223652
+    bbox_size_mm:
+    - 281.6
+    - 181.7
+    - 418.0
+    volume_cm3: 21394.2
+    parents:
+    - muscle of anterior abdominal wall
+- slug: erector_spinae
+  zh: 竖脊肌
+  en: Erector spinae
+  system: muscles
+  region: whole
+  side: both
+  fma:
+  - FMA22702
+  - FMA22703
+  - FMA22704
+  - FMA22709
+  - FMA22711
+  - FMA22714
+  - FMA22765
+  source: bp3d
+  target_faces: 3000
+  priority: 2
+  meta:
+    elements: 14
+    faces_raw: 109792
+    bbox_size_mm:
+    - 204.6
+    - 90.0
+    - 669.8
+    volume_cm3: 12341.8
+    parents:
+    - iliocostalis
+    - longissimus
+    - spinalis
+- slug: levator_scapulae
+  zh: 肩胛提肌
+  en: Levator scapulae
+  system: muscles
+  region: neck
+  side: both
+  fma:
+  - FMA32519
+  source: bp3d
+  target_faces: 800
+  priority: 3
+  meta:
+    elements: 2
+    faces_raw: 9436
+    bbox_size_mm:
+    - 162.2
+    - 70.4
+    - 159.2
+    volume_cm3: 1817.0
+    parents:
+    - deep extrinsic muscle of shoulder
+- slug: splenius_capitis
+  zh: 头夹肌
+  en: Splenius capitis
+  system: muscles
+  region: neck
+  side: both
+  fma:
+  - FMA22653
+  source: bp3d
+  target_faces: 800
+  priority: 3
+  meta:
+    elements: 2
+    faces_raw: 15616
+    bbox_size_mm:
+    - 121.7
+    - 74.1
+    - 213.7
+    volume_cm3: 1926.4
+    parents:
+    - splenius
+- slug: supraspinatus
+  zh: 冈上肌
+  en: Supraspinatus
+  system: muscles
+  region: upper_limb
+  side: both
+  fma:
+  - FMA9629
+  source: bp3d
+  target_faces: 800
+  priority: 3
+  meta:
+    elements: 2
+    faces_raw: 1756
+    bbox_size_mm:
+    - 376.9
+    - 78.9
+    - 35.0
+    volume_cm3: 1042.2
+    parents:
+    - intrinsic muscle of shoulder
+- slug: infraspinatus
+  zh: 冈下肌
+  en: Infraspinatus
+  system: muscles
+  region: upper_limb
+  side: both
+  fma:
+  - FMA32546
+  source: bp3d
+  target_faces: 1000
+  priority: 2
+  meta:
+    elements: 2
+    faces_raw: 1732
+    bbox_size_mm:
+    - 378.1
+    - 80.8
+    - 124.4
+    volume_cm3: 3799.8
+    parents:
+    - intrinsic muscle of shoulder
+- slug: teres_major
+  zh: 大圆肌
+  en: Teres major
+  system: muscles
+  region: upper_limb
+  side: both
+  fma:
+  - FMA32549
+  source: bp3d
+  target_faces: 800
+  priority: 3
+  meta:
+    elements: 2
+    faces_raw: 2084
+    bbox_size_mm:
+    - 344.4
+    - 81.1
+    - 95.7
+    volume_cm3: 2673.5
+    parents:
+    - intrinsic muscle of shoulder
+- slug: biceps_brachii
+  zh: 肱二头肌
+  en: Biceps brachii
+  system: muscles
+  region: upper_limb
+  side: both
+  fma:
+  - FMA37682
+  - FMA37683
+  source: bp3d
+  target_faces: 1500
+  priority: 1
+  meta:
+    elements: 4
+    faces_raw: 6564
+    bbox_size_mm:
+    - 459.7
+    - 41.5
+    - 345.3
+    volume_cm3: 6586.2
+    parents:
+    - head of muscle organ
+- slug: triceps_brachii
+  zh: 肱三头肌
+  en: Triceps brachii
+  system: muscles
+  region: upper_limb
+  side: both
+  fma:
+  - FMA37692
+  - FMA37693
+  - FMA37694
+  source: bp3d
+  target_faces: 1500
+  priority: 1
+  meta:
+    elements: 6
+    faces_raw: 10052
+    bbox_size_mm:
+    - 456.0
+    - 53.1
+    - 271.4
+    volume_cm3: 6574.2
+    parents:
+    - head of muscle organ
+- slug: brachialis
+  zh: 肱肌
+  en: Brachialis
+  system: muscles
+  region: upper_limb
+  side: both
+  fma:
+  - FMA37667
+  source: bp3d
+  target_faces: 1000
+  priority: 2
+  meta:
+    elements: 2
+    faces_raw: 3492
+    bbox_size_mm:
+    - 470.2
+    - 25.8
+    - 224.8
+    volume_cm3: 2730.6
+    parents:
+    - muscle of anterior compartment of arm
+- slug: brachioradialis
+  zh: 肱桡肌
+  en: Brachioradialis
+  system: muscles
+  region: upper_limb
+  side: both
+  fma:
+  - FMA38485
+  source: bp3d
+  target_faces: 1000
+  priority: 2
+  meta:
+    elements: 2
+    faces_raw: 9748
+    bbox_size_mm:
+    - 561.2
+    - 67.1
+    - 337.9
+    volume_cm3: 12714.6
+    parents:
+    - superficial muscle of posterior compartment of forearm
+- slug: flexor_carpi_radialis
+  zh: 桡侧腕屈肌
+  en: Flexor carpi radialis
+  system: muscles
+  region: upper_limb
+  side: both
+  fma:
+  - FMA38459
+  source: bp3d
+  target_faces: 800
+  priority: 3
+  meta:
+    elements: 2
+    faces_raw: 2296
+    bbox_size_mm:
+    - 544.2
+    - 65.5
+    - 276.8
+    volume_cm3: 9872.3
+    parents:
+    - superficial muscle of anterior compartment of forearm
+- slug: palmaris_longus
+  zh: 掌长肌
+  en: Palmaris longus
+  system: muscles
+  region: upper_limb
+  side: both
+  fma:
+  - FMA38462
+  source: bp3d
+  target_faces: 800
+  priority: 3
+  meta:
+    elements: 2
+    faces_raw: 9936
+    bbox_size_mm:
+    - 581.2
+    - 78.1
+    - 320.8
+    volume_cm3: 14559.1
+    parents:
+    - superficial muscle of anterior compartment of forearm
+- slug: flexor_digitorum_superficialis
+  zh: 指浅屈肌
+  en: Flexor digitorum superficialis
+  system: muscles
+  region: upper_limb
+  side: both
+  fma:
+  - FMA38469
+  source: bp3d
+  target_faces: 1000
+  priority: 3
+  meta:
+    elements: 4
+    faces_raw: 19128
+    bbox_size_mm:
+    - 611.7
+    - 100.3
+    - 377.3
+    volume_cm3: 23140.9
+    parents:
+    - superficial muscle of anterior compartment of forearm
+- slug: extensor_digitorum
+  zh: 指伸肌
+  en: Extensor digitorum
+  system: muscles
+  region: upper_limb
+  side: both
+  fma:
+  - FMA38500
+  source: bp3d
+  target_faces: 1000
+  priority: 3
+  meta:
+    elements: 2
+    faces_raw: 8588
+    bbox_size_mm:
+    - 610.1
+    - 117.2
+    - 382.0
+    volume_cm3: 27317.1
+    parents:
+    - superficial muscle of posterior compartment of forearm
+- slug: psoas_major
+  zh: 腰大肌
+  en: Psoas major
+  system: muscles
+  region: abdomen
+  side: both
+  fma:
+  - FMA18060
+  source: bp3d
+  target_faces: 1200
+  priority: 2
+  meta:
+    elements: 2
+    faces_raw: 9800
+    bbox_size_mm:
+    - 227.5
+    - 66.4
+    - 363.5
+    volume_cm3: 5494.3
+    parents:
+    - prevertebral muscle
+- slug: iliacus
+  zh: 髂肌
+  en: Iliacus
+  system: muscles
+  region: pelvis
+  side: both
+  fma:
+  - FMA22310
+  source: bp3d
+  target_faces: 1000
+  priority: 2
+  meta:
+    elements: 2
+    faces_raw: 5724
+    bbox_size_mm:
+    - 254.5
+    - 83.1
+    - 224.2
+    volume_cm3: 4740.8
+    parents:
+    - muscle of pelvic girdle
+- slug: gluteus_maximus
+  zh: 臀大肌
+  en: Gluteus maximus
+  system: muscles
+  region: pelvis
+  side: both
+  fma:
+  - FMA22314
+  source: bp3d
+  target_faces: 2000
+  priority: 1
+  meta:
+    elements: 2
+    faces_raw: 4752
+    bbox_size_mm:
+    - 290.8
+    - 97.9
+    - 264.8
+    volume_cm3: 7537.4
+    parents:
+    - gluteal muscle
+- slug: gluteus_medius
+  zh: 臀中肌
+  en: Gluteus medius
+  system: muscles
+  region: pelvis
+  side: both
+  fma:
+  - FMA22315
+  source: bp3d
+  target_faces: 1200
+  priority: 2
+  meta:
+    elements: 2
+    faces_raw: 6712
+    bbox_size_mm:
+    - 299.5
+    - 85.1
+    - 162.2
+    volume_cm3: 4130.9
+    parents:
+    - gluteal muscle
+- slug: tensor_fasciae_latae
+  zh: 阔筋膜张肌
+  en: Tensor fasciae latae
+  system: muscles
+  region: lower_limb
+  side: both
+  fma:
+  - FMA22423
+  source: bp3d
+  target_faces: 800
+  priority: 3
+  meta:
+    elements: 2
+    faces_raw: 2508
+    bbox_size_mm:
+    - 320.1
+    - 39.4
+    - 158.9
+    volume_cm3: 2004.9
+    parents:
+    - gluteal muscle
+- slug: sartorius
+  zh: 缝匠肌
+  en: Sartorius
+  system: muscles
+  region: lower_limb
+  side: both
+  fma:
+  - FMA22353
+  source: bp3d
+  target_faces: 1200
+  priority: 2
+  meta:
+    elements: 2
+    faces_raw: 6888
+    bbox_size_mm:
+    - 262.4
+    - 57.0
+    - 627.6
+    volume_cm3: 9380.2
+    parents:
+    - muscle of anterior compartment of thigh
+- slug: rectus_femoris
+  zh: 股直肌
+  en: Rectus femoris
+  system: muscles
+  region: lower_limb
+  side: both
+  fma:
+  - FMA22430
+  source: bp3d
+  target_faces: 1500
+  priority: 1
+  meta:
+    elements: 2
+    faces_raw: 11376
+    bbox_size_mm:
+    - 308.9
+    - 68.6
+    - 556.4
+    volume_cm3: 11784.4
+    parents:
+    - zone of quadriceps femoris
+- slug: vastus_muscles
+  zh: 股外侧肌与股内侧肌
+  en: Vastus muscles
+  system: muscles
+  region: lower_limb
+  side: both
+  fma:
+  - FMA22431
+  - FMA22432
+  - FMA22433
+  source: bp3d
+  target_faces: 2000
+  priority: 2
+  meta:
+    elements: 6
+    faces_raw: 31000
+    bbox_size_mm:
+    - 319.3
+    - 89.4
+    - 470.2
+    volume_cm3: 13421.3
+    parents:
+    - zone of quadriceps femoris
+    note: 与股直肌合为股四头肌；分开列便于人类取舍。
+- slug: adductor_muscles
+  zh: 内收肌群
+  en: Adductor muscles
+  system: muscles
+  region: lower_limb
+  side: both
+  fma:
+  - FMA22441
+  - FMA22443
+  - FMA43882
+  source: bp3d
+  target_faces: 2000
+  priority: 2
+  meta:
+    elements: 6
+    faces_raw: 23520
+    bbox_size_mm:
+    - 224.4
+    - 82.5
+    - 516.7
+    volume_cm3: 9569.4
+    parents:
+    - muscle of medial compartment of thigh
+- slug: hamstrings
+  zh: 腘绳肌
+  en: Hamstrings
+  system: muscles
+  region: lower_limb
+  side: both
+  fma:
+  - FMA22357
+  - FMA22438
+  - FMA45887
+  - FMA45890
+  source: bp3d
+  target_faces: 2000
+  priority: 1
+  meta:
+    elements: 8
+    faces_raw: 28324
+    bbox_size_mm:
+    - 253.3
+    - 85.2
+    - 481.6
+    volume_cm3: 10391.7
+    parents:
+    - head of biceps femoris
+    - muscle of posterior compartment of thigh
+- slug: gastrocnemius
+  zh: 腓肠肌
+  en: Gastrocnemius
+  system: muscles
+  region: lower_limb
+  side: both
+  fma:
+  - FMA45956
+  - FMA45959
+  source: bp3d
+  target_faces: 1500
+  priority: 1
+  meta:
+    elements: 4
+    faces_raw: 13788
+    bbox_size_mm:
+    - 234.0
+    - 86.9
+    - 309.3
+    volume_cm3: 6287.3
+    parents:
+    - head of gastrocnemius
+- slug: soleus
+  zh: 比目鱼肌
+  en: Soleus
+  system: muscles
+  region: lower_limb
+  side: both
+  fma:
+  - FMA22542
+  source: bp3d
+  target_faces: 1200
+  priority: 2
+  meta:
+    elements: 2
+    faces_raw: 8836
+    bbox_size_mm:
+    - 231.6
+    - 58.9
+    - 326.2
+    volume_cm3: 4450.1
+    parents:
+    - superficial muscle of posterior compartment of leg
+- slug: calcaneal_tendon
+  zh: 跟腱
+  en: Calcaneal tendon
+  system: muscles
+  region: lower_limb
+  side: both
+  fma:
+  - FMA51061
+  source: bp3d
+  target_faces: 600
+  priority: 2
+  meta:
+    elements: 2
+    faces_raw: 7764
+    bbox_size_mm:
+    - 195.4
+    - 30.6
+    - 214.0
+    volume_cm3: 1280.4
+    parents:
+    - skeletal ligament
+- slug: tibialis_anterior
+  zh: 胫骨前肌
+  en: Tibialis anterior
+  system: muscles
+  region: lower_limb
+  side: both
+  fma:
+  - FMA22532
+  source: bp3d
+  target_faces: 1000
+  priority: 2
+  meta:
+    elements: 2
+    faces_raw: 5020
+    bbox_size_mm:
+    - 233.6
+    - 76.8
+    - 394.1
+    volume_cm3: 7066.4
+    parents:
+    - muscle of anterior compartment of leg
+- slug: tibialis_posterior
+  zh: 胫骨后肌
+  en: Tibialis posterior
+  system: muscles
+  region: lower_limb
+  side: both
+  fma:
+  - FMA51099
+  source: bp3d
+  target_faces: 800
+  priority: 3
+  meta:
+    elements: 2
+    faces_raw: 10272
+    bbox_size_mm:
+    - 209.9
+    - 73.4
+    - 378.3
+    volume_cm3: 5831.2
+    parents:
+    - deep muscle of posterior compartment of leg
+- slug: fibularis_longus
+  zh: 腓骨长肌
+  en: Fibularis longus
+  system: muscles
+  region: lower_limb
+  side: both
+  fma:
+  - FMA22539
+  source: bp3d
+  target_faces: 800
+  priority: 3
+  meta:
+    elements: 2
+    faces_raw: 7720
+    bbox_size_mm:
+    - 252.9
+    - 95.7
+    - 404.6
+    volume_cm3: 9793.0
+    parents:
+    - muscle of lateral compartment of leg
+- slug: extensor_digitorum_longus
+  zh: 趾长伸肌
+  en: Extensor digitorum longus
+  system: muscles
+  region: lower_limb
+  side: both
+  fma:
+  - FMA22534
+  source: bp3d
+  target_faces: 800
+  priority: 3
+  meta:
+    elements: 2
+    faces_raw: 9092
+    bbox_size_mm:
+    - 332.1
+    - 165.3
+    - 426.4
+    volume_cm3: 23417.7
+    parents:
+    - muscle of anterior compartment of leg
+- slug: flexor_digitorum_longus
+  zh: 趾长屈肌
+  en: Flexor digitorum longus
+  system: muscles
+  region: lower_limb
+  side: both
+  fma:
+  - FMA51071
+  source: bp3d
+  target_faces: 800
+  priority: 3
+  meta:
+    elements: 2
+    faces_raw: 8008
+    bbox_size_mm:
+    - 331.5
+    - 170.4
+    - 363.1
+    volume_cm3: 20512.0
+    parents:
+    - deep muscle of posterior compartment of leg

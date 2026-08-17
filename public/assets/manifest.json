@@ -1,0 +1,2829 @@
+{
+  "version": "0.0.1",
+  "generatedAt": "2026-08-17T10:54:25+00:00",
+  "systems": [
+    {
+      "id": "skin",
+      "file": "assets/skin.glb",
+      "bytes": 54720,
+      "structures": [
+        "skin"
+      ]
+    },
+    {
+      "id": "muscles",
+      "file": "assets/muscles.glb",
+      "bytes": 445964,
+      "structures": [
+        "sternocleidomastoid",
+        "platysma",
+        "trapezius",
+        "deltoid",
+        "pectoralis_major",
+        "pectoralis_minor",
+        "serratus_anterior",
+        "intercostal_muscles",
+        "diaphragm",
+        "external_oblique",
+        "erector_spinae",
+        "levator_scapulae",
+        "splenius_capitis",
+        "supraspinatus",
+        "infraspinatus",
+        "teres_major",
+        "biceps_brachii",
+        "triceps_brachii",
+        "brachialis",
+        "brachioradialis",
+        "flexor_carpi_radialis",
+        "palmaris_longus",
+        "flexor_digitorum_superficialis",
+        "extensor_digitorum",
+        "psoas_major",
+        "iliacus",
+        "gluteus_maximus",
+        "gluteus_medius",
+        "tensor_fasciae_latae",
+        "sartorius",
+        "rectus_femoris",
+        "vastus_muscles",
+        "adductor_muscles",
+        "hamstrings",
+        "gastrocnemius",
+        "soleus",
+        "calcaneal_tendon",
+        "tibialis_anterior",
+        "tibialis_posterior",
+        "fibularis_longus",
+        "extensor_digitorum_longus",
+        "flexor_digitorum_longus"
+      ]
+    },
+    {
+      "id": "skeleton",
+      "file": "assets/skeleton.glb",
+      "bytes": 519688,
+      "structures": [
+        "skull",
+        "mandible",
+        "hyoid",
+        "cervical_vertebrae",
+        "thoracic_vertebrae",
+        "lumbar_vertebrae",
+        "sacrum",
+        "intervertebral_disks",
+        "ribs",
+        "costal_cartilages",
+        "sternum",
+        "clavicle_right",
+        "clavicle_left",
+        "scapula_right",
+        "scapula_left",
+        "humerus_right",
+        "humerus_left",
+        "radius_right",
+        "radius_left",
+        "ulna_right",
+        "ulna_left",
+        "carpal_bones",
+        "hand_bones",
+        "hip_bone_right",
+        "hip_bone_left",
+        "femur_right",
+        "femur_left",
+        "patella_right",
+        "patella_left",
+        "tibia_right",
+        "tibia_left",
+        "fibula_right",
+        "fibula_left",
+        "tarsal_bones",
+        "foot_bones"
+      ]
+    },
+    {
+      "id": "organs",
+      "file": "assets/organs.glb",
+      "bytes": 418200,
+      "structures": [
+        "heart",
+        "lung_right",
+        "lung_left",
+        "trachea",
+        "esophagus",
+        "stomach",
+        "liver",
+        "gallbladder",
+        "pancreas",
+        "spleen",
+        "kidneys",
+        "urinary_bladder",
+        "small_intestine",
+        "large_intestine",
+        "tongue",
+        "appendix",
+        "adrenal_glands",
+        "ureters",
+        "pituitary_gland",
+        "larynx_cartilages",
+        "thymus",
+        "prostate",
+        "testes"
+      ]
+    },
+    {
+      "id": "vessels",
+      "file": "assets/vessels.glb",
+      "bytes": 307880,
+      "structures": [
+        "aorta",
+        "pulmonary_trunk",
+        "pulmonary_arteries",
+        "pulmonary_veins",
+        "coronary_arteries",
+        "superior_vena_cava",
+        "inferior_vena_cava",
+        "common_carotid_arteries",
+        "internal_carotid_arteries",
+        "internal_jugular_veins",
+        "vertebral_arteries",
+        "brachiocephalic_trunk",
+        "brachiocephalic_veins",
+        "subclavian_arteries",
+        "subclavian_veins",
+        "axillary_brachial_arteries",
+        "forearm_arteries",
+        "celiac_trunk",
+        "mesenteric_arteries",
+        "celiac_branches",
+        "portal_tributaries",
+        "hepatic_portal_vein",
+        "renal_arteries",
+        "renal_veins",
+        "iliac_arteries",
+        "femoral_arteries",
+        "femoral_veins",
+        "popliteal_arteries",
+        "tibial_arteries",
+        "great_saphenous_veins",
+        "azygos_vein"
+      ]
+    },
+    {
+      "id": "nerves",
+      "file": "assets/nerves.glb",
+      "bytes": 73416,
+      "structures": [
+        "brain",
+        "spinal_cord",
+        "optic_nerves"
+      ]
+    }
+  ],
+  "structures": {
+    "skin": {
+      "zh": "皮肤",
+      "en": "Skin",
+      "system": "skin",
+      "region": "whole",
+      "side": "none",
+      "fma": [
+        "FMA7163"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -333.57,
+        -145.09,
+        -865.25,
+        333.92,
+        146.88,
+        853.62
+      ]
+    },
+    "sternocleidomastoid": {
+      "zh": "胸锁乳突肌",
+      "en": "Sternocleidomastoid",
+      "system": "muscles",
+      "region": "neck",
+      "side": "both",
+      "fma": [
+        "FMA13407"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -62.27,
+        -56.23,
+        515.19,
+        62.34,
+        63.23,
+        716.24
+      ]
+    },
+    "platysma": {
+      "zh": "颈阔肌",
+      "en": "Platysma",
+      "system": "muscles",
+      "region": "neck",
+      "side": "both",
+      "fma": [
+        "FMA45738"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -146.33,
+        -72.86,
+        532.8,
+        146.59,
+        51.48,
+        681.87
+      ]
+    },
+    "trapezius": {
+      "zh": "斜方肌",
+      "en": "Trapezius",
+      "system": "muscles",
+      "region": "thorax",
+      "side": "both",
+      "fma": [
+        "FMA32555",
+        "FMA32556",
+        "FMA32557"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -161.99,
+        -0.01,
+        267.36,
+        163.3,
+        125.66,
+        719.12
+      ]
+    },
+    "deltoid": {
+      "zh": "三角肌",
+      "en": "Deltoid",
+      "system": "muscles",
+      "region": "upper_limb",
+      "side": "both",
+      "fma": [
+        "FMA34677",
+        "FMA34678",
+        "FMA34679"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -226.24,
+        -20.83,
+        400.89,
+        227.59,
+        98.04,
+        568.33
+      ]
+    },
+    "pectoralis_major": {
+      "zh": "胸大肌",
+      "en": "Pectoralis major",
+      "system": "muscles",
+      "region": "thorax",
+      "side": "both",
+      "fma": [
+        "FMA34687",
+        "FMA34696",
+        "FMA34699"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -193.41,
+        -118.44,
+        318.08,
+        194.75,
+        19.32,
+        548.94
+      ]
+    },
+    "pectoralis_minor": {
+      "zh": "胸小肌",
+      "en": "Pectoralis minor",
+      "system": "muscles",
+      "region": "thorax",
+      "side": "both",
+      "fma": [
+        "FMA13109"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -129.41,
+        -72.1,
+        394.85,
+        130.8,
+        20.76,
+        539.83
+      ]
+    },
+    "serratus_anterior": {
+      "zh": "前锯肌",
+      "en": "Serratus anterior",
+      "system": "muscles",
+      "region": "thorax",
+      "side": "both",
+      "fma": [
+        "FMA13397"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -143.68,
+        -55.48,
+        291.42,
+        144.95,
+        105.89,
+        561.95
+      ]
+    },
+    "intercostal_muscles": {
+      "zh": "肋间肌",
+      "en": "Intercostal muscles",
+      "system": "muscles",
+      "region": "thorax",
+      "side": "both",
+      "fma": [
+        "FMA9756",
+        "FMA9757"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -134.84,
+        -108.23,
+        228.46,
+        136.47,
+        96.89,
+        577.67
+      ]
+    },
+    "diaphragm": {
+      "zh": "膈肌",
+      "en": "Diaphragm",
+      "system": "muscles",
+      "region": "thorax",
+      "side": "none",
+      "fma": [
+        "FMA13295"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -121.59,
+        -104.71,
+        199.22,
+        121.6,
+        75.09,
+        406.09
+      ]
+    },
+    "external_oblique": {
+      "zh": "腹外斜肌",
+      "en": "External oblique",
+      "system": "muscles",
+      "region": "abdomen",
+      "side": "both",
+      "fma": [
+        "FMA13335"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -140.32,
+        -117.91,
+        7.01,
+        141.62,
+        63.56,
+        423.79
+      ]
+    },
+    "erector_spinae": {
+      "zh": "竖脊肌",
+      "en": "Erector spinae",
+      "system": "muscles",
+      "region": "whole",
+      "side": "both",
+      "fma": [
+        "FMA22702",
+        "FMA22703",
+        "FMA22704",
+        "FMA22709",
+        "FMA22711",
+        "FMA22714",
+        "FMA22765"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -101.63,
+        19.72,
+        43.06,
+        102.93,
+        109.86,
+        712.41
+      ]
+    },
+    "levator_scapulae": {
+      "zh": "肩胛提肌",
+      "en": "Levator scapulae",
+      "system": "muscles",
+      "region": "neck",
+      "side": "both",
+      "fma": [
+        "FMA32519"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -80.51,
+        18.12,
+        522.56,
+        81.8,
+        88.59,
+        681.8
+      ]
+    },
+    "splenius_capitis": {
+      "zh": "头夹肌",
+      "en": "Splenius capitis",
+      "system": "muscles",
+      "region": "neck",
+      "side": "both",
+      "fma": [
+        "FMA22653"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -60.14,
+        28.54,
+        498.29,
+        61.3,
+        102.86,
+        712.15
+      ]
+    },
+    "supraspinatus": {
+      "zh": "冈上肌",
+      "en": "Supraspinatus",
+      "system": "muscles",
+      "region": "upper_limb",
+      "side": "both",
+      "fma": [
+        "FMA9629"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -187.8,
+        8.87,
+        520.67,
+        189.09,
+        87.78,
+        555.61
+      ]
+    },
+    "infraspinatus": {
+      "zh": "冈下肌",
+      "en": "Infraspinatus",
+      "system": "muscles",
+      "region": "upper_limb",
+      "side": "both",
+      "fma": [
+        "FMA32546"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -188.4,
+        23.65,
+        419.75,
+        189.7,
+        104.43,
+        544.22
+      ]
+    },
+    "teres_major": {
+      "zh": "大圆肌",
+      "en": "Teres major",
+      "system": "muscles",
+      "region": "upper_limb",
+      "side": "both",
+      "fma": [
+        "FMA32549"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -171.56,
+        21.14,
+        403.04,
+        172.86,
+        102.32,
+        498.59
+      ]
+    },
+    "biceps_brachii": {
+      "zh": "肱二头肌",
+      "en": "Biceps brachii",
+      "system": "muscles",
+      "region": "upper_limb",
+      "side": "both",
+      "fma": [
+        "FMA37682",
+        "FMA37683"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -229.27,
+        -8.55,
+        207.31,
+        230.57,
+        33.04,
+        552.59
+      ]
+    },
+    "triceps_brachii": {
+      "zh": "肱三头肌",
+      "en": "Triceps brachii",
+      "system": "muscles",
+      "region": "upper_limb",
+      "side": "both",
+      "fma": [
+        "FMA37692",
+        "FMA37693",
+        "FMA37694"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -227.13,
+        29.05,
+        242.51,
+        228.42,
+        82.18,
+        513.11
+      ]
+    },
+    "brachialis": {
+      "zh": "肱肌",
+      "en": "Brachialis",
+      "system": "muscles",
+      "region": "upper_limb",
+      "side": "both",
+      "fma": [
+        "FMA37667"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -234.48,
+        14.28,
+        208.3,
+        235.7,
+        40.2,
+        433.34
+      ]
+    },
+    "brachioradialis": {
+      "zh": "肱桡肌",
+      "en": "Brachioradialis",
+      "system": "muscles",
+      "region": "upper_limb",
+      "side": "both",
+      "fma": [
+        "FMA38485"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -279.84,
+        -22.17,
+        23.65,
+        281.2,
+        44.62,
+        360.64
+      ]
+    },
+    "flexor_carpi_radialis": {
+      "zh": "桡侧腕屈肌",
+      "en": "Flexor carpi radialis",
+      "system": "muscles",
+      "region": "upper_limb",
+      "side": "both",
+      "fma": [
+        "FMA38459"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -271.26,
+        -35.66,
+        -6.1,
+        272.56,
+        29.9,
+        270.72
+      ]
+    },
+    "palmaris_longus": {
+      "zh": "掌长肌",
+      "en": "Palmaris longus",
+      "system": "muscles",
+      "region": "upper_limb",
+      "side": "both",
+      "fma": [
+        "FMA38462"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -289.21,
+        -49.02,
+        -53.86,
+        290.36,
+        28.64,
+        267.04
+      ]
+    },
+    "flexor_digitorum_superficialis": {
+      "zh": "指浅屈肌",
+      "en": "Flexor digitorum superficialis",
+      "system": "muscles",
+      "region": "upper_limb",
+      "side": "both",
+      "fma": [
+        "FMA38469"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -304.78,
+        -67.18,
+        -111.15,
+        306.34,
+        32.92,
+        266.15
+      ]
+    },
+    "extensor_digitorum": {
+      "zh": "指伸肌",
+      "en": "Extensor digitorum",
+      "system": "muscles",
+      "region": "upper_limb",
+      "side": "both",
+      "fma": [
+        "FMA38500"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -304.29,
+        -61.55,
+        -108.55,
+        305.58,
+        55.58,
+        272.93
+      ]
+    },
+    "psoas_major": {
+      "zh": "腰大肌",
+      "en": "Psoas major",
+      "system": "muscles",
+      "region": "abdomen",
+      "side": "both",
+      "fma": [
+        "FMA18060"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -112.57,
+        -19.09,
+        -51.53,
+        114.18,
+        47.51,
+        311.78
+      ]
+    },
+    "iliacus": {
+      "zh": "髂肌",
+      "en": "Iliacus",
+      "system": "muscles",
+      "region": "pelvis",
+      "side": "both",
+      "fma": [
+        "FMA22310"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -126.47,
+        -28.39,
+        -52.94,
+        127.74,
+        54.5,
+        171.11
+      ]
+    },
+    "gluteus_maximus": {
+      "zh": "臀大肌",
+      "en": "Gluteus maximus",
+      "system": "muscles",
+      "region": "pelvis",
+      "side": "both",
+      "fma": [
+        "FMA22314"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -144.85,
+        22.92,
+        -119.08,
+        146.15,
+        120.65,
+        145.85
+      ]
+    },
+    "gluteus_medius": {
+      "zh": "臀中肌",
+      "en": "Gluteus medius",
+      "system": "muscles",
+      "region": "pelvis",
+      "side": "both",
+      "fma": [
+        "FMA22315"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -149.12,
+        -1.15,
+        2.95,
+        150.41,
+        84.08,
+        163.73
+      ]
+    },
+    "tensor_fasciae_latae": {
+      "zh": "阔筋膜张肌",
+      "en": "Tensor fasciae latae",
+      "system": "muscles",
+      "region": "lower_limb",
+      "side": "both",
+      "fma": [
+        "FMA22423"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -159.39,
+        -32.5,
+        -26.99,
+        160.68,
+        6.81,
+        131.99
+      ]
+    },
+    "sartorius": {
+      "zh": "缝匠肌",
+      "en": "Sartorius",
+      "system": "muscles",
+      "region": "lower_limb",
+      "side": "both",
+      "fma": [
+        "FMA22353"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -130.34,
+        -40.42,
+        -512.57,
+        131.77,
+        16.68,
+        112.78
+      ]
+    },
+    "rectus_femoris": {
+      "zh": "股直肌",
+      "en": "Rectus femoris",
+      "system": "muscles",
+      "region": "lower_limb",
+      "side": "both",
+      "fma": [
+        "FMA22430"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -153.49,
+        -51.81,
+        -472.56,
+        154.98,
+        16.95,
+        84.44
+      ]
+    },
+    "vastus_muscles": {
+      "zh": "股外侧肌与股内侧肌",
+      "en": "Vastus muscles",
+      "system": "muscles",
+      "region": "lower_limb",
+      "side": "both",
+      "fma": [
+        "FMA22431",
+        "FMA22432",
+        "FMA22433"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -158.58,
+        -46.04,
+        -468.64,
+        159.88,
+        43.68,
+        2.22
+      ]
+    },
+    "adductor_muscles": {
+      "zh": "内收肌群",
+      "en": "Adductor muscles",
+      "system": "muscles",
+      "region": "lower_limb",
+      "side": "both",
+      "fma": [
+        "FMA22441",
+        "FMA22443",
+        "FMA43882"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -111.62,
+        -36.0,
+        -503.75,
+        113.0,
+        46.83,
+        12.93
+      ]
+    },
+    "hamstrings": {
+      "zh": "腘绳肌",
+      "en": "Hamstrings",
+      "system": "muscles",
+      "region": "lower_limb",
+      "side": "both",
+      "fma": [
+        "FMA22357",
+        "FMA22438",
+        "FMA45887",
+        "FMA45890"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -125.78,
+        -2.82,
+        -503.87,
+        127.81,
+        82.48,
+        -22.28
+      ]
+    },
+    "gastrocnemius": {
+      "zh": "腓肠肌",
+      "en": "Gastrocnemius",
+      "system": "muscles",
+      "region": "lower_limb",
+      "side": "both",
+      "fma": [
+        "FMA45956",
+        "FMA45959"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -116.11,
+        8.19,
+        -664.28,
+        117.6,
+        95.07,
+        -354.82
+      ]
+    },
+    "soleus": {
+      "zh": "比目鱼肌",
+      "en": "Soleus",
+      "system": "muscles",
+      "region": "lower_limb",
+      "side": "both",
+      "fma": [
+        "FMA22542"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -114.88,
+        9.49,
+        -754.54,
+        116.18,
+        68.67,
+        -428.14
+      ]
+    },
+    "calcaneal_tendon": {
+      "zh": "跟腱",
+      "en": "Calcaneal tendon",
+      "system": "muscles",
+      "region": "lower_limb",
+      "side": "both",
+      "fma": [
+        "FMA51061"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -97.25,
+        45.84,
+        -842.8,
+        98.54,
+        76.0,
+        -629.36
+      ]
+    },
+    "tibialis_anterior": {
+      "zh": "胫骨前肌",
+      "en": "Tibialis anterior",
+      "system": "muscles",
+      "region": "lower_limb",
+      "side": "both",
+      "fma": [
+        "FMA22532"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -116.22,
+        -48.38,
+        -824.12,
+        117.52,
+        27.83,
+        -431.77
+      ]
+    },
+    "tibialis_posterior": {
+      "zh": "胫骨后肌",
+      "en": "Tibialis posterior",
+      "system": "muscles",
+      "region": "lower_limb",
+      "side": "both",
+      "fma": [
+        "FMA51099"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -104.39,
+        -32.24,
+        -829.44,
+        105.68,
+        41.12,
+        -450.96
+      ]
+    },
+    "fibularis_longus": {
+      "zh": "腓骨长肌",
+      "en": "Fibularis longus",
+      "system": "muscles",
+      "region": "lower_limb",
+      "side": "both",
+      "fma": [
+        "FMA22539"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -125.5,
+        -33.83,
+        -839.37,
+        126.8,
+        59.76,
+        -435.27
+      ]
+    },
+    "extensor_digitorum_longus": {
+      "zh": "趾长伸肌",
+      "en": "Extensor digitorum longus",
+      "system": "muscles",
+      "region": "lower_limb",
+      "side": "both",
+      "fma": [
+        "FMA22534"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -165.19,
+        -123.11,
+        -853.61,
+        166.48,
+        42.44,
+        -427.2
+      ]
+    },
+    "flexor_digitorum_longus": {
+      "zh": "趾长屈肌",
+      "en": "Flexor digitorum longus",
+      "system": "muscles",
+      "region": "lower_limb",
+      "side": "both",
+      "fma": [
+        "FMA51071"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -165.0,
+        -125.2,
+        -858.59,
+        166.29,
+        45.17,
+        -495.47
+      ]
+    },
+    "skull": {
+      "zh": "颅骨",
+      "en": "Skull",
+      "system": "skeleton",
+      "region": "head",
+      "side": "none",
+      "fma": [
+        "FMA52734",
+        "FMA9613",
+        "FMA52735",
+        "FMA52737",
+        "FMA52736",
+        "FMA52740",
+        "FMA52747",
+        "FMA9711",
+        "FMA52745",
+        "FMA52741",
+        "FMA52746",
+        "FMA9710",
+        "FMA54736"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -75.72,
+        -90.15,
+        677.16,
+        76.06,
+        119.44,
+        849.35
+      ]
+    },
+    "mandible": {
+      "zh": "下颌骨",
+      "en": "Mandible",
+      "system": "skeleton",
+      "region": "head",
+      "side": "none",
+      "fma": [
+        "FMA52748"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -53.13,
+        -73.03,
+        634.81,
+        53.17,
+        10.94,
+        719.3
+      ]
+    },
+    "hyoid": {
+      "zh": "舌骨",
+      "en": "Hyoid bone",
+      "system": "skeleton",
+      "region": "neck",
+      "side": "none",
+      "fma": [
+        "FMA52749"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -18.96,
+        -28.3,
+        635.64,
+        18.91,
+        6.34,
+        654.06
+      ]
+    },
+    "cervical_vertebrae": {
+      "zh": "颈椎",
+      "en": "Cervical vertebrae",
+      "system": "skeleton",
+      "region": "neck",
+      "side": "none",
+      "fma": [
+        "FMA9915"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -40.66,
+        9.09,
+        577.96,
+        40.67,
+        79.43,
+        694.67
+      ]
+    },
+    "thoracic_vertebrae": {
+      "zh": "胸椎",
+      "en": "Thoracic vertebrae",
+      "system": "skeleton",
+      "region": "thorax",
+      "side": "none",
+      "fma": [
+        "FMA9139"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -36.73,
+        -0.66,
+        262.95,
+        36.79,
+        100.79,
+        589.71
+      ]
+    },
+    "lumbar_vertebrae": {
+      "zh": "腰椎",
+      "en": "Lumbar vertebrae",
+      "system": "skeleton",
+      "region": "abdomen",
+      "side": "none",
+      "fma": [
+        "FMA9921"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -50.25,
+        -14.77,
+        117.94,
+        50.38,
+        82.03,
+        284.94
+      ]
+    },
+    "sacrum": {
+      "zh": "骶骨",
+      "en": "Sacrum",
+      "system": "skeleton",
+      "region": "pelvis",
+      "side": "none",
+      "fma": [
+        "FMA16202"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -59.22,
+        19.27,
+        -4.2,
+        58.79,
+        108.12,
+        140.47
+      ]
+    },
+    "intervertebral_disks": {
+      "zh": "椎间盘",
+      "en": "Intervertebral disks",
+      "system": "skeleton",
+      "region": "whole",
+      "side": "none",
+      "fma": [
+        "FMA10446"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -24.77,
+        -14.96,
+        108.26,
+        24.54,
+        70.28,
+        664.31
+      ]
+    },
+    "ribs": {
+      "zh": "肋骨",
+      "en": "Ribs",
+      "system": "skeleton",
+      "region": "thorax",
+      "side": "both",
+      "fma": [
+        "FMA7574"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -136.68,
+        -97.1,
+        221.46,
+        136.66,
+        97.22,
+        583.78
+      ]
+    },
+    "costal_cartilages": {
+      "zh": "肋软骨",
+      "en": "Costal cartilages",
+      "system": "skeleton",
+      "region": "thorax",
+      "side": "both",
+      "fma": [
+        "FMA7591"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -109.23,
+        -112.42,
+        315.79,
+        109.15,
+        -21.34,
+        533.52
+      ]
+    },
+    "sternum": {
+      "zh": "胸骨",
+      "en": "Sternum",
+      "system": "skeleton",
+      "region": "thorax",
+      "side": "none",
+      "fma": [
+        "FMA7486",
+        "FMA7487",
+        "FMA7488"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -26.64,
+        -112.93,
+        377.19,
+        27.94,
+        -29.89,
+        538.78
+      ]
+    },
+    "clavicle_right": {
+      "zh": "右锁骨",
+      "en": "Right clavicle",
+      "system": "skeleton",
+      "region": "upper_limb",
+      "side": "right",
+      "fma": [
+        "FMA13322"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -144.59,
+        -46.18,
+        521.86,
+        -9.09,
+        46.37,
+        568.68
+      ]
+    },
+    "clavicle_left": {
+      "zh": "左锁骨",
+      "en": "Left clavicle",
+      "system": "skeleton",
+      "region": "upper_limb",
+      "side": "left",
+      "fma": [
+        "FMA13323"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        9.09,
+        -46.3,
+        521.78,
+        144.57,
+        46.3,
+        568.42
+      ]
+    },
+    "scapula_right": {
+      "zh": "右肩胛骨",
+      "en": "Right scapula",
+      "system": "skeleton",
+      "region": "upper_limb",
+      "side": "right",
+      "fma": [
+        "FMA13395"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -165.85,
+        -2.12,
+        397.26,
+        -56.3,
+        105.93,
+        563.18
+      ]
+    },
+    "scapula_left": {
+      "zh": "左肩胛骨",
+      "en": "Left scapula",
+      "system": "skeleton",
+      "region": "upper_limb",
+      "side": "left",
+      "fma": [
+        "FMA13396"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        57.6,
+        -2.16,
+        397.11,
+        167.1,
+        105.86,
+        563.18
+      ]
+    },
+    "humerus_right": {
+      "zh": "右肱骨",
+      "en": "Right humerus",
+      "system": "skeleton",
+      "region": "upper_limb",
+      "side": "right",
+      "fma": [
+        "FMA23130"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -240.23,
+        0.41,
+        242.43,
+        -139.43,
+        49.9,
+        549.81
+      ]
+    },
+    "humerus_left": {
+      "zh": "左肱骨",
+      "en": "Left humerus",
+      "system": "skeleton",
+      "region": "upper_limb",
+      "side": "left",
+      "fma": [
+        "FMA23131"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        140.64,
+        0.47,
+        242.57,
+        241.51,
+        49.87,
+        549.75
+      ]
+    },
+    "radius_right": {
+      "zh": "右桡骨",
+      "en": "Right radius",
+      "system": "skeleton",
+      "region": "upper_limb",
+      "side": "right",
+      "fma": [
+        "FMA23464"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -278.89,
+        -26.14,
+        19.08,
+        -219.19,
+        39.67,
+        248.29
+      ]
+    },
+    "radius_left": {
+      "zh": "左桡骨",
+      "en": "Left radius",
+      "system": "skeleton",
+      "region": "upper_limb",
+      "side": "left",
+      "fma": [
+        "FMA23465"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        220.48,
+        -26.48,
+        19.4,
+        279.79,
+        39.3,
+        248.25
+      ]
+    },
+    "ulna_right": {
+      "zh": "右尺骨",
+      "en": "Right ulna",
+      "system": "skeleton",
+      "region": "upper_limb",
+      "side": "right",
+      "fma": [
+        "FMA23467"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -246.53,
+        -22.73,
+        18.41,
+        -196.23,
+        55.97,
+        265.69
+      ]
+    },
+    "ulna_left": {
+      "zh": "左尺骨",
+      "en": "Left ulna",
+      "system": "skeleton",
+      "region": "upper_limb",
+      "side": "left",
+      "fma": [
+        "FMA23468"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        197.54,
+        -22.51,
+        18.26,
+        247.77,
+        56.22,
+        265.71
+      ]
+    },
+    "carpal_bones": {
+      "zh": "腕骨",
+      "en": "Carpal bones",
+      "system": "skeleton",
+      "region": "upper_limb",
+      "side": "both",
+      "fma": [
+        "FMA23889"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -281.01,
+        -36.83,
+        -5.6,
+        282.49,
+        -9.76,
+        25.03
+      ]
+    },
+    "hand_bones": {
+      "zh": "手骨（掌骨与指骨）",
+      "en": "Hand bones (metacarpals and phalanges)",
+      "system": "skeleton",
+      "region": "upper_limb",
+      "side": "both",
+      "fma": [
+        "FMA9612",
+        "FMA23914"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -323.35,
+        -94.78,
+        -133.75,
+        324.68,
+        -11.44,
+        10.64
+      ]
+    },
+    "hip_bone_right": {
+      "zh": "右髋骨",
+      "en": "Right hip bone",
+      "system": "skeleton",
+      "region": "pelvis",
+      "side": "right",
+      "fma": [
+        "FMA16586"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -144.23,
+        -38.17,
+        -34.61,
+        -2.14,
+        99.65,
+        171.11
+      ]
+    },
+    "hip_bone_left": {
+      "zh": "左髋骨",
+      "en": "Left hip bone",
+      "system": "skeleton",
+      "region": "pelvis",
+      "side": "left",
+      "fma": [
+        "FMA16587"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        3.37,
+        -38.33,
+        -34.72,
+        145.4,
+        99.45,
+        171.38
+      ]
+    },
+    "femur_right": {
+      "zh": "右股骨",
+      "en": "Right femur",
+      "system": "skeleton",
+      "region": "lower_limb",
+      "side": "right",
+      "fma": [
+        "FMA24474"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -149.55,
+        -11.49,
+        -418.65,
+        -31.12,
+        51.23,
+        47.56
+      ]
+    },
+    "femur_left": {
+      "zh": "左股骨",
+      "en": "Left femur",
+      "system": "skeleton",
+      "region": "lower_limb",
+      "side": "left",
+      "fma": [
+        "FMA24475"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        32.74,
+        -11.6,
+        -418.74,
+        151.02,
+        51.32,
+        47.52
+      ]
+    },
+    "patella_right": {
+      "zh": "右髌骨",
+      "en": "Right patella",
+      "system": "skeleton",
+      "region": "lower_limb",
+      "side": "right",
+      "fma": [
+        "FMA24486"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -101.64,
+        -21.96,
+        -425.27,
+        -59.97,
+        -0.22,
+        -385.96
+      ]
+    },
+    "patella_left": {
+      "zh": "左髌骨",
+      "en": "Left patella",
+      "system": "skeleton",
+      "region": "lower_limb",
+      "side": "left",
+      "fma": [
+        "FMA24487"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        61.24,
+        -21.98,
+        -425.26,
+        102.87,
+        -0.13,
+        -386.0
+      ]
+    },
+    "tibia_right": {
+      "zh": "右胫骨",
+      "en": "Right tibia",
+      "system": "skeleton",
+      "region": "lower_limb",
+      "side": "right",
+      "fma": [
+        "FMA24477"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -108.68,
+        -14.07,
+        -792.78,
+        -34.57,
+        48.69,
+        -412.87
+      ]
+    },
+    "tibia_left": {
+      "zh": "左胫骨",
+      "en": "Left tibia",
+      "system": "skeleton",
+      "region": "lower_limb",
+      "side": "left",
+      "fma": [
+        "FMA24478"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        35.68,
+        -13.75,
+        -792.73,
+        110.27,
+        48.8,
+        -412.84
+      ]
+    },
+    "fibula_right": {
+      "zh": "右腓骨",
+      "en": "Right fibula",
+      "system": "skeleton",
+      "region": "lower_limb",
+      "side": "right",
+      "fma": [
+        "FMA24480"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -119.52,
+        22.6,
+        -812.06,
+        -83.76,
+        52.28,
+        -427.66
+      ]
+    },
+    "fibula_left": {
+      "zh": "左腓骨",
+      "en": "Left fibula",
+      "system": "skeleton",
+      "region": "lower_limb",
+      "side": "left",
+      "fma": [
+        "FMA24481"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        85.18,
+        22.65,
+        -811.92,
+        120.75,
+        52.2,
+        -427.7
+      ]
+    },
+    "tarsal_bones": {
+      "zh": "跗骨",
+      "en": "Tarsal bones",
+      "system": "skeleton",
+      "region": "lower_limb",
+      "side": "both",
+      "fma": [
+        "FMA24491"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -114.51,
+        -39.72,
+        -855.35,
+        115.83,
+        77.08,
+        -783.6
+      ]
+    },
+    "foot_bones": {
+      "zh": "足骨（跖骨与趾骨）",
+      "en": "Foot bones (metatarsals and phalanges)",
+      "system": "skeleton",
+      "region": "lower_limb",
+      "side": "both",
+      "fma": [
+        "FMA24492",
+        "FMA24493"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -168.67,
+        -135.34,
+        -857.26,
+        170.12,
+        11.51,
+        -805.02
+      ]
+    },
+    "heart": {
+      "zh": "心脏",
+      "en": "Heart",
+      "system": "organs",
+      "region": "thorax",
+      "side": "none",
+      "fma": [
+        "FMA7088"
+      ],
+      "source": "bp3d_partof",
+      "bbox": [
+        -35.63,
+        -75.79,
+        388.19,
+        79.93,
+        30.33,
+        492.75
+      ]
+    },
+    "lung_right": {
+      "zh": "右肺",
+      "en": "Right lung",
+      "system": "organs",
+      "region": "thorax",
+      "side": "right",
+      "fma": [
+        "FMA7309"
+      ],
+      "source": "bp3d_partof",
+      "bbox": [
+        -115.88,
+        -73.08,
+        227.7,
+        5.48,
+        79.93,
+        561.35
+      ]
+    },
+    "lung_left": {
+      "zh": "左肺",
+      "en": "Left lung",
+      "system": "organs",
+      "region": "thorax",
+      "side": "left",
+      "fma": [
+        "FMA7310"
+      ],
+      "source": "bp3d_partof",
+      "bbox": [
+        20.26,
+        -77.12,
+        336.34,
+        126.22,
+        80.4,
+        569.34
+      ]
+    },
+    "trachea": {
+      "zh": "气管",
+      "en": "Trachea",
+      "system": "organs",
+      "region": "neck",
+      "side": "none",
+      "fma": [
+        "FMA7394"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -12.49,
+        -9.32,
+        498.21,
+        13.53,
+        23.45,
+        608.66
+      ]
+    },
+    "esophagus": {
+      "zh": "食管",
+      "en": "Esophagus",
+      "system": "organs",
+      "region": "thorax",
+      "side": "none",
+      "fma": [
+        "FMA7131"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -8.16,
+        -23.5,
+        329.23,
+        24.25,
+        34.38,
+        603.63
+      ]
+    },
+    "stomach": {
+      "zh": "胃",
+      "en": "Stomach",
+      "system": "organs",
+      "region": "abdomen",
+      "side": "none",
+      "fma": [
+        "FMA7148"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -28.3,
+        -93.6,
+        253.12,
+        106.17,
+        19.29,
+        370.13
+      ]
+    },
+    "liver": {
+      "zh": "肝",
+      "en": "Liver",
+      "system": "organs",
+      "region": "abdomen",
+      "side": "none",
+      "fma": [
+        "FMA7197"
+      ],
+      "source": "bp3d_partof",
+      "bbox": [
+        -114.44,
+        -101.42,
+        241.02,
+        95.44,
+        57.43,
+        396.25
+      ]
+    },
+    "gallbladder": {
+      "zh": "胆囊",
+      "en": "Gallbladder",
+      "system": "organs",
+      "region": "abdomen",
+      "side": "none",
+      "fma": [
+        "FMA7202"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -62.68,
+        -77.85,
+        264.29,
+        -26.2,
+        -29.39,
+        304.72
+      ]
+    },
+    "pancreas": {
+      "zh": "胰腺",
+      "en": "Pancreas",
+      "system": "organs",
+      "region": "abdomen",
+      "side": "none",
+      "fma": [
+        "FMA7198"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -47.29,
+        -45.57,
+        217.56,
+        73.42,
+        5.24,
+        291.32
+      ]
+    },
+    "spleen": {
+      "zh": "脾",
+      "en": "Spleen",
+      "system": "organs",
+      "region": "abdomen",
+      "side": "none",
+      "fma": [
+        "FMA7196"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        56.28,
+        -40.49,
+        264.85,
+        114.51,
+        54.57,
+        335.08
+      ]
+    },
+    "kidneys": {
+      "zh": "肾",
+      "en": "Kidneys",
+      "system": "organs",
+      "region": "abdomen",
+      "side": "both",
+      "fma": [
+        "FMA7203"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -86.96,
+        -11.11,
+        180.05,
+        91.09,
+        41.19,
+        303.68
+      ]
+    },
+    "urinary_bladder": {
+      "zh": "膀胱",
+      "en": "Urinary bladder",
+      "system": "organs",
+      "region": "pelvis",
+      "side": "none",
+      "fma": [
+        "FMA15900"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -33.5,
+        -27.47,
+        2.97,
+        33.27,
+        44.24,
+        43.23
+      ]
+    },
+    "small_intestine": {
+      "zh": "小肠",
+      "en": "Small intestine",
+      "system": "organs",
+      "region": "abdomen",
+      "side": "none",
+      "fma": [
+        "FMA7200"
+      ],
+      "source": "bp3d_partof",
+      "bbox": [
+        -86.41,
+        -82.66,
+        18.53,
+        107.31,
+        -3.27,
+        290.3
+      ]
+    },
+    "large_intestine": {
+      "zh": "大肠",
+      "en": "Large intestine",
+      "system": "organs",
+      "region": "abdomen",
+      "side": "none",
+      "fma": [
+        "FMA7201"
+      ],
+      "source": "bp3d_partof",
+      "bbox": [
+        -126.34,
+        -96.2,
+        -29.71,
+        118.44,
+        89.59,
+        278.0
+      ]
+    },
+    "tongue": {
+      "zh": "舌",
+      "en": "Tongue",
+      "system": "organs",
+      "region": "head",
+      "side": "none",
+      "fma": [
+        "FMA54640"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -19.32,
+        -69.14,
+        644.2,
+        19.45,
+        -9.71,
+        680.56
+      ]
+    },
+    "appendix": {
+      "zh": "阑尾",
+      "en": "Appendix",
+      "system": "organs",
+      "region": "abdomen",
+      "side": "none",
+      "fma": [
+        "FMA14542"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -87.78,
+        -20.02,
+        78.83,
+        -18.22,
+        18.98,
+        96.9
+      ]
+    },
+    "adrenal_glands": {
+      "zh": "肾上腺",
+      "en": "Adrenal glands",
+      "system": "organs",
+      "region": "abdomen",
+      "side": "both",
+      "fma": [
+        "FMA9604"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -61.91,
+        -1.55,
+        258.67,
+        76.24,
+        37.72,
+        321.5
+      ]
+    },
+    "ureters": {
+      "zh": "输尿管",
+      "en": "Ureters",
+      "system": "organs",
+      "region": "abdomen",
+      "side": "both",
+      "fma": [
+        "FMA9704"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -72.1,
+        -18.94,
+        24.41,
+        80.27,
+        40.62,
+        286.17
+      ]
+    },
+    "pituitary_gland": {
+      "zh": "垂体",
+      "en": "Pituitary gland",
+      "system": "organs",
+      "region": "head",
+      "side": "none",
+      "fma": [
+        "FMA13889"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -6.19,
+        -9.8,
+        735.8,
+        6.17,
+        -0.37,
+        748.77
+      ]
+    },
+    "larynx_cartilages": {
+      "zh": "喉软骨（含喉结）",
+      "en": "Laryngeal cartilages",
+      "system": "organs",
+      "region": "neck",
+      "side": "none",
+      "fma": [
+        "FMA55099",
+        "FMA9615",
+        "FMA55130"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -19.4,
+        -21.8,
+        600.42,
+        19.31,
+        9.33,
+        651.5
+      ]
+    },
+    "thymus": {
+      "zh": "胸腺",
+      "en": "Thymus",
+      "system": "organs",
+      "region": "thorax",
+      "side": "none",
+      "fma": [
+        "FMA9607"
+      ],
+      "source": "bp3d_partof",
+      "bbox": [
+        -24.2,
+        -58.53,
+        470.8,
+        22.47,
+        -19.03,
+        542.99
+      ]
+    },
+    "prostate": {
+      "zh": "前列腺",
+      "en": "Prostate",
+      "system": "organs",
+      "region": "pelvis",
+      "side": "none",
+      "fma": [
+        "FMA9600"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -17.18,
+        4.31,
+        -14.68,
+        17.1,
+        36.26,
+        5.68
+      ]
+    },
+    "testes": {
+      "zh": "睾丸",
+      "en": "Testes",
+      "system": "organs",
+      "region": "pelvis",
+      "side": "both",
+      "fma": [
+        "FMA7210"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -30.2,
+        -62.75,
+        -97.01,
+        28.21,
+        -40.42,
+        -67.77
+      ]
+    },
+    "aorta": {
+      "zh": "主动脉",
+      "en": "Aorta",
+      "system": "vessels",
+      "region": "whole",
+      "side": "none",
+      "fma": [
+        "FMA3734"
+      ],
+      "source": "bp3d_partof",
+      "bbox": [
+        -6.2,
+        -36.67,
+        160.03,
+        35.48,
+        55.68,
+        530.38
+      ]
+    },
+    "pulmonary_trunk": {
+      "zh": "肺动脉干",
+      "en": "Pulmonary trunk",
+      "system": "vessels",
+      "region": "thorax",
+      "side": "none",
+      "fma": [
+        "FMA8612"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        11.92,
+        -58.1,
+        469.74,
+        42.74,
+        -15.75,
+        506.85
+      ]
+    },
+    "pulmonary_arteries": {
+      "zh": "肺动脉",
+      "en": "Pulmonary arteries",
+      "system": "vessels",
+      "region": "thorax",
+      "side": "both",
+      "fma": [
+        "FMA50872",
+        "FMA50873"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -58.3,
+        -35.86,
+        437.64,
+        79.73,
+        42.73,
+        507.3
+      ]
+    },
+    "pulmonary_veins": {
+      "zh": "肺静脉",
+      "en": "Pulmonary veins",
+      "system": "vessels",
+      "region": "thorax",
+      "side": "both",
+      "fma": [
+        "FMA49911",
+        "FMA49913",
+        "FMA49914",
+        "FMA49916"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -36.49,
+        -10.07,
+        414.76,
+        82.46,
+        47.26,
+        486.46
+      ]
+    },
+    "coronary_arteries": {
+      "zh": "冠状动脉",
+      "en": "Coronary arteries",
+      "system": "vessels",
+      "region": "thorax",
+      "side": "both",
+      "fma": [
+        "FMA3802",
+        "FMA3813",
+        "FMA3815",
+        "FMA3818",
+        "FMA3835",
+        "FMA3837",
+        "FMA3840",
+        "FMA3855",
+        "FMA3860",
+        "FMA3868",
+        "FMA3870",
+        "FMA3872",
+        "FMA3874",
+        "FMA3876",
+        "FMA3895",
+        "FMA13912",
+        "FMA13914",
+        "FMA13921",
+        "FMA66327",
+        "FMA66328",
+        "FMA74912"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -21.13,
+        -75.79,
+        388.19,
+        79.93,
+        13.91,
+        474.32
+      ]
+    },
+    "superior_vena_cava": {
+      "zh": "上腔静脉",
+      "en": "Superior vena cava",
+      "system": "vessels",
+      "region": "thorax",
+      "side": "none",
+      "fma": [
+        "FMA4720"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -25.99,
+        -26.51,
+        488.05,
+        -3.46,
+        -2.82,
+        523.05
+      ]
+    },
+    "inferior_vena_cava": {
+      "zh": "下腔静脉",
+      "en": "Inferior vena cava",
+      "system": "vessels",
+      "region": "abdomen",
+      "side": "none",
+      "fma": [
+        "FMA10951"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -26.19,
+        -28.02,
+        164.13,
+        -1.42,
+        -2.78,
+        403.75
+      ]
+    },
+    "common_carotid_arteries": {
+      "zh": "颈总动脉",
+      "en": "Common carotid arteries",
+      "system": "vessels",
+      "region": "neck",
+      "side": "both",
+      "fma": [
+        "FMA3939"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -20.61,
+        -16.78,
+        520.63,
+        23.58,
+        4.76,
+        586.92
+      ]
+    },
+    "internal_carotid_arteries": {
+      "zh": "颈内动脉",
+      "en": "Internal carotid arteries",
+      "system": "vessels",
+      "region": "neck",
+      "side": "both",
+      "fma": [
+        "FMA3947"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -36.83,
+        -13.83,
+        647.75,
+        38.12,
+        6.77,
+        750.92
+      ]
+    },
+    "internal_jugular_veins": {
+      "zh": "颈内静脉",
+      "en": "Internal jugular veins",
+      "system": "vessels",
+      "region": "neck",
+      "side": "both",
+      "fma": [
+        "FMA4724"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -30.49,
+        -21.35,
+        550.65,
+        31.55,
+        -10.93,
+        594.98
+      ]
+    },
+    "vertebral_arteries": {
+      "zh": "椎动脉",
+      "en": "Vertebral arteries",
+      "system": "vessels",
+      "region": "neck",
+      "side": "both",
+      "fma": [
+        "FMA3956"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -33.0,
+        13.9,
+        611.65,
+        34.29,
+        42.18,
+        719.24
+      ]
+    },
+    "brachiocephalic_trunk": {
+      "zh": "头臂干",
+      "en": "Brachiocephalic trunk",
+      "system": "vessels",
+      "region": "thorax",
+      "side": "none",
+      "fma": [
+        "FMA3932"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -18.64,
+        -18.89,
+        517.56,
+        18.89,
+        -1.21,
+        555.52
+      ]
+    },
+    "brachiocephalic_veins": {
+      "zh": "头臂静脉",
+      "en": "Brachiocephalic veins",
+      "system": "vessels",
+      "region": "thorax",
+      "side": "both",
+      "fma": [
+        "FMA4723"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -31.32,
+        -31.56,
+        509.12,
+        28.7,
+        -8.61,
+        563.05
+      ]
+    },
+    "subclavian_arteries": {
+      "zh": "锁骨下动脉",
+      "en": "Subclavian arteries",
+      "system": "vessels",
+      "region": "thorax",
+      "side": "both",
+      "fma": [
+        "FMA3951"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -81.53,
+        -11.45,
+        520.55,
+        87.19,
+        13.92,
+        569.7
+      ]
+    },
+    "subclavian_veins": {
+      "zh": "锁骨下静脉",
+      "en": "Subclavian veins",
+      "system": "vessels",
+      "region": "thorax",
+      "side": "both",
+      "fma": [
+        "FMA4725"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -86.18,
+        -21.03,
+        538.43,
+        94.9,
+        -4.67,
+        566.71
+      ]
+    },
+    "axillary_brachial_arteries": {
+      "zh": "腋动脉与肱动脉",
+      "en": "Axillary and brachial arteries",
+      "system": "vessels",
+      "region": "upper_limb",
+      "side": "both",
+      "fma": [
+        "FMA22654",
+        "FMA22689"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -216.89,
+        -5.7,
+        233.79,
+        218.12,
+        28.46,
+        553.2
+      ]
+    },
+    "forearm_arteries": {
+      "zh": "桡动脉与尺动脉",
+      "en": "Radial and ulnar arteries",
+      "system": "vessels",
+      "region": "upper_limb",
+      "side": "both",
+      "fma": [
+        "FMA22730",
+        "FMA22796"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -278.9,
+        -30.35,
+        4.39,
+        280.11,
+        23.83,
+        237.82
+      ]
+    },
+    "celiac_trunk": {
+      "zh": "腹腔干",
+      "en": "Celiac trunk",
+      "system": "vessels",
+      "region": "abdomen",
+      "side": "none",
+      "fma": [
+        "FMA14812"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        1.75,
+        -30.02,
+        290.89,
+        12.89,
+        -6.83,
+        303.07
+      ]
+    },
+    "mesenteric_arteries": {
+      "zh": "肠系膜动脉",
+      "en": "Mesenteric arteries",
+      "system": "vessels",
+      "region": "abdomen",
+      "side": "none",
+      "fma": [
+        "FMA14749",
+        "FMA14750"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -60.31,
+        -50.61,
+        112.29,
+        19.13,
+        -11.35,
+        267.83
+      ]
+    },
+    "celiac_branches": {
+      "zh": "肝总动脉与脾动脉",
+      "en": "Common hepatic and splenic arteries",
+      "system": "vessels",
+      "region": "abdomen",
+      "side": "none",
+      "fma": [
+        "FMA14771",
+        "FMA14773"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -14.67,
+        -41.71,
+        275.78,
+        101.21,
+        20.53,
+        307.83
+      ]
+    },
+    "portal_tributaries": {
+      "zh": "门静脉属支（脾静脉与肠系膜静脉）",
+      "en": "Portal tributaries",
+      "system": "vessels",
+      "region": "abdomen",
+      "side": "none",
+      "fma": [
+        "FMA14331",
+        "FMA14332",
+        "FMA15391"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -61.9,
+        -48.91,
+        113.75,
+        100.44,
+        17.73,
+        305.04
+      ]
+    },
+    "hepatic_portal_vein": {
+      "zh": "肝门静脉",
+      "en": "Hepatic portal vein",
+      "system": "vessels",
+      "region": "abdomen",
+      "side": "none",
+      "fma": [
+        "FMA50735"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -20.81,
+        -43.45,
+        275.56,
+        -6.43,
+        -22.81,
+        324.37
+      ]
+    },
+    "renal_arteries": {
+      "zh": "肾动脉",
+      "en": "Renal arteries",
+      "system": "vessels",
+      "region": "abdomen",
+      "side": "both",
+      "fma": [
+        "FMA14751"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -41.7,
+        -19.54,
+        238.42,
+        40.11,
+        4.01,
+        262.99
+      ]
+    },
+    "renal_veins": {
+      "zh": "肾静脉",
+      "en": "Renal veins",
+      "system": "vessels",
+      "region": "abdomen",
+      "side": "both",
+      "fma": [
+        "FMA14334"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -72.43,
+        -31.53,
+        194.55,
+        81.61,
+        33.21,
+        287.56
+      ]
+    },
+    "iliac_arteries": {
+      "zh": "髂动脉",
+      "en": "Iliac arteries",
+      "system": "vessels",
+      "region": "pelvis",
+      "side": "both",
+      "fma": [
+        "FMA14764",
+        "FMA18805",
+        "FMA18808"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -60.64,
+        -52.18,
+        16.85,
+        66.09,
+        89.05,
+        177.91
+      ]
+    },
+    "femoral_arteries": {
+      "zh": "股动脉",
+      "en": "Femoral arteries",
+      "system": "vessels",
+      "region": "lower_limb",
+      "side": "both",
+      "fma": [
+        "FMA70248"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -65.54,
+        -42.25,
+        -316.43,
+        66.56,
+        15.3,
+        43.7
+      ]
+    },
+    "femoral_veins": {
+      "zh": "股静脉",
+      "en": "Femoral veins",
+      "system": "vessels",
+      "region": "lower_limb",
+      "side": "both",
+      "fma": [
+        "FMA21185"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -73.1,
+        -54.05,
+        -303.19,
+        74.6,
+        16.82,
+        20.08
+      ]
+    },
+    "popliteal_arteries": {
+      "zh": "腘动脉",
+      "en": "Popliteal arteries",
+      "system": "vessels",
+      "region": "lower_limb",
+      "side": "both",
+      "fma": [
+        "FMA77155"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -95.15,
+        4.99,
+        -503.53,
+        96.37,
+        48.01,
+        -305.91
+      ]
+    },
+    "tibial_arteries": {
+      "zh": "胫前动脉与胫后动脉",
+      "en": "Anterior and posterior tibial arteries",
+      "system": "vessels",
+      "region": "lower_limb",
+      "side": "both",
+      "fma": [
+        "FMA43894",
+        "FMA43895"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -104.83,
+        2.18,
+        -828.23,
+        106.48,
+        50.87,
+        -464.73
+      ]
+    },
+    "great_saphenous_veins": {
+      "zh": "大隐静脉",
+      "en": "Great saphenous veins",
+      "system": "vessels",
+      "region": "lower_limb",
+      "side": "both",
+      "fma": [
+        "FMA21376"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -33.48,
+        -45.83,
+        -611.56,
+        29.96,
+        53.0,
+        -9.83
+      ]
+    },
+    "azygos_vein": {
+      "zh": "奇静脉",
+      "en": "Azygos vein",
+      "system": "vessels",
+      "region": "thorax",
+      "side": "none",
+      "fma": [
+        "FMA4838"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -17.57,
+        -12.28,
+        287.0,
+        -4.92,
+        40.96,
+        504.54
+      ]
+    },
+    "brain": {
+      "zh": "脑",
+      "en": "Brain",
+      "system": "nerves",
+      "region": "head",
+      "side": "none",
+      "fma": [
+        "FMA50801"
+      ],
+      "source": "bp3d_partof",
+      "bbox": [
+        -69.02,
+        -68.96,
+        677.73,
+        69.3,
+        111.35,
+        843.61
+      ]
+    },
+    "spinal_cord": {
+      "zh": "脊髓",
+      "en": "Spinal cord",
+      "system": "nerves",
+      "region": "whole",
+      "side": "none",
+      "fma": [
+        "FMA7647"
+      ],
+      "source": "bp3d_partof",
+      "bbox": [
+        -1.12,
+        35.77,
+        671.84,
+        1.1,
+        48.9,
+        707.43
+      ]
+    },
+    "optic_nerves": {
+      "zh": "视神经",
+      "en": "Optic nerves",
+      "system": "nerves",
+      "region": "head",
+      "side": "both",
+      "fma": [
+        "FMA50863"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -32.69,
+        -50.98,
+        731.48,
+        32.62,
+        -1.37,
+        755.56
+      ]
+    }
+  },
+  "attribution": [
+    "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
+    "数据来源：BodyParts3D 4.0（NBDC LSDB 存档站），CC BY 4.0。"
+  ]
+}

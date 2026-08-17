@@ -20,7 +20,9 @@
     "format": "prettier --write .",
     "test": "node scripts/generate-placeholder.mjs && vitest run",
     "test:e2e": "playwright test",
-    "assets:placeholder": "node scripts/generate-placeholder.mjs"
+    "assets:placeholder": "node scripts/generate-placeholder.mjs",
+    "pipeline:all": "python3 pipeline/run_all.py",
+    "pipeline:test": "python3 -m pytest pipeline/tests -q"
   },
   "dependencies": {
     "react": "^19.1.0",

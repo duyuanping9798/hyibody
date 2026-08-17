@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import zh from '../../content/i18n/zh.json';
+import type { Manifest } from '../data/types';
 import { HyiViewer } from '../viewer/HyiViewer';
 
 type LoadState = 'loading' | 'ready' | 'error';
@@ -7,6 +8,7 @@ type LoadState = 'loading' | 'ready' | 'error';
 export function App() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [state, setState] = useState<LoadState>('loading');
+  const [manifest, setManifest] = useState<Manifest | null>(null);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -14,10 +16,15 @@ export function App() {
     const viewer = new HyiViewer(container, { base: import.meta.env.BASE_URL });
     viewer
       .load()
-      .then(() => setState('ready'))
+      .then(() => {
+        setManifest(viewer.getManifest());
+        setState('ready');
+      })
       .catch(() => setState('error'));
     return () => viewer.dispose();
   }, []);
+
+  const isPlaceholder = manifest?.systems[0]?.id === 'placeholder';
 
   return (
     <div style={{ position: 'relative', height: '100%', overflow: 'hidden' }}>
@@ -67,7 +74,7 @@ export function App() {
             pointerEvents: 'none',
           }}
         >
-          {zh.placeholderNotice}
+          {isPlaceholder ? zh.placeholderNotice : (manifest?.attribution[0] ?? '')}
         </footer>
       )}
     </div>

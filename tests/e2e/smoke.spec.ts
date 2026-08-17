@@ -2,9 +2,10 @@ import { expect, test } from '@playwright/test';
 
 /**
  * 渲染截图冒烟测试（无 GPU 软件渲染，只做粗检，真机观感由人类确认 — CLAUDE.md）。
- * 验收：占位 glb 加载成功、WebGL 画面非空、留存截图供 PR 审阅。
+ * 验收：manifest 声明的 glb（M1 起为流水线产物）加载成功、WebGL 画面非空、
+ * 留存截图供 PR 审阅。
  */
-test('viewer renders the placeholder model', async ({ page }) => {
+test('viewer renders the manifest assets', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
     timeout: 60_000,

@@ -10,6 +10,7 @@ import {
   WebGLRenderer,
 } from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { loadManifest } from '../data/manifest';
 import type { Manifest } from '../data/types';
 import { createCameraRig, type CameraRig } from './camera';
@@ -74,6 +75,8 @@ export class HyiViewer extends EventTarget {
     try {
       this.manifest = await loadManifest(this.options.base);
       const loader = new GLTFLoader();
+      // 流水线 glb 经 meshopt 压缩（EXT_meshopt_compression，M1-4）
+      loader.setMeshoptDecoder(MeshoptDecoder);
       const base = this.options.base.replace(/\/?$/, '/');
       await Promise.all(
         this.manifest.systems.map(async (system) => {

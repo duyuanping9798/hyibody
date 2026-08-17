@@ -1,34 +1,60 @@
 # 项目进度（STATUS）
 
-最后更新：2026-08-17 · 会话 1（M0 初始化）
+最后更新：2026-08-17 · 会话 2（M1-1 … M1-5 数据流水线）
 
-## 已完成（M0）
+## 已完成（本会话，issue #1–#5）
 
-- 脚手架：pnpm + Vite 6 + TypeScript strict + React 19 + three.js 0.185 + Zustand（依赖就位，M1 起用于 UI 状态）
-- `HyiViewer` 渲染核心（`src/viewer/`，无 React 依赖，ESLint 强制）：fetch `manifest.json` → GLTFLoader 加载 glb → 轨道旋转（自动旋转，交互即停）；Z-up 毫米坐标系与 BP3D 对齐
-- 程序生成占位人形 glb（dev/test/build 前自动跑 `scripts/generate-placeholder.mjs` 生成 `public/assets/placeholder.glb` + `manifest.json`，不提交 git），数据通路与 M1 流水线产物格式一致
-- `vite.config.ts` 读取 `VITE_BASE`（默认 `/`，Pages 构建注入 `/hyibody/`）
-- 分层滑块的不透明度映射 `src/viewer/layers.ts`（KICKOFF 第 6 节数值）+ 单元测试
-- URL 状态编解码 `src/data/urlState.ts` + 单元测试；manifest 校验 + 单元测试
-- 菲涅尔 X-ray 材质移植（`src/viewer/materials.ts`，M1 接入皮肤/肌肉层）
-- Tour 引擎骨架 `src/tours/engine.ts`（M2-1 完善）
-- ESLint 9 / Prettier / Vitest 3 / Playwright 配置；`pnpm lint / test / build / test:e2e` 全部通过
-- Playwright 无头截图冒烟测试（`tests/e2e/smoke.spec.ts`：等 ready 标记 → 读回像素验证画面非空 → 存截图）
-- `.github/workflows/ci.yml + pages.yml`（KICKOFF 附录版本，pnpm 版本改由 packageManager 字段决定）
-- 文档：CLAUDE.md、docs/KICKOFF.md 入库；STATUS / DECISIONS / ATTRIBUTION 初稿；README 重写
-- M1（7 个）、M2（6 个）issue 已创建（#1–#13），标签 M1/M2
+- `pipeline/config/sources.yaml`：BodyParts3D 4.0 八个文件直链（NBDC 存档站
+  `/data/bodyparts3d/LATEST/`，即 4.0 终版）+ 实测 sha256 + CC BY 4.0 许可证信息
+- `download.py`：下载 → sha256 校验（不符报错退出）→ 解压；重复运行跳过已有文件
+- `select.py` + `config/groups.yaml`：按 KICKOFF 第 7 节规则生成
+  `content/structures.candidates.yaml`（132 个候选：骨骼 35、肌肉 42、血管 29、
+  器官 19、神经 6、皮肤 1），含面数/包围盒体积/父概念参考信息
+- `process.py`：合并元素 OBJ → 焊接清理 → fast-simplification 减面 → isa 全集
+  包围盒中心统一居中（各系统跨运行对齐）
+- `export.py`：pygltflib 组 glb（节点名 = slug，extras 按 KICKOFF 第 7 节）→
+  gltf-transform dedup/weld/quantize/meshopt → `manifest.json`（含 BP3D 署名）
+- `validate.py` + `run_all.py`（`pnpm pipeline:all`）；pytest 19 个用例覆盖表解析、
+  分组匹配、配置校验（`pnpm pipeline:test`）
+- **全六系统流水线产物已提交**：135 结构 / 6 个 glb 共 **1.87 MB** / 239,044
+  三角面（骨骼 0.52 + 肌肉 0.45 + 器官 0.42 + 血管 0.31 + 神经 0.07 + 皮肤 0.05 MB），
+  首屏（皮肤+骨骼+manifest）0.63 MB ≤ 5 MB，校验全绿；`run_all.py` 默认跑全系统
+- 查看器接入：GLTFLoader 注册 MeshoptDecoder；占位生成脚本检测到流水线 manifest
+  即跳过；页脚显示 BP3D 署名；Playwright 截图冒烟通过（骨骼完整渲染）
+
+## 结构挑选方法（供人类审阅候选清单）
+
+规则写在 `pipeline/config/groups.yaml`（人可编辑）：每个候选结构 = 若干 BP3D 概念
+（英文名精确匹配或正则），元素网格按 FJ id 去重合并。骨骼按 KICKOFF：颅骨 13 块合
+为一组、椎骨按颈/胸/腰三组、肋骨整体一组、腕骨/跗骨各一组、四肢长骨左右单列；
+isa 集缺的整器官（心/肺/肝/脑/主动脉/胸骨等）取 partof 集（`source: bp3d_partof`）。
+审阅方式：直接编辑候选 yaml 删条目/改字段后另存为 `content/structures.yaml`，或改
+`groups.yaml` 重跑 `python3 pipeline/select.py`。`meta` 块（面数/体积/父概念）仅供
+参考，定稿时可删。未匹配与剔除记录在 `pipeline/work/select_report.json`。
+
+**BP3D 4.0 已知缺口**（两集均无网格，候选清单已如实缺席，详见 DECISIONS.md 待定节）：
+尾骨、甲状腺、子宫/卵巢（男性模型）、全部主要周围神经（坐骨神经/臂丛等；nerves
+目前只有脑/小脑/脑干/脊髓/视神经/神经系统复合体 6 条）、腹直肌/背阔肌/咬肌等部分浅层肌。
 
 ## 未完成 / 下一步
 
-- M1-1 … M1-7：数据流水线与查看器核心（见 issues）
-- M2-1 … M2-6：故事线、Kiosk、分享、HRA 替换、中英切换、发布（见 issues）
-- `prototype/` 原型目录未上传（见"给人类的待办"）
+- ~~定稿 `content/structures.yaml`~~ 已完成：AI 审阅 140 候选 → 删 5 条重叠 →
+  135 条定稿（人类在会话中批准，见 DECISIONS.md），PR diff 中可做最终增删
+- M1-6 查看器核心交互（issue #6）：分层、拾取、信息卡、剖切、搜索、URL 状态
+- M1-7 移动端与性能预算检查（issue #7）
+- 查看器目前把 manifest 里全部系统一次性加载（皮肤不透明包住全身）；
+  "首屏皮肤+骨骼、其余按需加载 + 分层透明"属 M1-6（issue #6）
+- M2：故事线、Kiosk、HRA 替换、周围神经补源决策
 
 ## 给人类的待办
 
-1. **合并 PR**：看 Actions 变绿、浏览 diff 后合并到 main。
-2. **Pages 验证**：确认 Settings → Pages → Source 已选 **GitHub Actions**（仓库已是 Public，免费计划可用）。合并后 Pages 自动发布，用手机和电脑打开 `https://duyuanping9798.github.io/hyibody/` 确认能看到占位人形并可拖动旋转。
-3. **上传 prototype/**（可选但推荐）：启动包里的 `prototype/process.py、index.html、shot.mjs` 不在仓库中，网页端 Add file → Upload files 传到 `prototype/` 目录，供后续会话参考。
-4. **BodyParts3D 许可证快照**：把 <https://dbarchive.biosciencedbc.jp/en/bodyparts3d/lic.html> 另存为 PDF 上传到 `docs/licenses/`（会话 2 之前完成即可）。
-5. **云环境**：会话 2 开始前按 KICKOFF 第 2 节建好 `hyibody` 云环境（Custom 域名列表 + setup script + `VITE_BASE=/hyibody/`），流水线要联网下载 BP3D 数据。
-6. **会话 2**：粘贴 KICKOFF 第 9 节"会话 2"指令，做数据流水线（对应 issue #1–#5）。
+1. **合并本 PR**（issue #1–#5）：看 CI 变绿、浏览 diff（重点：`content/
+   structures.candidates.yaml` 与 `docs/DECISIONS.md` 新增决策）后合并。
+2. **过目 `content/structures.yaml` 定稿**（已按你批准的审阅建议生成，135 条）：
+   在 PR diff 里做最终增删即可；删掉的 5 条重叠结构仍留在候选清单里可随时恢复。
+3. **确认 Pages**：合并后打开站点，应看到完整人体外形（BP3D 皮肤包住六大系统；"透视"分层要等 M1-6 交互）。
+4. **CI 未跑 Python 测试**：`.github/workflows/ci.yml` 属预置文件本会话未改；
+   如需在 CI 加 `pnpm pipeline:test`（需装 Python 依赖），请人类在网页端编辑或
+   下个会话在 PR 描述附 yaml。
+5. **周围神经缺口**：BP3D 4.0 无坐骨神经等网格。M2 想要神经层有内容，需决策
+   补源（HRA 或 BP3D 3.0），见 DECISIONS.md 待定节。

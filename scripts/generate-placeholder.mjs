@@ -2,8 +2,20 @@
 // M1 数据流水线产出真实解剖 glb 后，此脚本与占位模型即退役。
 // 坐标系对齐 BodyParts3D：单位毫米、Z 轴向上、前方 -Y（KICKOFF 第 5 节 M1-3）。
 import { Document, NodeIO } from '@gltf-transform/core';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+
+// M1 起 manifest.json 由流水线生成并提交仓库；存在真实数据时跳过占位生成，
+// 避免 dev/test/build 前置脚本覆盖流水线产物。
+try {
+  const existing = JSON.parse(await readFile(path.resolve('public/assets/manifest.json'), 'utf8'));
+  if (existing.systems?.length && existing.systems[0].id !== 'placeholder') {
+    console.log('检测到流水线 manifest.json，跳过占位模型生成');
+    process.exit(0);
+  }
+} catch {
+  // manifest 不存在或损坏 → 照常生成占位
+}
 import { CapsuleGeometry, CylinderGeometry, Matrix4, SphereGeometry, Vector3 } from 'three';
 
 /** three.js BufferGeometry（Y-up）→ 变换后的扁平数组（Z-up 场景中摆放） */

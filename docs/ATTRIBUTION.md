@@ -38,4 +38,7 @@ Z-Anatomy 网格与层级（CC BY-SA）、Open3DModel（CC BY-SA）、任何 NC/
 
 ## 当前状态
 
-M0 阶段站点仅包含程序生成的占位模型（`scripts/generate-placeholder.mjs`），无任何第三方数据。
+M1 起站点资产（`public/assets/*.glb` + `manifest.json`）由数据流水线从 BodyParts3D 4.0
+生成（isa 集细分部件 + partof 集复合器官），`manifest.json` 的 `attribution` 字段携带上述
+BodyParts3D 署名文本并显示在页面上。每个结构保留 `fma` 概念 ID 列表以便追溯。
+原始数据不入库（`pipeline/raw/`，gitignore），直链与 sha256 记录于 `pipeline/config/sources.yaml`。
