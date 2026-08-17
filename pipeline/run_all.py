@@ -34,7 +34,7 @@ def load_step(name: str):
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--systems", default="skeleton", help="逗号分隔的系统列表，或 all")
+    ap.add_argument("--systems", default="all", help="逗号分隔的系统列表，或 all")
     ap.add_argument("--skip-download", action="store_true")
     args = ap.parse_args(argv)
 

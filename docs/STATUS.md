@@ -16,8 +16,9 @@
   gltf-transform dedup/weld/quantize/meshopt → `manifest.json`（含 BP3D 署名）
 - `validate.py` + `run_all.py`（`pnpm pipeline:all`）；pytest 19 个用例覆盖表解析、
   分组匹配、配置校验（`pnpm pipeline:test`）
-- **骨骼系统端到端产物已提交**：`public/assets/skeleton.glb` 0.52 MB / 35 结构 /
-  70,078 三角面 + `manifest.json`（首屏 0.53 MB ≤ 5 MB 预算，校验全绿）
+- **全六系统流水线产物已提交**：135 结构 / 6 个 glb 共 **1.87 MB** / 239,044
+  三角面（骨骼 0.52 + 肌肉 0.45 + 器官 0.42 + 血管 0.31 + 神经 0.07 + 皮肤 0.05 MB），
+  首屏（皮肤+骨骼+manifest）0.63 MB ≤ 5 MB，校验全绿；`run_all.py` 默认跑全系统
 - 查看器接入：GLTFLoader 注册 MeshoptDecoder；占位生成脚本检测到流水线 manifest
   即跳过；页脚显示 BP3D 署名；Playwright 截图冒烟通过（骨骼完整渲染）
 
@@ -41,8 +42,8 @@ isa 集缺的整器官（心/肺/肝/脑/主动脉/胸骨等）取 partof 集（
   135 条定稿（人类在会话中批准，见 DECISIONS.md），PR diff 中可做最终增删
 - M1-6 查看器核心交互（issue #6）：分层、拾取、信息卡、剖切、搜索、URL 状态
 - M1-7 移动端与性能预算检查（issue #7）
-- 其余系统（皮肤/肌肉/器官/血管/神经）跑流水线：`python3 pipeline/run_all.py
-  --systems all --skip-download`（等 structures.yaml 定稿后再跑更省返工）
+- 查看器目前把 manifest 里全部系统一次性加载（皮肤不透明包住全身）；
+  "首屏皮肤+骨骼、其余按需加载 + 分层透明"属 M1-6（issue #6）
 - M2：故事线、Kiosk、HRA 替换、周围神经补源决策
 
 ## 给人类的待办
@@ -51,7 +52,7 @@ isa 集缺的整器官（心/肺/肝/脑/主动脉/胸骨等）取 partof 集（
    structures.candidates.yaml` 与 `docs/DECISIONS.md` 新增决策）后合并。
 2. **过目 `content/structures.yaml` 定稿**（已按你批准的审阅建议生成，135 条）：
    在 PR diff 里做最终增删即可；删掉的 5 条重叠结构仍留在候选清单里可随时恢复。
-3. **确认 Pages**：合并后手机/电脑打开站点，应看到真实骨骼（不再是占位人形）。
+3. **确认 Pages**：合并后打开站点，应看到完整人体外形（BP3D 皮肤包住六大系统；"透视"分层要等 M1-6 交互）。
 4. **CI 未跑 Python 测试**：`.github/workflows/ci.yml` 属预置文件本会话未改；
    如需在 CI 加 `pnpm pipeline:test`（需装 Python 依赖），请人类在网页端编辑或
    下个会话在 PR 描述附 yaml。
