@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { encodeUrlState } from '../../src/data/urlState';
 
 /**
  * 渲染截图冒烟测试（无 GPU 软件渲染，只做粗检，真机观感由人类确认 — CLAUDE.md）。
@@ -40,4 +41,27 @@ test('viewer renders the manifest assets', async ({ page }) => {
   expect(foregroundRatio).toBeGreaterThan(0.02);
 
   await page.screenshot({ path: 'test-results/smoke.png' });
+});
+
+/**
+ * M1-6 交互冒烟：用 ?v= 分享链接恢复"分层滑到骨骼层 + 选中颅骨"的状态，
+ * 信息卡应显示中文名，并留存截图。
+ */
+test('layer state and selection restore from share URL', async ({ page }) => {
+  const state = encodeUrlState({ layer: 0.62, selected: 'skull' });
+  await page.goto(`/?v=${state}`);
+  await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
+    timeout: 60_000,
+  });
+
+  const infoCard = page.getByTestId('info-card');
+  await expect(infoCard).toBeVisible({ timeout: 20_000 });
+  await expect(infoCard).toContainText('颅骨');
+  await expect(infoCard).toContainText('Skull');
+
+  // 分层滑块位于骨骼段：皮肤应已淡出（截图供人工比对）
+  await page.evaluate(
+    () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))),
+  );
+  await page.screenshot({ path: 'test-results/smoke-layered.png' });
 });

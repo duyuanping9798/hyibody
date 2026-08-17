@@ -1,27 +1,70 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import zh from '../../content/i18n/zh.json';
-import type { Manifest } from '../data/types';
+import { decodeUrlState, encodeUrlState } from '../data/urlState';
 import { HyiViewer } from '../viewer/HyiViewer';
+import { Attribution } from './Attribution';
+import { InfoCard } from './InfoCard';
+import { LayerSlider } from './LayerSlider';
+import { SearchBox } from './SearchBox';
+import { bindViewer, toUrlState, useUiStore } from './store';
+import { SystemPanel } from './SystemPanel';
+import { ViewTools } from './ViewTools';
+import './ui.css';
 
-type LoadState = 'loading' | 'ready' | 'error';
+/** 状态变化后把 ?v= 写回地址栏（防抖，replaceState 不产生历史记录）。 */
+function useUrlSync(): void {
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout> | null = null;
+    const unsub = useUiStore.subscribe((s, prev) => {
+      if (s.loadState !== 'ready') return;
+      if (
+        s.layer === prev.layer &&
+        s.systemsVisible === prev.systemsVisible &&
+        s.clip === prev.clip &&
+        s.selected === prev.selected
+      )
+        return;
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(() => {
+        const url = new URL(window.location.href);
+        url.searchParams.set('v', encodeUrlState(toUrlState()));
+        window.history.replaceState(null, '', url);
+      }, 400);
+    });
+    return () => {
+      if (timer) clearTimeout(timer);
+      unsub();
+    };
+  }, []);
+}
 
 export function App() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [state, setState] = useState<LoadState>('loading');
-  const [manifest, setManifest] = useState<Manifest | null>(null);
+  const loadState = useUiStore((s) => s.loadState);
+  const manifest = useUiStore((s) => s.manifest);
+  const setAttributionOpen = useUiStore((s) => s.setAttributionOpen);
+  useUrlSync();
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
     const viewer = new HyiViewer(container, { base: import.meta.env.BASE_URL });
+    bindViewer(viewer);
     viewer
       .load()
       .then(() => {
-        setManifest(viewer.getManifest());
-        setState('ready');
+        const m = viewer.getManifest();
+        if (m) useUiStore.getState().setManifest(m);
+        useUiStore.getState().setLoadState('ready');
+        // 恢复分享链接状态（?v=）
+        const encoded = new URLSearchParams(window.location.search).get('v');
+        if (encoded) useUiStore.getState().applyUrlState(decodeUrlState(encoded));
       })
-      .catch(() => setState('error'));
-    return () => viewer.dispose();
+      .catch(() => useUiStore.getState().setLoadState('error'));
+    return () => {
+      bindViewer(null);
+      viewer.dispose();
+    };
   }, []);
 
   const isPlaceholder = manifest?.systems[0]?.id === 'placeholder';
@@ -46,7 +89,7 @@ export function App() {
         <h1 style={{ margin: 0, fontSize: 22, letterSpacing: 1, color: '#4fe3e0' }}>{zh.brand}</h1>
         <span style={{ fontSize: 13, opacity: 0.75 }}>{zh.subtitle}</span>
       </header>
-      {state !== 'ready' && (
+      {loadState !== 'ready' && (
         <p
           data-testid="viewer-status"
           style={{
@@ -58,10 +101,31 @@ export function App() {
             opacity: 0.8,
           }}
         >
-          {state === 'loading' ? zh.loading : zh.loadError}
+          {loadState === 'loading' ? zh.loading : zh.loadError}
         </p>
       )}
-      {state === 'ready' && (
+      {loadState === 'ready' && !isPlaceholder && (
+        <>
+          <div className="hyi-topbar">
+            <button className="hyi-btn" onClick={() => setAttributionOpen(true)}>
+              {zh.attribution}
+            </button>
+          </div>
+          <SearchBox />
+          <div className="hyi-side">
+            <div className="hyi-panel">
+              <SystemPanel />
+            </div>
+            <div className="hyi-panel">
+              <ViewTools />
+            </div>
+          </div>
+          <InfoCard />
+          <LayerSlider />
+          <Attribution />
+        </>
+      )}
+      {loadState === 'ready' && isPlaceholder && (
         <footer
           style={{
             position: 'absolute',
@@ -74,7 +138,7 @@ export function App() {
             pointerEvents: 'none',
           }}
         >
-          {isPlaceholder ? zh.placeholderNotice : (manifest?.attribution[0] ?? '')}
+          {zh.placeholderNotice}
         </footer>
       )}
     </div>
