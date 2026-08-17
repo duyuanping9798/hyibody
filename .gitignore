@@ -1,0 +1,23 @@
+# dependencies / build
+node_modules/
+dist/
+
+# tests
+test-results/
+playwright-report/
+coverage/
+
+# pipeline data (never commit raw data, see CLAUDE.md)
+pipeline/raw/
+pipeline/work/
+
+# M0: placeholder assets are generated at build time (scripts/generate-placeholder.mjs).
+# M1 pipeline outputs will be committed here instead — remove these lines then.
+public/assets/placeholder.glb
+public/assets/manifest.json
+
+# misc
+.DS_Store
+*.log
+.env
+.env.*

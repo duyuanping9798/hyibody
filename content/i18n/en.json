@@ -1,0 +1,8 @@
+{
+  "brand": "HyiBody",
+  "subtitle": "See-through Human Anatomy",
+  "loading": "Loading model…",
+  "loadError": "Failed to load model, please refresh",
+  "placeholderNotice": "Placeholder model — real anatomy data arrives with the M1 pipeline",
+  "attribution": "Data sources & attribution"
+}

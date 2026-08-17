@@ -1,0 +1,49 @@
+{
+  "name": "hyibody",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "packageManager": "pnpm@10.33.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  },
+  "scripts": {
+    "dev": "node scripts/generate-placeholder.mjs && vite",
+    "build": "node scripts/generate-placeholder.mjs && tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "lint": "eslint . && prettier --check .",
+    "format": "prettier --write .",
+    "test": "node scripts/generate-placeholder.mjs && vitest run",
+    "test:e2e": "playwright test",
+    "assets:placeholder": "node scripts/generate-placeholder.mjs"
+  },
+  "dependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "three": "^0.185.0",
+    "zustand": "^5.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "@gltf-transform/core": "^4.0.0",
+    "@playwright/test": "^1.55.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@types/three": "^0.185.0",
+    "@vitejs/plugin-react": "^4.5.0",
+    "eslint": "^9.0.0",
+    "eslint-config-prettier": "^10.0.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "prettier": "^3.5.0",
+    "typescript": "~5.9.0",
+    "typescript-eslint": "^8.0.0",
+    "vite": "^6.3.0",
+    "vitest": "^3.0.0"
+  }
+}
