@@ -12,6 +12,9 @@ export default defineConfig({
     // PWA 离线（M2-3）：预缓存全部资产（六系统 glb 共约 4 MB，远低于预算），
     // autoUpdate 静默换新版本
     VitePWA({
+      // 单文件预览构建（scripts/build-preview.mjs）里没有 Service Worker 环境，
+      // 用 HYI_NO_PWA=1 关掉，免得控制台一片红
+      disable: process.env.HYI_NO_PWA === '1',
       registerType: 'autoUpdate',
       manifest: {
         name: 'HyiBody 人体透视科普',
