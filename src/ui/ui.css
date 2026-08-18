@@ -217,9 +217,14 @@
   text-align: left;
 }
 .hyi-search-results button:hover,
+.hyi-search-results button.active,
 .hyi-search-results button:focus-visible {
   background: rgba(79, 227, 224, 0.12);
   outline: none;
+}
+/* 键盘走到的那一行要比鼠标划过更明显一点，否则看不出光标在哪 */
+.hyi-search-results button.active {
+  box-shadow: inset 2px 0 0 var(--hyi-accent);
 }
 .hyi-search-results .en {
   color: var(--hyi-text-dim);
@@ -953,4 +958,81 @@ body.hyi-kiosk .hyi-info .blurb {
 /* 一键回全身：钻进某个器官内部之后总得有条出路 */
 .hyi-back-to-body {
   width: 100%;
+}
+
+/* 只给读屏软件看的文字（选中结构时播报名字），视觉上完全不占位 */
+.hyi-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* 顶栏的图标按钮（键盘快捷键）：标签就是打开它的那个键 `?`，宽度收窄。
+   不用键盘图标 ⌨（U+2328）——字体子集里没有这个字形，会掉成豆腐块 */
+.hyi-btn-icon {
+  padding-inline: 9px;
+  font-size: 14px;
+  line-height: 1;
+}
+
+/* 键盘快捷键说明 */
+.hyi-shortcuts {
+  width: min(460px, calc(100% - 40px));
+  max-height: 76%;
+  overflow-y: auto;
+  padding: 18px 22px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.hyi-shortcuts h2 {
+  margin: 0 0 12px;
+  font-size: 16px;
+  color: var(--hyi-accent);
+}
+.hyi-shortcuts dl {
+  margin: 0 0 14px;
+  display: grid;
+  gap: 8px;
+}
+.hyi-shortcuts dl > div {
+  display: grid;
+  grid-template-columns: 108px 1fr;
+  align-items: baseline;
+  gap: 10px;
+}
+.hyi-shortcuts dt {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  color: var(--hyi-text-dim);
+}
+.hyi-shortcuts dd {
+  margin: 0;
+}
+.hyi-shortcuts kbd {
+  display: inline-block;
+  min-width: 20px;
+  padding: 2px 6px;
+  border: 1px solid var(--hyi-panel-border);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--hyi-text);
+  font: inherit;
+  font-size: 11px;
+  text-align: center;
+}
+
+@media (max-width: 720px) {
+  /* 手机上没有键盘，快捷键按钮只会占地方 */
+  .hyi-btn-icon {
+    display: none;
+  }
 }

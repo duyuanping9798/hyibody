@@ -1,6 +1,6 @@
 # 项目进度（STATUS）
 
-最后更新：2026-08-18 · 体验收尾与 v0.1 验收（M2-6）
+最后更新：2026-08-18 · 英文科普文案与键盘无障碍（v0.1.1）
 
 ## 已完成（本会话，issue #1–#5）
 
@@ -257,27 +257,55 @@ isa 集缺的整器官（心/肺/肝/脑/主动脉/胸骨等）取 partof 集（
 **v0.1 规模**：143 结构 / 1,154,816 面 / 资产 7.61 MB / 首屏 2.02 MB；
 单测 **67**、pipeline pytest **33**、e2e **12**。
 
+## 已完成（英文科普文案 + 键盘无障碍，v0.1.1）
+
+- **`content/definitions/en.json`**：143 条英文 `blurb` + `fact`，与中文一一对应。
+  英文界面下信息卡正文不再是占位句（v0.1 的已知短板第 4 条就此关掉）。
+  文案表按语言取（`definitionsFor(lang)`），"AI 初稿"标注也各语言各记各的
+- **契约单测扩到双语**：中英覆盖同一批 slug、各自的长度上限（英文一句话字符数
+  约为中文两倍，所以上限分开写）、英文里不许残留中文字符
+- **键盘可用**（`src/ui/keyboard.ts`，纯函数 `resolveShortcut` + 一个 hook）：
+  `/` 搜索、`?` 快捷键说明、`[`/`]` 调透视深度、`1`–`6` 显隐六个系统、
+  `F` 聚焦选中、`0` 返回全身、故事线里 `←`/`→`/空格 走步与播放暂停，
+  `Esc` 逐层退出（弹窗 → 故事线 → 取消选中 → 返回全身）。
+  带 Ctrl/Cmd/Alt 的组合一律不接管；焦点在输入框里时除 Esc 外全部放行
+- **搜索框键盘化**：↑↓ 走结果、回车选中、Esc 清空（只清搜索框，不冒泡到全局 Esc）；
+  结果行按界面语言排主次（英文界面下英文名在前）
+- **读屏**：选中结构时用一条 `aria-live` 播报名字（点画布选中原本是"哑"的）；
+  搜索框补 combobox/listbox 语义；顶栏加一个 `⌨` 按钮打开快捷键说明（手机端隐藏）
+- `StructureInfo.parent` 补进类型定义，`Lang` 类型收敛到 `src/data/types.ts`，
+  去掉 InfoCard 里两处 `as` 断言
+- 改了中文文案，已重跑 `pnpm font:subset`（子集 1233 字 / 336.8 KB）
+
+测试：单测 **86**（新增 keyboard 10 条、definitions 双语 9 条）、
+pipeline pytest **33**、e2e **14**（新增键盘冒烟、英文信息卡）。
+
 ## 未完成 / 下一步
 
 - **等人类决策**：是否引入 HuBMAP HRA 器官与周围神经数据源（DECISIONS 待定节）——
   这是"业余 → 专业"最大的一步，但要先过许可证与域名白名单
-- 无障碍键盘操作细化；英文一句话科普（`content/definitions/en.json`）
 - 选中高亮强度、X-ray 参数等观感项待真机反馈微调
 - 仍粗的地方基本是 BP3D 4.0 源网格本身的分辨率（胫骨、上腔静脉等短桩血管），
   再提 target_faces 也没有新信息量；要更细只能换/补数据源（见 DECISIONS 待定）
+- 键盘只能操作界面，还不能用 Tab 在三维结构之间走（要给结构列表做一个可聚焦的
+  树；等真机反馈决定要不要做）
 
 ## 给人类的待办
 
-1. **合并 PR #16**（issue #6 查看器交互）：CI 绿后合并，手机+电脑打开站点试
-   分层滑块/点击/搜索/剖切，观感问题写进 issue。
-2. ~~PR #15~~ 已合并（issue #1–#5 数据流水线 + structures.yaml 定稿）。
+1. **`v0.1` 标签没能从云端推上去**：git 代理拒绝 tag ref（`git ls-remote --tags`
+   只剩 `starter`），本地已打在 `80e5cd7` 上。请在 GitHub 网页
+   Releases → Draft new release，tag 填 `v0.1`、target 选 main 的 `80e5cd7`。
+2. **真机验收三条**（`docs/RELEASE-0.1.md` 里带 ⚠️ 的）：手机 10 秒内可交互、
+   分层滑块流畅度、展厅设备观感。云端只有软件渲染，测不了。
 3. **校对科普文案与故事线**（KICKOFF 第 10 节：AI 出稿、人类审核）：
-   `content/definitions/zh.json`（135 条 blurb + fact）与 `content/tours/*.json`
-   （三条故事线），改字直接提交即可生效；校对完把 json 里的
-   `_meta.reviewed` 改成 `true`，信息卡上的"AI 初稿"标注就会消失。
+   `content/definitions/zh.json` 与 `content/definitions/en.json`（各 143 条
+   blurb + fact）、`content/tours/*.json`（三条故事线）。改字直接提交即可生效；
+   校对完把对应 json 里的 `_meta.reviewed` 改成 `true`，信息卡上的
+   "AI 初稿"标注就会消失（中英各记各的）。
    **改动中文后记得跑一次 `pnpm font:subset`**（新字不在子集里会掉回系统字体）。
 4. **CI 未跑 Python 测试**：`.github/workflows/ci.yml` 属预置文件本会话未改；
    如需在 CI 加 `pnpm pipeline:test`（需装 Python 依赖），请人类在网页端编辑或
    下个会话在 PR 描述附 yaml。
-5. **周围神经缺口**：BP3D 4.0 无坐骨神经等网格。M2 想要神经层有内容，需决策
-   补源（HRA 或 BP3D 3.0），见 DECISIONS.md 待定节。
+5. **周围神经缺口 / 数据源决策**：BP3D 4.0 无坐骨神经等网格。要让神经层有内容，
+   得决定是否引入 HuBMAP HRA（CC BY 4.0，需确认域名白名单），见 DECISIONS.md 待定节。
+6. PWA 图标仍是占位色块，可换成正式图标。

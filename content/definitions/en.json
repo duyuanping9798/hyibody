@@ -1,0 +1,579 @@
+{
+  "_meta": {
+    "note": "HyiBody English one-liners (AI draft, pending review). blurb = the sentence in the info card; fact = the \"Did you know\" note. Figures are the usual popular-science ranges — set reviewed to true once a human has checked them.",
+    "reviewed": false,
+    "generatedAt": "2026-08-18"
+  },
+  "skin": {
+    "blurb": "The skin is the body's largest organ: a waterproof wrapper that also handles touch, temperature control and the first line of defence against germs.",
+    "fact": "Spread flat, an adult's skin covers about 1.5–2 square metres. You shed tens of thousands of dead cells every minute and grow a whole new outer layer roughly every four weeks."
+  },
+  "sternocleidomastoid": {
+    "blurb": "A strap of muscle running diagonally down each side of the neck; it turns the head and tips it forward, and it is the most visible muscle in the neck.",
+    "fact": "Its name is its road map — from the sternum and clavicle up to the mastoid bump behind the ear. Turn your head and you can feel it stand out."
+  },
+  "platysma": {
+    "blurb": "A thin sheet of muscle just under the skin of the front of the neck; it pulls the corners of the mouth down and tightens the neck skin.",
+    "fact": "Those vertical cords that appear on your neck when you grimace are the platysma contracting."
+  },
+  "trapezius": {
+    "blurb": "A large flat muscle covering the upper back and the back of the neck; it shrugs the shoulders and steadies and rotates the shoulder blade.",
+    "fact": "Left and right together form a four-sided diamond — a trapezium — which is where the name comes from. The sore spot on top of a stiff shoulder is its upper fibres."
+  },
+  "deltoid": {
+    "blurb": "The muscle that caps the shoulder joint and lifts the arm forward, out to the side and backward, giving the shoulder its rounded shape.",
+    "fact": "The \"upper outer arm\" where vaccines are usually given is the deltoid."
+  },
+  "pectoralis_major": {
+    "blurb": "The big fan-shaped muscle across the front of the chest; it pulls the arm inward and forward and does the heavy lifting in a push-up or bench press.",
+    "fact": "It fans out from the collarbone, breastbone and rib cartilages onto a single point on the humerus, so different fibres take over as the arm changes angle."
+  },
+  "pectoralis_minor": {
+    "blurb": "A smaller muscle hidden under pectoralis major, running from the ribs to the coracoid process of the shoulder blade, pulling it forward and down.",
+    "fact": "Slouching for years leaves it short and tight — one of the usual suspects behind rounded shoulders."
+  },
+  "serratus_anterior": {
+    "blurb": "A muscle wrapped around the side of the rib cage that pushes the shoulder blade forward and holds it flat against the chest wall.",
+    "fact": "Its saw-toothed edge gives it the name \"serratus\", and because it drives a punch it is nicknamed the boxer's muscle."
+  },
+  "intercostal_muscles": {
+    "blurb": "Short muscles filling the gaps between neighbouring ribs; they lift the ribs when you breathe in and lower them when you breathe out.",
+    "fact": "The strip of meat between the bones on a rack of ribs is exactly this — an animal's intercostal muscle."
+  },
+  "diaphragm": {
+    "blurb": "A dome of muscle separating the chest from the abdomen; it is the main engine of breathing.",
+    "fact": "A hiccup is the diaphragm twitching involuntarily while the vocal cords snap shut — the snap is the sound."
+  },
+  "external_oblique": {
+    "blurb": "The outermost flat muscle of the abdominal wall, its fibres running down and inward to twist and side-bend the trunk and shield the organs.",
+    "fact": "Its fibres run in the direction your hands slide into your front pockets; the two sides must work together to turn the body."
+  },
+  "erector_spinae": {
+    "blurb": "A column of muscles running the length of the spine on both sides, holding the body upright and arching it backward.",
+    "fact": "The ache in your lower back after a long day of sitting or standing is usually this group tiring out from holding you up."
+  },
+  "levator_scapulae": {
+    "blurb": "Runs from the neck vertebrae to the top corner of the shoulder blade, lifting the blade and helping bend the head sideways.",
+    "fact": "The sharpest point of pain in a stiff neck is often exactly where it attaches to the shoulder blade."
+  },
+  "splenius_capitis": {
+    "blurb": "A deep muscle at the back of the neck that tilts the head back and turns it toward the same side.",
+    "fact": "It wraps the deeper neck muscles like a bandage, which is why it is named after the Greek word for a splint."
+  },
+  "supraspinatus": {
+    "blurb": "Sits above the spine of the shoulder blade and is one of the four rotator cuff muscles; it starts the arm's lift out to the side.",
+    "fact": "Its tendon is the one most often injured in the rotator cuff, because it squeezes through a narrow gap under the tip of the shoulder."
+  },
+  "infraspinatus": {
+    "blurb": "Covers most of the back of the shoulder blade, turning the arm outward and holding the shoulder joint steady.",
+    "fact": "It is the brake on a throw or a spike, which is why it is unusually well developed in ball players."
+  },
+  "teres_major": {
+    "blurb": "Runs from the lower corner of the shoulder blade to the humerus, pulling the arm inward and rotating it inward.",
+    "fact": "It works so closely with latissimus dorsi that it is nicknamed \"lat's little helper\"."
+  },
+  "biceps_brachii": {
+    "blurb": "The muscle on the front of the upper arm; it bends the elbow and turns the palm face-up.",
+    "fact": "It is the bulge you flex to show off, but the real workhorse of elbow bending is the brachialis underneath it."
+  },
+  "triceps_brachii": {
+    "blurb": "Fills the back of the upper arm and straightens the elbow.",
+    "fact": "It has three heads and makes up most of the arm's muscle volume — training it adds more size than training the biceps."
+  },
+  "brachialis": {
+    "blurb": "Hidden beneath the biceps, this is the strongest muscle for bending the elbow.",
+    "fact": "It pulls just as hard with the palm up or down, so it does the quiet, unglamorous half of every curl."
+  },
+  "brachioradialis": {
+    "blurb": "Runs along the thumb side of the forearm and bends the elbow most powerfully when the thumb points up.",
+    "fact": "That is the grip you use to raise a glass, which is why it is sometimes called the beer-drinker's muscle."
+  },
+  "flexor_carpi_radialis": {
+    "blurb": "A muscle on the front of the forearm that bends the wrist and pulls the hand toward the thumb side.",
+    "fact": "Clench your fist and bend your wrist: the most obvious tendon on the thumb side of your wrist is this one."
+  },
+  "palmaris_longus": {
+    "blurb": "A slender muscle on the front of the forearm that tightens the fascia of the palm and helps bend the wrist.",
+    "fact": "About one person in ten is born without it, with no loss of grip strength. Touch your thumb to your little finger and flex the wrist — if a cord pops up in the middle of your wrist, you have one."
+  },
+  "flexor_digitorum_superficialis": {
+    "blurb": "Sits on the front of the forearm and bends the middle joints of the fingers.",
+    "fact": "In each finger its tendon splits in two so the deeper tendon can pass through the gap, like a tunnel."
+  },
+  "extensor_digitorum": {
+    "blurb": "Sits on the back of the forearm and straightens the fingers and the wrist.",
+    "fact": "The cords that stand out on the back of your hand when you spread your fingers are its tendons, one per finger."
+  },
+  "psoas_major": {
+    "blurb": "Runs from the lumbar spine to the thigh bone; it is the main hip flexor that lifts the thigh, and it also steadies the lower back.",
+    "fact": "Long hours of sitting leave it short and tight, which is why standing up straight can feel stiff at first."
+  },
+  "iliacus": {
+    "blurb": "Lines the inner surface of the hip bone and joins psoas major to form the iliopsoas, the pair that lifts the thigh.",
+    "fact": "Every stride you run and every stair you climb depends on it."
+  },
+  "gluteus_maximus": {
+    "blurb": "One of the largest and strongest muscles in the body; it extends the hip so we can stand up, climb and run.",
+    "fact": "Ours is far bigger than any other primate's — anatomists count it as a key part of why humans walk upright and run long distances."
+  },
+  "gluteus_medius": {
+    "blurb": "Sits on the upper outer side of the hip, swinging the leg outward and keeping the pelvis level when you stand on one leg.",
+    "fact": "When it is weak the pelvis drops with every step, producing the side-to-side gait doctors call a waddle."
+  },
+  "tensor_fasciae_latae": {
+    "blurb": "A small muscle at the upper outer thigh that tightens the iliotibial band, helping to flex the hip and stabilise the knee.",
+    "fact": "The outer-knee pain runners know as IT band syndrome is linked to this muscle and its band being too tight."
+  },
+  "sartorius": {
+    "blurb": "The longest muscle in the body, running diagonally across the front of the thigh to the inner knee; it flexes the hip and knee and rotates the thigh outward.",
+    "fact": "Its name comes from the Latin for tailor, because it produces exactly the cross-legged pose that tailors once worked in."
+  },
+  "rectus_femoris": {
+    "blurb": "The front-most of the four quadriceps muscles; it both straightens the knee and flexes the hip.",
+    "fact": "It is the only member of the quadriceps that crosses two joints, the hip as well as the knee."
+  },
+  "vastus_muscles": {
+    "blurb": "Vastus lateralis and vastus medialis flank the thigh and, with rectus femoris and vastus intermedius, make up the quadriceps that straighten the knee.",
+    "fact": "The teardrop-shaped bulge just above the inner knee is vastus medialis, and it matters a great deal for keeping the kneecap tracking straight."
+  },
+  "adductor_muscles": {
+    "blurb": "The group along the inner thigh that pulls the leg back toward the midline.",
+    "fact": "They are what grips a horse's flanks, which is why they are sometimes called the rider's muscles."
+  },
+  "hamstrings": {
+    "blurb": "The three muscles at the back of the thigh; together they bend the knee and extend the hip.",
+    "fact": "They are the classic sprinting injury, because at top speed they must brake the swinging lower leg and drive the hip at the same time."
+  },
+  "gastrocnemius": {
+    "blurb": "Forms the bulge of the calf, pushing off from the toes and helping bend the knee.",
+    "fact": "It has two heads, and the explosive power behind a jump or a sprint start comes mostly from it."
+  },
+  "soleus": {
+    "blurb": "Lies beneath gastrocnemius and is shaped like a flatfish; it supplies the steady push that holds you upright.",
+    "fact": "By squeezing the calf veins it pushes blood back to the heart, which earns it the nickname \"the second heart\"."
+  },
+  "calcaneal_tendon": {
+    "blurb": "Joins the calf muscles to the heel bone and is the thickest, strongest tendon in the body.",
+    "fact": "It is also called the Achilles tendon, after the one weak spot of the Greek hero."
+  },
+  "tibialis_anterior": {
+    "blurb": "Runs down the front and outer side of the shin, lifting the foot so the toes clear the ground as you walk.",
+    "fact": "The shin soreness new runners feel is usually this muscle protesting a sudden jump in mileage."
+  },
+  "tibialis_posterior": {
+    "blurb": "A deep muscle of the calf that holds up the arch of the foot and turns the sole inward.",
+    "fact": "When it weakens, the arch gradually collapses — the usual cause of adult-acquired flat foot."
+  },
+  "fibularis_longus": {
+    "blurb": "Runs down the outer side of the calf, turning the sole outward and pushing off from the toes.",
+    "fact": "Its tendon hooks behind the outer ankle and crosses the sole of the foot, slinging under the arch like a stirrup."
+  },
+  "extensor_digitorum_longus": {
+    "blurb": "Sits on the front and outer shin and straightens the outer four toes while lifting the foot.",
+    "fact": "Lift your toes and the cords that spring up across the top of your foot are its four tendons."
+  },
+  "flexor_digitorum_longus": {
+    "blurb": "A deep muscle at the back of the calf that curls the outer four toes.",
+    "fact": "It is what grips the ground with your toes and what does the work when you walk barefoot on sand."
+  },
+  "skull": {
+    "blurb": "Some twenty bones locked together along zigzag sutures, forming a helmet around the brain and the sense organs.",
+    "fact": "A baby's skull still has soft gaps called fontanelles, so the head can squeeze through the birth canal and the brain has room to grow."
+  },
+  "mandible": {
+    "blurb": "The only movable bone of the skull; it hinges on the temporal bone to chew and to speak.",
+    "fact": "It is the largest and strongest bone of the face, and its two jaw joints are among the most heavily used joints in the body."
+  },
+  "hyoid": {
+    "blurb": "A small U-shaped bone in the front of the neck, slung between muscles and ligaments, giving the tongue and larynx something to pull against.",
+    "fact": "It is the only bone in the body that forms no joint with any other bone."
+  },
+  "cervical_vertebrae": {
+    "blurb": "The seven neck vertebrae support the head and let it turn freely; the vertebral arteries thread up through them.",
+    "fact": "Almost every mammal has exactly seven of them, no matter how long the neck — giraffes included."
+  },
+  "thoracic_vertebrae": {
+    "blurb": "The twelve chest vertebrae each carry a pair of ribs, and together they build the cage that protects the heart and lungs.",
+    "fact": "Tethered by the ribs, this is the least mobile stretch of the whole spine."
+  },
+  "lumbar_vertebrae": {
+    "blurb": "The five lower-back vertebrae are the largest in the spine and carry most of the weight of the upper body.",
+    "fact": "Bending over to lift something can load the lumbar disks with several times your body weight, which is why squatting down is the safer way."
+  },
+  "sacrum": {
+    "blurb": "Five sacral vertebrae fused into a triangular wedge between the hip bones, passing the weight of the spine into the pelvis.",
+    "fact": "It is still several separate bones in adolescence and only fuses completely in adulthood."
+  },
+  "intervertebral_disks": {
+    "blurb": "Cushions between the vertebrae: a tough fibrous ring around a water-rich core that absorbs shock.",
+    "fact": "They squash slightly through the day and rebound overnight, so you are about a centimetre taller in the morning than at bedtime."
+  },
+  "ribs": {
+    "blurb": "Twelve pairs of curved bones forming a cage around the heart and lungs, rising and falling with every breath.",
+    "fact": "The lowest two pairs never reach the sternum, so they are called floating ribs — some people can feel their loose ends at the waist."
+  },
+  "costal_cartilages": {
+    "blurb": "Connect the front ends of the ribs to the breastbone, making the chest wall both firm and springy.",
+    "fact": "That springiness is what lets CPR compress the breastbone several centimetres and let it rebound again."
+  },
+  "sternum": {
+    "blurb": "The breastbone runs down the front of the chest in three parts — manubrium, body and xiphoid process — anchoring the collarbones and rib cartilages.",
+    "fact": "CPR compressions belong on the lower half of the sternum, not on the xiphoid process below it."
+  },
+  "clavicle_right": {
+    "blurb": "The collarbone is an S-shaped strut across the base of the neck that props the arm away from the trunk.",
+    "fact": "It is one of the most commonly broken bones: the shock of falling onto an outstretched hand travels straight up to it."
+  },
+  "clavicle_left": {
+    "blurb": "The collarbone is an S-shaped strut across the base of the neck that props the arm away from the trunk.",
+    "fact": "It is the first bone in the body to start turning into bone and the last to finish, not completing the job until the mid-twenties."
+  },
+  "scapula_right": {
+    "blurb": "The shoulder blade is a triangular plate riding on the upper back, held mostly by muscle, giving the arm a mobile base.",
+    "fact": "It has almost no bony attachment to the trunk, which is exactly why it can glide and rotate so far with the arm."
+  },
+  "scapula_left": {
+    "blurb": "The shoulder blade is a triangular plate riding on the upper back, held mostly by muscle, giving the arm a mobile base.",
+    "fact": "The socket of the shoulder joint sits on its outer corner and is very shallow — the reason the shoulder is both the most mobile and the most easily dislocated joint."
+  },
+  "humerus_right": {
+    "blurb": "The single long bone of the upper arm, meeting the shoulder blade above and the radius and ulna below.",
+    "fact": "Banging the inside of your elbow and feeling a jolt to your fingers is the ulnar nerve being squeezed behind a knob of the humerus."
+  },
+  "humerus_left": {
+    "blurb": "The single long bone of the upper arm, meeting the shoulder blade above and the radius and ulna below.",
+    "fact": "Humerus has nothing to do with humour, yet the spot where the nerve gets pinched is known everywhere as the funny bone."
+  },
+  "radius_right": {
+    "blurb": "The forearm bone on the thumb side; it pivots around the ulna to turn the palm over.",
+    "fact": "Falling onto an outstretched hand most often breaks the radius at its wrist end."
+  },
+  "radius_left": {
+    "blurb": "The forearm bone on the thumb side; it pivots around the ulna to turn the palm over.",
+    "fact": "When you turn your palm from up to down, it is the radius that crosses over the ulna — the ulna barely moves."
+  },
+  "ulna_right": {
+    "blurb": "The forearm bone on the little-finger side; its upper end, the olecranon, forms the point of the elbow and a stable hinge with the humerus.",
+    "fact": "The hard knob you feel at the tip of your elbow is the olecranon of the ulna."
+  },
+  "ulna_left": {
+    "blurb": "The forearm bone on the little-finger side; its upper end, the olecranon, forms the point of the elbow and a stable hinge with the humerus.",
+    "fact": "The name comes from the old practice of measuring cloth by the forearm — an ell was roughly one ulna."
+  },
+  "carpal_bones": {
+    "blurb": "Eight small bones in two rows that let the wrist bend, straighten and tilt side to side.",
+    "fact": "A wrist that keeps aching after a sprain sometimes hides a scaphoid fracture, which is notoriously hard to see on an early X-ray."
+  },
+  "hand_bones": {
+    "blurb": "Five metacarpals and fourteen phalanges, plus the carpals, give each hand 27 bones — the most finely engineered tool in the body.",
+    "fact": "The two hands hold 54 bones, more than a quarter of the entire skeleton, which is what buys us such delicate movement."
+  },
+  "hip_bone_right": {
+    "blurb": "The hip bone is the ilium, ischium and pubis fused into one; the two of them plus the sacrum enclose the pelvis.",
+    "fact": "The sitting bones you rest on are its lower part, and they are exactly what starts to ache on a hard bench."
+  },
+  "hip_bone_left": {
+    "blurb": "The hip bone is the ilium, ischium and pubis fused into one; the two of them plus the sacrum enclose the pelvis.",
+    "fact": "In childhood the three bones are joined only by cartilage; they fuse into one at the hip socket after puberty."
+  },
+  "femur_right": {
+    "blurb": "The thigh bone is the longest and strongest bone in the body, its head set into the hip socket and its lower end forming the knee.",
+    "fact": "It is roughly a quarter of your height, which is why forensic scientists use it to estimate how tall someone was."
+  },
+  "femur_left": {
+    "blurb": "The thigh bone is the longest and strongest bone in the body, its head set into the hip socket and its lower end forming the knee.",
+    "fact": "The femoral neck is one of the most common fracture sites after a fall in old age, and the focus of most fall-prevention advice."
+  },
+  "patella_right": {
+    "blurb": "The kneecap is a small triangular bone embedded in the quadriceps tendon; it shields the front of the knee and gives the muscle better leverage.",
+    "fact": "It is the largest sesamoid bone in the body — a bone that grows inside a tendon."
+  },
+  "patella_left": {
+    "blurb": "The kneecap is a small triangular bone embedded in the quadriceps tendon; it shields the front of the knee and gives the muscle better leverage.",
+    "fact": "When a doctor taps your knee to test the reflex, the target is the tendon just below the kneecap."
+  },
+  "tibia_right": {
+    "blurb": "The thick inner bone of the lower leg, carrying nearly all of its load.",
+    "fact": "The shin you can feel right under the skin is the tibia; almost no muscle covers its front edge, which is why knocking it hurts so much."
+  },
+  "tibia_left": {
+    "blurb": "The thick inner bone of the lower leg, carrying nearly all of its load.",
+    "fact": "It is the second-longest bone in the body, after the femur."
+  },
+  "fibula_right": {
+    "blurb": "The slender outer bone of the lower leg; it carries almost no weight and mainly anchors muscle and forms the outer ankle.",
+    "fact": "Because it bears so little load, surgeons often harvest a length of it to rebuild bone lost elsewhere."
+  },
+  "fibula_left": {
+    "blurb": "The slender outer bone of the lower leg; it carries almost no weight and mainly anchors muscle and forms the outer ankle.",
+    "fact": "The bump on the outside of your ankle is the lower end of the fibula."
+  },
+  "tarsal_bones": {
+    "blurb": "Seven bones forming the back of the foot and the base of the arch; the largest of them is the heel bone.",
+    "fact": "The heel bone takes the full shock of landing, which is why it is the bone most often injured in a fall from a height."
+  },
+  "foot_bones": {
+    "blurb": "Five metatarsals and fourteen phalanges join the tarsal bones to give each foot 26 bones.",
+    "fact": "The toe bones are laid out almost exactly like the finger bones, only shorter and thicker — built for bearing weight rather than gripping."
+  },
+  "heart": {
+    "blurb": "A fist-sized muscular pump with two atria and two ventricles, driving blood to the lungs and around the body without pause.",
+    "fact": "It beats about 100,000 times a day and some 2.5–3 billion times in a lifetime, moving enough blood to fill dozens of swimming pools."
+  },
+  "lung_right": {
+    "blurb": "The right lung has three lobes, is slightly larger than the left, and is where most gas exchange happens.",
+    "fact": "The two lungs hold hundreds of millions of air sacs; unfolded, their surface would cover about 70 square metres — half a tennis court."
+  },
+  "lung_left": {
+    "blurb": "The left lung has only two lobes and is a little smaller than the right, because it has to make room for the heart.",
+    "fact": "Lungs contain no muscle of their own. The diaphragm and rib muscles change the volume of the chest and the air simply follows."
+  },
+  "trachea": {
+    "blurb": "The windpipe runs about 10–12 cm from the larynx to the bronchi, held open by a stack of C-shaped cartilage rings.",
+    "fact": "The gap in each ring faces backward toward the oesophagus, leaving it room to bulge when you swallow something large."
+  },
+  "esophagus": {
+    "blurb": "A muscular tube about 25 cm long that pushes food from the throat to the stomach by waves of contraction.",
+    "fact": "Because it works by muscle rather than gravity, you can swallow perfectly well standing on your head."
+  },
+  "stomach": {
+    "blurb": "The widened mixing vessel of the gut, where acid and enzymes break food down into a paste.",
+    "fact": "Stomach acid is strong enough to dissolve metal; the lining survives by secreting mucus constantly and replacing itself every few days."
+  },
+  "liver": {
+    "blurb": "The largest internal organ, running hundreds of jobs at once: processing nutrients, detoxifying, building proteins and making bile.",
+    "fact": "It regenerates remarkably well — after most of it is removed it can grow back to near its original size within months."
+  },
+  "gallbladder": {
+    "blurb": "A small pear-shaped sac tucked under the liver that stores and concentrates bile, releasing it into the small intestine to digest fat.",
+    "fact": "Bile is concentrated several times over inside it, and when the mix goes out of balance the surplus can crystallise into gallstones."
+  },
+  "pancreas": {
+    "blurb": "Lies across the back of the stomach, secreting digestive enzymes into the gut and hormones such as insulin into the blood to control blood sugar.",
+    "fact": "It is a rare double-duty organ, exocrine and endocrine at once, and the hormone-making islets are only a tiny fraction of its bulk."
+  },
+  "spleen": {
+    "blurb": "Sits in the upper left abdomen, filtering worn-out red blood cells and taking part in immune defence.",
+    "fact": "It is not essential — people live normally after it is removed following injury, though their risk of certain infections is a little higher."
+  },
+  "kidneys": {
+    "blurb": "A pair of filters beside the spine at waist level; they clean the blood, make urine and regulate salt, water and blood pressure.",
+    "fact": "Together they filter about 180 litres a day and pass only 1–2 litres as urine — nearly everything else is reabsorbed."
+  },
+  "urinary_bladder": {
+    "blurb": "A stretchy reservoir in the pelvis that swells as it fills with urine and squeezes down to empty it.",
+    "fact": "The urge usually starts at around 150–200 ml, and a comfortable full bladder holds roughly 400–500 ml."
+  },
+  "small_intestine": {
+    "blurb": "Coiled through the middle of the abdomen and 5–7 metres long, this is where most digestion and nutrient absorption happens.",
+    "fact": "Villi and microvilli multiply its inner surface to about 30 square metres — roughly the floor of a small room."
+  },
+  "large_intestine": {
+    "blurb": "Frames the small intestine, runs about 1.5 metres, and mainly reclaims water and forms stool.",
+    "fact": "It houses tens of trillions of bacteria, about as many cells as the body's own, helping with digestion and immunity."
+  },
+  "tongue": {
+    "blurb": "A bundle of agile muscle that moves food around, senses taste and shapes almost every sound we speak.",
+    "fact": "The famous \"tongue map\" of sweet at the tip and bitter at the back is a long-lived myth — every taste can be sensed all over the tongue."
+  },
+  "appendix": {
+    "blurb": "A narrow blind-ended tube hanging off the caecum in the lower right abdomen.",
+    "fact": "Long dismissed as useless, it is now thought to act as a safe house for helpful gut bacteria and to carry immune tissue."
+  },
+  "adrenal_glands": {
+    "blurb": "Perched like caps on top of each kidney, they release stress hormones such as adrenaline and cortisol.",
+    "fact": "The racing heart and sweaty palms of a fright are adrenaline taking effect within seconds."
+  },
+  "ureters": {
+    "blurb": "Two narrow tubes about 25–30 cm long that squeeze urine from the kidneys down to the bladder.",
+    "fact": "A kidney stone stuck in a ureter causes what is often ranked among the most severe pains people ever experience."
+  },
+  "pituitary_gland": {
+    "blurb": "No bigger than a pea and tucked into a hollow at the base of the skull, it directs the thyroid, adrenals, gonads and much of the endocrine system.",
+    "fact": "The growth hormone it releases decides how tall we grow, which is why it is called the master gland."
+  },
+  "larynx_cartilages": {
+    "blurb": "The cartilages that frame the voice box; the largest is the thyroid cartilage, whose front ridge forms the Adam's apple.",
+    "fact": "In male puberty these cartilages enlarge and the vocal cords lengthen, so the Adam's apple juts out and the voice drops."
+  },
+  "thymus": {
+    "blurb": "Sits behind the breastbone and is the school where T lymphocytes mature.",
+    "fact": "It is at its largest in childhood, shrinks after puberty and is mostly replaced by fat in adults."
+  },
+  "prostate": {
+    "blurb": "A chestnut-sized gland in the male pelvis wrapped around the urethra; it contributes part of the seminal fluid.",
+    "fact": "It grows with age and squeezes the urethra running through it, which is why urine flow often slows in older men."
+  },
+  "testes": {
+    "blurb": "Held in the scrotum, they produce sperm and secrete the male hormone testosterone.",
+    "fact": "They sit outside the body because sperm production needs a temperature 2–3 °C below the body's core."
+  },
+  "heart_ventricle_wall": {
+    "blurb": "The thickest muscle of the heart; when it contracts it drives blood to the lungs and around the body.",
+    "fact": "The left ventricle wall is about a centimetre thick, three times the right — it has to reach the whole body, while the right only reaches the lungs."
+  },
+  "heart_atrium_wall_left": {
+    "blurb": "The left atrium receives oxygen-rich blood returning through the pulmonary veins and hands it on to the left ventricle.",
+    "fact": "Four openings sit in its back wall — the mouths of the four pulmonary veins."
+  },
+  "heart_atrium_wall_right": {
+    "blurb": "The right atrium receives oxygen-poor blood from the two venae cavae and hands it on to the right ventricle.",
+    "fact": "The heart's natural pacemaker, the sinoatrial node, is buried in its wall near where the superior vena cava enters."
+  },
+  "heart_mitral_valve": {
+    "blurb": "Sits between the left atrium and left ventricle, its two leaflets stopping blood from washing back into the atrium.",
+    "fact": "It is named for its likeness to a bishop's mitre."
+  },
+  "heart_tricuspid_valve": {
+    "blurb": "Sits between the right atrium and right ventricle, its three leaflets blocking backflow.",
+    "fact": "The leaflets are tethered to the papillary muscles by chordae tendineae, like parachute lines, so blood pressure cannot flip them inside out."
+  },
+  "heart_aortic_valve": {
+    "blurb": "Guards the outlet of the left ventricle; three half-moon cusps keep blood from falling back out of the aorta.",
+    "fact": "The shorter, sharper second heart sound is this valve closing together with the pulmonary valve."
+  },
+  "heart_pulmonary_valve": {
+    "blurb": "Guards the outlet of the right ventricle, releasing blood toward the lungs and stopping it from returning.",
+    "fact": "Its three cusps work like little pockets: blood trying to flow back fills them and snaps the valve shut."
+  },
+  "heart_papillary_muscles": {
+    "blurb": "Cone-shaped muscular pillars on the inner wall of the ventricles that hold the valve leaflets through the chordae tendineae.",
+    "fact": "They tighten the cords just before the ventricle squeezes, so the high-pressure blood cannot push the leaflets up into the atrium."
+  },
+  "aorta": {
+    "blurb": "The body's widest artery: it leaves the left ventricle, arches over and runs down the trunk, distributing oxygen-rich blood everywhere.",
+    "fact": "It is about 2.5–3 cm across where it starts, and the force of each heartbeat makes it visibly pulse."
+  },
+  "pulmonary_trunk": {
+    "blurb": "Leaves the right ventricle and quickly divides into the left and right pulmonary arteries, carrying oxygen-poor blood to the lungs.",
+    "fact": "It is one of the few arteries carrying oxygen-poor blood — artery and vein are defined by direction of flow, not by oxygen content."
+  },
+  "pulmonary_arteries": {
+    "blurb": "The left and right pulmonary arteries carry oxygen-poor blood from the right ventricle into the lungs, where gas exchange takes place.",
+    "fact": "Pressure in the lung circuit is only about a sixth of that in the body circuit, which is why the right ventricle is so much thinner than the left."
+  },
+  "pulmonary_veins": {
+    "blurb": "Four veins returning freshly oxygenated blood from the lungs to the left atrium.",
+    "fact": "They are the only veins in the body that carry oxygen-rich blood."
+  },
+  "coronary_arteries": {
+    "blurb": "Branch off the root of the aorta and wrap around the surface of the heart to feed the heart muscle itself.",
+    "fact": "They sit on the heart like a crown, which is what coronary means; when one blocks, the starved muscle dies — a heart attack."
+  },
+  "superior_vena_cava": {
+    "blurb": "Collects blood returning from the head, neck and arms and empties it into the right atrium.",
+    "fact": "It has no valves; the return depends on the suction created inside the chest each time you breathe in."
+  },
+  "inferior_vena_cava": {
+    "blurb": "The widest vein in the body, gathering blood from the lower body and abdominal organs and returning it to the right atrium.",
+    "fact": "It runs up tight against the right of the spine, where a late-pregnancy uterus can press on it — hence the advice to sleep on your side."
+  },
+  "common_carotid_arteries": {
+    "blurb": "Run up either side of the neck and split at the level of the Adam's apple into internal and external carotid arteries feeding the head and neck.",
+    "fact": "The strong pulse you find by pressing beside the Adam's apple is this artery."
+  },
+  "internal_carotid_arteries": {
+    "blurb": "Pass through the base of the skull into the cranial cavity and are the main supply to the front of the brain and to the eye.",
+    "fact": "Inside the skull it makes several tight turns in an S shape that radiologists call the carotid siphon."
+  },
+  "internal_jugular_veins": {
+    "blurb": "Run alongside the internal carotid arteries and form the main return route for blood from the head and neck.",
+    "fact": "It is one of the routes doctors most often choose when placing a central venous line."
+  },
+  "vertebral_arteries": {
+    "blurb": "Branch from the subclavian arteries, thread up through holes in the neck vertebrae and enter the skull to supply the brainstem and cerebellum.",
+    "fact": "They are strung through the vertebrae like beads on a thread, so neck problems can occasionally affect blood flow to the back of the brain."
+  },
+  "brachiocephalic_trunk": {
+    "blurb": "The first branch off the aortic arch; it soon divides into the right common carotid and right subclavian arteries.",
+    "fact": "Only the right side has one — on the left the carotid and subclavian arteries come straight off the arch."
+  },
+  "brachiocephalic_veins": {
+    "blurb": "Each is formed where the internal jugular and subclavian veins meet, and the two of them join to make the superior vena cava.",
+    "fact": "The left one is far longer than the right, because it has to cross the midline of the body to reach its partner."
+  },
+  "subclavian_arteries": {
+    "blurb": "Pass beneath the collarbone as the main blood supply to the arm, and also give off the vertebral arteries to the brain.",
+    "fact": "It presses a shallow groove into the first rib — a mark of just how tightly vessel and bone are packed together here."
+  },
+  "subclavian_veins": {
+    "blurb": "Carry blood from the arm back into the chest and join the internal jugular veins to form the brachiocephalic veins.",
+    "fact": "This is where the body's lymph finally drains back into the bloodstream, at the venous angle nearby."
+  },
+  "axillary_brachial_arteries": {
+    "blurb": "The axillary artery crosses the armpit and continues as the brachial artery down the inner upper arm, supplying the whole limb.",
+    "fact": "When your blood pressure is taken, the stethoscope is listening to flow in the brachial artery."
+  },
+  "forearm_arteries": {
+    "blurb": "The radial and ulnar arteries split from the brachial artery at the elbow and run down the thumb and little-finger sides of the forearm into the hand.",
+    "fact": "The pulse you count at the wrist is the radial artery; the two arteries link into arches in the palm, so one can cover if the other is blocked."
+  },
+  "celiac_trunk": {
+    "blurb": "The first big branch of the abdominal aorta — very short, and immediately dividing into the arteries of the stomach, liver and spleen.",
+    "fact": "It is only a centimetre or two long yet supplies most of the organs of the upper abdomen."
+  },
+  "mesenteric_arteries": {
+    "blurb": "The superior and inferior mesenteric arteries leave the abdominal aorta and run through the mesentery to feed the small and large intestine.",
+    "fact": "Blood flow to the gut rises sharply after a meal, one reason hard exercise straight after eating feels so unpleasant."
+  },
+  "celiac_branches": {
+    "blurb": "The common hepatic and splenic arteries are the two main branches of the celiac trunk, supplying the liver, gallbladder and stomach, and the spleen.",
+    "fact": "The splenic artery winds along the top edge of the pancreas and is one of the most tortuous arteries in the abdomen."
+  },
+  "portal_tributaries": {
+    "blurb": "The splenic and mesenteric veins collect blood from the spleen, stomach and intestines and merge to form the hepatic portal vein.",
+    "fact": "Everything absorbed by the gut — nutrients and swallowed medicines alike — travels this way to the liver for screening first."
+  },
+  "hepatic_portal_vein": {
+    "blurb": "Delivers nutrient-laden blood from the digestive tract into the liver for processing before it joins the general circulation.",
+    "fact": "That gives the liver a double blood supply: nutrients through the portal vein, oxygen through the hepatic artery."
+  },
+  "renal_arteries": {
+    "blurb": "Branch off either side of the abdominal aorta and deliver a large share of the blood supply to the kidneys for filtering.",
+    "fact": "About a fifth of every heartbeat's output goes to the kidneys, even though together they are under 1% of body weight."
+  },
+  "renal_veins": {
+    "blurb": "Return the filtered blood from the kidneys to the inferior vena cava.",
+    "fact": "The left renal vein has to cross in front of the aorta to get there, so it is noticeably longer than the right."
+  },
+  "iliac_arteries": {
+    "blurb": "The abdominal aorta splits in the lower back into the common iliac arteries, each dividing again into an internal branch for the pelvis and an external branch for the leg.",
+    "fact": "The split sits roughly at navel level, in front of the fourth lumbar vertebra."
+  },
+  "femoral_arteries": {
+    "blurb": "The main artery of the thigh, entering at the middle of the groin and supplying the whole lower limb.",
+    "fact": "Its pulse is easy to feel in the groin, which is why cardiac catheters are often threaded in from exactly this spot."
+  },
+  "femoral_veins": {
+    "blurb": "Run beside the femoral arteries as the main deep drainage route of the leg.",
+    "fact": "Sitting still on a long flight lets clots form in these deep veins; getting up and working the calf muscles is what pumps the blood along."
+  },
+  "popliteal_arteries": {
+    "blurb": "The continuation of the femoral artery behind the knee, supplying the knee joint and the lower leg.",
+    "fact": "It lies deep in the hollow behind the knee and is one of the hardest large arteries to find a pulse in."
+  },
+  "tibial_arteries": {
+    "blurb": "The anterior and posterior tibial arteries branch from the popliteal artery and run down the front and back of the calf to supply the leg and foot.",
+    "fact": "The pulse you can feel on the top of the foot is the continuation of the anterior tibial artery, a quick check of circulation in the leg."
+  },
+  "great_saphenous_veins": {
+    "blurb": "The longest vein in the body, running from the inner side of the foot all the way up to the groin to join the femoral vein.",
+    "fact": "The cords that stand out on the calf are usually its branches, and surgeons often harvest it to use as a graft in heart bypass surgery."
+  },
+  "azygos_vein": {
+    "blurb": "Runs up the right side of the spine, collecting blood from the chest wall and part of the abdominal wall into the superior vena cava.",
+    "fact": "It works as a spare route linking the two venae cavae, taking over the load if the inferior vena cava is obstructed."
+  },
+  "brain": {
+    "blurb": "The headquarters of the nervous system, weighing about 1.3–1.4 kg and running thought, sensation, movement and the basics of staying alive.",
+    "fact": "It is only about 2% of body weight but burns roughly 20% of the body's energy."
+  },
+  "spinal_cord": {
+    "blurb": "Housed in the spinal canal, it is the information highway between brain and body, and it handles some reflexes entirely on its own.",
+    "fact": "It is much shorter than the spine: in adults it ends around the first or second lumbar vertebra, below which only a bundle of nerve roots — the cauda equina — continues."
+  },
+  "optic_nerves": {
+    "blurb": "Carry the light signals picked up by the retina toward the brain — the data cable of vision.",
+    "fact": "Each holds over a million nerve fibres, and where it leaves the eye there are no light receptors at all, which creates the blind spot in your field of view."
+  }
+}

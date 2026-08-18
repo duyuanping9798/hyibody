@@ -84,5 +84,17 @@
   "clipFlip": "反向",
   "expandParts": "展开内部（{n}）",
   "collapseParts": "收起内部",
-  "backToBody": "返回全身"
+  "backToBody": "返回全身",
+  "shortcutsTitle": "键盘快捷键",
+  "shortcuts": {
+    "search": "搜索结构",
+    "help": "打开 / 关闭这一页",
+    "layer": "透视深度 减 / 加",
+    "systems": "显示 / 隐藏第 1–6 层系统",
+    "focusSelected": "把镜头对准当前选中的结构",
+    "backToBody": "返回全身（清掉隔离、展开、剖切与隐藏）",
+    "tourStep": "故事线上一步 / 下一步",
+    "tourToggle": "故事线播放 / 暂停",
+    "escape": "逐层退出：弹窗 → 故事线 → 取消选中 → 返回全身"
+  }
 }

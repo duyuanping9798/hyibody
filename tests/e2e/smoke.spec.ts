@@ -288,6 +288,8 @@ test('half-section cuts through the selected structure', async ({ page }) => {
  * 点其中一件能看到它自己的名字与科普；「收起内部」回到整颗心脏。
  */
 test('opening the heart reveals its inner parts', async ({ page }) => {
+  // 展开心脏要额外解 8 个内部件并重算取景，软件渲染下逼近 120 秒默认预算
+  test.setTimeout(240_000);
   const state = encodeUrlState({ layer: 0.55, selected: 'heart' });
   await page.goto(`/?v=${state}`);
   await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
@@ -312,6 +314,7 @@ test('opening the heart reveals its inner parts', async ({ page }) => {
 
 /** 一键"返回全身"：钻进器官内部之后总得有条出路。 */
 test('back to full body clears isolation, expansion and clipping', async ({ page }) => {
+  test.setTimeout(240_000);
   const state = encodeUrlState({ layer: 0.55, selected: 'heart' });
   await page.goto(`/?v=${state}`);
   await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
@@ -326,4 +329,58 @@ test('back to full body clears isolation, expansion and clipping', async ({ page
   await expect(page.getByRole('button', { name: '收起内部' })).toHaveCount(0);
   await expect(page.getByRole('button', { name: '返回全身' })).toHaveCount(0);
   await expect(page.getByTestId('info-card')).toHaveCount(0);
+});
+
+/**
+ * 键盘无障碍：`/` 聚焦搜索、↑↓ 走结果、回车选中；`?` 打开快捷键说明；
+ * Esc 逐层退出（先关说明页，再取消选中）。
+ */
+test('keyboard shortcuts drive search, help and escape', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
+    timeout: 60_000,
+  });
+
+  // ? 打开说明页，Esc 关掉
+  await page.keyboard.press('?');
+  await expect(page.getByTestId('shortcut-help')).toBeVisible();
+  await page.screenshot({ path: 'test-results/smoke-shortcuts.png' });
+  await page.keyboard.press('Escape');
+  await expect(page.getByTestId('shortcut-help')).toHaveCount(0);
+
+  // / 聚焦搜索框，打字 → ↓ 走一格 → 回车选中
+  await page.keyboard.press('/');
+  await expect(page.locator('.hyi-search input')).toBeFocused();
+  await page.keyboard.type('骨');
+  await expect(page.getByTestId('search-results')).toBeVisible();
+  await page.keyboard.press('ArrowDown');
+  await page.keyboard.press('Enter');
+
+  const infoCard = page.getByTestId('info-card');
+  await expect(infoCard).toBeVisible({ timeout: 20_000 });
+  const picked = await infoCard.locator('h2').textContent();
+  expect(picked?.trim()).toBeTruthy();
+
+  // 焦点回到画布后 Esc 取消选中
+  await page.locator('canvas').click({ position: { x: 10, y: 10 } });
+  await page.keyboard.press('Escape');
+  await expect(infoCard).toHaveCount(0);
+});
+
+/** 英文界面下信息卡正文该是英文科普，而不是占位句。 */
+test('english info card shows english blurb', async ({ page }) => {
+  const state = encodeUrlState({ layer: 0.55, selected: 'heart' });
+  await page.goto(`/?v=${state}`);
+  await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
+    timeout: 60_000,
+  });
+  const infoCard = page.getByTestId('info-card');
+  await expect(infoCard).toBeVisible({ timeout: 30_000 });
+
+  await page.getByRole('button', { name: '切换语言 / Switch language' }).click();
+  await expect(infoCard.locator('h2')).toHaveText('Heart');
+  await expect(infoCard.locator('.blurb')).toContainText('muscular pump');
+  await expect(infoCard.locator('.blurb')).not.toContainText('coming soon');
+  await expect(infoCard.locator('.hyi-fact p')).toContainText('100,000 times');
+  await page.screenshot({ path: 'test-results/smoke-infocard-en.png' });
 });
