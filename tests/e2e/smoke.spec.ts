@@ -199,3 +199,83 @@ test('share link restores an organ selection without flooding the background', a
   }
   await page.screenshot({ path: 'test-results/smoke-select-organ.png' });
 });
+
+/**
+ * B 步渲染升级：画质档位。
+ * 云端无 GPU（SwiftShader）时自动退到 low 档并说明原因；`?hq=medium` 强制开后处理，
+ * 高画质开关出现且可切换。
+ */
+test('quality tier falls back on software rendering and can be forced on', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
+    timeout: 60_000,
+  });
+  // 软件渲染：开关换成一句说明，不给切
+  await expect(page.getByText('当前设备用软件渲染，已自动降到基础画质')).toBeVisible();
+
+  await page.goto('/?hq=medium');
+  await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
+    timeout: 60_000,
+  });
+  const toggle = page.getByRole('checkbox');
+  await expect(toggle).toBeVisible();
+  await expect(toggle).not.toBeChecked();
+  await toggle.check();
+  await expect(toggle).toBeChecked();
+  await page.screenshot({ path: 'test-results/smoke-quality.png' });
+});
+
+/**
+ * C 步界面：信息卡读 content/definitions/zh.json（blurb + "你知道吗"），
+ * 选中结构时挂 3D 标签引线。
+ */
+test('info card shows blurb and fact, selection gets a 3D label', async ({ page }) => {
+  const state = encodeUrlState({ layer: 0.45, selected: 'heart' });
+  await page.goto(`/?v=${state}`);
+  await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
+    timeout: 60_000,
+  });
+
+  const infoCard = page.getByTestId('info-card');
+  await expect(infoCard).toBeVisible({ timeout: 30_000 });
+  await expect(infoCard).toContainText('心脏');
+  // 标签（系统 / 部位）
+  await expect(infoCard.locator('.hyi-tags li').first()).toHaveText('器官');
+  // 一句话科普来自 zh.json 的 blurb
+  await expect(infoCard.locator('.blurb')).toContainText('拳头大小');
+  // "你知道吗"小知识来自同一条的 fact
+  await expect(infoCard.locator('.hyi-fact')).toContainText('10 万次');
+
+  // 3D 标签引线跟着结构走
+  const label = page.getByTestId('structure-label');
+  await expect(label).toBeVisible();
+  await expect(label.locator('.hyi-label .zh')).toHaveText('心脏');
+
+  await page.screenshot({ path: 'test-results/smoke-infocard.png' });
+});
+
+/**
+ * 剖切封盖 + 沿结构半剖：隔离心脏 → 一键把剖切面移到它中心并切掉朝向相机的那半。
+ * 封盖是模板缓冲效果（截图人工比对），这里只锁住交互链路与状态。
+ */
+test('half-section cuts through the selected structure', async ({ page }) => {
+  const state = encodeUrlState({ layer: 0.55, selected: 'heart' });
+  await page.goto(`/?v=${state}`);
+  await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
+    timeout: 60_000,
+  });
+  await expect(page.getByTestId('info-card')).toBeVisible({ timeout: 30_000 });
+
+  // 剖切默认关闭时不出现"反向"
+  await expect(page.getByRole('button', { name: '反向' })).toHaveCount(0);
+
+  await page.getByRole('button', { name: '沿此结构半剖' }).click();
+  // 剖切被打开：轴向按钮进入选中态，反向开关出现
+  await expect(page.getByRole('button', { name: '反向' })).toBeVisible();
+  await expect(page.locator('.hyi-clip-row .hyi-btn.active')).toHaveCount(1);
+
+  await page.evaluate(
+    () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))),
+  );
+  await page.screenshot({ path: 'test-results/smoke-halfcut.png' });
+});

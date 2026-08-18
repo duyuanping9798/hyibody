@@ -2,10 +2,13 @@ import { STRINGS } from './i18n';
 import { useEffect, useRef, useState } from 'react';
 import { decodeUrlState, encodeUrlState } from '../data/urlState';
 import { HyiViewer } from '../viewer/HyiViewer';
+import type { QualityTier } from '../viewer/quality';
 import { Attribution } from './Attribution';
 import { InfoCard } from './InfoCard';
 import { Kiosk } from './Kiosk';
 import { LayerSlider } from './LayerSlider';
+import { LoadingOverlay } from './LoadingOverlay';
+import { StructureLabel } from './StructureLabel';
 import { SearchBox } from './SearchBox';
 import { ShareDialog } from './ShareDialog';
 import { bindViewer, toUrlState, useUiStore } from './store';
@@ -20,6 +23,12 @@ function readKioskParams(): { kiosk: boolean; idleSeconds: number } {
   const kiosk = params.get('kiosk') === '1' || decodeUrlState(params.get('v')).kiosk === true;
   const idle = Number(params.get('idle'));
   return { kiosk, idleSeconds: Number.isFinite(idle) && idle >= 2 ? idle : 60 };
+}
+
+/** `?hq=high|medium|low` 强制画质档位（真机比对与截图测试用）；不传则自动判断。 */
+function readQualityParam(): QualityTier | undefined {
+  const value = new URLSearchParams(window.location.search).get('hq');
+  return value === 'high' || value === 'medium' || value === 'low' ? value : undefined;
 }
 
 /** 状态变化后把 ?v= 写回地址栏（防抖，replaceState 不产生历史记录）。 */
@@ -67,7 +76,10 @@ export function App() {
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
-    const viewer = new HyiViewer(container, { base: import.meta.env.BASE_URL });
+    const viewer = new HyiViewer(container, {
+      base: import.meta.env.BASE_URL,
+      quality: readQualityParam(),
+    });
     bindViewer(viewer);
     viewer
       .load()
@@ -91,36 +103,14 @@ export function App() {
   return (
     <div style={{ position: 'relative', height: '100%', overflow: 'hidden' }}>
       <div ref={containerRef} data-testid="viewer" style={{ position: 'absolute', inset: 0 }} />
-      <header
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          padding: '14px 20px',
-          display: 'flex',
-          alignItems: 'baseline',
-          gap: 12,
-          pointerEvents: 'none',
-          background: 'linear-gradient(180deg, rgba(11,16,32,0.85), rgba(11,16,32,0))',
-        }}
-      >
-        <h1 style={{ margin: 0, fontSize: 22, letterSpacing: 1, color: '#4fe3e0' }}>{t.brand}</h1>
-        <span style={{ fontSize: 13, opacity: 0.75 }}>{t.subtitle}</span>
+      <header className="hyi-header">
+        <h1>{t.brand}</h1>
+        <span className="hyi-header-sub">{t.subtitle}</span>
       </header>
-      {loadState !== 'ready' && (
-        <p
-          data-testid="viewer-status"
-          style={{
-            position: 'absolute',
-            left: '50%',
-            top: '50%',
-            transform: 'translate(-50%, -50%)',
-            fontSize: 14,
-            opacity: 0.8,
-          }}
-        >
-          {loadState === 'loading' ? t.loading : t.loadError}
+      <LoadingOverlay />
+      {loadState === 'error' && (
+        <p data-testid="viewer-status" className="hyi-center-status">
+          {t.loadError}
         </p>
       )}
       {loadState === 'ready' && !isPlaceholder && (
@@ -164,6 +154,7 @@ export function App() {
               {t.presetsTitle}
             </button>
           </div>
+          {!tour && <StructureLabel />}
           {!tour && <InfoCard />}
           {tour ? <TourPlayer /> : <LayerSlider />}
           <Attribution />

@@ -7,7 +7,7 @@ export interface ViewerUrlState {
   /** 各系统显隐开关；缺省为全部可见 */
   systems?: Partial<Record<SystemId, boolean>>;
   /** 剖切：轴 + 位置（-1..1），undefined 表示未开启 */
-  clip?: { axis: 'x' | 'y' | 'z'; pos: number };
+  clip?: { axis: 'x' | 'y' | 'z'; pos: number; flip?: boolean };
   /** 相机位置与目标点 */
   cam?: { pos: [number, number, number]; target: [number, number, number] };
   /** 选中结构 slug */
@@ -48,7 +48,11 @@ export function decodeUrlState(encoded: string | null | undefined): ViewerUrlSta
     const state: ViewerUrlState = { layer };
     if (s.systems && typeof s.systems === 'object') state.systems = s.systems;
     if (s.clip && (s.clip.axis === 'x' || s.clip.axis === 'y' || s.clip.axis === 'z'))
-      state.clip = { axis: s.clip.axis, pos: Math.min(1, Math.max(-1, Number(s.clip.pos) || 0)) };
+      state.clip = {
+        axis: s.clip.axis,
+        pos: Math.min(1, Math.max(-1, Number(s.clip.pos) || 0)),
+        ...(s.clip.flip === true ? { flip: true } : {}),
+      };
     if (s.cam && Array.isArray(s.cam.pos) && Array.isArray(s.cam.target))
       state.cam = s.cam as NonNullable<ViewerUrlState['cam']>;
     if (typeof s.selected === 'string') state.selected = s.selected;

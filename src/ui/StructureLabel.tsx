@@ -1,0 +1,74 @@
+import { useEffect, useRef, useState } from 'react';
+import { getViewer, useUiStore } from './store';
+
+interface Anchor {
+  x: number;
+  y: number;
+}
+
+/** 引线从结构中心斜拉到标签：短横 + 斜线，长度按容器尺寸自适应。 */
+const LEG = 46;
+const ARM = 26;
+
+/**
+ * 3D 标签引线：选中结构时在它旁边挂一个名字标签，用引线连回结构本身。
+ * 每帧跟着相机重新投影（viewer.projectStructure），结构转到背面或被隐藏时自动消失。
+ */
+export function StructureLabel() {
+  const lang = useUiStore((s) => s.lang);
+  const selected = useUiStore((s) => s.selected);
+  const manifest = useUiStore((s) => s.manifest);
+  const tour = useUiStore((s) => s.tour);
+  const [anchor, setAnchor] = useState<Anchor | null>(null);
+  const frame = useRef(0);
+
+  useEffect(() => {
+    if (!selected) {
+      setAnchor(null);
+      return;
+    }
+    let last: Anchor | null = null;
+    const tick = () => {
+      const point = getViewer()?.projectStructure(selected) ?? null;
+      // 只有移动超过半像素才 setState，免得每帧都重渲染
+      if (
+        !point !== !last ||
+        (point && last && (Math.abs(point.x - last.x) > 0.5 || Math.abs(point.y - last.y) > 0.5))
+      ) {
+        last = point;
+        setAnchor(point);
+      }
+      frame.current = requestAnimationFrame(tick);
+    };
+    frame.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame.current);
+  }, [selected]);
+
+  // 故事线播放时底部有文案卡，标签会打架，暂时让位
+  if (!selected || !anchor || !manifest || tour) return null;
+  const info = manifest.structures[selected];
+  if (!info) return null;
+
+  // 结构在画面左半边时标签朝右拉，反之朝左，避免压住人体
+  const toRight = anchor.x < (typeof window === 'undefined' ? 1280 : window.innerWidth) / 2;
+  const dir = toRight ? 1 : -1;
+  const elbowX = anchor.x + dir * LEG;
+  const elbowY = anchor.y - LEG;
+  const endX = elbowX + dir * ARM;
+
+  return (
+    <div className="hyi-label-layer" data-testid="structure-label" aria-hidden>
+      <svg className="hyi-label-line" width="100%" height="100%">
+        <circle cx={anchor.x} cy={anchor.y} r={3.5} />
+        <polyline points={`${anchor.x},${anchor.y} ${elbowX},${elbowY} ${endX},${elbowY}`} />
+      </svg>
+      <div
+        className={`hyi-label${toRight ? '' : ' left'}`}
+        style={{ left: `${endX}px`, top: `${elbowY}px` }}
+      >
+        <span className="zh">{lang === 'zh' ? info.zh : info.en}</span>
+        <span className="en">{lang === 'zh' ? info.en : info.zh}</span>
+      </div>
+    </div>
+  );
+}

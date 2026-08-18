@@ -1,20 +1,19 @@
 import {
   ACESFilmicToneMapping,
-  AmbientLight,
   Box3,
   Clock,
-  DirectionalLight,
   DoubleSide,
   FrontSide,
   Group,
   Mesh,
+  PCFSoftShadowMap,
   PMREMGenerator,
   Scene,
   ShaderMaterial,
-  SphereGeometry,
   Vector3,
   WebGLRenderer,
   type Material,
+  type Object3D,
   type Plane,
 } from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -22,7 +21,7 @@ import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { loadManifest } from '../data/manifest';
 import type { Manifest, SystemId } from '../data/types';
-import { ANIMATED_STRUCTURES } from './animation';
+import { ANIMATED_STRUCTURES, pulseTransform, type PulseBase } from './animation';
 import {
   createCameraRig,
   poseForBox,
@@ -30,26 +29,40 @@ import {
   type CameraRig,
   type ViewPresetId,
 } from './camera';
-import { clipPlaneFor, type ClipAxis } from './clipping';
+import { CAP_MIN_OPACITY, ClipCaps } from './clipCaps';
+import { clipPlaneFor, clipPosForCoordinate, type ClipAxis } from './clipping';
 import { applyHighlight } from './highlight';
 import { computeSystemOpacity, PICKABLE_OPACITY_THRESHOLD } from './layers';
 import {
   colorForStructure,
-  createBackdropMaterial,
-  createOutlineMaterial,
   createSystemMaterial,
   createXRayMaterial,
   setMaterialOpacity,
 } from './materials';
+import { createRenderPipeline, type RenderPipeline } from './postprocess';
+import {
+  canToggleHighQuality,
+  defaultQuality,
+  QUALITY_CAPS,
+  readQualityEnv,
+  type QualityTier,
+} from './quality';
+import { createStage, fitStage, type Stage } from './stage';
 import { CLICK_MOVE_TOLERANCE_PX, StructurePicker } from './picking';
 
 export interface HyiViewerOptions {
   /** 站点部署基路径，传 import.meta.env.BASE_URL */
   base: string;
+  /** 强制画质档位（?hq= 或测试用）；不传则按设备能力自动判断 */
+  quality?: QualityTier | undefined;
 }
 
 /** 首屏系统：先加载完这两个就派发 ready，其余后台补（KICKOFF 第 5 节 M1-6）。 */
 const FIRST_SCREEN_SYSTEMS: readonly SystemId[] = ['skin', 'skeleton'];
+
+/** 分层缓动：跨度超过阈值才缓动（拖滑块要跟手，故事线跳转要顺滑），时间常数秒。 */
+const LAYER_EASE_THRESHOLD = 0.08;
+const LAYER_EASE_TAU = 0.12;
 
 /** 透明排序辅助：由内到外的渲染顺序。 */
 const RENDER_ORDER: Record<SystemId, number> = {
@@ -66,6 +79,8 @@ interface StructureEntry {
   system: SystemId;
   mesh: Mesh;
   material: Material;
+  /** 结构本色，剖切封盖的断面用同一个颜色 */
+  color: number;
 }
 
 export interface ViewerState {
@@ -75,7 +90,7 @@ export interface ViewerState {
   hidden: Set<string>;
   isolated: string | null;
   selected: string | null;
-  clip: { axis: ClipAxis; pos: number } | null;
+  clip: { axis: ClipAxis; pos: number; flip?: boolean } | null;
 }
 
 function defaultViewerState(): ViewerState {
@@ -117,11 +132,17 @@ export class HyiViewer extends EventTarget {
 
   private readonly structures = new Map<string, StructureEntry>();
   private readonly systemGroups = new Map<SystemId, Group>();
+  /** 会做微动画的结构（心/肺）的基准变换：glb 节点自带的反量化 TRS，动画只在其上叠加 */
+  private readonly pulseBases = new Map<string, PulseBase>();
   private readonly state = defaultViewerState();
   private hovered: string | null = null;
   /** ?v= 分享链接选中的结构可能还在后台加载：记下来，等它注册进来再选中。 */
   private pendingSelect: string | null = null;
-  private outline!: Mesh;
+  private stage!: Stage;
+  /** 剖切封盖：剖开的结构露出实心断面而不是空壳 */
+  private readonly clipCaps = new ClipCaps();
+  private pipeline: RenderPipeline | null = null;
+  private quality: QualityTier = 'medium';
   private contentBox = new Box3();
   private clipPlane: Plane | null = null;
   private flight: {
@@ -132,6 +153,9 @@ export class HyiViewer extends EventTarget {
     t: number;
   } | null = null;
   private pointerDownAt: { x: number; y: number } | null = null;
+  /** 分层滑块缓动：大跳（故事线、预设）平滑过渡，小步（拖滑块）立即跟手 */
+  private layerTarget = 0;
+  private layerEasing = false;
 
   constructor(
     container: HTMLElement,
@@ -142,6 +166,8 @@ export class HyiViewer extends EventTarget {
     this.renderer = new WebGLRenderer({
       antialias: true,
       alpha: false,
+      // three r163 起 stencil 默认 false；剖切封盖靠模板测试实现，必须显式打开
+      stencil: true,
       // 冒烟测试需要读回像素判断画面非空（tests/e2e/smoke.spec.ts）
       preserveDrawingBuffer: true,
     });
@@ -150,7 +176,7 @@ export class HyiViewer extends EventTarget {
     this.renderer.localClippingEnabled = true;
     // 电影级色调映射 + 程序化环境光照（观感升级，无外部 HDR 资源）
     this.renderer.toneMapping = ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.12;
+    this.renderer.toneMappingExposure = 0.98;
     container.appendChild(this.renderer.domElement);
     const pmrem = new PMREMGenerator(this.renderer);
     this.scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
@@ -158,22 +184,14 @@ export class HyiViewer extends EventTarget {
 
     this.rig = createCameraRig(this.renderer.domElement, 1);
     this.scene.add(this.root);
-    this.scene.add(new AmbientLight(0x8899bb, 0.35));
-    const key = new DirectionalLight(0xffffff, 1.1);
-    key.position.set(1200, -2000, 1800);
-    this.scene.add(key);
-    const rim = new DirectionalLight(0x33ddee, 0.5);
-    rim.position.set(-1500, 1200, 600);
-    this.scene.add(rim);
-    // 渐变舞台背景（内翻大球，替代纯色清屏；不参与拾取与取景框）
-    const backdrop = new Mesh(new SphereGeometry(15000, 32, 24), createBackdropMaterial());
-    backdrop.renderOrder = -1;
-    this.scene.add(backdrop);
-    // 选中描边（反壳），select() 时挂到对应网格几何体上
-    this.outline = new Mesh(undefined, createOutlineMaterial(0x4fe3e0));
-    this.outline.visible = false;
-    this.outline.renderOrder = 0;
-    this.scene.add(this.outline);
+    // 舞台：渐变背景球 + 三点光 + 接触阴影
+    this.stage = createStage();
+    this.scene.add(this.stage.root);
+    this.scene.add(this.clipCaps.root);
+
+    // 画质档位：软件渲染（云端 CI）自动退到 low，桌面默认 high，触摸屏默认 medium
+    this.quality = options.quality ?? defaultQuality(readQualityEnv(this.renderer.getContext()));
+    this.applyQuality();
 
     const dom = this.renderer.domElement;
     dom.addEventListener('pointerdown', this.onPointerDown);
@@ -199,8 +217,18 @@ export class HyiViewer extends EventTarget {
       const rest = systems.filter((s) => !(FIRST_SCREEN_SYSTEMS as string[]).includes(s.id));
       // 占位 manifest（无皮肤/骨骼）时退化为全量加载
       const firstBatch = first.length > 0 ? first : systems;
-      await Promise.all(firstBatch.map((s) => this.loadSystem(s.id as SystemId, s.file)));
+      let loaded = 0;
+      this.emitProgress(0, systems.length);
+      await Promise.all(
+        firstBatch.map((s) =>
+          this.loadSystem(s.id as SystemId, s.file).then(() => {
+            loaded += 1;
+            this.emitProgress(loaded, systems.length);
+          }),
+        ),
+      );
       this.contentBox = new Box3().setFromObject(this.root);
+      fitStage(this.stage, this.contentBox);
       this.frameContent();
       this.applyVisibility();
       this.container.dataset.hyiReady = '1';
@@ -209,7 +237,10 @@ export class HyiViewer extends EventTarget {
         for (const s of first.length > 0 ? rest : []) {
           try {
             await this.loadSystem(s.id as SystemId, s.file);
+            loaded += 1;
+            this.emitProgress(loaded, systems.length);
             this.contentBox = new Box3().setFromObject(this.root);
+            fitStage(this.stage, this.contentBox);
             this.applyVisibility();
             this.applyClip();
             this.dispatchEvent(new CustomEvent('systemloaded', { detail: { system: s.id } }));
@@ -247,9 +278,19 @@ export class HyiViewer extends EventTarget {
         sys === 'skin' ? createXRayMaterial(color, 1) : createSystemMaterial(sys, color);
       mesh.material = material;
       mesh.renderOrder = RENDER_ORDER[sys];
+      mesh.castShadow = QUALITY_CAPS[this.quality].softShadows && sys !== 'skin';
       mesh.geometry.computeBoundingBox();
       group.add(mesh);
-      this.structures.set(slug, { slug, system: sys, mesh, material });
+      this.structures.set(slug, { slug, system: sys, mesh, material, color });
+      // 记下 glb 节点自带的反量化 TRS：微动画只能在它之上叠加，不能覆盖
+      if (slug in ANIMATED_STRUCTURES) {
+        const center = mesh.geometry.boundingBox?.getCenter(new Vector3()) ?? new Vector3();
+        this.pulseBases.set(slug, {
+          position: { x: mesh.position.x, y: mesh.position.y, z: mesh.position.z },
+          scale: mesh.scale.x,
+          center: { x: center.x, y: center.y, z: center.z },
+        });
+      }
     }
     this.systemGroups.set(sys, group);
     this.root.add(group);
@@ -258,6 +299,28 @@ export class HyiViewer extends EventTarget {
       this.pendingSelect = null;
       this.select(slug);
     }
+  }
+
+  private emitProgress(loaded: number, total: number): void {
+    this.dispatchEvent(new CustomEvent('progress', { detail: { loaded, total } }));
+  }
+
+  /**
+   * 结构中心投影到容器像素坐标，供 3D 标签引线用。
+   * 结构不存在、不可见或在相机背后时返回 null。
+   */
+  projectStructure(slug: string): { x: number; y: number } | null {
+    const entry = this.structures.get(slug);
+    if (!entry || !entry.material.visible) return null;
+    const box = entry.mesh.geometry.boundingBox;
+    if (!box) return null;
+    const center = box.getCenter(new Vector3());
+    entry.mesh.localToWorld(center);
+    const ndc = center.project(this.rig.camera);
+    if (ndc.z > 1) return null;
+    const w = this.container.clientWidth || 1;
+    const h = this.container.clientHeight || 1;
+    return { x: ((ndc.x + 1) / 2) * w, y: ((1 - ndc.y) / 2) * h };
   }
 
   getManifest(): Manifest | null {
@@ -287,8 +350,30 @@ export class HyiViewer extends EventTarget {
 
   // ---- 分层与显隐 ----------------------------------------------------------
 
-  setLayer(value: number): void {
-    this.state.layer = Math.min(1, Math.max(0, value));
+  setLayer(value: number, immediate = false): void {
+    const next = Math.min(1, Math.max(0, value));
+    this.layerTarget = next;
+    // 拖滑块时每帧都在小步变化，缓动会拖泥带水；故事线/预设是大跳，缓动才有意义
+    if (immediate || Math.abs(next - this.state.layer) < LAYER_EASE_THRESHOLD) {
+      this.layerEasing = false;
+      this.state.layer = next;
+      this.applyVisibility();
+      return;
+    }
+    this.layerEasing = true;
+  }
+
+  /** 每帧把当前分层值指数逼近目标值。 */
+  private tickLayer(dt: number): void {
+    if (!this.layerEasing) return;
+    const k = 1 - Math.exp(-dt / LAYER_EASE_TAU);
+    const next = this.state.layer + (this.layerTarget - this.state.layer) * k;
+    if (Math.abs(this.layerTarget - next) < 0.002) {
+      this.state.layer = this.layerTarget;
+      this.layerEasing = false;
+    } else {
+      this.state.layer = next;
+    }
     this.applyVisibility();
   }
 
@@ -306,6 +391,10 @@ export class HyiViewer extends EventTarget {
   isolate(slug: string | null): void {
     this.state.isolated = slug;
     this.applyVisibility();
+    // 隔离后自动飞到这个结构：否则一个拳头大的器官还停在全身取景里，等于没隔离
+    const entry = slug ? this.structures.get(slug) : null;
+    if (entry) this.focus(slug!);
+    else if (!this.contentBox.isEmpty()) this.frameContent();
   }
 
   hide(slug: string): void {
@@ -330,8 +419,14 @@ export class HyiViewer extends EventTarget {
     const s = this.state;
     if (!s.systemsVisible[entry.system] || s.hidden.has(entry.slug)) return 0;
     let opacity = computeSystemOpacity(entry.system, s.layer) * s.systemOpacity[entry.system];
-    if (s.isolated && s.isolated !== entry.slug) opacity = Math.min(opacity, 0.06);
-    if (s.selected === entry.slug) opacity = Math.max(opacity, 0.85);
+    if (s.isolated) {
+      // 隔离 = 只看这一个。其他结构压到只剩一点点轮廓做参照——
+      // 0.06 × 130 个结构叠起来仍是一团糊，主角照样看不清
+      if (s.isolated !== entry.slug) return Math.min(opacity, 0.015);
+      return 1;
+    }
+    // 选中的结构渲染成不透明：0.85 的心脏后面会透出肋骨，形状根本读不出来
+    if (s.selected === entry.slug) opacity = Math.max(opacity, 1);
     return opacity;
   }
 
@@ -339,6 +434,23 @@ export class HyiViewer extends EventTarget {
     for (const entry of this.structures.values()) {
       setMaterialOpacity(entry.material, this.effectiveOpacity(entry));
     }
+    this.updateClipCaps();
+  }
+
+  /**
+   * 封盖候选：够实、可见、且不是 X-ray 外壳的结构。
+   * 分层滑到哪里、隔离了谁，候选集就跟着变——所以每次 applyVisibility 都重算一遍。
+   */
+  private updateClipCaps(): void {
+    if (!this.clipPlane) return;
+    const candidates = [];
+    for (const entry of this.structures.values()) {
+      if (entry.material instanceof ShaderMaterial) continue; // 皮肤/X-ray 壳没有断面可言
+      if (!entry.material.visible) continue;
+      if (this.effectiveOpacity(entry) < CAP_MIN_OPACITY) continue;
+      candidates.push({ slug: entry.slug, mesh: entry.mesh, color: entry.color });
+    }
+    this.clipCaps.update(candidates);
   }
 
   // ---- 选中 / 悬停 / 拾取 --------------------------------------------------
@@ -357,11 +469,10 @@ export class HyiViewer extends EventTarget {
     const entry = slug ? this.structures.get(slug) : null;
     if (entry) {
       applyHighlight(entry.mesh, 'selected');
-      this.outline.geometry = entry.mesh.geometry;
-      this.outline.visible = true;
+      this.setOutlineTarget([entry.mesh]);
       this.aimAt(entry);
     } else {
-      this.outline.visible = false;
+      this.setOutlineTarget([]);
     }
     this.applyVisibility();
     this.dispatchEvent(new CustomEvent('select', { detail: { slug: entry ? slug : null } }));
@@ -476,26 +587,39 @@ export class HyiViewer extends EventTarget {
     if (this.reducedMotion) return;
     for (const [slug, scaleFn] of Object.entries(ANIMATED_STRUCTURES)) {
       const entry = this.structures.get(slug);
-      const box = entry?.mesh.geometry.boundingBox;
-      if (!entry || !box || !entry.material.visible) continue;
-      const s = scaleFn(elapsed);
-      const center = box.getCenter(new Vector3());
-      entry.mesh.scale.setScalar(s);
-      entry.mesh.position.copy(center).multiplyScalar(1 - s);
+      const base = this.pulseBases.get(slug);
+      if (!entry || !base || !entry.material.visible) continue;
+      const next = pulseTransform(base, scaleFn(elapsed));
+      entry.mesh.position.set(next.position.x, next.position.y, next.position.z);
+      entry.mesh.scale.setScalar(next.scale);
     }
-    // 选中描边跟随动画中的网格
-    if (this.outline.visible && this.state.selected) {
-      const sel = this.structures.get(this.state.selected);
-      if (sel) {
-        this.outline.position.copy(sel.mesh.position);
-        this.outline.scale.copy(sel.mesh.scale);
-      }
-    }
+    // 描边走 OutlinePass，直接描选中网格本身，动画时无需再同步 transform
   }
 
   // ---- 剖切 ----------------------------------------------------------------
 
-  setClip(clip: { axis: ClipAxis; pos: number } | null): void {
+  /**
+   * 沿某个结构半剖：把剖切面移到该结构的中心，正好把它切成两半。
+   * "想看心脏内部"最短的一条路——否则要手动拖滑块试半天。
+   */
+  clipThroughStructure(slug: string, axis: ClipAxis = 'y'): boolean {
+    const entry = this.structures.get(slug);
+    const box = entry?.mesh.geometry.boundingBox;
+    if (!entry || !box || this.contentBox.isEmpty()) return false;
+    const center = box.getCenter(new Vector3());
+    entry.mesh.localToWorld(center);
+    const pos = clipPosForCoordinate(
+      center[axis],
+      this.contentBox.min[axis],
+      this.contentBox.max[axis],
+    );
+    // 切掉朝向相机的那一半，否则剖开了也只看到完整的外表面
+    const flip = this.rig.camera.position[axis] < center[axis];
+    this.setClip({ axis, pos, flip });
+    return true;
+  }
+
+  setClip(clip: { axis: ClipAxis; pos: number; flip?: boolean } | null): void {
     this.state.clip = clip;
     this.applyClip();
   }
@@ -504,7 +628,7 @@ export class HyiViewer extends EventTarget {
     const clip = this.state.clip;
     this.clipPlane =
       clip && !this.contentBox.isEmpty()
-        ? clipPlaneFor(clip.axis, clip.pos, this.contentBox)
+        ? clipPlaneFor(clip.axis, clip.pos, this.contentBox, clip.flip === true)
         : null;
     const planes = this.clipPlane ? [this.clipPlane] : null;
     for (const entry of this.structures.values()) {
@@ -514,7 +638,8 @@ export class HyiViewer extends EventTarget {
         entry.material.side = planes ? DoubleSide : FrontSide;
       }
     }
-    (this.outline.material as Material).clippingPlanes = planes;
+    this.clipCaps.setPlane(this.clipPlane);
+    this.updateClipCaps();
   }
 
   // ---- 帧循环等 ------------------------------------------------------------
@@ -536,21 +661,63 @@ export class HyiViewer extends EventTarget {
     this.renderer.setSize(w, h, false);
     this.rig.camera.aspect = w / h;
     this.rig.camera.updateProjectionMatrix();
-    this.updateOutlineScale(h);
+    this.pipeline?.setSize(w, h, this.renderer.getPixelRatio());
   }
 
-  /** 描边宽度按像素恒定：把 1 px 换算成单位深度处的世界尺寸交给着色器。 */
-  private updateOutlineScale(heightPx: number): void {
-    const material = this.outline.material as ShaderMaterial;
-    const uniform = material.uniforms?.uPixelScale;
-    if (!uniform) return;
-    const fovRad = (this.rig.camera.fov * Math.PI) / 180;
-    uniform.value = (2 * Math.tan(fovRad / 2)) / Math.max(heightPx, 1);
+  // ---- 画质档位 ------------------------------------------------------------
+
+  getQuality(): QualityTier {
+    return this.quality;
+  }
+
+  canToggleQuality(): boolean {
+    return canToggleHighQuality(this.quality);
+  }
+
+  /** 切换画质：重建后处理链、开关阴影，并把当前选中重新交给描边通道。 */
+  setQuality(tier: QualityTier): void {
+    if (tier === this.quality) return;
+    this.quality = tier;
+    this.applyQuality();
+    const selected = this.state.selected ? this.structures.get(this.state.selected) : null;
+    this.setOutlineTarget(selected ? [selected.mesh] : []);
+    this.dispatchEvent(new CustomEvent('quality', { detail: { quality: tier } }));
+  }
+
+  private applyQuality(): void {
+    const caps = QUALITY_CAPS[this.quality];
+    this.pipeline?.dispose();
+    this.clipCaps.dispose();
+    this.pipeline = caps.postprocessing
+      ? createRenderPipeline(this.renderer, this.scene, this.rig.camera, caps)
+      : null;
+
+    this.renderer.shadowMap.enabled = caps.softShadows;
+    this.renderer.shadowMap.type = PCFSoftShadowMap;
+    this.stage.key.castShadow = caps.softShadows;
+    this.stage.key.shadow.mapSize.set(2048, 2048);
+    this.stage.key.shadow.bias = -0.0006;
+    this.stage.key.shadow.normalBias = 2;
+    this.stage.shadowCatcher.visible = caps.softShadows;
+    // 真阴影开着时假接触阴影淡一点，免得脚下糊成一团黑
+    (this.stage.contactShadow.material as Material).opacity = caps.softShadows ? 0.45 : 0.9;
+    for (const entry of this.structures.values()) {
+      entry.mesh.castShadow = caps.softShadows && entry.system !== 'skin';
+    }
+
+    const w = this.container.clientWidth || 1;
+    const h = this.container.clientHeight || 1;
+    this.pipeline?.setSize(w, h, this.renderer.getPixelRatio());
+  }
+
+  private setOutlineTarget(objects: Object3D[]): void {
+    this.pipeline?.setSelected(objects);
   }
 
   private tick(): void {
     if (this.disposed) return;
     const dt = this.clock.getDelta();
+    this.tickLayer(dt);
     this.animateOrgans(this.clock.elapsedTime);
     if (this.flight) {
       this.flight.t = Math.min(1, this.flight.t + dt / 0.6);
@@ -560,7 +727,9 @@ export class HyiViewer extends EventTarget {
       if (this.flight.t >= 1) this.flight = null;
     }
     this.rig.controls.update();
-    this.renderer.render(this.scene, this.rig.camera);
+    this.clipCaps.syncToPlane();
+    if (this.pipeline) this.pipeline.render();
+    else this.renderer.render(this.scene, this.rig.camera);
   }
 
   dispose(): void {
@@ -571,6 +740,7 @@ export class HyiViewer extends EventTarget {
     dom.removeEventListener('pointerup', this.onPointerUp);
     dom.removeEventListener('pointermove', this.onPointerMove);
     dom.removeEventListener('pointerleave', this.onPointerLeave);
+    this.pipeline?.dispose();
     this.renderer.setAnimationLoop(null);
     this.resizeObserver.disconnect();
     this.rig.dispose();

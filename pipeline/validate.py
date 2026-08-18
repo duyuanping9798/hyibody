@@ -30,12 +30,16 @@ import sys
 from pathlib import Path
 
 import bp3d
-from bp3d import ASSETS_DIR, FACES_MAX_LARGE, FACES_MIN, REGIONS, SIDES, SYSTEMS
+from bp3d import ASSETS_DIR, FACES_MAX_LARGE, FACES_MIN, REGIONS, SIDES, SYSTEMS, max_faces_for
 
 MAX_FILE_BYTES = 50_000_000  # 仓库单文件上限（CLAUDE.md）
-MAX_TOTAL_BYTES = 40_000_000  # 全部资产
-MAX_FIRST_SCREEN_BYTES = 5_000_000  # 首屏：皮肤 + 骨骼 + manifest
+# 2026-08-18 数据质量升级后收紧到本次验收标准（CLAUDE.md 的硬上限是 40 MB / 5 MB）
+MAX_TOTAL_BYTES = 25_000_000  # 全部资产
+MAX_FIRST_SCREEN_BYTES = 4_000_000  # 首屏：皮肤 + 骨骼 + manifest
 MAX_TOTAL_TRIANGLES = 1_500_000
+# 面数目标区间：低于下限说明网格被压得太狠（观感粗糙），只警告不报错
+TARGET_TRIANGLES_MIN = 1_000_000
+TARGET_TRIANGLES_MAX = 1_300_000
 # 每结构一份材质一次绘制 + 背景/描边等开销余量，静态估算不超过同屏 600 draw call
 MAX_STRUCTURES_FOR_DRAWCALLS = 580
 VALID_SOURCES = ("bp3d", "bp3d_partof", "hra", "cc0")
@@ -77,8 +81,9 @@ def validate_structures(entries: list[dict], chk: Checker, list_name: str = "str
         if not isinstance(fma, list) or not fma or not all(isinstance(x, str) and x for x in fma):
             chk.error(f"{list_name}: {slug} fma 必须是非空字符串列表")
         tf = e.get("target_faces")
-        if not isinstance(tf, int) or not FACES_MIN <= tf <= FACES_MAX_LARGE:
-            chk.error(f"{list_name}: {slug} target_faces {tf!r} 不在 {FACES_MIN}–{FACES_MAX_LARGE}")
+        cap = max_faces_for(slug)
+        if not isinstance(tf, int) or not FACES_MIN <= tf <= cap:
+            chk.error(f"{list_name}: {slug} target_faces {tf!r} 不在 {FACES_MIN}–{cap}")
         if e.get("priority") not in (1, 2, 3):
             chk.error(f"{list_name}: {slug} priority 非法 {e.get('priority')!r}")
         key2 = (e.get("zh", ""), e.get("en", ""))
@@ -181,8 +186,9 @@ def validate_assets(manifest: dict, chk: Checker) -> None:
             chk.error(f"{glb.name}: glb 节点 {slug} 不在 manifest 中")
         for slug, tris in counts.items():
             total_tris += tris
-            if tris > FACES_MAX_LARGE * 1.05:
-                chk.error(f"{glb.name}: {slug} {tris} 面超过大结构上限 {FACES_MAX_LARGE}")
+            cap = max_faces_for(slug)
+            if tris > cap * 1.05:
+                chk.error(f"{glb.name}: {slug} {tris} 面超过单结构上限 {cap}")
             elif tris < 100:
                 chk.warn(f"{glb.name}: {slug} 仅 {tris} 面，检查是否网格缺失")
         missing_extras = glb_extras_ok(glb)
@@ -192,6 +198,11 @@ def validate_assets(manifest: dict, chk: Checker) -> None:
         chk.error(f"全部资产 {total_bytes / 1e6:.1f} MB 超过 40 MB 预算")
     if first_screen > MAX_FIRST_SCREEN_BYTES:
         chk.error(f"首屏包 {first_screen / 1e6:.2f} MB 超过 5 MB 预算")
+    if not TARGET_TRIANGLES_MIN <= total_tris <= TARGET_TRIANGLES_MAX:
+        chk.warn(
+            f"总三角面 {total_tris} 不在目标区间 "
+            f"{TARGET_TRIANGLES_MIN}–{TARGET_TRIANGLES_MAX}"
+        )
     if total_tris > MAX_TOTAL_TRIANGLES:
         chk.error(f"总三角面 {total_tris} 超过 150 万预算")
     n_structures = len(manifest["structures"])

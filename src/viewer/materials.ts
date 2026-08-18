@@ -9,6 +9,10 @@ import {
   type Material,
 } from 'three';
 import type { SystemId } from '../data/types';
+import paletteRaw from '../../content/palette.json';
+
+/** 逐结构配色表（`content/palette.json`，`_meta` 之外的键都是 slug → 十六进制色）。 */
+const PALETTE = paletteRaw as Record<string, string | { note?: string }>;
 
 /** 各系统基色（深色舞台上的科普配色：动脉红/静脉蓝/神经黄/骨米白）。 */
 export const SYSTEM_COLORS: Record<SystemId, number> = {
@@ -41,10 +45,18 @@ const TINT_SPREAD: Partial<Record<SystemId, { hue: number; light: number }>> = {
 };
 
 /**
- * 结构基色：血管按名称区分动脉红 / 静脉蓝，其余用系统色，
- * 并按 key（默认用英文名，viewer 传 slug）做确定性微抖动区分相邻结构。
+ * 结构基色（优先级：逐结构配色表 → 静脉蓝 → 系统色 + 微抖动）。
+ *
+ * `content/palette.json` 是人可编辑的逐结构配色：整个器官系统共用一个橙色时，
+ * 心脏、肝、脾、胆囊挨在一起根本分不出谁是谁；按解剖图谱的习惯各给各的颜色，
+ * 一眼就能认出来。没写进配色表的结构仍走系统色 + 确定性微抖动。
  */
 export function colorForStructure(system: SystemId, en: string, key: string = en): number {
+  const custom = PALETTE[key];
+  if (typeof custom === 'string') {
+    const hex = Number.parseInt(custom.replace('#', ''), 16);
+    if (Number.isFinite(hex)) return hex;
+  }
   const base =
     system === 'vessels' && /vein|venous|vena/i.test(en) ? 0x4a6fd6 : SYSTEM_COLORS[system];
   const spread = TINT_SPREAD[system];
@@ -69,63 +81,134 @@ export function createStructureMaterial(color: string | number): MeshStandardMat
 }
 
 /**
- * 按系统分质感（环境光照下的观感升级）：骨骼哑光、肌肉半哑光纤维感、
- * 器官/血管湿润高光带清漆层、神经缎面。只有皮肤走 X-ray 菲涅尔壳——
- * 肌肉曾经也是 X-ray，结果轮到肌肉层时只剩一圈红边、看不出肌肉形状（2026-08-18 改）。
+ * 菲涅尔边缘光：给受光材质加一圈掠射角高光，并在低不透明度时补一点 alpha。
+ *
+ * 这样同一份材质既能当"实体"（不透明度高时看得清形状），又能当"X-ray 壳"
+ * （不透明度低时只剩一圈发光的轮廓）。肌肉曾经用纯 X-ray 着色器，轮到肌肉层时
+ * 只剩一圈红边、看不出肌肉走向；纯受光材质又没有透视感——这里两者兼得。
  */
+function addFresnelRim(
+  material: MeshStandardMaterial,
+  options: { color: Color; strength: number; power: number; alpha: number },
+): void {
+  material.onBeforeCompile = (shader) => {
+    shader.uniforms.uRimColor = { value: options.color };
+    shader.uniforms.uRimStrength = { value: options.strength };
+    shader.uniforms.uRimPower = { value: options.power };
+    shader.uniforms.uRimAlpha = { value: options.alpha };
+    shader.fragmentShader = shader.fragmentShader
+      .replace(
+        'void main() {',
+        `uniform vec3 uRimColor;
+         uniform float uRimStrength;
+         uniform float uRimPower;
+         uniform float uRimAlpha;
+         void main() {`,
+      )
+      .replace(
+        '#include <dithering_fragment>',
+        `#include <dithering_fragment>
+         float rimFacing = abs(dot(normalize(vNormal), normalize(vViewPosition)));
+         float rim = pow(1.0 - clamp(rimFacing, 0.0, 1.0), uRimPower);
+         gl_FragColor.rgb += uRimColor * rim * uRimStrength;
+         gl_FragColor.a = clamp(gl_FragColor.a + rim * uRimAlpha * (1.0 - gl_FragColor.a), 0.0, 1.0);`,
+      );
+  };
+  // onBeforeCompile 变了要让 three 重新编译
+  material.customProgramCacheKey = () =>
+    `rim:${options.strength}:${options.power}:${options.alpha}`;
+}
+
+/**
+ * 按系统分质感（环境光照下的观感升级）：骨骼哑光、肌肉半哑光纤维感、
+ * 器官/血管湿润高光带清漆层、神经缎面，全部带菲涅尔边缘光。
+ * 只有皮肤走独立的 X-ray 菲涅尔壳（加色混合）。
+ */
+/** 各系统的边缘光参数：越靠外的层越需要"透"，边缘光就越强。 */
+const RIM: Partial<
+  Record<SystemId, { color: number; strength: number; power: number; alpha: number }>
+> = {
+  muscles: { color: 0xff9a7a, strength: 0.5, power: 2.6, alpha: 0.42 },
+  skeleton: { color: 0xbfd8ff, strength: 0.26, power: 3.2, alpha: 0.2 },
+  organs: { color: 0xffc79a, strength: 0.34, power: 2.8, alpha: 0.3 },
+  vessels: { color: 0xff8f9a, strength: 0.42, power: 2.4, alpha: 0.34 },
+  nerves: { color: 0xfff0a6, strength: 0.4, power: 2.4, alpha: 0.34 },
+};
+
 export function createSystemMaterial(
   system: SystemId,
   color: string | number,
 ): MeshStandardMaterial {
   const c = new Color(color);
+  let material: MeshStandardMaterial;
   switch (system) {
     case 'skeleton':
-      return new MeshStandardMaterial({
+      material = new MeshStandardMaterial({
         color: c,
-        roughness: 0.62,
-        metalness: 0.02,
-        envMapIntensity: 0.65,
-        transparent: true,
-      });
-    case 'muscles':
-      return new MeshStandardMaterial({
-        color: c,
-        roughness: 0.72,
-        metalness: 0.0,
-        envMapIntensity: 0.7,
-        transparent: true,
-      });
-    case 'organs':
-      return new MeshPhysicalMaterial({
-        color: c,
-        roughness: 0.38,
-        metalness: 0.0,
-        clearcoat: 0.35,
-        clearcoatRoughness: 0.45,
-        envMapIntensity: 0.9,
-        transparent: true,
-      });
-    case 'vessels':
-      return new MeshPhysicalMaterial({
-        color: c,
-        roughness: 0.3,
-        metalness: 0.0,
-        clearcoat: 0.5,
-        clearcoatRoughness: 0.35,
-        envMapIntensity: 1.0,
-        transparent: true,
-      });
-    case 'nerves':
-      return new MeshStandardMaterial({
-        color: c,
-        roughness: 0.45,
-        metalness: 0.0,
+        roughness: 0.58,
+        metalness: 0.03,
         envMapIntensity: 0.8,
         transparent: true,
       });
+      break;
+    case 'muscles':
+      // 肌肉：半哑光、略带次表面感的暖红，粗糙度高一点才不像塑料
+      material = new MeshStandardMaterial({
+        color: c,
+        roughness: 0.68,
+        metalness: 0.0,
+        envMapIntensity: 0.85,
+        transparent: true,
+      });
+      break;
+    case 'organs':
+      // 清漆/光泽/环境反射都收一档：叠满之后 #a83f3d 的心脏会被打成浅粉，
+      // 逐结构配色就白配了
+      material = new MeshPhysicalMaterial({
+        color: c,
+        roughness: 0.42,
+        metalness: 0.0,
+        clearcoat: 0.28,
+        clearcoatRoughness: 0.45,
+        sheen: 0.2,
+        sheenColor: new Color(0xffd9c0),
+        envMapIntensity: 0.7,
+        transparent: true,
+      });
+      break;
+    case 'vessels':
+      material = new MeshPhysicalMaterial({
+        color: c,
+        roughness: 0.26,
+        metalness: 0.0,
+        clearcoat: 0.6,
+        clearcoatRoughness: 0.3,
+        envMapIntensity: 1.15,
+        transparent: true,
+      });
+      break;
+    case 'nerves':
+      material = new MeshStandardMaterial({
+        color: c,
+        roughness: 0.42,
+        metalness: 0.0,
+        envMapIntensity: 0.9,
+        transparent: true,
+      });
+      break;
     default:
       return createStructureMaterial(color);
   }
+  const rim = RIM[system];
+  if (rim) {
+    addFresnelRim(material, {
+      color: new Color(rim.color),
+      strength: rim.strength,
+      power: rim.power,
+      alpha: rim.alpha,
+    });
+  }
+  return material;
 }
 
 /**
@@ -211,7 +294,10 @@ export function createXRayMaterial(color: string | number, opacity = 1): ShaderM
     uniforms: {
       uColor: { value: new Color(color) },
       uOpacity: { value: opacity },
-      uPower: { value: 2.2 },
+      // 边缘收窄（2.2 → 2.7）：叠在 109 万面的内脏之上时，宽边缘会把画面糊白
+      uPower: { value: 2.7 },
+      // 加色混合的总强度，低一点才压得住内层的高光
+      uIntensity: { value: 0.85 },
       uHighlight: { value: 0 },
     },
     vertexShader: /* glsl */ `
@@ -228,13 +314,14 @@ export function createXRayMaterial(color: string | number, opacity = 1): ShaderM
       uniform vec3 uColor;
       uniform float uOpacity;
       uniform float uPower;
+      uniform float uIntensity;
       uniform float uHighlight;
       varying vec3 vNormalW;
       varying vec3 vViewDirW;
       void main() {
         float fresnel = pow(1.0 - abs(dot(normalize(vNormalW), normalize(vViewDirW))), uPower);
         vec3 color = mix(uColor, vec3(1.0), uHighlight);
-        float alpha = fresnel * uOpacity + uHighlight * 0.25 * uOpacity;
+        float alpha = (fresnel * uIntensity + uHighlight * 0.22) * uOpacity;
         gl_FragColor = vec4(color, alpha);
       }
     `,
@@ -249,6 +336,13 @@ export function setMaterialOpacity(material: Material, opacity: number): void {
     material.opacity = opacity;
     // 半透明叠加时关闭深度写入，减少互相遮挡的闪面
     material.depthWrite = opacity > 0.55;
+    // 完全不透明时关掉混合：留着 transparent 的话，选中的器官后面会透出肋骨，
+    // 看着像磨砂玻璃而不是实体
+    const solid = opacity >= 0.999;
+    if (material.transparent === solid) {
+      material.transparent = !solid;
+      material.needsUpdate = true;
+    }
   }
   material.visible = opacity > 0.005;
 }

@@ -42,3 +42,11 @@ M1 起站点资产（`public/assets/*.glb` + `manifest.json`）由数据流水�
 生成（isa 集细分部件 + partof 集复合器官），`manifest.json` 的 `attribution` 字段携带上述
 BodyParts3D 署名文本并显示在页面上。每个结构保留 `fma` 概念 ID 列表以便追溯。
 原始数据不入库（`pipeline/raw/`，gitignore），直链与 sha256 记录于 `pipeline/config/sources.yaml`。
+
+## 字体
+
+界面中文字体为 **Noto Sans SC（思源黑体简体）**，由 Google 发布，许可证
+**SIL Open Font License 1.1**。仓库中提交的是按本站实际用字（1,205 个字符）
+子集化后的 woff2（`src/assets/fonts/`），源文件来自
+<https://github.com/notofonts/noto-cjk>（`Sans/SubsetOTF/SC/`），
+子集化脚本见 `scripts/build_font_subset.py`（`pnpm font:subset`）。

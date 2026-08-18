@@ -1,7 +1,7 @@
 {
   "brand": "HyiBody",
   "subtitle": "See-through Human Anatomy",
-  "loading": "Loading model…",
+  "loading": "Loading the body…",
   "loadError": "Failed to load model, please refresh",
   "placeholderNotice": "Placeholder model — real anatomy data arrives with the M1 pipeline",
   "attribution": "Data sources & attribution",
@@ -64,5 +64,22 @@
   "shareTitle": "Share",
   "shareCopy": "Copy link",
   "shareCopied": "Copied ✓",
-  "kioskAttract": "Touch the screen to explore your body"
+  "kioskAttract": "Touch the screen to explore your body",
+  "qualityTitle": "Quality",
+  "qualityHigh": "High quality",
+  "qualityHint": "Soft shadows and ambient occlusion; costs performance",
+  "qualityUnavailable": "Software rendering detected — locked to basic quality",
+  "infoFactTitle": "Did you know",
+  "infoUnreviewed": "AI draft, pending review",
+  "infoTagSystem": "System",
+  "infoTagRegion": "Region",
+  "loadingSystems": "{done}/{total} systems",
+  "sides": {
+    "left": "Left",
+    "right": "Right",
+    "none": "—",
+    "both": "Both"
+  },
+  "clipThroughSelected": "Cut through this structure",
+  "clipFlip": "Flip"
 }

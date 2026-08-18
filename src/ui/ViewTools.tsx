@@ -14,7 +14,12 @@ export function ViewTools() {
   const isolated = useUiStore((s) => s.isolated);
   const applyPreset = useUiStore((s) => s.applyPreset);
   const setClip = useUiStore((s) => s.setClip);
+  const selected = useUiStore((s) => s.selected);
+  const clipThroughSelected = useUiStore((s) => s.clipThroughSelected);
   const resetVisibility = useUiStore((s) => s.resetVisibility);
+  const quality = useUiStore((s) => s.quality);
+  const qualityToggleable = useUiStore((s) => s.qualityToggleable);
+  const setQuality = useUiStore((s) => s.setQuality);
 
   return (
     <>
@@ -48,6 +53,19 @@ export function ViewTools() {
           ))}
         </div>
         {clip && (
+          <button
+            className={`hyi-btn hyi-clip-flip${clip.flip ? ' active' : ''}`}
+            onClick={() => setClip({ ...clip, flip: !clip.flip })}
+          >
+            {t.clipFlip}
+          </button>
+        )}
+        {selected && (
+          <button className="hyi-btn hyi-clip-through" onClick={clipThroughSelected}>
+            {t.clipThroughSelected}
+          </button>
+        )}
+        {clip && (
           <input
             className="hyi-range"
             type="range"
@@ -59,6 +77,22 @@ export function ViewTools() {
             onChange={(e) => setClip({ axis: clip.axis, pos: Number(e.target.value) })}
           />
         )}
+      </section>
+      <section>
+        <h3>{t.qualityTitle}</h3>
+        {qualityToggleable ? (
+          <label className="hyi-switch">
+            <input
+              type="checkbox"
+              checked={quality === 'high'}
+              onChange={(e) => setQuality(e.target.checked ? 'high' : 'medium')}
+            />
+            <span>{t.qualityHigh}</span>
+          </label>
+        ) : (
+          <p className="hyi-hint">{t.qualityUnavailable}</p>
+        )}
+        {qualityToggleable && <p className="hyi-hint">{t.qualityHint}</p>}
       </section>
       {(hiddenCount > 0 || isolated) && (
         <section>

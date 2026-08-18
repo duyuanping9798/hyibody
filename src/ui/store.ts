@@ -6,6 +6,7 @@ import { TourEngine, type Tour, type TourStep } from '../tours/engine';
 import type { ClipAxis } from '../viewer/clipping';
 import type { ViewPresetId } from '../viewer/camera';
 import type { HyiViewer } from '../viewer/HyiViewer';
+import type { QualityTier } from '../viewer/quality';
 
 export type LoadState = 'loading' | 'ready' | 'error';
 
@@ -20,29 +21,36 @@ interface UiState {
   selected: string | null;
   isolated: string | null;
   hiddenCount: number;
-  clip: { axis: ClipAxis; pos: number } | null;
+  clip: { axis: ClipAxis; pos: number; flip?: boolean } | null;
   attributionOpen: boolean;
   /** 小屏抽屉：当前展开的工具面板（桌面端两块面板常驻，忽略此值） */
   activePanel: 'systems' | 'views' | null;
   /** 界面语言（M2-5，默认中文） */
   lang: Locale;
+  /** 资产加载进度（loaded/total 个系统 glb） */
+  progress: { loaded: number; total: number };
+  /** 画质档位（B 步渲染升级）：low 是软件渲染兜底，不给切 */
+  quality: QualityTier;
+  qualityToggleable: boolean;
   /** 故事线播放状态（M2-1） */
   tour: Tour | null;
   tourIndex: number;
   tourPlaying: boolean;
 
   setLang(lang: Locale): void;
+  setQuality(q: QualityTier): void;
   setLoadState(s: LoadState): void;
   setManifest(m: Manifest): void;
   markSystemLoaded(id: string): void;
-  setLayer(v: number): void;
+  setLayer(v: number, immediate?: boolean): void;
   toggleSystem(id: SystemId): void;
   setSystemOpacity(id: SystemId, v: number): void;
   select(slug: string | null): void;
   isolate(slug: string | null): void;
   hide(slug: string): void;
   resetVisibility(): void;
-  setClip(clip: { axis: ClipAxis; pos: number } | null): void;
+  setClip(clip: { axis: ClipAxis; pos: number; flip?: boolean } | null): void;
+  clipThroughSelected(): void;
   applyPreset(id: ViewPresetId): void;
   focus(slug: string): void;
   setAttributionOpen(open: boolean): void;
@@ -101,6 +109,11 @@ export function bindViewer(v: HyiViewer | null): void {
     // 选中结构时收起小屏抽屉面板，避免与信息卡叠在一起（桌面端不受影响）
     useUiStore.setState(slug ? { selected: slug, activePanel: null } : { selected: slug });
   });
+  useUiStore.setState({ quality: v.getQuality(), qualityToggleable: v.canToggleQuality() });
+  v.addEventListener('progress', (e) => {
+    const detail = (e as CustomEvent<{ loaded: number; total: number }>).detail;
+    useUiStore.setState({ progress: detail });
+  });
   v.addEventListener('systemloaded', (e) => {
     const system = (e as CustomEvent<{ system: string }>).detail.system;
     useUiStore.getState().markSystemLoaded(system);
@@ -146,7 +159,14 @@ export const useUiStore = create<UiState>((set, get) => ({
   tourIndex: 0,
   tourPlaying: false,
   lang: 'zh',
+  progress: { loaded: 0, total: 0 },
+  quality: 'medium',
+  qualityToggleable: false,
 
+  setQuality: (quality) => {
+    viewer?.setQuality(quality);
+    set({ quality });
+  },
   setLang: (lang) => {
     document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
     set({ lang });
@@ -159,8 +179,8 @@ export const useUiStore = create<UiState>((set, get) => ({
       loadedSystems: s.loadedSystems.includes(id) ? s.loadedSystems : [...s.loadedSystems, id],
     })),
 
-  setLayer: (v) => {
-    viewer?.setLayer(v);
+  setLayer: (v, immediate = false) => {
+    viewer?.setLayer(v, immediate);
     set({ layer: v });
   },
   toggleSystem: (id) => {
@@ -191,6 +211,13 @@ export const useUiStore = create<UiState>((set, get) => ({
     viewer?.setClip(clip);
     set({ clip });
   },
+  clipThroughSelected: () => {
+    const slug = get().selected;
+    if (!slug || !viewer) return;
+    if (viewer.clipThroughStructure(slug)) {
+      set({ clip: viewer.getState().clip });
+    }
+  },
   applyPreset: (id) => {
     viewer?.applyPreset(id);
   },
@@ -214,13 +241,14 @@ export const useUiStore = create<UiState>((set, get) => ({
 
   applyUrlState: (s) => {
     const st = get();
-    st.setLayer(s.layer);
+    // 分享链接恢复的是"结果状态"，不该看到一段过渡动画
+    st.setLayer(s.layer, true);
     if (s.systems) {
       for (const [id, visible] of Object.entries(s.systems)) {
         if (visible === false && st.systemsVisible[id as SystemId]) st.toggleSystem(id as SystemId);
       }
     }
-    if (s.clip) st.setClip({ axis: s.clip.axis, pos: s.clip.pos });
+    if (s.clip) st.setClip({ axis: s.clip.axis, pos: s.clip.pos, flip: s.clip.flip === true });
     if (s.selected) st.select(s.selected);
     if (s.lang) st.setLang(s.lang);
     if (s.cam && viewer) viewer.setCameraPose(s.cam.pos, s.cam.target);

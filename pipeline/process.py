@@ -66,10 +66,18 @@ def _edge_graph(vertex_count: int, faces: np.ndarray) -> tuple[np.ndarray, np.nd
 
 
 def _umbrella(vertices: np.ndarray, a: np.ndarray, b: np.ndarray, degree: np.ndarray) -> np.ndarray:
-    """伞算子位移 L·v − v；孤立点（无邻居）位移为 0，不会被拖向坐标原点。"""
-    acc = np.zeros_like(vertices)
-    np.add.at(acc, a, vertices[b])
-    np.add.at(acc, b, vertices[a])
+    """伞算子位移 L·v − v；孤立点（无邻居）位移为 0，不会被拖向坐标原点。
+
+    用 bincount 逐轴累加而不是 np.add.at：平滑改到减面之前做，输入是十几万面的
+    原始网格，np.add.at 在这个量级上慢一个数量级。
+    """
+    n = len(vertices)
+    acc = np.empty_like(vertices)
+    for axis in range(3):
+        col = vertices[:, axis]
+        acc[:, axis] = np.bincount(a, weights=col[b], minlength=n) + np.bincount(
+            b, weights=col[a], minlength=n
+        )
     delta = np.zeros_like(vertices)
     has = degree > 0
     delta[has] = acc[has] / degree[has, None] - vertices[has]
@@ -115,14 +123,16 @@ def max_edge_length(vertices: np.ndarray, faces: np.ndarray) -> float:
     )
 
 
-def merge_elements(set_name: str, elements: list[str]) -> "trimesh.Trimesh":
-    """加载并拼接一组 FJ obj，焊接顶点、去退化面。"""
+# 布尔并集的上限：件数或面数太大时退回简单拼接（避免个别结构把流水线拖到分钟级）
+UNION_MAX_PARTS = 400
+UNION_MAX_FACES = 600_000
+
+
+def _load_parts(set_name: str, elements: list[str]) -> list["trimesh.Trimesh"]:
     import trimesh
 
     directory = bp3d.obj_dir(set_name)
-    parts_v: list[np.ndarray] = []
-    parts_f: list[np.ndarray] = []
-    offset = 0
+    parts: list["trimesh.Trimesh"] = []
     for fj in elements:
         path = directory / f"{fj}.obj"
         if not path.exists():
@@ -131,15 +141,56 @@ def merge_elements(set_name: str, elements: list[str]) -> "trimesh.Trimesh":
         v, f = bp3d.parse_obj(path)
         if not len(f):
             continue
-        parts_v.append(v)
-        parts_f.append(f.astype(np.int64) + offset)
-        offset += len(v)
-    if not parts_v:
+        parts.append(
+            trimesh.Trimesh(
+                vertices=v.astype(np.float64),
+                faces=f.astype(np.int64),
+                process=True,
+                validate=True,
+            )
+        )
+    return parts
+
+
+def merge_elements(set_name: str, elements: list[str]) -> tuple["trimesh.Trimesh", str]:
+    """加载一组 FJ obj 并合成一个网格，返回 (网格, 合并方式)。
+
+    BP3D 的一个结构常常是几十上百个各自封闭的小壳（心脏 83 件、双肺 124 件）。
+    直接拼接只是把三角面堆在一起：壳与壳相交处两层表面都留着，内壁也全在，
+    渲染出来就是坑坑洼洼的蜡块，近看完全不像器官。
+
+    所以只要各件都水密就走**布尔并集**（manifold3d），得到一张真正的外表面；
+    实测心脏 83 件 10.3 万面 → 8.6 万面且水密，耗时 1.3 秒。
+    有一件不水密（BP3D 里确实存在破面）就退回拼接，并在日志里说明。
+    """
+    import trimesh
+
+    parts = _load_parts(set_name, elements)
+    if not parts:
         raise ValueError("没有可用网格")
-    mesh = trimesh.Trimesh(
-        vertices=np.vstack(parts_v), faces=np.vstack(parts_f), process=True, validate=True
-    )
-    return mesh
+
+    total_faces = sum(len(m.faces) for m in parts)
+    if len(parts) > 1 and len(parts) <= UNION_MAX_PARTS and total_faces <= UNION_MAX_FACES:
+        solid = [m for m in parts if m.is_watertight]
+        leaky = [m for m in parts if not m.is_watertight]
+        if len(solid) > 1:
+            try:
+                merged = trimesh.boolean.union(solid, engine="manifold")
+                if len(merged.faces) > 0:
+                    # 破面的那几件没法参与布尔，直接拼回去——总比整个结构退回拼接强
+                    # （肝 60 件里只有 1 件破面，颅骨 21 件里 1 件）
+                    if leaky:
+                        print(f"  {len(leaky)}/{len(parts)} 件不水密，这几件拼接、其余取并集")
+                        merged = trimesh.util.concatenate([merged, *leaky])
+                    merged.process(validate=True)
+                    return merged, "union" if not leaky else "union+concat"
+                print("  警告：布尔并集结果为空，退回拼接")
+            except Exception as exc:  # noqa: BLE001 — 并集失败不该中断整条流水线
+                print(f"  警告：布尔并集失败（{type(exc).__name__}），退回拼接")
+
+    if len(parts) == 1:
+        return parts[0], "single"
+    return trimesh.util.concatenate(parts), "concat"
 
 
 def process_structure(entry: dict, center: np.ndarray) -> dict | None:
@@ -159,13 +210,12 @@ def process_structure(entry: dict, center: np.ndarray) -> dict | None:
     if not elements:
         raise ValueError(f"{entry['slug']}: fma {entry['fma']} 在 {set_name} 集无元素网格")
 
-    mesh = merge_elements(set_name, elements)
+    mesh, merge_mode = merge_elements(set_name, elements)
     raw_faces = len(mesh.faces)
-    v, f = simplify_mesh(
-        np.asarray(mesh.vertices, dtype=np.float32),
-        np.asarray(mesh.faces, dtype=np.int64),
-        int(entry["target_faces"]),
-    )
+    v = np.asarray(mesh.vertices, dtype=np.float32)
+    f = np.asarray(mesh.faces, dtype=np.int64)
+    # 先平滑再减面（2026-08-18 改）：在原始分辨率上抹掉扫描阶梯，减面算法据此保形；
+    # 反过来先减面再平滑等于在低模上摊平，圆润度和特征都保不住。
     if entry["system"] in SMOOTH_SYSTEMS:
         diag_before = float(np.linalg.norm(v.max(axis=0) - v.min(axis=0)))
         v = smooth_mesh(v, f)
@@ -176,6 +226,7 @@ def process_structure(entry: dict, center: np.ndarray) -> dict | None:
             raise ValueError(
                 f"{entry['slug']}: 平滑后包围盒对角线 {diag_before:.1f} → {diag_after:.1f} mm，疑似发散"
             )
+    v, f = simplify_mesh(v, f, int(entry["target_faces"]))
     v = v - center.astype(np.float32)
     bbox = np.concatenate([v.min(axis=0), v.max(axis=0)]).astype(float)
 
@@ -197,6 +248,7 @@ def process_structure(entry: dict, center: np.ndarray) -> dict | None:
         "bbox": [round(float(x), 2) for x in bbox],
         "max_edge": round(max_edge_length(v, f), 2),
         "elements": len(elements),
+        "merge_mode": merge_mode,
     }
 
 
@@ -229,7 +281,8 @@ def main(argv: list[str] | None = None) -> int:
             if meta is None:
                 continue
             print(
-                f"  {meta['slug']}: {meta['elements']} 件, {meta['faces_raw']} → {meta['faces']} 面"
+                f"  {meta['slug']}: {meta['elements']} 件（{meta['merge_mode']}）, "
+                f"{meta['faces_raw']} → {meta['faces']} 面"
             )
             metas.append(meta)
         out_dir = WORK_DIR / "processed" / system
