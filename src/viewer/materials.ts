@@ -9,6 +9,10 @@ import {
   type Material,
 } from 'three';
 import type { SystemId } from '../data/types';
+import paletteRaw from '../../content/palette.json';
+
+/** 逐结构配色表（`content/palette.json`，`_meta` 之外的键都是 slug → 十六进制色）。 */
+const PALETTE = paletteRaw as Record<string, string | { note?: string }>;
 
 /** 各系统基色（深色舞台上的科普配色：动脉红/静脉蓝/神经黄/骨米白）。 */
 export const SYSTEM_COLORS: Record<SystemId, number> = {
@@ -41,10 +45,18 @@ const TINT_SPREAD: Partial<Record<SystemId, { hue: number; light: number }>> = {
 };
 
 /**
- * 结构基色：血管按名称区分动脉红 / 静脉蓝，其余用系统色，
- * 并按 key（默认用英文名，viewer 传 slug）做确定性微抖动区分相邻结构。
+ * 结构基色（优先级：逐结构配色表 → 静脉蓝 → 系统色 + 微抖动）。
+ *
+ * `content/palette.json` 是人可编辑的逐结构配色：整个器官系统共用一个橙色时，
+ * 心脏、肝、脾、胆囊挨在一起根本分不出谁是谁；按解剖图谱的习惯各给各的颜色，
+ * 一眼就能认出来。没写进配色表的结构仍走系统色 + 确定性微抖动。
  */
 export function colorForStructure(system: SystemId, en: string, key: string = en): number {
+  const custom = PALETTE[key];
+  if (typeof custom === 'string') {
+    const hex = Number.parseInt(custom.replace('#', ''), 16);
+    if (Number.isFinite(hex)) return hex;
+  }
   const base =
     system === 'vessels' && /vein|venous|vena/i.test(en) ? 0x4a6fd6 : SYSTEM_COLORS[system];
   const spread = TINT_SPREAD[system];
@@ -150,15 +162,17 @@ export function createSystemMaterial(
       });
       break;
     case 'organs':
+      // 清漆/光泽/环境反射都收一档：叠满之后 #a83f3d 的心脏会被打成浅粉，
+      // 逐结构配色就白配了
       material = new MeshPhysicalMaterial({
         color: c,
-        roughness: 0.34,
+        roughness: 0.42,
         metalness: 0.0,
-        clearcoat: 0.45,
-        clearcoatRoughness: 0.4,
-        sheen: 0.35,
+        clearcoat: 0.28,
+        clearcoatRoughness: 0.45,
+        sheen: 0.2,
         sheenColor: new Color(0xffd9c0),
-        envMapIntensity: 1.0,
+        envMapIntensity: 0.7,
         transparent: true,
       });
       break;
