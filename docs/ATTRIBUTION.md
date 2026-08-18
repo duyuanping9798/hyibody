@@ -13,13 +13,24 @@ HyiBody 使用的所有第三方数据及其许可证与署名要求。站内"�
 
 - 许可证页快照：`docs/licenses/`（由人类保存 PDF，见 KICKOFF 第 10 节）
 
-## HuBMAP Human Reference Atlas 3D 参考器官
+## HuBMAP Human Reference Atlas 3D 参考器官（已接入）
 
-- 用途：心、肺、肝、肾、脑、胃肠、脾、胰、膀胱等"主角"器官的美观版本（M2-4 接入）
-- 来源：<https://humanatlas.io/3d-reference-library>
-- 许可证：CC BY 4.0
-- 署名：HuBMAP Human Reference Atlas
-- 注意：商用场景不使用其中的 Allen 脑模型（改用 BP3D 脑）
+- 用途：解剖结构分件、内部件齐全的"主角"器官。**2026-08-18 起心脏（含四腔、
+  室间隔、四个瓣膜、五束乳头肌）已换成 HRA 版**；其余器官仍为 BodyParts3D
+- 来源：<https://humanatlas.io/3d-reference-library>；
+  目录接口 <https://apps.humanatlas.io/api/v1/reference-organs>；
+  资产直链与 sha256 记录于 `pipeline/config/sources_hra.yaml`
+- 许可证：CC BY 4.0（各 digital object 的 `metadata.json` 里都写着这一条，例：
+  <https://cdn.humanatlas.io/digital-objects/ref-organ/heart-male/v1.3/metadata.json>）
+- 署名文本（站内与文档统一使用）：
+
+  > 3D Reference Organs from the Human Reference Atlas (HRA), HuBMAP Consortium
+  > — Kristen Browne (NIH/NIAID) — licensed under CC BY 4.0
+
+- 只取 **Male** 版本：本站骨骼/肌肉来自 BodyParts3D 的男性模型，混性别会前后矛盾
+- **明确不取 `brain-male`（`3d-allen-m-brain.glb`）**：它派生自 Allen 脑图谱，
+  许可证不在允许清单里（脑继续用 BodyParts3D 的）。`pipeline/tests/test_hra.py`
+  有一条测试盯着这件事
 
 ## CC0 体表网格（可选，M2）
 
@@ -40,13 +51,17 @@ Z-Anatomy 网格与层级（CC BY-SA）、Open3DModel（CC BY-SA）、任何 NC/
 
 M1 起站点资产（`public/assets/*.glb` + `manifest.json`）由数据流水线从 BodyParts3D 4.0
 生成（isa 集细分部件 + partof 集复合器官），`manifest.json` 的 `attribution` 字段携带上述
-BodyParts3D 署名文本并显示在页面上。每个结构保留 `fma` 概念 ID 列表以便追溯。
-原始数据不入库（`pipeline/raw/`，gitignore），直链与 sha256 记录于 `pipeline/config/sources.yaml`。
+BodyParts3D 署名文本并显示在页面上；用到 HRA 网格时 `attribution` 里同时带上 HRA 署名
+（`pipeline/validate.py` 有一条检查盯着"用了 HRA 就必须署 HRA"）。
+每个结构保留本体 id：BodyParts3D 结构用 `fma`，HRA 结构额外带 `uberon`
+（室间隔这类 BP3D 没有的概念只有 `uberon`）。
+原始数据不入库（`pipeline/raw/`，gitignore），直链与 sha256 记录于
+`pipeline/config/sources.yaml`（BodyParts3D）与 `pipeline/config/sources_hra.yaml`（HRA）。
 
 ## 字体
 
 界面中文字体为 **Noto Sans SC（思源黑体简体）**，由 Google 发布，许可证
-**SIL Open Font License 1.1**。仓库中提交的是按本站实际用字（1,205 个字符）
-子集化后的 woff2（`src/assets/fonts/`），源文件来自
+**SIL Open Font License 1.1**。仓库中提交的是按本站实际用字
+子集化后的 woff2（`src/assets/fonts/`，当前 1,242 个字符），源文件来自
 <https://github.com/notofonts/noto-cjk>（`Sans/SubsetOTF/SC/`），
 子集化脚本见 `scripts/build_font_subset.py`（`pnpm font:subset`）。

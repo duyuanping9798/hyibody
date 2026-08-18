@@ -425,8 +425,18 @@
   side: none
   fma:
     - FMA7088
-  source: bp3d_partof
-  target_faces: 30000
+  uberon: UBERON:0000948
+  source: hra
+  hra:
+    asset: 3d-vh-m-heart.glb
+    # 顶层心脏 = glb 里全部 14 件合起来的外形
+    meshes: []
+    # 定位锚点：等比拟合到 BP3D partof 集同一颗心脏的包围盒，
+    # 这样换了数据源，心脏仍然长在 BP3D 的肋骨中间
+    fit_to_set: partof
+    fit_to_fma:
+      - FMA7088
+  target_faces: 24000
   priority: 1
 - slug: lung_right
   zh: 右肺
@@ -1567,41 +1577,90 @@
   priority: 3
 
 # 以下 8 条为内部件（parent 指向父结构），由 select.py 自动补入
-- slug: heart_ventricle_wall
-  zh: 心室壁
-  en: Wall of ventricle
-  system: organs
-  region: thorax
-  side: none
-  parent: heart
-  fma:
-    - FMA13884
-  source: bp3d
-  target_faces: 19000
-  priority: 2
-- slug: heart_atrium_wall_left
-  zh: 左心房壁
-  en: Wall of left atrium
+- slug: heart_left_ventricle
+  zh: 左心室
+  en: Left ventricle
   system: organs
   region: thorax
   side: left
   parent: heart
   fma:
-    - FMA9531
-  source: bp3d
+    - FMA7101
+  uberon: UBERON:0002084
+  source: hra
+  hra:
+    asset: 3d-vh-m-heart.glb
+    meshes:
+      - VH_M_heart_left_ventricle
   target_faces: 6000
   priority: 2
-- slug: heart_atrium_wall_right
-  zh: 右心房壁
-  en: Wall of right atrium
+- slug: heart_right_ventricle
+  zh: 右心室
+  en: Right ventricle
   system: organs
   region: thorax
   side: right
   parent: heart
   fma:
-    - FMA9457
-  source: bp3d
+    - FMA7098
+  uberon: UBERON:0002080
+  source: hra
+  hra:
+    asset: 3d-vh-m-heart.glb
+    meshes:
+      - VH_M_heart_right_ventricle
   target_faces: 9000
+  priority: 2
+- slug: heart_left_atrium
+  zh: 左心房
+  en: Left atrium
+  system: organs
+  region: thorax
+  side: left
+  parent: heart
+  fma:
+    - FMA7097
+  uberon: UBERON:0002079
+  source: hra
+  hra:
+    asset: 3d-vh-m-heart.glb
+    meshes:
+      - VH_M_left_cardiac_atrium
+  target_faces: 9000
+  priority: 2
+- slug: heart_right_atrium
+  zh: 右心房
+  en: Right atrium
+  system: organs
+  region: thorax
+  side: right
+  parent: heart
+  fma:
+    - FMA7096
+  uberon: UBERON:0002078
+  source: hra
+  hra:
+    asset: 3d-vh-m-heart.glb
+    meshes:
+      - VH_M_right_cardiac_atrium
+  target_faces: 12000
+  priority: 2
+- slug: heart_interventricular_septum
+  zh: 室间隔
+  en: Interventricular septum
+  system: organs
+  region: thorax
+  side: none
+  parent: heart
+  # BP3D 两集都没有室间隔这个概念，只留 UBERON
+  fma: []
+  uberon: UBERON:0002094
+  source: hra
+  hra:
+    asset: 3d-vh-m-heart.glb
+    meshes:
+      - VH_M_interventricular_septum
+  target_faces: 5000
   priority: 2
 - slug: heart_mitral_valve
   zh: 二尖瓣
@@ -1611,9 +1670,14 @@
   side: left
   parent: heart
   fma:
-    - FMA7241
-  source: bp3d
-  target_faces: 6000
+    - FMA7235
+  uberon: UBERON:0002135
+  source: hra
+  hra:
+    asset: 3d-vh-m-heart.glb
+    meshes:
+      - VH_M_mitral_valve
+  target_faces: 4000
   priority: 2
 - slug: heart_tricuspid_valve
   zh: 三尖瓣
@@ -1623,9 +1687,14 @@
   side: right
   parent: heart
   fma:
-    - FMA7237
-  source: bp3d
-  target_faces: 9000
+    - FMA7234
+  uberon: UBERON:0002134
+  source: hra
+  hra:
+    asset: 3d-vh-m-heart.glb
+    meshes:
+      - VH_M_tricuspid_valve
+  target_faces: 6000
   priority: 2
 - slug: heart_aortic_valve
   zh: 主动脉瓣
@@ -1635,8 +1704,13 @@
   side: none
   parent: heart
   fma:
-    - FMA7251
-  source: bp3d
+    - FMA7236
+  uberon: UBERON:0002137
+  source: hra
+  hra:
+    asset: 3d-vh-m-heart.glb
+    meshes:
+      - VH_M_aortic_valve
   target_faces: 2000
   priority: 2
 - slug: heart_pulmonary_valve
@@ -1647,9 +1721,14 @@
   side: none
   parent: heart
   fma:
-    - FMA7248
-  source: bp3d
-  target_faces: 3600
+    - FMA7246
+  uberon: UBERON:0002146
+  source: hra
+  hra:
+    asset: 3d-vh-m-heart.glb
+    meshes:
+      - VH_M_pulmonary_valve
+  target_faces: 6000
   priority: 2
 - slug: heart_papillary_muscles
   zh: 乳头肌
@@ -1658,8 +1737,21 @@
   region: thorax
   side: both
   parent: heart
+  # 五束乳头肌合成一条：单独看太碎，科普上“乳头肌”本来就是一组
   fma:
-    - FMA268955
-  source: bp3d
-  target_faces: 3200
+    - FMA7261
+    - FMA7262
+    - FMA7264
+    - FMA7265
+  uberon: UBERON:0002494
+  source: hra
+  hra:
+    asset: 3d-vh-m-heart.glb
+    meshes:
+      - VH_M_papillary_muscle_of_heart_anterior
+      - VH_M_papillary_muscle_of_heart_anterolateral
+      - VH_M_papillary_muscle_of_heart_medial
+      - VH_M_papillary_muscle_of_heart_posterior
+      - VH_M_papillary_muscle_of_heart_posteromedial
+  target_faces: 2000
   priority: 2

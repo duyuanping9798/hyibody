@@ -387,89 +387,10 @@ groups:
     priority: 1
     target_faces: 15000
     concepts: [heart]
-  # ---- 心脏内部结构（parent: heart）----------------------------------------
-  # 声明了 parent 的组是"父结构的内部件"：默认不显示，界面上点"展开内部"才出现，
-  # 展开时父结构自身隐藏。数据仍走同一条流水线、同一个 glb，不额外发请求。
-  - slug: heart_ventricle_wall
-    zh: 心室壁
-    en: Wall of ventricle
-    system: organs
-    region: thorax
-    side: none
-    parent: heart
-    priority: 2
-    target_faces: 12000
-    concepts: [wall of ventricle]
-  - slug: heart_atrium_wall_left
-    zh: 左心房壁
-    en: Wall of left atrium
-    system: organs
-    region: thorax
-    side: left
-    parent: heart
-    priority: 2
-    target_faces: 6000
-    concepts: [wall of left atrium]
-  - slug: heart_atrium_wall_right
-    zh: 右心房壁
-    en: Wall of right atrium
-    system: organs
-    region: thorax
-    side: right
-    parent: heart
-    priority: 2
-    target_faces: 8000
-    concepts: [wall of right atrium]
-  - slug: heart_mitral_valve
-    zh: 二尖瓣
-    en: Mitral valve
-    system: organs
-    region: thorax
-    side: left
-    parent: heart
-    priority: 2
-    target_faces: 6000
-    concepts: [leaflet of mitral valve]
-  - slug: heart_tricuspid_valve
-    zh: 三尖瓣
-    en: Tricuspid valve
-    system: organs
-    region: thorax
-    side: right
-    parent: heart
-    priority: 2
-    target_faces: 8000
-    concepts: [leaflet of tricuspid valve]
-  - slug: heart_aortic_valve
-    zh: 主动脉瓣
-    en: Aortic valve
-    system: organs
-    region: thorax
-    side: none
-    parent: heart
-    priority: 2
-    target_faces: 2000
-    concepts: [cusp of aortic valve]
-  - slug: heart_pulmonary_valve
-    zh: 肺动脉瓣
-    en: Pulmonary valve
-    system: organs
-    region: thorax
-    side: none
-    parent: heart
-    priority: 2
-    target_faces: 3600
-    concepts: [cusp of pulmonary valve]
-  - slug: heart_papillary_muscles
-    zh: 乳头肌
-    en: Papillary muscles
-    system: organs
-    region: thorax
-    side: both
-    parent: heart
-    priority: 2
-    target_faces: 3200
-    concepts: [region of papillary muscle]
+  # 心脏的内部件（心室/心房/瓣膜/乳头肌）改用 HuBMAP HRA 的参考器官，
+  # 见 content/structures.yaml 里 source: hra 的那几条与 pipeline/hra.py。
+  # BP3D 的对应概念是扫描分割出来的碎壳，四个瓣挤成一坨、心室壁只有一层皮，
+  # 放大看不成样子（2026-08-18 决策，见 docs/DECISIONS.md）。
 
   - slug: lung_right
     zh: 右肺

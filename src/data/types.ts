@@ -20,6 +20,8 @@ export interface StructureInfo {
   region: Region;
   side: Side;
   fma: string[];
+  /** UBERON 本体 id（HRA 数据带的）。BP3D 没有对应概念时（如室间隔）只有这个。 */
+  uberon?: string;
   source: DataSource;
   /** [minX, minY, minZ, maxX, maxY, maxZ]，单位毫米 */
   bbox?: [number, number, number, number, number, number];

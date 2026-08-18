@@ -29,6 +29,7 @@
   "infoBlurbPending": "一句话科普整理中——欢迎在 content/definitions 里补充。",
   "sourceLabel": "数据来源",
   "sourceBp3d": "BodyParts3D（CC BY 4.0）",
+  "sourceHra": "HuBMAP HRA（CC BY 4.0）",
   "actionIsolate": "隔离",
   "actionUnisolate": "取消隔离",
   "actionHide": "隐藏",

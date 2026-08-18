@@ -1,0 +1,28 @@
+# HuBMAP Human Reference Atlas（HRA）3D 参考器官数据源（M2，issue D）
+# 官方目录接口：https://apps.humanatlas.io/api/v1/reference-organs
+# 资产直链取自各 digital object 的 metadata（purl.humanatlas.io/ref-organ/<name>/<version>）。
+# sha256 为 2026-08-18 实际下载后计算；download.py 校验不符即报错退出。
+#
+# 为什么另起一个文件而不是并进 sources.yaml：许可证与署名按数据源各记一份，
+# 谁来自哪个源、要怎么署名一眼可查（CLAUDE.md 的数据与许可证铁律）。
+dataset: HuBMAP Human Reference Atlas 3D Reference Organs
+license:
+  name: CC BY 4.0
+  url: https://creativecommons.org/licenses/by/4.0/
+  attribution: >-
+    3D Reference Organs from the Human Reference Atlas (HRA), HuBMAP
+    Consortium — Kristen Browne (NIH/NIAID) — licensed under CC BY 4.0
+  # 每个 digital object 的 metadata.json 里都写着同一条 license 字段，例：
+  # https://cdn.humanatlas.io/digital-objects/ref-organ/heart-male/v1.3/metadata.json
+base_url: https://cdn.humanatlas.io/digital-objects/ref-organ
+# 只取 Male 版本：本站骨骼/肌肉来自 BodyParts3D 的男性模型，混性别会前后矛盾。
+# 明确不取 brain-male（3d-allen-m-brain.glb）——它派生自 Allen 脑图谱，
+# 许可证不在 CLAUDE.md 的允许清单里。
+files:
+  - name: 3d-vh-m-heart.glb
+    kind: glb
+    url_path: heart-male/v1.3/assets/3d-vh-m-heart.glb
+    object: https://purl.humanatlas.io/ref-organ/heart-male/v1.3
+    creator: Kristen Browne (ORCID 0000-0003-4066-7531)
+    bytes: 4071772
+    sha256: 689df039c8bc264ea06a44cd926762976f0666c0ff2dc532d046409b185e6b0c

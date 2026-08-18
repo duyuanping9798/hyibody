@@ -78,8 +78,12 @@ def validate_structures(entries: list[dict], chk: Checker, list_name: str = "str
         if e.get("source") not in VALID_SOURCES:
             chk.error(f"{list_name}: {slug} source 非法 {e.get('source')!r}")
         fma = e.get("fma")
-        if not isinstance(fma, list) or not fma or not all(isinstance(x, str) and x for x in fma):
-            chk.error(f"{list_name}: {slug} fma 必须是非空字符串列表")
+        if not isinstance(fma, list) or not all(isinstance(x, str) and x for x in fma):
+            chk.error(f"{list_name}: {slug} fma 必须是字符串列表")
+        elif not fma and not e.get("uberon"):
+            # 许可证铁律要求每个结构留一个本体 id；BP3D 没有的概念（如室间隔）
+            # 用 HRA 给的 UBERON 顶上，两者都没有才算缺
+            chk.error(f"{list_name}: {slug} fma 与 uberon 不能都为空")
         tf = e.get("target_faces")
         cap = max_faces_for(slug)
         if not isinstance(tf, int) or not FACES_MIN <= tf <= cap:
@@ -131,13 +135,16 @@ def validate_manifest_schema(manifest: dict, chk: Checker) -> None:
         for key in ("zh", "en", "system", "region", "side", "fma", "source"):
             if key not in info:
                 chk.error(f"manifest: 结构 {slug} 缺少 {key}")
-        if not info.get("fma"):
-            chk.error(f"manifest: 结构 {slug} fma 为空（许可证铁律要求保留）")
+        if not info.get("fma") and not info.get("uberon"):
+            chk.error(f"manifest: 结构 {slug} fma 与 uberon 都为空（许可证铁律要求保留本体 id）")
         bbox = info.get("bbox")
         if bbox is not None and (not isinstance(bbox, list) or len(bbox) != 6):
             chk.error(f"manifest: 结构 {slug} bbox 非法")
     if not manifest["attribution"] or not any("BodyParts3D" in a for a in manifest["attribution"]):
         chk.error("manifest: attribution 缺少 BodyParts3D 署名")
+    uses_hra = any(info.get("source") == "hra" for info in manifest["structures"].values())
+    if uses_hra and not any("Human Reference Atlas" in a for a in manifest["attribution"]):
+        chk.error("manifest: 用了 HRA 数据却没有 HuBMAP HRA 署名")
 
 
 def glb_triangle_counts(path: Path) -> dict[str, int]:

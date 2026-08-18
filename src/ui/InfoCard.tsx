@@ -1,8 +1,13 @@
 import { STRINGS } from './i18n';
 import { definitionsFor, definitionsReviewedFor } from '../data/definitions';
-import type { SystemId } from '../data/types';
+import type { DataSource, SystemId } from '../data/types';
 import { SYSTEM_COLORS } from '../viewer/materials';
 import { useUiStore } from './store';
+
+/** 数据来源署名：用哪个源的网格就署哪个源（CLAUDE.md 的许可证铁律）。 */
+function sourceLabel(source: DataSource, t: (typeof STRINGS)['zh']): string {
+  return source === 'hra' ? t.sourceHra : t.sourceBp3d;
+}
 
 /** 系统色点：让信息卡一眼能对上左侧系统面板的配色。 */
 function systemDot(system: SystemId): string {
@@ -44,7 +49,8 @@ export function InfoCard() {
           <h2>{lang === 'zh' ? info.zh : info.en}</h2>
           <p className="en">
             {lang === 'zh' ? info.en : info.zh}
-            {info.fma.length > 0 && <span> · {info.fma[0]}</span>}
+            {/* 本体 id：优先 FMA，BP3D 没有该概念时退到 HRA 给的 UBERON */}
+            {(info.fma[0] ?? info.uberon) && <span> · {info.fma[0] ?? info.uberon}</span>}
           </p>
         </div>
       </header>
@@ -65,7 +71,7 @@ export function InfoCard() {
       )}
 
       <p className="meta">
-        {t.sourceLabel}: {t.sourceBp3d}
+        {t.sourceLabel}: {sourceLabel(info.source, t)}
         {definition && !definitionsReviewedFor(lang) ? ` · ${t.infoUnreviewed}` : ''}
       </p>
 

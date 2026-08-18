@@ -408,17 +408,25 @@
     "blurb": "Held in the scrotum, they produce sperm and secrete the male hormone testosterone.",
     "fact": "They sit outside the body because sperm production needs a temperature 2–3 °C below the body's core."
   },
-  "heart_ventricle_wall": {
-    "blurb": "The thickest muscle of the heart; when it contracts it drives blood to the lungs and around the body.",
-    "fact": "The left ventricle wall is about a centimetre thick, three times the right — it has to reach the whole body, while the right only reaches the lungs."
+  "heart_left_ventricle": {
+    "blurb": "The left ventricle is the heart's main pump: its thick wall squeezes oxygen-rich blood into the aorta and out to the whole body.",
+    "fact": "Its wall is about a centimetre thick, three times the right ventricle's — the right side only has to reach the lungs, the left has to reach your toes."
   },
-  "heart_atrium_wall_left": {
-    "blurb": "The left atrium receives oxygen-rich blood returning through the pulmonary veins and hands it on to the left ventricle.",
-    "fact": "Four openings sit in its back wall — the mouths of the four pulmonary veins."
+  "heart_right_ventricle": {
+    "blurb": "The right ventricle takes oxygen-poor blood from the right atrium and drives it into the pulmonary artery toward the lungs.",
+    "fact": "The lung circuit resists flow about six times less than the body circuit, so its wall is far thinner — in cross-section it wraps the left ventricle like a crescent."
   },
-  "heart_atrium_wall_right": {
-    "blurb": "The right atrium receives oxygen-poor blood from the two venae cavae and hands it on to the right ventricle.",
-    "fact": "The heart's natural pacemaker, the sinoatrial node, is buried in its wall near where the superior vena cava enters."
+  "heart_left_atrium": {
+    "blurb": "The left atrium sits at the upper back left of the heart, receiving oxygen-rich blood from the pulmonary veins and passing it through the mitral valve.",
+    "fact": "Four openings in its back wall are the mouths of the pulmonary veins; in atrial fibrillation clots tend to form in its small pouch, the left atrial appendage."
+  },
+  "heart_right_atrium": {
+    "blurb": "The right atrium sits at the upper right of the heart, collecting oxygen-poor blood from the two venae cavae and passing it through the tricuspid valve.",
+    "fact": "The heart's natural pacemaker, the sinoatrial node, is buried in its wall near the mouth of the superior vena cava — every heartbeat starts here."
+  },
+  "heart_interventricular_septum": {
+    "blurb": "A thick muscular wall dividing the left and right ventricles so oxygen-rich and oxygen-poor blood never mix.",
+    "fact": "If it fails to close before birth the result is a ventricular septal defect — the most common congenital heart condition."
   },
   "heart_mitral_valve": {
     "blurb": "Sits between the left atrium and left ventricle, its two leaflets stopping blood from washing back into the atrium.",
