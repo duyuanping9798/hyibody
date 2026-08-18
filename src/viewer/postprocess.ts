@@ -1,4 +1,13 @@
-import { Color, Vector2, type Camera, type Object3D, type Scene, type WebGLRenderer } from 'three';
+import {
+  Color,
+  HalfFloatType,
+  Vector2,
+  WebGLRenderTarget,
+  type Camera,
+  type Object3D,
+  type Scene,
+  type WebGLRenderer,
+} from 'three';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
@@ -35,7 +44,13 @@ export function createRenderPipeline(
   camera: Camera,
   caps: QualityCaps,
 ): RenderPipeline {
-  const composer = new EffectComposer(renderer);
+  // 自建渲染目标：EffectComposer 默认不给模板缓冲，而剖切封盖靠模板测试实现
+  const size = renderer.getSize(new Vector2());
+  const target = new WebGLRenderTarget(Math.max(1, size.x), Math.max(1, size.y), {
+    type: HalfFloatType,
+    stencilBuffer: true,
+  });
+  const composer = new EffectComposer(renderer, target);
   composer.addPass(new RenderPass(scene, camera));
 
   let ssao: SSAOPass | null = null;

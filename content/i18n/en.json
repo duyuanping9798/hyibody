@@ -79,5 +79,7 @@
     "right": "Right",
     "none": "—",
     "both": "Both"
-  }
+  },
+  "clipThroughSelected": "Cut through this structure",
+  "clipFlip": "Flip"
 }

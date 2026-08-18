@@ -79,5 +79,7 @@
     "right": "右",
     "none": "—",
     "both": "双侧"
-  }
+  },
+  "clipThroughSelected": "沿此结构半剖",
+  "clipFlip": "反向"
 }

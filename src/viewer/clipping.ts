@@ -18,8 +18,24 @@ const AXIS_NORMALS: Record<ClipAxis, Vector3> = {
   z: new Vector3(0, 0, -1),
 };
 
-export function clipPlaneFor(axis: ClipAxis, pos: number, box: Box3): Plane {
+/**
+ * `flip` 决定切掉哪一半：默认保留坐标小的一侧，翻转后保留大的一侧。
+ * 想"看进去"就得切掉朝向相机的那一半，光有位置不够。
+ */
+export function clipPlaneFor(axis: ClipAxis, pos: number, box: Box3, flip = false): Plane {
   const min = box.min[axis];
   const max = box.max[axis];
-  return new Plane(AXIS_NORMALS[axis].clone(), clipConstant(pos, min, max));
+  const constant = clipConstant(pos, min, max);
+  if (!flip) return new Plane(AXIS_NORMALS[axis].clone(), constant);
+  return new Plane(AXIS_NORMALS[axis].clone().negate(), -constant);
+}
+
+/**
+ * 反解：想让剖切面正好经过世界坐标 `coord`，滑块该给多少。
+ * 与 clipConstant 互逆，超出内容包围盒时钳到两端。
+ */
+export function clipPosForCoordinate(coord: number, min: number, max: number): number {
+  if (max <= min) return 0;
+  const t = (coord - min) / (max - min);
+  return Math.min(1, Math.max(-1, t * 2 - 1));
 }

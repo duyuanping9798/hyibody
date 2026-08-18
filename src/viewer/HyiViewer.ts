@@ -29,7 +29,8 @@ import {
   type CameraRig,
   type ViewPresetId,
 } from './camera';
-import { clipPlaneFor, type ClipAxis } from './clipping';
+import { CAP_MIN_OPACITY, ClipCaps } from './clipCaps';
+import { clipPlaneFor, clipPosForCoordinate, type ClipAxis } from './clipping';
 import { applyHighlight } from './highlight';
 import { computeSystemOpacity, PICKABLE_OPACITY_THRESHOLD } from './layers';
 import {
@@ -78,6 +79,8 @@ interface StructureEntry {
   system: SystemId;
   mesh: Mesh;
   material: Material;
+  /** 结构本色，剖切封盖的断面用同一个颜色 */
+  color: number;
 }
 
 export interface ViewerState {
@@ -87,7 +90,7 @@ export interface ViewerState {
   hidden: Set<string>;
   isolated: string | null;
   selected: string | null;
-  clip: { axis: ClipAxis; pos: number } | null;
+  clip: { axis: ClipAxis; pos: number; flip?: boolean } | null;
 }
 
 function defaultViewerState(): ViewerState {
@@ -136,6 +139,8 @@ export class HyiViewer extends EventTarget {
   /** ?v= 分享链接选中的结构可能还在后台加载：记下来，等它注册进来再选中。 */
   private pendingSelect: string | null = null;
   private stage!: Stage;
+  /** 剖切封盖：剖开的结构露出实心断面而不是空壳 */
+  private readonly clipCaps = new ClipCaps();
   private pipeline: RenderPipeline | null = null;
   private quality: QualityTier = 'medium';
   private contentBox = new Box3();
@@ -161,6 +166,8 @@ export class HyiViewer extends EventTarget {
     this.renderer = new WebGLRenderer({
       antialias: true,
       alpha: false,
+      // three r163 起 stencil 默认 false；剖切封盖靠模板测试实现，必须显式打开
+      stencil: true,
       // 冒烟测试需要读回像素判断画面非空（tests/e2e/smoke.spec.ts）
       preserveDrawingBuffer: true,
     });
@@ -180,6 +187,7 @@ export class HyiViewer extends EventTarget {
     // 舞台：渐变背景球 + 三点光 + 接触阴影
     this.stage = createStage();
     this.scene.add(this.stage.root);
+    this.scene.add(this.clipCaps.root);
 
     // 画质档位：软件渲染（云端 CI）自动退到 low，桌面默认 high，触摸屏默认 medium
     this.quality = options.quality ?? defaultQuality(readQualityEnv(this.renderer.getContext()));
@@ -273,7 +281,7 @@ export class HyiViewer extends EventTarget {
       mesh.castShadow = QUALITY_CAPS[this.quality].softShadows && sys !== 'skin';
       mesh.geometry.computeBoundingBox();
       group.add(mesh);
-      this.structures.set(slug, { slug, system: sys, mesh, material });
+      this.structures.set(slug, { slug, system: sys, mesh, material, color });
       // 记下 glb 节点自带的反量化 TRS：微动画只能在它之上叠加，不能覆盖
       if (slug in ANIMATED_STRUCTURES) {
         const center = mesh.geometry.boundingBox?.getCenter(new Vector3()) ?? new Vector3();
@@ -426,6 +434,23 @@ export class HyiViewer extends EventTarget {
     for (const entry of this.structures.values()) {
       setMaterialOpacity(entry.material, this.effectiveOpacity(entry));
     }
+    this.updateClipCaps();
+  }
+
+  /**
+   * 封盖候选：够实、可见、且不是 X-ray 外壳的结构。
+   * 分层滑到哪里、隔离了谁，候选集就跟着变——所以每次 applyVisibility 都重算一遍。
+   */
+  private updateClipCaps(): void {
+    if (!this.clipPlane) return;
+    const candidates = [];
+    for (const entry of this.structures.values()) {
+      if (entry.material instanceof ShaderMaterial) continue; // 皮肤/X-ray 壳没有断面可言
+      if (!entry.material.visible) continue;
+      if (this.effectiveOpacity(entry) < CAP_MIN_OPACITY) continue;
+      candidates.push({ slug: entry.slug, mesh: entry.mesh, color: entry.color });
+    }
+    this.clipCaps.update(candidates);
   }
 
   // ---- 选中 / 悬停 / 拾取 --------------------------------------------------
@@ -573,7 +598,28 @@ export class HyiViewer extends EventTarget {
 
   // ---- 剖切 ----------------------------------------------------------------
 
-  setClip(clip: { axis: ClipAxis; pos: number } | null): void {
+  /**
+   * 沿某个结构半剖：把剖切面移到该结构的中心，正好把它切成两半。
+   * "想看心脏内部"最短的一条路——否则要手动拖滑块试半天。
+   */
+  clipThroughStructure(slug: string, axis: ClipAxis = 'y'): boolean {
+    const entry = this.structures.get(slug);
+    const box = entry?.mesh.geometry.boundingBox;
+    if (!entry || !box || this.contentBox.isEmpty()) return false;
+    const center = box.getCenter(new Vector3());
+    entry.mesh.localToWorld(center);
+    const pos = clipPosForCoordinate(
+      center[axis],
+      this.contentBox.min[axis],
+      this.contentBox.max[axis],
+    );
+    // 切掉朝向相机的那一半，否则剖开了也只看到完整的外表面
+    const flip = this.rig.camera.position[axis] < center[axis];
+    this.setClip({ axis, pos, flip });
+    return true;
+  }
+
+  setClip(clip: { axis: ClipAxis; pos: number; flip?: boolean } | null): void {
     this.state.clip = clip;
     this.applyClip();
   }
@@ -582,7 +628,7 @@ export class HyiViewer extends EventTarget {
     const clip = this.state.clip;
     this.clipPlane =
       clip && !this.contentBox.isEmpty()
-        ? clipPlaneFor(clip.axis, clip.pos, this.contentBox)
+        ? clipPlaneFor(clip.axis, clip.pos, this.contentBox, clip.flip === true)
         : null;
     const planes = this.clipPlane ? [this.clipPlane] : null;
     for (const entry of this.structures.values()) {
@@ -592,6 +638,8 @@ export class HyiViewer extends EventTarget {
         entry.material.side = planes ? DoubleSide : FrontSide;
       }
     }
+    this.clipCaps.setPlane(this.clipPlane);
+    this.updateClipCaps();
   }
 
   // ---- 帧循环等 ------------------------------------------------------------
@@ -639,6 +687,7 @@ export class HyiViewer extends EventTarget {
   private applyQuality(): void {
     const caps = QUALITY_CAPS[this.quality];
     this.pipeline?.dispose();
+    this.clipCaps.dispose();
     this.pipeline = caps.postprocessing
       ? createRenderPipeline(this.renderer, this.scene, this.rig.camera, caps)
       : null;
@@ -678,6 +727,7 @@ export class HyiViewer extends EventTarget {
       if (this.flight.t >= 1) this.flight = null;
     }
     this.rig.controls.update();
+    this.clipCaps.syncToPlane();
     if (this.pipeline) this.pipeline.render();
     else this.renderer.render(this.scene, this.rig.camera);
   }

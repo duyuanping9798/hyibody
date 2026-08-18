@@ -14,6 +14,8 @@ export function ViewTools() {
   const isolated = useUiStore((s) => s.isolated);
   const applyPreset = useUiStore((s) => s.applyPreset);
   const setClip = useUiStore((s) => s.setClip);
+  const selected = useUiStore((s) => s.selected);
+  const clipThroughSelected = useUiStore((s) => s.clipThroughSelected);
   const resetVisibility = useUiStore((s) => s.resetVisibility);
   const quality = useUiStore((s) => s.quality);
   const qualityToggleable = useUiStore((s) => s.qualityToggleable);
@@ -50,6 +52,19 @@ export function ViewTools() {
             </button>
           ))}
         </div>
+        {clip && (
+          <button
+            className={`hyi-btn hyi-clip-flip${clip.flip ? ' active' : ''}`}
+            onClick={() => setClip({ ...clip, flip: !clip.flip })}
+          >
+            {t.clipFlip}
+          </button>
+        )}
+        {selected && (
+          <button className="hyi-btn hyi-clip-through" onClick={clipThroughSelected}>
+            {t.clipThroughSelected}
+          </button>
+        )}
         {clip && (
           <input
             className="hyi-range"
