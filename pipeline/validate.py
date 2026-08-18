@@ -25,6 +25,7 @@ if sys.path and sys.path[0] == _DIR:
 
 import argparse
 import json
+import math
 import sys
 from pathlib import Path
 
@@ -205,6 +206,39 @@ def validate_assets(manifest: dict, chk: Checker) -> None:
     )
 
 
+# 长刺检测：最长三角形边 / 包围盒对角线。平滑发散时这个值会飙到 0.8 以上
+SPIKE_RATIO_ERROR = 0.65
+SPIKE_RATIO_WARN = 0.4
+
+
+def validate_processed_meta(chk: Checker) -> None:
+    """有 work/processed 时顺带查长刺（云端重跑流水线后立刻能发现平滑发散）。"""
+    root = bp3d.WORK_DIR / "processed"
+    if not root.is_dir():
+        return
+    checked = 0
+    for meta_path in sorted(root.glob("*/meta.json")):
+        with meta_path.open(encoding="utf-8") as f:
+            metas = json.load(f)
+        for m in metas:
+            edge = m.get("max_edge")
+            bbox = m.get("bbox")
+            if edge is None or not bbox:
+                continue
+            size = [bbox[i + 3] - bbox[i] for i in range(3)]
+            diag = math.sqrt(sum(x * x for x in size))
+            if diag <= 0:
+                continue
+            ratio = edge / diag
+            checked += 1
+            if ratio > SPIKE_RATIO_ERROR:
+                chk.error(f"{m['slug']}: 最长边 {edge} mm 占包围盒对角线 {ratio:.0%}，疑似长刺")
+            elif ratio > SPIKE_RATIO_WARN:
+                chk.warn(f"{m['slug']}: 最长边占包围盒对角线 {ratio:.0%}（源网格本就粗？）")
+    if checked:
+        print(f"网格长边检查：{checked} 个结构")
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--require-manifest", action="store_true", help="manifest.json 缺失时报错")
@@ -217,6 +251,8 @@ def main(argv: list[str] | None = None) -> int:
         print(f"结构清单 {list_path.name}：{len(entries)} 条")
     except FileNotFoundError as e:
         chk.error(str(e))
+
+    validate_processed_meta(chk)
 
     manifest_path = ASSETS_DIR / "manifest.json"
     if manifest_path.exists():

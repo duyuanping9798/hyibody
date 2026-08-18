@@ -44,14 +44,75 @@ def simplify_mesh(vertices: np.ndarray, faces: np.ndarray, target_faces: int) ->
 
 # 软组织减面后做轻度 Taubin 平滑（保体积不收缩），消掉低模碎裂感；骨骼/血管保持棱线
 SMOOTH_SYSTEMS = ("skin", "muscles", "organs")
+# 平滑参数：λ 收缩 / μ 回弹（|μ| > λ 才不整体缩水），迭代取偶数保证成对
+SMOOTH_ITERATIONS = 8
+SMOOTH_LAMBDA = 0.5
+SMOOTH_MU = -0.53
+# 单点位移硬上限（包围盒对角线比例）：数值一旦发散直接夹住，绝不放长刺出去
+SMOOTH_MAX_MOVE_RATIO = 0.01
+
+
+def _edge_graph(vertex_count: int, faces: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    """无向边表 → (边端点 a, b, 各顶点度数, 边界顶点掩码)。只被一个面用到的边算边界。"""
+    edges = np.vstack([faces[:, [0, 1]], faces[:, [1, 2]], faces[:, [2, 0]]])
+    uniq, counts = np.unique(np.sort(edges, axis=1), axis=0, return_counts=True)
+    boundary = np.zeros(vertex_count, dtype=bool)
+    boundary[uniq[counts == 1].ravel()] = True
+    a, b = uniq[:, 0], uniq[:, 1]
+    degree = (
+        np.bincount(a, minlength=vertex_count) + np.bincount(b, minlength=vertex_count)
+    ).astype(np.float64)
+    return a, b, degree, boundary
+
+
+def _umbrella(vertices: np.ndarray, a: np.ndarray, b: np.ndarray, degree: np.ndarray) -> np.ndarray:
+    """伞算子位移 L·v − v；孤立点（无邻居）位移为 0，不会被拖向坐标原点。"""
+    acc = np.zeros_like(vertices)
+    np.add.at(acc, a, vertices[b])
+    np.add.at(acc, b, vertices[a])
+    delta = np.zeros_like(vertices)
+    has = degree > 0
+    delta[has] = acc[has] / degree[has, None] - vertices[has]
+    return delta
 
 
 def smooth_mesh(vertices: np.ndarray, faces: np.ndarray) -> np.ndarray:
-    import trimesh
+    """Taubin λ|μ 平滑（自实现的伞算子版）。
 
-    mesh = trimesh.Trimesh(vertices=vertices.astype(np.float64), faces=faces, process=False)
-    trimesh.smoothing.filter_taubin(mesh, lamb=0.5, nu=0.53, iterations=8)
-    return np.asarray(mesh.vertices, dtype=np.float32)
+    不用 trimesh.smoothing.filter_taubin：其拉普拉斯算子在本数据上会发散——孤立点被
+    拖向坐标原点、局部高频被放大，实测三角肌包围盒 499 → 651 mm、最长边 65 → 409 mm，
+    渲染出来就是肩膀和手脚的长刺（2026-08-18 修）。这里固定边界点、并对总位移设硬上限。
+    """
+    v0 = vertices.astype(np.float64)
+    v = v0.copy()
+    a, b, degree, boundary = _edge_graph(len(v0), faces.astype(np.int64))
+    for i in range(SMOOTH_ITERATIONS):
+        step = SMOOTH_LAMBDA if i % 2 == 0 else SMOOTH_MU
+        delta = _umbrella(v, a, b, degree)
+        delta[boundary] = 0.0
+        v += step * delta
+    # 硬夹：任何顶点相对原位的位移不超过包围盒对角线的 1%
+    diag = float(np.linalg.norm(v0.max(axis=0) - v0.min(axis=0)))
+    moved = v - v0
+    dist = np.linalg.norm(moved, axis=1)
+    over = dist > SMOOTH_MAX_MOVE_RATIO * diag
+    if over.any():
+        moved[over] *= (SMOOTH_MAX_MOVE_RATIO * diag / dist[over])[:, None]
+    return (v0 + moved).astype(np.float32)
+
+
+def max_edge_length(vertices: np.ndarray, faces: np.ndarray) -> float:
+    """最长三角形边（mm）——长刺检测用。"""
+    if not len(faces):
+        return 0.0
+    f = faces.astype(np.int64)
+    return float(
+        max(
+            np.linalg.norm(vertices[f[:, 1]] - vertices[f[:, 0]], axis=1).max(),
+            np.linalg.norm(vertices[f[:, 2]] - vertices[f[:, 1]], axis=1).max(),
+            np.linalg.norm(vertices[f[:, 0]] - vertices[f[:, 2]], axis=1).max(),
+        )
+    )
 
 
 def merge_elements(set_name: str, elements: list[str]) -> "trimesh.Trimesh":
@@ -106,7 +167,15 @@ def process_structure(entry: dict, center: np.ndarray) -> dict | None:
         int(entry["target_faces"]),
     )
     if entry["system"] in SMOOTH_SYSTEMS:
+        diag_before = float(np.linalg.norm(v.max(axis=0) - v.min(axis=0)))
         v = smooth_mesh(v, f)
+        diag_after = float(np.linalg.norm(v.max(axis=0) - v.min(axis=0)))
+        # 平滑只该抹平细节，绝不该把网格撑大；发散时立刻失败而不是导出长刺
+        # 逐点位移已夹在对角线 1% 内，包围盒最多涨 ~2%；超过 3% 说明算子发散
+        if diag_before > 0 and diag_after > diag_before * 1.03:
+            raise ValueError(
+                f"{entry['slug']}: 平滑后包围盒对角线 {diag_before:.1f} → {diag_after:.1f} mm，疑似发散"
+            )
     v = v - center.astype(np.float32)
     bbox = np.concatenate([v.min(axis=0), v.max(axis=0)]).astype(float)
 
@@ -126,6 +195,7 @@ def process_structure(entry: dict, center: np.ndarray) -> dict | None:
         "faces": int(len(f)),
         "vertices": int(len(v)),
         "bbox": [round(float(x), 2) for x in bbox],
+        "max_edge": round(max_edge_length(v, f), 2),
         "elements": len(elements),
     }
 

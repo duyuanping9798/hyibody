@@ -119,6 +119,8 @@ export class HyiViewer extends EventTarget {
   private readonly systemGroups = new Map<SystemId, Group>();
   private readonly state = defaultViewerState();
   private hovered: string | null = null;
+  /** ?v= 分享链接选中的结构可能还在后台加载：记下来，等它注册进来再选中。 */
+  private pendingSelect: string | null = null;
   private outline!: Mesh;
   private contentBox = new Box3();
   private clipPlane: Plane | null = null;
@@ -240,11 +242,9 @@ export class HyiViewer extends EventTarget {
     for (const mesh of meshes) {
       const extras = (mesh.userData as { slug?: string; en?: string }) ?? {};
       const slug = extras.slug ?? mesh.name;
-      const color = colorForStructure(sys, extras.en ?? slug);
+      const color = colorForStructure(sys, extras.en ?? slug, slug);
       const material =
-        sys === 'skin' || sys === 'muscles'
-          ? createXRayMaterial(color, 1)
-          : createSystemMaterial(sys, color);
+        sys === 'skin' ? createXRayMaterial(color, 1) : createSystemMaterial(sys, color);
       mesh.material = material;
       mesh.renderOrder = RENDER_ORDER[sys];
       mesh.geometry.computeBoundingBox();
@@ -253,6 +253,11 @@ export class HyiViewer extends EventTarget {
     }
     this.systemGroups.set(sys, group);
     this.root.add(group);
+    if (this.pendingSelect && this.structures.has(this.pendingSelect)) {
+      const slug = this.pendingSelect;
+      this.pendingSelect = null;
+      this.select(slug);
+    }
   }
 
   getManifest(): Manifest | null {
@@ -339,6 +344,12 @@ export class HyiViewer extends EventTarget {
   // ---- 选中 / 悬停 / 拾取 --------------------------------------------------
 
   select(slug: string | null): void {
+    if (slug && !this.structures.has(slug)) {
+      // 器官/血管/神经是首屏之后才加载的，此时选中先挂起（loadSystem 里补选）
+      this.pendingSelect = slug;
+      return;
+    }
+    this.pendingSelect = null;
     if (this.state.selected === slug) return;
     const prev = this.state.selected ? this.structures.get(this.state.selected) : null;
     if (prev) applyHighlight(prev.mesh, 'none');
@@ -525,6 +536,16 @@ export class HyiViewer extends EventTarget {
     this.renderer.setSize(w, h, false);
     this.rig.camera.aspect = w / h;
     this.rig.camera.updateProjectionMatrix();
+    this.updateOutlineScale(h);
+  }
+
+  /** 描边宽度按像素恒定：把 1 px 换算成单位深度处的世界尺寸交给着色器。 */
+  private updateOutlineScale(heightPx: number): void {
+    const material = this.outline.material as ShaderMaterial;
+    const uniform = material.uniforms?.uPixelScale;
+    if (!uniform) return;
+    const fovRad = (this.rig.camera.fov * Math.PI) / 180;
+    uniform.value = (2 * Math.tan(fovRad / 2)) / Math.max(heightPx, 1);
   }
 
   private tick(): void {
