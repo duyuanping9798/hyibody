@@ -36,11 +36,19 @@ REGIONS = ("head", "neck", "thorax", "abdomen", "pelvis", "upper_limb", "lower_l
 SIDES = ("left", "right", "none", "both")
 SOURCE_SETS = {"bp3d": "isa", "bp3d_partof": "partof"}
 
-# 面数预算（CLAUDE.md，2026-08-17 观感升级修订——见 docs/DECISIONS.md）：
-# 单结构 500–6,000，大结构（多件合并组/整器官/皮肤）上限 24,000；总量仍 ≤ 150 万
+# 面数预算（CLAUDE.md，2026-08-18 数据质量升级修订——见 docs/DECISIONS.md）：
+# 单结构下限 500、常规上限 30,000（groups.yaml 的 max_target_faces），
+# 皮肤这类整张外壳上限 60,000；总量目标 100–130 万，硬上限仍 150 万。
 FACES_MIN = 500
 FACES_MAX = 6000
-FACES_MAX_LARGE = 24000
+FACES_MAX_LARGE = 30000
+# 皮肤是唯一一张覆盖全身的壳，轮廓直接决定第一眼观感，单独给更高上限
+FACES_MAX_SKIN = 60000
+
+
+def max_faces_for(slug: str) -> int:
+    """单结构面数上限：皮肤特殊，其余走大结构上限。"""
+    return FACES_MAX_SKIN if slug == "skin" else FACES_MAX_LARGE
 
 
 @dataclass(frozen=True)

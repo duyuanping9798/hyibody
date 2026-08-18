@@ -66,10 +66,18 @@ def _edge_graph(vertex_count: int, faces: np.ndarray) -> tuple[np.ndarray, np.nd
 
 
 def _umbrella(vertices: np.ndarray, a: np.ndarray, b: np.ndarray, degree: np.ndarray) -> np.ndarray:
-    """伞算子位移 L·v − v；孤立点（无邻居）位移为 0，不会被拖向坐标原点。"""
-    acc = np.zeros_like(vertices)
-    np.add.at(acc, a, vertices[b])
-    np.add.at(acc, b, vertices[a])
+    """伞算子位移 L·v − v；孤立点（无邻居）位移为 0，不会被拖向坐标原点。
+
+    用 bincount 逐轴累加而不是 np.add.at：平滑改到减面之前做，输入是十几万面的
+    原始网格，np.add.at 在这个量级上慢一个数量级。
+    """
+    n = len(vertices)
+    acc = np.empty_like(vertices)
+    for axis in range(3):
+        col = vertices[:, axis]
+        acc[:, axis] = np.bincount(a, weights=col[b], minlength=n) + np.bincount(
+            b, weights=col[a], minlength=n
+        )
     delta = np.zeros_like(vertices)
     has = degree > 0
     delta[has] = acc[has] / degree[has, None] - vertices[has]
@@ -161,11 +169,10 @@ def process_structure(entry: dict, center: np.ndarray) -> dict | None:
 
     mesh = merge_elements(set_name, elements)
     raw_faces = len(mesh.faces)
-    v, f = simplify_mesh(
-        np.asarray(mesh.vertices, dtype=np.float32),
-        np.asarray(mesh.faces, dtype=np.int64),
-        int(entry["target_faces"]),
-    )
+    v = np.asarray(mesh.vertices, dtype=np.float32)
+    f = np.asarray(mesh.faces, dtype=np.int64)
+    # 先平滑再减面（2026-08-18 改）：在原始分辨率上抹掉扫描阶梯，减面算法据此保形；
+    # 反过来先减面再平滑等于在低模上摊平，圆润度和特征都保不住。
     if entry["system"] in SMOOTH_SYSTEMS:
         diag_before = float(np.linalg.norm(v.max(axis=0) - v.min(axis=0)))
         v = smooth_mesh(v, f)
@@ -176,6 +183,7 @@ def process_structure(entry: dict, center: np.ndarray) -> dict | None:
             raise ValueError(
                 f"{entry['slug']}: 平滑后包围盒对角线 {diag_before:.1f} → {diag_after:.1f} mm，疑似发散"
             )
+    v, f = simplify_mesh(v, f, int(entry["target_faces"]))
     v = v - center.astype(np.float32)
     bbox = np.concatenate([v.min(axis=0), v.max(axis=0)]).astype(float)
 

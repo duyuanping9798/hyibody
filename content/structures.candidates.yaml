@@ -11,7 +11,7 @@
   fma:
   - FMA7163
   source: bp3d
-  target_faces: 24000
+  target_faces: 60000
   priority: 1
   meta:
     elements: 1
@@ -44,7 +44,7 @@
   - FMA9710
   - FMA54736
   source: bp3d
-  target_faces: 20000
+  target_faces: 30000
   priority: 1
   meta:
     elements: 21
@@ -110,7 +110,7 @@
   fma:
   - FMA9915
   source: bp3d
-  target_faces: 6000
+  target_faces: 8000
   priority: 1
   meta:
     elements: 7
@@ -131,7 +131,7 @@
   fma:
   - FMA9139
   source: bp3d
-  target_faces: 6000
+  target_faces: 14500
   priority: 1
   meta:
     elements: 12
@@ -152,7 +152,7 @@
   fma:
   - FMA9921
   source: bp3d
-  target_faces: 6000
+  target_faces: 8500
   priority: 1
   meta:
     elements: 5
@@ -173,7 +173,7 @@
   fma:
   - FMA16202
   source: bp3d
-  target_faces: 4500
+  target_faces: 5000
   priority: 1
   meta:
     elements: 1
@@ -195,7 +195,7 @@
   fma:
   - FMA10446
   source: bp3d
-  target_faces: 6000
+  target_faces: 27500
   priority: 3
   meta:
     elements: 23
@@ -216,7 +216,7 @@
   fma:
   - FMA7574
   source: bp3d
-  target_faces: 18000
+  target_faces: 30000
   priority: 1
   meta:
     elements: 24
@@ -237,7 +237,7 @@
   fma:
   - FMA7591
   source: bp3d
-  target_faces: 6000
+  target_faces: 8000
   priority: 2
   meta:
     elements: 14
@@ -260,7 +260,7 @@
   - FMA7487
   - FMA7488
   source: bp3d
-  target_faces: 3600
+  target_faces: 4500
   priority: 1
   meta:
     elements: 3
@@ -325,7 +325,7 @@
   fma:
   - FMA13395
   source: bp3d
-  target_faces: 4500
+  target_faces: 13500
   priority: 1
   meta:
     elements: 1
@@ -346,7 +346,7 @@
   fma:
   - FMA13396
   source: bp3d
-  target_faces: 4500
+  target_faces: 14500
   priority: 1
   meta:
     elements: 1
@@ -536,7 +536,7 @@
   fma:
   - FMA16586
   source: bp3d
-  target_faces: 6000
+  target_faces: 12000
   priority: 1
   meta:
     elements: 1
@@ -557,7 +557,7 @@
   fma:
   - FMA16587
   source: bp3d
-  target_faces: 6000
+  target_faces: 12000
   priority: 1
   meta:
     elements: 1
@@ -789,7 +789,7 @@
   fma:
   - FMA7088
   source: bp3d_partof
-  target_faces: 20000
+  target_faces: 30000
   priority: 1
   meta:
     elements: 83
@@ -810,7 +810,7 @@
   fma:
   - FMA7309
   source: bp3d_partof
-  target_faces: 15000
+  target_faces: 30000
   priority: 1
   meta:
     elements: 156
@@ -831,7 +831,7 @@
   fma:
   - FMA7310
   source: bp3d_partof
-  target_faces: 15000
+  target_faces: 21000
   priority: 1
   meta:
     elements: 124
@@ -915,7 +915,7 @@
   fma:
   - FMA7197
   source: bp3d_partof
-  target_faces: 15000
+  target_faces: 30000
   priority: 1
   meta:
     elements: 60
@@ -1062,7 +1062,7 @@
   fma:
   - FMA7201
   source: bp3d_partof
-  target_faces: 20000
+  target_faces: 30000
   priority: 1
   meta:
     elements: 8
@@ -1169,7 +1169,7 @@
   fma:
   - FMA9604
   source: bp3d
-  target_faces: 2400
+  target_faces: 3500
   priority: 2
   meta:
     elements: 2
@@ -1234,7 +1234,7 @@
   - FMA9615
   - FMA55130
   source: bp3d
-  target_faces: 3600
+  target_faces: 5000
   priority: 2
   meta:
     elements: 4
@@ -1431,7 +1431,7 @@
   - FMA66328
   - FMA74912
   source: bp3d
-  target_faces: 6000
+  target_faces: 15000
   priority: 1
   meta:
     elements: 59
@@ -1673,7 +1673,7 @@
   - FMA22654
   - FMA22689
   source: bp3d
-  target_faces: 4500
+  target_faces: 5500
   priority: 2
   meta:
     elements: 4
@@ -1695,7 +1695,7 @@
   - FMA22730
   - FMA22796
   source: bp3d
-  target_faces: 4500
+  target_faces: 15000
   priority: 3
   meta:
     elements: 4
@@ -1847,7 +1847,7 @@
   fma:
   - FMA14334
   source: bp3d
-  target_faces: 3000
+  target_faces: 5000
   priority: 2
   meta:
     elements: 4
@@ -1933,7 +1933,7 @@
   fma:
   - FMA77155
   source: bp3d
-  target_faces: 3000
+  target_faces: 17000
   priority: 2
   meta:
     elements: 2
@@ -1955,7 +1955,7 @@
   - FMA43894
   - FMA43895
   source: bp3d
-  target_faces: 4500
+  target_faces: 30000
   priority: 3
   meta:
     elements: 4
@@ -1976,7 +1976,7 @@
   fma:
   - FMA21376
   source: bp3d
-  target_faces: 4500
+  target_faces: 30000
   priority: 2
   meta:
     elements: 2
@@ -1997,7 +1997,7 @@
   fma:
   - FMA4838
   source: bp3d
-  target_faces: 2400
+  target_faces: 9500
   priority: 3
   meta:
     elements: 1
@@ -2018,7 +2018,7 @@
   fma:
   - FMA50801
   source: bp3d_partof
-  target_faces: 20000
+  target_faces: 30000
   priority: 1
   meta:
     elements: 59
@@ -2040,7 +2040,7 @@
   fma:
   - FMA67944
   source: bp3d
-  target_faces: 6000
+  target_faces: 24000
   priority: 3
   meta:
     elements: 2
@@ -2062,7 +2062,7 @@
   fma:
   - FMA79876
   source: bp3d_partof
-  target_faces: 6000
+  target_faces: 23500
   priority: 3
   meta:
     elements: 11
@@ -2105,7 +2105,7 @@
   fma:
   - FMA50863
   source: bp3d
-  target_faces: 2400
+  target_faces: 4500
   priority: 2
   meta:
     elements: 4
@@ -2126,7 +2126,7 @@
   fma:
   - FMA7157
   source: bp3d_partof
-  target_faces: 20000
+  target_faces: 30000
   priority: 3
   meta:
     elements: 60
@@ -2148,7 +2148,7 @@
   fma:
   - FMA13407
   source: bp3d
-  target_faces: 3600
+  target_faces: 10500
   priority: 1
   meta:
     elements: 2
@@ -2169,7 +2169,7 @@
   fma:
   - FMA45738
   source: bp3d
-  target_faces: 3600
+  target_faces: 14000
   priority: 3
   meta:
     elements: 2
@@ -2192,7 +2192,7 @@
   - FMA32556
   - FMA32557
   source: bp3d
-  target_faces: 6000
+  target_faces: 22500
   priority: 1
   meta:
     elements: 6
@@ -2239,7 +2239,7 @@
   - FMA34696
   - FMA34699
   source: bp3d
-  target_faces: 6000
+  target_faces: 10500
   priority: 1
   meta:
     elements: 6
@@ -2261,7 +2261,7 @@
   fma:
   - FMA13109
   source: bp3d
-  target_faces: 3000
+  target_faces: 9500
   priority: 2
   meta:
     elements: 2
@@ -2282,7 +2282,7 @@
   fma:
   - FMA13397
   source: bp3d
-  target_faces: 4500
+  target_faces: 30000
   priority: 2
   meta:
     elements: 2
@@ -2304,7 +2304,7 @@
   - FMA9756
   - FMA9757
   source: bp3d
-  target_faces: 9000
+  target_faces: 30000
   priority: 2
   meta:
     elements: 4
@@ -2325,7 +2325,7 @@
   fma:
   - FMA13295
   source: bp3d
-  target_faces: 6000
+  target_faces: 30000
   priority: 1
   meta:
     elements: 1
@@ -2346,7 +2346,7 @@
   fma:
   - FMA13335
   source: bp3d
-  target_faces: 6000
+  target_faces: 30000
   priority: 1
   meta:
     elements: 2
@@ -2373,7 +2373,7 @@
   - FMA22714
   - FMA22765
   source: bp3d
-  target_faces: 9000
+  target_faces: 30000
   priority: 2
   meta:
     elements: 14
@@ -2396,7 +2396,7 @@
   fma:
   - FMA32519
   source: bp3d
-  target_faces: 2400
+  target_faces: 5000
   priority: 3
   meta:
     elements: 2
@@ -2417,7 +2417,7 @@
   fma:
   - FMA22653
   source: bp3d
-  target_faces: 2400
+  target_faces: 8000
   priority: 3
   meta:
     elements: 2
@@ -2525,7 +2525,7 @@
   - FMA37693
   - FMA37694
   source: bp3d
-  target_faces: 4500
+  target_faces: 5500
   priority: 1
   meta:
     elements: 6
@@ -2567,7 +2567,7 @@
   fma:
   - FMA38485
   source: bp3d
-  target_faces: 3000
+  target_faces: 5000
   priority: 2
   meta:
     elements: 2
@@ -2609,7 +2609,7 @@
   fma:
   - FMA38462
   source: bp3d
-  target_faces: 2400
+  target_faces: 5000
   priority: 3
   meta:
     elements: 2
@@ -2630,7 +2630,7 @@
   fma:
   - FMA38469
   source: bp3d
-  target_faces: 3000
+  target_faces: 10000
   priority: 3
   meta:
     elements: 4
@@ -2651,7 +2651,7 @@
   fma:
   - FMA38500
   source: bp3d
-  target_faces: 3000
+  target_faces: 4500
   priority: 3
   meta:
     elements: 2
@@ -2672,7 +2672,7 @@
   fma:
   - FMA18060
   source: bp3d
-  target_faces: 3600
+  target_faces: 5000
   priority: 2
   meta:
     elements: 2
@@ -2798,7 +2798,7 @@
   fma:
   - FMA22430
   source: bp3d
-  target_faces: 4500
+  target_faces: 6000
   priority: 1
   meta:
     elements: 2
@@ -2821,7 +2821,7 @@
   - FMA22432
   - FMA22433
   source: bp3d
-  target_faces: 6000
+  target_faces: 15500
   priority: 2
   meta:
     elements: 6
@@ -2845,7 +2845,7 @@
   - FMA22443
   - FMA43882
   source: bp3d
-  target_faces: 6000
+  target_faces: 12000
   priority: 2
   meta:
     elements: 6
@@ -2869,7 +2869,7 @@
   - FMA45887
   - FMA45890
   source: bp3d
-  target_faces: 6000
+  target_faces: 14500
   priority: 1
   meta:
     elements: 8
@@ -2892,7 +2892,7 @@
   - FMA45956
   - FMA45959
   source: bp3d
-  target_faces: 4500
+  target_faces: 7000
   priority: 1
   meta:
     elements: 4
@@ -2913,7 +2913,7 @@
   fma:
   - FMA22542
   source: bp3d
-  target_faces: 3600
+  target_faces: 4500
   priority: 2
   meta:
     elements: 2
@@ -2934,7 +2934,7 @@
   fma:
   - FMA51061
   source: bp3d
-  target_faces: 1800
+  target_faces: 4000
   priority: 2
   meta:
     elements: 2
@@ -2976,7 +2976,7 @@
   fma:
   - FMA51099
   source: bp3d
-  target_faces: 2400
+  target_faces: 5500
   priority: 3
   meta:
     elements: 2
@@ -2997,7 +2997,7 @@
   fma:
   - FMA22539
   source: bp3d
-  target_faces: 2400
+  target_faces: 4000
   priority: 3
   meta:
     elements: 2
@@ -3018,7 +3018,7 @@
   fma:
   - FMA22534
   source: bp3d
-  target_faces: 2400
+  target_faces: 5000
   priority: 3
   meta:
     elements: 2
@@ -3039,7 +3039,7 @@
   fma:
   - FMA51071
   source: bp3d
-  target_faces: 2400
+  target_faces: 4500
   priority: 3
   meta:
     elements: 2

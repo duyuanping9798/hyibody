@@ -36,7 +36,7 @@ docs/           KICKOFF.md STATUS.md DECISIONS.md ATTRIBUTION.md
 
 ## 性能与体积预算（PR 若突破需说明）
 
-首屏包（皮肤 + 骨骼低模 + manifest）≤ 5 MB；全部资产 ≤ 40 MB；桌面 Chrome 60 fps、中端安卓 30 fps；同屏 draw call ≤ 600；单结构 500–6,000 面（多件合并组/整器官/皮肤上限 24,000，2026-08-17 观感升级修订，见 DECISIONS.md）；总三角面目标 ≤ 150 万（原型全量为 173 万、35 MB，可作上限参考）。所有 glb 经 gltf-transform 去重、焊接、量化、meshopt 压缩。
+首屏包（皮肤 + 骨骼 + manifest）≤ 5 MB（当前收紧到 4 MB）；全部资产 ≤ 40 MB（当前收紧到 25 MB）；桌面 Chrome 60 fps、中端安卓 30 fps；同屏 draw call ≤ 600；单结构 500–30,000 面，皮肤（整张外壳）上限 60,000（2026-08-18 数据质量升级修订，见 DECISIONS.md）；总三角面目标 100–130 万，硬上限 150 万（原型全量为 173 万、35 MB，可作上限参考）。所有 glb 经 gltf-transform 去重、焊接、量化、meshopt 压缩。
 
 ## 编码与协作规范
 

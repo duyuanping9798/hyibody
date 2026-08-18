@@ -22,6 +22,7 @@ if sys.path and sys.path[0] == _DIR:
 
 import argparse
 import json
+import math
 import re
 import sys
 from typing import Any
@@ -105,8 +106,21 @@ def resolve_group(group: dict, dataset: bp3d.Bp3dSet) -> dict[str, Any]:
     }
 
 
-def group_target_faces(group: dict, defaults: dict) -> int:
-    return int(group.get("target_faces") or defaults["target_faces"][group["system"]])
+def group_target_faces(group: dict, defaults: dict, faces_raw: int = 0) -> int:
+    """目标面数 = 配置基准；源网格远比基准细时按最大压缩比放宽，再统一封顶。
+
+    只有基准会把小结构抬上去；`max_compression` 保证密集源网格不被压成低模；
+    `max_target_faces` 防止个别超密结构吃掉整个预算（显式写的基准永远是下限）。
+    """
+    base = int(group.get("target_faces") or defaults["target_faces"][group["system"]])
+    target = base
+    limit = int(defaults.get("max_compression") or 0)
+    if limit > 1 and faces_raw > 0:
+        target = max(target, math.ceil(faces_raw / limit / 500) * 500)
+    ceiling = int(defaults.get("max_target_faces") or 0)
+    if ceiling:
+        target = min(target, max(ceiling, base))
+    return target
 
 
 def build_candidates(groups_cfg: dict, sets: dict[str, bp3d.Bp3dSet], stats: dict[str, dict]) -> tuple[list[dict], dict]:
@@ -154,7 +168,7 @@ def build_candidates(groups_cfg: dict, sets: dict[str, bp3d.Bp3dSet], stats: dic
             "side": group["side"],
             "fma": [c.fma for c in res["concepts"]],
             "source": {"isa": "bp3d", "partof": "bp3d_partof"}[set_name],
-            "target_faces": group_target_faces(group, groups_cfg["defaults"]),
+            "target_faces": group_target_faces(group, groups_cfg["defaults"], faces),
             "priority": int(group["priority"]),
         }
         meta: dict[str, Any] = {
@@ -190,9 +204,44 @@ HEADER = """\
 """
 
 
+def sync_targets(entries: list[dict]) -> int:
+    """把候选清单里的 target_faces 同步进已定稿的 content/structures.yaml。
+
+    定稿清单是人类审阅过的（删过条目、改过命名），不能整份覆盖；这里只按 slug
+    逐行改 target_faces 的数值，其余一字不动。返回改动条数。
+    """
+    path = bp3d.STRUCTURES_YAML
+    if not path.exists():
+        return 0
+    want = {e["slug"]: int(e["target_faces"]) for e in entries}
+    out: list[str] = []
+    slug: str | None = None
+    changed = 0
+    for line in path.read_text(encoding="utf-8").split("\n"):
+        stripped = line.strip()
+        if stripped.startswith("- slug:"):
+            slug = stripped.split(":", 1)[1].strip()
+        if slug in want and stripped.startswith("target_faces:"):
+            indent = line[: len(line) - len(line.lstrip())]
+            new_line = f"{indent}target_faces: {want[slug]}"
+            if new_line != line:
+                changed += 1
+            out.append(new_line)
+            continue
+        out.append(line)
+    if changed:
+        path.write_text("\n".join(out), encoding="utf-8")
+    return changed
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--refresh-stats", action="store_true", help="重扫 OBJ 面数缓存")
+    ap.add_argument(
+        "--no-sync-targets",
+        action="store_true",
+        help="不要把新的 target_faces 同步进 content/structures.yaml",
+    )
     args = ap.parse_args(argv)
 
     groups_cfg = load_groups()
@@ -222,6 +271,10 @@ def main(argv: list[str] | None = None) -> int:
         for w in report["warnings"][:15]:
             print(f"  - {w}")
     print(f"已写入 {bp3d.CANDIDATES_YAML.relative_to(bp3d.ROOT)}")
+    if not args.no_sync_targets:
+        changed = sync_targets(entries)
+        if changed:
+            print(f"已同步 {changed} 条 target_faces 到 {bp3d.STRUCTURES_YAML.name}")
     return 0
 
 

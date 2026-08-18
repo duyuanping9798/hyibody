@@ -122,3 +122,36 @@ def test_load_sources_real_config():
     assert {e["set"] for e in cfg["files"]} == {"isa", "partof"}
     assert any(e["kind"] == "obj_zip" for e in cfg["files"])
     assert "BodyParts3D" in cfg["license"]["attribution"]
+
+
+class TestGroupTargetFaces:
+    """目标面数规则（2026-08-18）：基准 → 按最大压缩比放宽 → 统一封顶。"""
+
+    defaults = {
+        "target_faces": {"skin": 60000, "muscles": 4000, "skeleton": 5000,
+                         "organs": 10000, "vessels": 6000, "nerves": 6000},
+        "max_compression": 2,
+        "max_target_faces": 30000,
+    }
+
+    def test_small_source_keeps_base(self):
+        group = {"system": "skeleton"}
+        assert select.group_target_faces(group, self.defaults, faces_raw=3000) == 5000
+
+    def test_dense_source_relaxes_to_half(self):
+        group = {"system": "muscles"}
+        # 源 40,000 面：按 2× 最大压缩比放宽到 20,000，而不是压到基准 4,000
+        assert select.group_target_faces(group, self.defaults, faces_raw=40000) == 20000
+
+    def test_ceiling_caps_very_dense_source(self):
+        group = {"system": "muscles"}
+        assert select.group_target_faces(group, self.defaults, faces_raw=377532) == 30000
+
+    def test_explicit_target_is_a_floor_above_the_ceiling(self):
+        # 皮肤显式写 60000，高于 max_target_faces，显式配置说了算
+        group = {"system": "skin", "target_faces": 60000}
+        assert select.group_target_faces(group, self.defaults, faces_raw=203382) == 60000
+
+    def test_explicit_target_still_relaxed_by_compression(self):
+        group = {"system": "organs", "target_faces": 15000}
+        assert select.group_target_faces(group, self.defaults, faces_raw=102802) == 30000

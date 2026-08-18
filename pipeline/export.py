@@ -71,11 +71,22 @@ def build_glb(metas: list[dict], npz_dir: Path, out_path: Path) -> None:
     blob = bytearray()
     for meta in metas:
         data = np.load(npz_dir / f"{meta['slug']}.npz")
-        v = np.ascontiguousarray(data["vertices"], dtype=np.float32)
-        f = np.ascontiguousarray(data["faces"], dtype=np.uint32)
-        normals = np.ascontiguousarray(
-            trimesh.Trimesh(vertices=v, faces=f, process=False).vertex_normals, dtype=np.float32
+        # 导出前焊接同位顶点再算法线（2026-08-18 加）：减面会在部件接缝留下重复顶点，
+        # 不焊接的话法线在接缝处断开，渲染出来是一条条硬棱。
+        mesh = trimesh.Trimesh(
+            vertices=np.asarray(data["vertices"], dtype=np.float64),
+            faces=np.asarray(data["faces"], dtype=np.int64),
+            process=True,
+            validate=True,
         )
+        mesh.merge_vertices()
+        mesh.remove_unreferenced_vertices()
+        v = np.ascontiguousarray(mesh.vertices, dtype=np.float32)
+        f = np.ascontiguousarray(mesh.faces, dtype=np.uint32)
+        # 面积加权的平滑法线
+        normals = np.ascontiguousarray(mesh.vertex_normals, dtype=np.float32)
+        meta["faces"] = int(len(f))
+        meta["vertices"] = int(len(v))
         idx = f.reshape(-1)
 
         views = []
@@ -241,6 +252,9 @@ def main(argv: list[str] | None = None) -> int:
         raw = export_dir / f"{system}.raw.glb"
         out = ASSETS_DIR / f"{system}.glb"
         build_glb(metas, WORK_DIR / "processed" / system, raw)
+        # build_glb 焊接后面数可能微降，把实际值写回 meta，manifest 与 glb 才对得上
+        with (WORK_DIR / "processed" / system / "meta.json").open("w", encoding="utf-8") as fp:
+            json.dump(metas, fp, ensure_ascii=False, indent=1)
         optimize_glb(raw, out)
         print(
             f"{system}.glb: {out.stat().st_size / 1e6:.2f} MB"
