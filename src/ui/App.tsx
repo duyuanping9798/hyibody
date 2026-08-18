@@ -10,7 +10,9 @@ import { LayerSlider } from './LayerSlider';
 import { LoadingOverlay } from './LoadingOverlay';
 import { StructureLabel } from './StructureLabel';
 import { SearchBox } from './SearchBox';
+import { ShortcutHelp } from './ShortcutHelp';
 import { ShareDialog } from './ShareDialog';
+import { useKeyboardShortcuts } from './keyboard';
 import { bindViewer, toUrlState, useUiStore } from './store';
 import { SystemPanel } from './SystemPanel';
 import { TourMenu, TourPlayer } from './TourPlayer';
@@ -68,10 +70,13 @@ export function App() {
   const togglePanel = useUiStore((s) => s.togglePanel);
   const tour = useUiStore((s) => s.tour);
   const [shareOpen, setShareOpen] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
+  const selected = useUiStore((s) => s.selected);
   const lang = useUiStore((s) => s.lang);
   const setLang = useUiStore((s) => s.setLang);
   const [{ kiosk, idleSeconds }] = useState(readKioskParams);
   useUrlSync();
+  useKeyboardShortcuts({ helpOpen, setHelpOpen, shareOpen, setShareOpen });
 
   useEffect(() => {
     const container = containerRef.current;
@@ -130,6 +135,14 @@ export function App() {
             <button className="hyi-btn" onClick={() => setAttributionOpen(true)}>
               {t.attribution}
             </button>
+            <button
+              className="hyi-btn hyi-btn-icon"
+              aria-label={t.shortcutsTitle}
+              title={t.shortcutsTitle}
+              onClick={() => setHelpOpen(true)}
+            >
+              ?
+            </button>
           </div>
           <SearchBox />
           <div className={`hyi-side panel-${activePanel ?? 'none'}`}>
@@ -159,6 +172,15 @@ export function App() {
           {tour ? <TourPlayer /> : <LayerSlider />}
           <Attribution />
           {shareOpen && <ShareDialog onClose={() => setShareOpen(false)} />}
+          {helpOpen && <ShortcutHelp onClose={() => setHelpOpen(false)} />}
+          {/* 点画布选中结构时读屏软件也要能听见，所以单独播一条 */}
+          <p className="hyi-sr-only" role="status" aria-live="polite">
+            {selected && manifest?.structures[selected]
+              ? lang === 'zh'
+                ? manifest.structures[selected].zh
+                : manifest.structures[selected].en
+              : ''}
+          </p>
           {kiosk && <Kiosk idleSeconds={idleSeconds} />}
         </>
       )}

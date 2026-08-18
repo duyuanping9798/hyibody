@@ -1,5 +1,5 @@
 import { STRINGS } from './i18n';
-import { definitionsReviewed, definitionsZh } from '../data/definitions';
+import { definitionsFor, definitionsReviewedFor } from '../data/definitions';
 import type { SystemId } from '../data/types';
 import { SYSTEM_COLORS } from '../viewer/materials';
 import { useUiStore } from './store';
@@ -32,12 +32,9 @@ export function InfoCard() {
   const system = info.system as SystemId;
   const isIsolated = isolated === selected;
   // 内部件（心脏 → 心室壁/瓣膜…）：有就给一个"展开内部"，正在展开就给"收起"
-  const children = Object.entries(manifest.structures).filter(
-    ([, s]) => (s as { parent?: string }).parent === selected,
-  );
-  const insideParent = (info as { parent?: string }).parent;
-  // 英文文案还没有（content/definitions/en.json 待补），英文态回退到占位句
-  const definition = lang === 'zh' ? definitionsZh[selected] : undefined;
+  const children = Object.entries(manifest.structures).filter(([, s]) => s.parent === selected);
+  const insideParent = info.parent;
+  const definition = definitionsFor(lang)[selected];
 
   return (
     <div className="hyi-panel hyi-info" data-testid="info-card">
@@ -69,7 +66,7 @@ export function InfoCard() {
 
       <p className="meta">
         {t.sourceLabel}: {t.sourceBp3d}
-        {definition && !definitionsReviewed ? ` · ${t.infoUnreviewed}` : ''}
+        {definition && !definitionsReviewedFor(lang) ? ` · ${t.infoUnreviewed}` : ''}
       </p>
 
       <div className="actions">

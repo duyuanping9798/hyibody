@@ -84,5 +84,17 @@
   "clipFlip": "Flip",
   "expandParts": "Open up ({n})",
   "collapseParts": "Close up",
-  "backToBody": "Back to full body"
+  "backToBody": "Back to full body",
+  "shortcutsTitle": "Keyboard shortcuts",
+  "shortcuts": {
+    "search": "Search structures",
+    "help": "Open / close this page",
+    "layer": "X-ray depth out / in",
+    "systems": "Show / hide layers 1–6",
+    "focusSelected": "Point the camera at the selected structure",
+    "backToBody": "Back to full body (clears isolate, expand, clip and hidden)",
+    "tourStep": "Tour previous / next step",
+    "tourToggle": "Tour play / pause",
+    "escape": "Step back out: dialog → tour → deselect → full body"
+  }
 }

@@ -9,6 +9,9 @@ export type Side = 'left' | 'right' | 'none' | 'both';
 
 export type DataSource = 'bp3d' | 'bp3d_partof' | 'hra' | 'cc0' | 'placeholder';
 
+/** 界面 / 文案语言。中文优先（CLAUDE.md）。 */
+export type Lang = 'zh' | 'en';
+
 /** manifest.json 中单个结构的元数据（KICKOFF 第 7 节）。 */
 export interface StructureInfo {
   zh: string;
@@ -20,6 +23,8 @@ export interface StructureInfo {
   source: DataSource;
   /** [minX, minY, minZ, maxX, maxY, maxZ]，单位毫米 */
   bbox?: [number, number, number, number, number, number];
+  /** 上级结构 slug（心室壁 → 心脏）。只允许一层，见 pipeline/validate.py。 */
+  parent?: string;
 }
 
 export interface SystemBundle {
