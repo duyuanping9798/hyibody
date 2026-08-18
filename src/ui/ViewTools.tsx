@@ -15,6 +15,9 @@ export function ViewTools() {
   const applyPreset = useUiStore((s) => s.applyPreset);
   const setClip = useUiStore((s) => s.setClip);
   const resetVisibility = useUiStore((s) => s.resetVisibility);
+  const quality = useUiStore((s) => s.quality);
+  const qualityToggleable = useUiStore((s) => s.qualityToggleable);
+  const setQuality = useUiStore((s) => s.setQuality);
 
   return (
     <>
@@ -59,6 +62,22 @@ export function ViewTools() {
             onChange={(e) => setClip({ axis: clip.axis, pos: Number(e.target.value) })}
           />
         )}
+      </section>
+      <section>
+        <h3>{t.qualityTitle}</h3>
+        {qualityToggleable ? (
+          <label className="hyi-switch">
+            <input
+              type="checkbox"
+              checked={quality === 'high'}
+              onChange={(e) => setQuality(e.target.checked ? 'high' : 'medium')}
+            />
+            <span>{t.qualityHigh}</span>
+          </label>
+        ) : (
+          <p className="hyi-hint">{t.qualityUnavailable}</p>
+        )}
+        {qualityToggleable && <p className="hyi-hint">{t.qualityHint}</p>}
       </section>
       {(hiddenCount > 0 || isolated) && (
         <section>

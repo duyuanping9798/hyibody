@@ -75,6 +75,26 @@
 - 2026-08-18 · validate.py 收紧到本次验收标准（总体积 ≤ 25 MB、首屏 ≤ 4 MB），
   并对总面数不在 100–130 万时告警 · CLAUDE.md 的硬上限（40 MB / 5 MB / 150 万）不变。
 
+- 2026-08-18 · 渲染升级（步骤 B）：EffectComposer 后处理链
+  `RenderPass →（SSAO）→ OutlinePass → UnrealBloom → OutputPass → SMAA` ·
+  顺序上有两个坑：OutputPass 必须在 bloom 之后（bloom 要在线性 HDR 上做），
+  SMAA 必须在 OutputPass 之后（它按感知亮度找边，喂 HDR 会到处误判）。
+- 2026-08-18 · 画质分三档：`low` 不走后处理（软件渲染兜底，云端 CI 就是这档）、
+  `medium` 描边+轻 bloom+SMAA（移动端默认）、`high` 再加 SSAO 与软阴影（桌面默认）·
+  实测 SwiftShader 下开 high 一帧要几秒，Playwright 连截图都等不到稳定；靠
+  WEBGL_debug_renderer_info 认出 swiftshader/llvmpipe 自动退档，用户不用管。
+  `?hq=low|medium|high` 可强制，用于真机比对与截图测试。
+- 2026-08-18 · 选中描边从反壳法换成 OutlinePass · 反壳要处理量化缩放、动画跟随、
+  剖切平面三件事，OutlinePass 直接描网格本身，还自带被遮挡部分的描边色。
+- 2026-08-18 · bloom 阈值 1.05、强度 0.17；曝光 1.12 → 0.98；三点光强度 1.45/0.5/0.85 ·
+  实测阈值 0.92 + 强度 0.32 会让整具骨架罩一层白雾、头骨糊成一个光球。
+- 2026-08-18 · 受光材质统一加菲涅尔边缘光（onBeforeCompile 注入），同时抬一点 alpha ·
+  这样同一份材质在不透明度高时是"实体"、低时是"X-ray 壳"，肌肉层既看得出肌肉走向、
+  又保留透视感。皮肤仍走独立的加色 X-ray 着色器（边缘收窄到 2.7、强度 0.85）。
+- 2026-08-18 · 接触阴影用脚下一张径向渐变贴图（所有档位都有），高画质档再叠真软阴影
+  （PCFSoftShadowMap + ShadowMaterial 接影地面，皮肤不投影）· 假接触阴影几乎零成本
+  就能把人"放"在地面上；真阴影只在有 GPU 的桌面开。
+
 ## 待定（不做，等人类点头）
 
 - 剖切模板封盖（stencil cap，真实断面填色）：每结构需两个 pass，移动端性能与实现复杂度高，等真机反馈决定是否值得。

@@ -64,5 +64,9 @@
   "shareTitle": "Share",
   "shareCopy": "Copy link",
   "shareCopied": "Copied ✓",
-  "kioskAttract": "Touch the screen to explore your body"
+  "kioskAttract": "Touch the screen to explore your body",
+  "qualityTitle": "Quality",
+  "qualityHigh": "High quality",
+  "qualityHint": "Soft shadows and ambient occlusion; costs performance",
+  "qualityUnavailable": "Software rendering detected — locked to basic quality"
 }

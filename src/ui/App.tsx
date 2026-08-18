@@ -2,6 +2,7 @@ import { STRINGS } from './i18n';
 import { useEffect, useRef, useState } from 'react';
 import { decodeUrlState, encodeUrlState } from '../data/urlState';
 import { HyiViewer } from '../viewer/HyiViewer';
+import type { QualityTier } from '../viewer/quality';
 import { Attribution } from './Attribution';
 import { InfoCard } from './InfoCard';
 import { Kiosk } from './Kiosk';
@@ -20,6 +21,12 @@ function readKioskParams(): { kiosk: boolean; idleSeconds: number } {
   const kiosk = params.get('kiosk') === '1' || decodeUrlState(params.get('v')).kiosk === true;
   const idle = Number(params.get('idle'));
   return { kiosk, idleSeconds: Number.isFinite(idle) && idle >= 2 ? idle : 60 };
+}
+
+/** `?hq=high|medium|low` 强制画质档位（真机比对与截图测试用）；不传则自动判断。 */
+function readQualityParam(): QualityTier | undefined {
+  const value = new URLSearchParams(window.location.search).get('hq');
+  return value === 'high' || value === 'medium' || value === 'low' ? value : undefined;
 }
 
 /** 状态变化后把 ?v= 写回地址栏（防抖，replaceState 不产生历史记录）。 */
@@ -67,7 +74,10 @@ export function App() {
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
-    const viewer = new HyiViewer(container, { base: import.meta.env.BASE_URL });
+    const viewer = new HyiViewer(container, {
+      base: import.meta.env.BASE_URL,
+      quality: readQualityParam(),
+    });
     bindViewer(viewer);
     viewer
       .load()
