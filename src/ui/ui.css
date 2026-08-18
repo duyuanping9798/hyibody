@@ -231,12 +231,16 @@
   color: var(--hyi-text-dim);
 }
 
+/* 桌面端信息卡放左下：右侧是系统/视角面板，卡片压在上面会挡住剖切那几个按钮
+   （实测"沿此结构半剖"点不到），左侧本来就是空的 */
 .hyi-info {
   position: absolute;
-  right: 12px;
-  bottom: 84px;
-  width: min(300px, calc(100% - 24px));
+  left: 12px;
+  bottom: 96px;
+  width: min(320px, calc(100% - 24px));
   padding: 14px 16px;
+  max-height: calc(100% - 220px);
+  overflow-y: auto;
 }
 .hyi-info h2 {
   margin: 0;
@@ -933,4 +937,15 @@ body.hyi-kiosk .hyi-info .blurb {
   body:has(.hyi-info) .hyi-side {
     bottom: calc(46vh + 78px);
   }
+}
+
+/* "沿此结构半剖"：剖切面直接移到选中结构中心，看内部最短的一条路 */
+.hyi-clip-through {
+  margin-top: 8px;
+  width: 100%;
+}
+/* 剖切方向翻转：决定切掉哪一半——想看进去就得切掉朝自己的那半 */
+.hyi-clip-flip {
+  margin-top: 8px;
+  width: 100%;
 }
