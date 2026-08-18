@@ -243,12 +243,17 @@ HRA_SKIN_ASSET = "3d-vh-m-skin.glb"
 BP3D_SKIN_FMA = ["FMA7163"]
 
 
-def hra_global_scale() -> float:
-    """HRA → BP3D 的全局缩放：两具身体皮肤网格的身高比（实测 0.9426）。"""
+def hra_body_fit() -> tuple[float, hra.Fit]:
+    """全身对齐：缩放取两具身体皮肤网格的身高比，平移把两张皮肤的包围盒中心对上。
+
+    返回 (缩放, 全身变换)。全身变换给那些没有 BP3D 对应结构、又横跨全身的结构用
+    （脊髓——BP3D 的"脊髓"只是脑干下方 36 mm 的一截残桩，拿它对中心会整条摆错）。
+    """
     verts = [v for v, _ in hra.load_organ(HRA_SKIN_ASSET).values()]
     src = hra.bounds_of(np.vstack(verts))
     tgt = bp3d_bounds("isa", BP3D_SKIN_FMA)
-    return hra.height_scale(src, tgt)
+    scale = hra.height_scale(src, tgt)
+    return scale, hra.fit_centered(src, tgt, scale)
 
 
 def hra_fit_for(entries: list[dict]) -> dict[str, hra.Fit]:
@@ -261,17 +266,26 @@ def hra_fit_for(entries: list[dict]) -> dict[str, hra.Fit]:
     anchors = [
         e for e in entries if e.get("source") == HRA_SOURCE and "fit_to_fma" in (e.get("hra") or {})
     ]
-    if not anchors:
+    borrowed = [
+        e for e in entries if e.get("source") == HRA_SOURCE and "fit_from" in (e.get("hra") or {})
+    ]
+    if not anchors and not borrowed:
         return {}
-    scale = hra_global_scale()
+    scale, body_fit = hra_body_fit()
     print(f"  HRA → BP3D 全局定标 ×{scale:.4f}（两具身体皮肤网格的身高比）")
-    fits: dict[str, hra.Fit] = {}
+    # 皮肤资产本身就是"全身对齐"这条变换，fit_from 指到它即可
+    fits: dict[str, hra.Fit] = {HRA_SKIN_ASSET: body_fit}
     for entry in anchors:
         spec = entry["hra"]
         assets = hra_assets_of(spec)
+        wanted = set(spec.get("meshes") or [])
         verts = []
         for asset in assets:
-            verts.extend(v for v, _ in hra.load_organ(asset).values())
+            for name, (v_part, _) in hra.load_organ(asset).items():
+                # 锚点只按这条结构自己声明的部件算：前列腺的 glb 里还装着精囊与
+                # 输精管，拿整包去比 BP3D 的前列腺等于把参照物撑大一圈
+                if not wanted or name in wanted:
+                    verts.append(v_part)
         source = hra.bounds_of(np.vstack(verts))
         target = bp3d_bounds(spec.get("fit_to_set", "partof"), list(spec["fit_to_fma"]))
         fit = hra.fit_centered(source, target, scale)
@@ -286,6 +300,18 @@ def hra_fit_for(entries: list[dict]) -> dict[str, hra.Fit]:
             f"平移 {np.round(fit.offset, 1).tolist()} mm，"
             f"逐轴尺寸比 {np.round(ratios, 2).tolist()}{flag}"
         )
+    # BP3D 里没有对应结构的（主支气管），借用解剖上相连的那个资产的变换：
+    # HRA 各资产共用一个坐标系，气管往下就是主支气管，跟着气管走才接得上
+    for entry in borrowed:
+        spec = entry["hra"]
+        donor = spec["fit_from"]
+        if donor not in fits:
+            raise ValueError(f"{entry['slug']}: fit_from 指向的 {donor} 没有锚点")
+        for asset in hra_assets_of(spec):
+            if asset in fits:
+                continue
+            fits[asset] = fits[donor]
+            print(f"  {asset}: 沿用 {donor} 的变换（BP3D 无对应结构可对中心）")
     return fits
 
 

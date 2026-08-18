@@ -91,12 +91,27 @@ def test_hra_sources_yaml_is_valid_and_cc_by():
         assert "allen" not in entry["url_path"].lower()
 
 
+# 全身对齐用的皮肤资产：只参与算变换，不出现在结构清单里（见 process.hra_body_fit）
+BODY_ANCHOR_ASSET = "3d-vh-m-skin.glb"
+
+
+def test_body_anchor_asset_is_declared_in_sources():
+    cfg = bp3d.load_sources(bp3d.SOURCES_HRA_YAML)
+    assert any(e["name"] == BODY_ANCHOR_ASSET for e in cfg["files"]), (
+        "全身对齐要用到皮肤资产，sources_hra.yaml 里必须有它"
+    )
+
+
 def test_structure_list_hra_entries_declare_meshes_and_one_anchor():
     entries = yaml.safe_load(bp3d.STRUCTURES_YAML.read_text(encoding="utf-8"))
     hra_entries = [e for e in entries if e.get("source") == bp3d.HRA_SOURCE]
     assert hra_entries, "结构清单里应该有 HRA 结构"
-    anchors: dict[str, int] = {}
+
+    anchors: dict[str, int] = {}      # 资产 → 声明了 fit_to_fma 的条数
+    borrowed_assets: set[str] = set()  # 靠 fit_from 借变换的资产
+    borrowers: dict[str, str] = {}     # slug → 借的对象
     used: set[str] = set()
+
     for e in hra_entries:
         spec = e.get("hra")
         assert spec, f"{e['slug']}: 缺 hra 配置"
@@ -105,9 +120,25 @@ def test_structure_list_hra_entries_declare_meshes_and_one_anchor():
         used.update(assets)
         assert "meshes" in spec, f"{e['slug']}: 缺 hra.meshes"
         assert e.get("fma") or e.get("uberon"), f"{e['slug']}: 本体 id 不能全空"
+        assert not ("fit_to_fma" in spec and "fit_from" in spec), (
+            f"{e['slug']}: fit_to_fma 与 fit_from 只能有一个"
+        )
         if "fit_to_fma" in spec:
             for asset in assets:
                 anchors[asset] = anchors.get(asset, 0) + 1
-    for asset in used:
-        # 同一个 glb 的所有部件共用一个变换，锚点必须恰好一条
+        if "fit_from" in spec:
+            borrowers[e["slug"]] = spec["fit_from"]
+            borrowed_assets.update(assets)
+
+    # 每个资产要么自己有恰好一条锚点，要么借别人的（同一个 glb 的部件共用一个变换）
+    for asset in used - borrowed_assets:
         assert anchors.get(asset) == 1, f"{asset}: 应恰好有一条声明 fit_to_fma"
+    for asset in borrowed_assets:
+        assert asset not in anchors, f"{asset}: 借了变换就不该再自己当锚点"
+    assert BODY_ANCHOR_ASSET not in used, "皮肤只用来算全身对齐，不该被任何结构当网格来源"
+    for slug, donor in borrowers.items():
+        # 皮肤资产是流水线内建的"全身对齐"锚点（process.hra_body_fit），
+        # 不出现在结构清单里，所以单独放行
+        if donor == BODY_ANCHOR_ASSET:
+            continue
+        assert anchors.get(donor) == 1, f"{slug}: fit_from 指向的 {donor} 不是锚点"

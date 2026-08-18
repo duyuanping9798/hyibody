@@ -81,3 +81,38 @@ files:
     creator: Kristen Browne (ORCID 0000-0003-4066-7531)
     bytes: 1547360
     sha256: f23bac3f62fd050b689bdee86bb8a20bff6997e830cb508c847f74c03c6a964b
+  - name: 3d-vh-m-urinary-bladder.glb
+    kind: glb
+    url_path: urinary-bladder-male/v1.2/assets/3d-vh-m-urinary-bladder.glb
+    object: https://purl.humanatlas.io/ref-organ/urinary-bladder-male/v1.2
+    creator: Kristen Browne (ORCID 0000-0003-4066-7531)
+    bytes: 199044
+    sha256: 070893aea9139d9a2c4f8da3aa66ca309a3c683a599d93a37dd7031c7d71021d
+  - name: 3d-vh-m-prostate.glb
+    kind: glb
+    url_path: prostate-male/v1.2/assets/3d-vh-m-prostate.glb
+    object: https://purl.humanatlas.io/ref-organ/prostate-male/v1.2
+    creator: Kristen Browne (ORCID 0000-0003-4066-7531)
+    bytes: 4086520
+    sha256: b456bf89571b8ad46f7c01941cdc45d6c2176c1554849755b009819231142321
+  - name: 3d-vh-m-spinal-cord.glb
+    kind: glb
+    url_path: spinal-cord-male/v1.1/assets/3d-vh-m-spinal-cord.glb
+    object: https://purl.humanatlas.io/ref-organ/spinal-cord-male/v1.1
+    creator: Kristen Browne (ORCID 0000-0003-4066-7531)
+    bytes: 490652
+    sha256: b8a2c2a288a8f7af84d5b93900b3c506a7996aa28518e9fb8a3ab9b6db6e6827
+  - name: 3d-vh-m-main-bronchus.glb
+    kind: glb
+    url_path: main-bronchus-male/v1.1/assets/3d-vh-m-main-bronchus.glb
+    object: https://purl.humanatlas.io/ref-organ/main-bronchus-male/v1.1
+    creator: Kristen Browne (ORCID 0000-0003-4066-7531)
+    bytes: 422324
+    sha256: 1f1f50659daba678a5738af67d4fc8add5a113a744c93427280a19ce9e0c5755
+  - name: 3d-vh-m-liver.glb
+    kind: glb
+    url_path: liver-male/v1.2/assets/3d-vh-m-liver.glb
+    object: https://purl.humanatlas.io/ref-organ/liver-male/v1.2
+    creator: Kristen Browne (ORCID 0000-0003-4066-7531)
+    bytes: 1136412
+    sha256: 8e4c38293cfdb6b4f47ef2930c7f4af9e37b9144d1cf26d07c8f12c5045eb404

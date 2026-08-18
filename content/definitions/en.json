@@ -627,5 +627,61 @@
   "kidney_hilum": {
     "blurb": "The notch on the inner edge of the kidney where the renal artery, renal vein and ureter enter and leave.",
     "fact": "Their order is fixed — vein in front, artery in the middle, ureter behind — and surgeons rely on it to find their way."
+  },
+  "bladder_trigone": {
+    "blurb": "A triangular patch on the inner floor of the bladder: the two upper corners are the ureteral openings, the lower one leads to the urethra.",
+    "fact": "This lining stays smooth even when the bladder is empty, while the rest wrinkles — which is how it serves as a landmark during cystoscopy."
+  },
+  "prostate_peripheral_zone": {
+    "blurb": "The peripheral zone wraps the back and sides of the prostate and makes up around 70% of the gland.",
+    "fact": "Roughly seven in ten prostate cancers start here; it lies against the rectum, which is why a finger exam can reach it."
+  },
+  "prostate_transition_zone": {
+    "blurb": "A small ring of glandular tissue around the urethra, only a minor part of the prostate in youth.",
+    "fact": "It is what enlarges with age and squeezes the urethra passing through it, slowing the urine stream in older men."
+  },
+  "prostate_central_zone": {
+    "blurb": "A wedge of gland around the ejaculatory ducts, sitting in the upper back part of the prostate.",
+    "fact": "Tumours rarely start here — it is the least cancer-prone of the three zones."
+  },
+  "seminal_vesicles": {
+    "blurb": "A pair of coiled pouches behind the bladder that produce most of the fluid in semen.",
+    "fact": "About 60% of semen comes from them, and the fructose it carries is the fuel sperm swim on."
+  },
+  "main_bronchus": {
+    "blurb": "The left and right main bronchi branch off at the carina, each burrowing into one lung, held open by cartilage like the windpipe above.",
+    "fact": "The right one is wider, steeper and shorter, so inhaled objects usually end up in the right lung."
+  },
+  "liver_caudate_lobe": {
+    "blurb": "Tucked on the back of the liver between the inferior vena cava and the ligamentum venosum, with a blood supply all its own.",
+    "fact": "Because its supply and drainage are independent, it can grow to compensate when the rest of the liver is congested."
+  },
+  "liver_quadrate_lobe": {
+    "blurb": "A square patch on the underside of the liver, framed by the gallbladder bed and the round ligament.",
+    "fact": "It looks like part of the left lobe but belongs to the right by blood supply — surgical and anatomical lobes disagree here."
+  },
+  "liver_porta_hepatis": {
+    "blurb": "The transverse fissure on the underside of the liver where the portal vein and hepatic artery go in and the bile ducts come out.",
+    "fact": "Their arrangement is fixed: duct to the right and front, artery to the left and front, portal vein behind."
+  },
+  "liver_falciform_ligament": {
+    "blurb": "A sickle-shaped fold of peritoneum joining the top of the liver to the diaphragm and the front abdominal wall.",
+    "fact": "Its free edge hides the round ligament — the closed-off remnant of the umbilical vein that fed you before birth."
+  },
+  "spinal_cord_cervical": {
+    "blurb": "The top eight segments of the cord, sending out the nerves for the neck, shoulder and the whole arm.",
+    "fact": "It bulges here — the cervical enlargement — because it has to house all the nerve cells that run the arms."
+  },
+  "spinal_cord_thoracic": {
+    "blurb": "Twelve segments serving the muscles and skin of the trunk, and sending sympathetic nerves out to the organs.",
+    "fact": "This is the narrowest stretch of cord and the narrowest part of the spinal canal, which makes injury here comparatively risky."
+  },
+  "spinal_cord_lumbar": {
+    "blurb": "Five segments giving rise to the nerves of the thigh and lower leg — the lower enlargement of the cord.",
+    "fact": "It actually sits at the level of the lower thoracic vertebrae: the cord is shorter than the spine, so segments and vertebrae do not line up."
+  },
+  "spinal_cord_sacral": {
+    "blurb": "Five segments handling the foot, the perineum and the reflexes of bladder and bowel — the cord ends here.",
+    "fact": "In adults the cord stops around the first or second lumbar vertebra; below that only a bundle of roots continues, the cauda equina."
   }
 }
