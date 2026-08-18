@@ -3,10 +3,11 @@ import { Color, MeshStandardMaterial, ShaderMaterial, type Mesh } from 'three';
 export type HighlightLevel = 'none' | 'hover' | 'selected';
 
 const EMISSIVE: Record<HighlightLevel, [number, number]> = {
-  // [emissive 强度, X-ray uHighlight]；选中主要靠反壳描边，自发光只做轻提亮
+  // [emissive 强度, X-ray uHighlight]。选中的识别度交给 OutlinePass 描边，
+  // 自发光只做很轻的提亮——0.35 会把器官本色洗成一片白，近看完全看不出是心脏
   none: [0, 0],
-  hover: [0.3, 0.35],
-  selected: [0.35, 0.5],
+  hover: [0.14, 0.3],
+  selected: [0.18, 0.42],
 };
 
 const HIGHLIGHT_COLOR = new Color(0x4fe3e0); // 青色强调（原型视觉基调）

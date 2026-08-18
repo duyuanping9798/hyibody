@@ -27,6 +27,8 @@ interface UiState {
   activePanel: 'systems' | 'views' | null;
   /** 界面语言（M2-5，默认中文） */
   lang: Locale;
+  /** 资产加载进度（loaded/total 个系统 glb） */
+  progress: { loaded: number; total: number };
   /** 画质档位（B 步渲染升级）：low 是软件渲染兜底，不给切 */
   quality: QualityTier;
   qualityToggleable: boolean;
@@ -40,7 +42,7 @@ interface UiState {
   setLoadState(s: LoadState): void;
   setManifest(m: Manifest): void;
   markSystemLoaded(id: string): void;
-  setLayer(v: number): void;
+  setLayer(v: number, immediate?: boolean): void;
   toggleSystem(id: SystemId): void;
   setSystemOpacity(id: SystemId, v: number): void;
   select(slug: string | null): void;
@@ -107,6 +109,10 @@ export function bindViewer(v: HyiViewer | null): void {
     useUiStore.setState(slug ? { selected: slug, activePanel: null } : { selected: slug });
   });
   useUiStore.setState({ quality: v.getQuality(), qualityToggleable: v.canToggleQuality() });
+  v.addEventListener('progress', (e) => {
+    const detail = (e as CustomEvent<{ loaded: number; total: number }>).detail;
+    useUiStore.setState({ progress: detail });
+  });
   v.addEventListener('systemloaded', (e) => {
     const system = (e as CustomEvent<{ system: string }>).detail.system;
     useUiStore.getState().markSystemLoaded(system);
@@ -152,6 +158,7 @@ export const useUiStore = create<UiState>((set, get) => ({
   tourIndex: 0,
   tourPlaying: false,
   lang: 'zh',
+  progress: { loaded: 0, total: 0 },
   quality: 'medium',
   qualityToggleable: false,
 
@@ -171,8 +178,8 @@ export const useUiStore = create<UiState>((set, get) => ({
       loadedSystems: s.loadedSystems.includes(id) ? s.loadedSystems : [...s.loadedSystems, id],
     })),
 
-  setLayer: (v) => {
-    viewer?.setLayer(v);
+  setLayer: (v, immediate = false) => {
+    viewer?.setLayer(v, immediate);
     set({ layer: v });
   },
   toggleSystem: (id) => {
@@ -226,7 +233,8 @@ export const useUiStore = create<UiState>((set, get) => ({
 
   applyUrlState: (s) => {
     const st = get();
-    st.setLayer(s.layer);
+    // 分享链接恢复的是"结果状态"，不该看到一段过渡动画
+    st.setLayer(s.layer, true);
     if (s.systems) {
       for (const [id, visible] of Object.entries(s.systems)) {
         if (visible === false && st.systemsVisible[id as SystemId]) st.toggleSystem(id as SystemId);

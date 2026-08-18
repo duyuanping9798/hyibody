@@ -224,3 +224,32 @@ test('quality tier falls back on software rendering and can be forced on', async
   await expect(toggle).toBeChecked();
   await page.screenshot({ path: 'test-results/smoke-quality.png' });
 });
+
+/**
+ * C 步界面：信息卡读 content/definitions/zh.json（blurb + "你知道吗"），
+ * 选中结构时挂 3D 标签引线。
+ */
+test('info card shows blurb and fact, selection gets a 3D label', async ({ page }) => {
+  const state = encodeUrlState({ layer: 0.45, selected: 'heart' });
+  await page.goto(`/?v=${state}`);
+  await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
+    timeout: 60_000,
+  });
+
+  const infoCard = page.getByTestId('info-card');
+  await expect(infoCard).toBeVisible({ timeout: 30_000 });
+  await expect(infoCard).toContainText('心脏');
+  // 标签（系统 / 部位）
+  await expect(infoCard.locator('.hyi-tags li').first()).toHaveText('器官');
+  // 一句话科普来自 zh.json 的 blurb
+  await expect(infoCard.locator('.blurb')).toContainText('拳头大小');
+  // "你知道吗"小知识来自同一条的 fact
+  await expect(infoCard.locator('.hyi-fact')).toContainText('10 万次');
+
+  // 3D 标签引线跟着结构走
+  const label = page.getByTestId('structure-label');
+  await expect(label).toBeVisible();
+  await expect(label.locator('.hyi-label .zh')).toHaveText('心脏');
+
+  await page.screenshot({ path: 'test-results/smoke-infocard.png' });
+});

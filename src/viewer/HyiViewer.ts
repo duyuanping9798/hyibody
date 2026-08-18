@@ -21,7 +21,7 @@ import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { loadManifest } from '../data/manifest';
 import type { Manifest, SystemId } from '../data/types';
-import { ANIMATED_STRUCTURES } from './animation';
+import { ANIMATED_STRUCTURES, pulseTransform, type PulseBase } from './animation';
 import {
   createCameraRig,
   poseForBox,
@@ -58,6 +58,10 @@ export interface HyiViewerOptions {
 
 /** 首屏系统：先加载完这两个就派发 ready，其余后台补（KICKOFF 第 5 节 M1-6）。 */
 const FIRST_SCREEN_SYSTEMS: readonly SystemId[] = ['skin', 'skeleton'];
+
+/** 分层缓动：跨度超过阈值才缓动（拖滑块要跟手，故事线跳转要顺滑），时间常数秒。 */
+const LAYER_EASE_THRESHOLD = 0.08;
+const LAYER_EASE_TAU = 0.12;
 
 /** 透明排序辅助：由内到外的渲染顺序。 */
 const RENDER_ORDER: Record<SystemId, number> = {
@@ -125,6 +129,8 @@ export class HyiViewer extends EventTarget {
 
   private readonly structures = new Map<string, StructureEntry>();
   private readonly systemGroups = new Map<SystemId, Group>();
+  /** 会做微动画的结构（心/肺）的基准变换：glb 节点自带的反量化 TRS，动画只在其上叠加 */
+  private readonly pulseBases = new Map<string, PulseBase>();
   private readonly state = defaultViewerState();
   private hovered: string | null = null;
   /** ?v= 分享链接选中的结构可能还在后台加载：记下来，等它注册进来再选中。 */
@@ -142,6 +148,9 @@ export class HyiViewer extends EventTarget {
     t: number;
   } | null = null;
   private pointerDownAt: { x: number; y: number } | null = null;
+  /** 分层滑块缓动：大跳（故事线、预设）平滑过渡，小步（拖滑块）立即跟手 */
+  private layerTarget = 0;
+  private layerEasing = false;
 
   constructor(
     container: HTMLElement,
@@ -200,7 +209,16 @@ export class HyiViewer extends EventTarget {
       const rest = systems.filter((s) => !(FIRST_SCREEN_SYSTEMS as string[]).includes(s.id));
       // 占位 manifest（无皮肤/骨骼）时退化为全量加载
       const firstBatch = first.length > 0 ? first : systems;
-      await Promise.all(firstBatch.map((s) => this.loadSystem(s.id as SystemId, s.file)));
+      let loaded = 0;
+      this.emitProgress(0, systems.length);
+      await Promise.all(
+        firstBatch.map((s) =>
+          this.loadSystem(s.id as SystemId, s.file).then(() => {
+            loaded += 1;
+            this.emitProgress(loaded, systems.length);
+          }),
+        ),
+      );
       this.contentBox = new Box3().setFromObject(this.root);
       fitStage(this.stage, this.contentBox);
       this.frameContent();
@@ -211,6 +229,8 @@ export class HyiViewer extends EventTarget {
         for (const s of first.length > 0 ? rest : []) {
           try {
             await this.loadSystem(s.id as SystemId, s.file);
+            loaded += 1;
+            this.emitProgress(loaded, systems.length);
             this.contentBox = new Box3().setFromObject(this.root);
             fitStage(this.stage, this.contentBox);
             this.applyVisibility();
@@ -254,6 +274,15 @@ export class HyiViewer extends EventTarget {
       mesh.geometry.computeBoundingBox();
       group.add(mesh);
       this.structures.set(slug, { slug, system: sys, mesh, material });
+      // 记下 glb 节点自带的反量化 TRS：微动画只能在它之上叠加，不能覆盖
+      if (slug in ANIMATED_STRUCTURES) {
+        const center = mesh.geometry.boundingBox?.getCenter(new Vector3()) ?? new Vector3();
+        this.pulseBases.set(slug, {
+          position: { x: mesh.position.x, y: mesh.position.y, z: mesh.position.z },
+          scale: mesh.scale.x,
+          center: { x: center.x, y: center.y, z: center.z },
+        });
+      }
     }
     this.systemGroups.set(sys, group);
     this.root.add(group);
@@ -262,6 +291,28 @@ export class HyiViewer extends EventTarget {
       this.pendingSelect = null;
       this.select(slug);
     }
+  }
+
+  private emitProgress(loaded: number, total: number): void {
+    this.dispatchEvent(new CustomEvent('progress', { detail: { loaded, total } }));
+  }
+
+  /**
+   * 结构中心投影到容器像素坐标，供 3D 标签引线用。
+   * 结构不存在、不可见或在相机背后时返回 null。
+   */
+  projectStructure(slug: string): { x: number; y: number } | null {
+    const entry = this.structures.get(slug);
+    if (!entry || !entry.material.visible) return null;
+    const box = entry.mesh.geometry.boundingBox;
+    if (!box) return null;
+    const center = box.getCenter(new Vector3());
+    entry.mesh.localToWorld(center);
+    const ndc = center.project(this.rig.camera);
+    if (ndc.z > 1) return null;
+    const w = this.container.clientWidth || 1;
+    const h = this.container.clientHeight || 1;
+    return { x: ((ndc.x + 1) / 2) * w, y: ((1 - ndc.y) / 2) * h };
   }
 
   getManifest(): Manifest | null {
@@ -291,8 +342,30 @@ export class HyiViewer extends EventTarget {
 
   // ---- 分层与显隐 ----------------------------------------------------------
 
-  setLayer(value: number): void {
-    this.state.layer = Math.min(1, Math.max(0, value));
+  setLayer(value: number, immediate = false): void {
+    const next = Math.min(1, Math.max(0, value));
+    this.layerTarget = next;
+    // 拖滑块时每帧都在小步变化，缓动会拖泥带水；故事线/预设是大跳，缓动才有意义
+    if (immediate || Math.abs(next - this.state.layer) < LAYER_EASE_THRESHOLD) {
+      this.layerEasing = false;
+      this.state.layer = next;
+      this.applyVisibility();
+      return;
+    }
+    this.layerEasing = true;
+  }
+
+  /** 每帧把当前分层值指数逼近目标值。 */
+  private tickLayer(dt: number): void {
+    if (!this.layerEasing) return;
+    const k = 1 - Math.exp(-dt / LAYER_EASE_TAU);
+    const next = this.state.layer + (this.layerTarget - this.state.layer) * k;
+    if (Math.abs(this.layerTarget - next) < 0.002) {
+      this.state.layer = this.layerTarget;
+      this.layerEasing = false;
+    } else {
+      this.state.layer = next;
+    }
     this.applyVisibility();
   }
 
@@ -310,6 +383,10 @@ export class HyiViewer extends EventTarget {
   isolate(slug: string | null): void {
     this.state.isolated = slug;
     this.applyVisibility();
+    // 隔离后自动飞到这个结构：否则一个拳头大的器官还停在全身取景里，等于没隔离
+    const entry = slug ? this.structures.get(slug) : null;
+    if (entry) this.focus(slug!);
+    else if (!this.contentBox.isEmpty()) this.frameContent();
   }
 
   hide(slug: string): void {
@@ -334,8 +411,14 @@ export class HyiViewer extends EventTarget {
     const s = this.state;
     if (!s.systemsVisible[entry.system] || s.hidden.has(entry.slug)) return 0;
     let opacity = computeSystemOpacity(entry.system, s.layer) * s.systemOpacity[entry.system];
-    if (s.isolated && s.isolated !== entry.slug) opacity = Math.min(opacity, 0.06);
-    if (s.selected === entry.slug) opacity = Math.max(opacity, 0.85);
+    if (s.isolated) {
+      // 隔离 = 只看这一个。其他结构压到只剩一点点轮廓做参照——
+      // 0.06 × 130 个结构叠起来仍是一团糊，主角照样看不清
+      if (s.isolated !== entry.slug) return Math.min(opacity, 0.015);
+      return 1;
+    }
+    // 选中的结构渲染成不透明：0.85 的心脏后面会透出肋骨，形状根本读不出来
+    if (s.selected === entry.slug) opacity = Math.max(opacity, 1);
     return opacity;
   }
 
@@ -479,12 +562,11 @@ export class HyiViewer extends EventTarget {
     if (this.reducedMotion) return;
     for (const [slug, scaleFn] of Object.entries(ANIMATED_STRUCTURES)) {
       const entry = this.structures.get(slug);
-      const box = entry?.mesh.geometry.boundingBox;
-      if (!entry || !box || !entry.material.visible) continue;
-      const s = scaleFn(elapsed);
-      const center = box.getCenter(new Vector3());
-      entry.mesh.scale.setScalar(s);
-      entry.mesh.position.copy(center).multiplyScalar(1 - s);
+      const base = this.pulseBases.get(slug);
+      if (!entry || !base || !entry.material.visible) continue;
+      const next = pulseTransform(base, scaleFn(elapsed));
+      entry.mesh.position.set(next.position.x, next.position.y, next.position.z);
+      entry.mesh.scale.setScalar(next.scale);
     }
     // 描边走 OutlinePass，直接描选中网格本身，动画时无需再同步 transform
   }
@@ -586,6 +668,7 @@ export class HyiViewer extends EventTarget {
   private tick(): void {
     if (this.disposed) return;
     const dt = this.clock.getDelta();
+    this.tickLayer(dt);
     this.animateOrgans(this.clock.elapsedTime);
     if (this.flight) {
       this.flight.t = Math.min(1, this.flight.t + dt / 0.6);

@@ -322,6 +322,13 @@ export function setMaterialOpacity(material: Material, opacity: number): void {
     material.opacity = opacity;
     // 半透明叠加时关闭深度写入，减少互相遮挡的闪面
     material.depthWrite = opacity > 0.55;
+    // 完全不透明时关掉混合：留着 transparent 的话，选中的器官后面会透出肋骨，
+    // 看着像磨砂玻璃而不是实体
+    const solid = opacity >= 0.999;
+    if (material.transparent === solid) {
+      material.transparent = !solid;
+      material.needsUpdate = true;
+    }
   }
   material.visible = opacity > 0.005;
 }
