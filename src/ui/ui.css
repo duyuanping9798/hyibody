@@ -949,3 +949,8 @@ body.hyi-kiosk .hyi-info .blurb {
   margin-top: 8px;
   width: 100%;
 }
+
+/* 一键回全身：钻进某个器官内部之后总得有条出路 */
+.hyi-back-to-body {
+  width: 100%;
+}

@@ -68,6 +68,8 @@ test('layer state and selection restore from share URL', async ({ page }) => {
 
 /** M2-1 故事线冒烟：从菜单启动"心跳"之旅，第一步文案出现，可下一步。 */
 test('heartbeat tour plays from the menu', async ({ page }) => {
+  // 第二步会"打开心脏"（展开内部 + 隔离 + 相机飞行），软件渲染下这一帧很重
+  test.setTimeout(240_000);
   await page.goto('/');
   await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
     timeout: 60_000,
@@ -83,14 +85,15 @@ test('heartbeat tour plays from the menu', async ({ page }) => {
   // 先暂停自动播放，再手动步进（避免 9s/步 的自动推进造成竞态）
   await player.getByRole('button', { name: '暂停' }).click();
   const progress = player.locator('.progress');
-  const before = Number((await progress.innerText()).split('/')[0]);
+  const [before, total] = (await progress.innerText()).split('/').map((n) => Number(n.trim()));
+  expect(total).toBeGreaterThan(1);
   await player.getByRole('button', { name: '下一步' }).click();
-  await expect(progress).toHaveText(`${before + 1} / 7`);
+  await expect(progress).toHaveText(`${before! + 1} / ${total}`);
 
   await page.evaluate(
     () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))),
   );
-  await page.screenshot({ path: 'test-results/smoke-tour.png' });
+  await page.screenshot({ path: 'test-results/smoke-tour.png', timeout: 120_000 });
 
   await player.getByRole('button', { name: '退出' }).click();
   await expect(player).not.toBeVisible();
@@ -305,4 +308,22 @@ test('opening the heart reveals its inner parts', async ({ page }) => {
 
   await page.getByRole('button', { name: '收起内部' }).first().click();
   await expect(page.getByRole('button', { name: '收起内部' })).toHaveCount(0);
+});
+
+/** 一键"返回全身"：钻进器官内部之后总得有条出路。 */
+test('back to full body clears isolation, expansion and clipping', async ({ page }) => {
+  const state = encodeUrlState({ layer: 0.55, selected: 'heart' });
+  await page.goto(`/?v=${state}`);
+  await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
+    timeout: 60_000,
+  });
+  await expect(page.getByTestId('info-card')).toBeVisible({ timeout: 30_000 });
+
+  await page.getByRole('button', { name: /展开内部/ }).click();
+  await page.getByRole('button', { name: '返回全身' }).click();
+
+  // 展开、隔离、剖切、选中全部清空
+  await expect(page.getByRole('button', { name: '收起内部' })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: '返回全身' })).toHaveCount(0);
+  await expect(page.getByTestId('info-card')).toHaveCount(0);
 });

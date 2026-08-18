@@ -1,6 +1,9 @@
 {
   "id": "heartbeat",
-  "title": { "zh": "心跳与血液的旅程", "en": "Journey of a Heartbeat" },
+  "title": {
+    "zh": "心跳与血液的旅程",
+    "en": "Journey of a Heartbeat"
+  },
   "steps": [
     {
       "text": {
@@ -10,6 +13,44 @@
       "layer": 0.6,
       "selected": "heart",
       "durationMs": 9000
+    },
+    {
+      "text": {
+        "zh": "把心脏打开看看：四个腔室由厚厚的心室壁和心房壁围成，中间靠四个瓣膜控制血流方向。",
+        "en": "Open it up: four chambers walled by thick ventricular and atrial muscle, with four valves steering the flow."
+      },
+      "layer": 0.6,
+      "expand": "heart",
+      "selected": "heart_ventricle_wall",
+      "focus": true,
+      "durationMs": 11000
+    },
+    {
+      "text": {
+        "zh": "二尖瓣只有两片瓣叶，守在左心房与左心室之间；它一关紧，血就只能朝主动脉那个方向走。",
+        "en": "The mitral valve has just two leaflets. Once it snaps shut, blood can only go one way — into the aorta."
+      },
+      "layer": 0.6,
+      "expand": "heart",
+      "selected": "heart_mitral_valve",
+      "focus": true,
+      "durationMs": 10000
+    },
+    {
+      "text": {
+        "zh": "沿心脏正中切一刀，断面填实——左心室壁明显比右心室厚，因为它要把血送遍全身。",
+        "en": "A cut through the middle: the left ventricular wall is visibly thicker — it pumps to the whole body."
+      },
+      "layer": 0.6,
+      "expand": "heart",
+      "selected": "heart_ventricle_wall",
+      "focus": true,
+      "clip": {
+        "axis": "y",
+        "pos": 0.52,
+        "flip": true
+      },
+      "durationMs": 11000
     },
     {
       "text": {

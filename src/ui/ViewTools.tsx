@@ -16,7 +16,7 @@ export function ViewTools() {
   const setClip = useUiStore((s) => s.setClip);
   const selected = useUiStore((s) => s.selected);
   const clipThroughSelected = useUiStore((s) => s.clipThroughSelected);
-  const resetVisibility = useUiStore((s) => s.resetVisibility);
+  const backToBody = useUiStore((s) => s.backToBody);
   const quality = useUiStore((s) => s.quality);
   const qualityToggleable = useUiStore((s) => s.qualityToggleable);
   const setQuality = useUiStore((s) => s.setQuality);
@@ -103,10 +103,10 @@ export function ViewTools() {
           </button>
         </section>
       )}
-      {(hiddenCount > 0 || isolated) && (
+      {(hiddenCount > 0 || isolated || expanded || clip) && (
         <section>
-          <button className="hyi-btn" onClick={resetVisibility}>
-            {t.actionRestore}
+          <button className="hyi-btn hyi-back-to-body" onClick={backToBody}>
+            {t.backToBody}
             {hiddenCount > 0 ? `（${t.hiddenCount.replace('{n}', String(hiddenCount))}）` : ''}
           </button>
         </section>

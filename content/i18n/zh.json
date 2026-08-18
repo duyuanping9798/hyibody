@@ -83,5 +83,6 @@
   "clipThroughSelected": "沿此结构半剖",
   "clipFlip": "反向",
   "expandParts": "展开内部（{n}）",
-  "collapseParts": "收起内部"
+  "collapseParts": "收起内部",
+  "backToBody": "返回全身"
 }

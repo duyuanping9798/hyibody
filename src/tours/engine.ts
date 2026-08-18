@@ -18,6 +18,10 @@ export interface TourStep {
   preset?: 'front' | 'back' | 'left' | 'right' | 'top' | 'hero';
   /** 显隐覆盖：未列出的系统一律可见 */
   systems?: Partial<Record<SystemId, boolean>>;
+  /** 展开某个结构的内部件（心脏 → 心室壁/瓣膜…）；不给则收起 */
+  expand?: string;
+  /** 剖切面；不给则关闭剖切 */
+  clip?: { axis: 'x' | 'y' | 'z'; pos: number; flip?: boolean };
   /** 自动播放时本步停留时长 */
   durationMs: number;
 }
