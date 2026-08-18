@@ -199,3 +199,28 @@ test('share link restores an organ selection without flooding the background', a
   }
   await page.screenshot({ path: 'test-results/smoke-select-organ.png' });
 });
+
+/**
+ * B 步渲染升级：画质档位。
+ * 云端无 GPU（SwiftShader）时自动退到 low 档并说明原因；`?hq=medium` 强制开后处理，
+ * 高画质开关出现且可切换。
+ */
+test('quality tier falls back on software rendering and can be forced on', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
+    timeout: 60_000,
+  });
+  // 软件渲染：开关换成一句说明，不给切
+  await expect(page.getByText('当前设备用软件渲染，已自动降到基础画质')).toBeVisible();
+
+  await page.goto('/?hq=medium');
+  await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
+    timeout: 60_000,
+  });
+  const toggle = page.getByRole('checkbox');
+  await expect(toggle).toBeVisible();
+  await expect(toggle).not.toBeChecked();
+  await toggle.check();
+  await expect(toggle).toBeChecked();
+  await page.screenshot({ path: 'test-results/smoke-quality.png' });
+});

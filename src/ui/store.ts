@@ -6,6 +6,7 @@ import { TourEngine, type Tour, type TourStep } from '../tours/engine';
 import type { ClipAxis } from '../viewer/clipping';
 import type { ViewPresetId } from '../viewer/camera';
 import type { HyiViewer } from '../viewer/HyiViewer';
+import type { QualityTier } from '../viewer/quality';
 
 export type LoadState = 'loading' | 'ready' | 'error';
 
@@ -26,12 +27,16 @@ interface UiState {
   activePanel: 'systems' | 'views' | null;
   /** 界面语言（M2-5，默认中文） */
   lang: Locale;
+  /** 画质档位（B 步渲染升级）：low 是软件渲染兜底，不给切 */
+  quality: QualityTier;
+  qualityToggleable: boolean;
   /** 故事线播放状态（M2-1） */
   tour: Tour | null;
   tourIndex: number;
   tourPlaying: boolean;
 
   setLang(lang: Locale): void;
+  setQuality(q: QualityTier): void;
   setLoadState(s: LoadState): void;
   setManifest(m: Manifest): void;
   markSystemLoaded(id: string): void;
@@ -101,6 +106,7 @@ export function bindViewer(v: HyiViewer | null): void {
     // 选中结构时收起小屏抽屉面板，避免与信息卡叠在一起（桌面端不受影响）
     useUiStore.setState(slug ? { selected: slug, activePanel: null } : { selected: slug });
   });
+  useUiStore.setState({ quality: v.getQuality(), qualityToggleable: v.canToggleQuality() });
   v.addEventListener('systemloaded', (e) => {
     const system = (e as CustomEvent<{ system: string }>).detail.system;
     useUiStore.getState().markSystemLoaded(system);
@@ -146,7 +152,13 @@ export const useUiStore = create<UiState>((set, get) => ({
   tourIndex: 0,
   tourPlaying: false,
   lang: 'zh',
+  quality: 'medium',
+  qualityToggleable: false,
 
+  setQuality: (quality) => {
+    viewer?.setQuality(quality);
+    set({ quality });
+  },
   setLang: (lang) => {
     document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
     set({ lang });

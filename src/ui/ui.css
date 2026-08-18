@@ -512,3 +512,55 @@ body.hyi-kiosk .hyi-info .blurb {
     height: 22px;
   }
 }
+
+/* 高画质开关（B 步渲染升级） */
+.hyi-switch {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 32px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--hyi-text);
+}
+.hyi-switch input {
+  appearance: none;
+  width: 38px;
+  height: 22px;
+  border-radius: 999px;
+  background: #ffffff1f;
+  border: 1px solid #ffffff2b;
+  position: relative;
+  transition: background 0.18s;
+  cursor: pointer;
+  flex: none;
+}
+.hyi-switch input::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #e8ecf4;
+  transition: transform 0.18s;
+}
+.hyi-switch input:checked {
+  background: var(--hyi-accent-dim);
+  border-color: var(--hyi-accent);
+}
+.hyi-switch input:checked::after {
+  transform: translateX(16px);
+  background: var(--hyi-accent);
+}
+.hyi-switch input:focus-visible {
+  outline: 2px solid var(--hyi-accent);
+  outline-offset: 2px;
+}
+.hyi-hint {
+  margin: 6px 0 0;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--hyi-text-dim);
+}

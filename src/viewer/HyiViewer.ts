@@ -1,20 +1,19 @@
 import {
   ACESFilmicToneMapping,
-  AmbientLight,
   Box3,
   Clock,
-  DirectionalLight,
   DoubleSide,
   FrontSide,
   Group,
   Mesh,
+  PCFSoftShadowMap,
   PMREMGenerator,
   Scene,
   ShaderMaterial,
-  SphereGeometry,
   Vector3,
   WebGLRenderer,
   type Material,
+  type Object3D,
   type Plane,
 } from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -35,17 +34,26 @@ import { applyHighlight } from './highlight';
 import { computeSystemOpacity, PICKABLE_OPACITY_THRESHOLD } from './layers';
 import {
   colorForStructure,
-  createBackdropMaterial,
-  createOutlineMaterial,
   createSystemMaterial,
   createXRayMaterial,
   setMaterialOpacity,
 } from './materials';
+import { createRenderPipeline, type RenderPipeline } from './postprocess';
+import {
+  canToggleHighQuality,
+  defaultQuality,
+  QUALITY_CAPS,
+  readQualityEnv,
+  type QualityTier,
+} from './quality';
+import { createStage, fitStage, type Stage } from './stage';
 import { CLICK_MOVE_TOLERANCE_PX, StructurePicker } from './picking';
 
 export interface HyiViewerOptions {
   /** 站点部署基路径，传 import.meta.env.BASE_URL */
   base: string;
+  /** 强制画质档位（?hq= 或测试用）；不传则按设备能力自动判断 */
+  quality?: QualityTier | undefined;
 }
 
 /** 首屏系统：先加载完这两个就派发 ready，其余后台补（KICKOFF 第 5 节 M1-6）。 */
@@ -121,7 +129,9 @@ export class HyiViewer extends EventTarget {
   private hovered: string | null = null;
   /** ?v= 分享链接选中的结构可能还在后台加载：记下来，等它注册进来再选中。 */
   private pendingSelect: string | null = null;
-  private outline!: Mesh;
+  private stage!: Stage;
+  private pipeline: RenderPipeline | null = null;
+  private quality: QualityTier = 'medium';
   private contentBox = new Box3();
   private clipPlane: Plane | null = null;
   private flight: {
@@ -150,7 +160,7 @@ export class HyiViewer extends EventTarget {
     this.renderer.localClippingEnabled = true;
     // 电影级色调映射 + 程序化环境光照（观感升级，无外部 HDR 资源）
     this.renderer.toneMapping = ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.12;
+    this.renderer.toneMappingExposure = 0.98;
     container.appendChild(this.renderer.domElement);
     const pmrem = new PMREMGenerator(this.renderer);
     this.scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
@@ -158,22 +168,13 @@ export class HyiViewer extends EventTarget {
 
     this.rig = createCameraRig(this.renderer.domElement, 1);
     this.scene.add(this.root);
-    this.scene.add(new AmbientLight(0x8899bb, 0.35));
-    const key = new DirectionalLight(0xffffff, 1.1);
-    key.position.set(1200, -2000, 1800);
-    this.scene.add(key);
-    const rim = new DirectionalLight(0x33ddee, 0.5);
-    rim.position.set(-1500, 1200, 600);
-    this.scene.add(rim);
-    // 渐变舞台背景（内翻大球，替代纯色清屏；不参与拾取与取景框）
-    const backdrop = new Mesh(new SphereGeometry(15000, 32, 24), createBackdropMaterial());
-    backdrop.renderOrder = -1;
-    this.scene.add(backdrop);
-    // 选中描边（反壳），select() 时挂到对应网格几何体上
-    this.outline = new Mesh(undefined, createOutlineMaterial(0x4fe3e0));
-    this.outline.visible = false;
-    this.outline.renderOrder = 0;
-    this.scene.add(this.outline);
+    // 舞台：渐变背景球 + 三点光 + 接触阴影
+    this.stage = createStage();
+    this.scene.add(this.stage.root);
+
+    // 画质档位：软件渲染（云端 CI）自动退到 low，桌面默认 high，触摸屏默认 medium
+    this.quality = options.quality ?? defaultQuality(readQualityEnv(this.renderer.getContext()));
+    this.applyQuality();
 
     const dom = this.renderer.domElement;
     dom.addEventListener('pointerdown', this.onPointerDown);
@@ -201,6 +202,7 @@ export class HyiViewer extends EventTarget {
       const firstBatch = first.length > 0 ? first : systems;
       await Promise.all(firstBatch.map((s) => this.loadSystem(s.id as SystemId, s.file)));
       this.contentBox = new Box3().setFromObject(this.root);
+      fitStage(this.stage, this.contentBox);
       this.frameContent();
       this.applyVisibility();
       this.container.dataset.hyiReady = '1';
@@ -210,6 +212,7 @@ export class HyiViewer extends EventTarget {
           try {
             await this.loadSystem(s.id as SystemId, s.file);
             this.contentBox = new Box3().setFromObject(this.root);
+            fitStage(this.stage, this.contentBox);
             this.applyVisibility();
             this.applyClip();
             this.dispatchEvent(new CustomEvent('systemloaded', { detail: { system: s.id } }));
@@ -247,6 +250,7 @@ export class HyiViewer extends EventTarget {
         sys === 'skin' ? createXRayMaterial(color, 1) : createSystemMaterial(sys, color);
       mesh.material = material;
       mesh.renderOrder = RENDER_ORDER[sys];
+      mesh.castShadow = QUALITY_CAPS[this.quality].softShadows && sys !== 'skin';
       mesh.geometry.computeBoundingBox();
       group.add(mesh);
       this.structures.set(slug, { slug, system: sys, mesh, material });
@@ -357,11 +361,10 @@ export class HyiViewer extends EventTarget {
     const entry = slug ? this.structures.get(slug) : null;
     if (entry) {
       applyHighlight(entry.mesh, 'selected');
-      this.outline.geometry = entry.mesh.geometry;
-      this.outline.visible = true;
+      this.setOutlineTarget([entry.mesh]);
       this.aimAt(entry);
     } else {
-      this.outline.visible = false;
+      this.setOutlineTarget([]);
     }
     this.applyVisibility();
     this.dispatchEvent(new CustomEvent('select', { detail: { slug: entry ? slug : null } }));
@@ -483,14 +486,7 @@ export class HyiViewer extends EventTarget {
       entry.mesh.scale.setScalar(s);
       entry.mesh.position.copy(center).multiplyScalar(1 - s);
     }
-    // 选中描边跟随动画中的网格
-    if (this.outline.visible && this.state.selected) {
-      const sel = this.structures.get(this.state.selected);
-      if (sel) {
-        this.outline.position.copy(sel.mesh.position);
-        this.outline.scale.copy(sel.mesh.scale);
-      }
-    }
+    // 描边走 OutlinePass，直接描选中网格本身，动画时无需再同步 transform
   }
 
   // ---- 剖切 ----------------------------------------------------------------
@@ -514,7 +510,6 @@ export class HyiViewer extends EventTarget {
         entry.material.side = planes ? DoubleSide : FrontSide;
       }
     }
-    (this.outline.material as Material).clippingPlanes = planes;
   }
 
   // ---- 帧循环等 ------------------------------------------------------------
@@ -536,16 +531,56 @@ export class HyiViewer extends EventTarget {
     this.renderer.setSize(w, h, false);
     this.rig.camera.aspect = w / h;
     this.rig.camera.updateProjectionMatrix();
-    this.updateOutlineScale(h);
+    this.pipeline?.setSize(w, h, this.renderer.getPixelRatio());
   }
 
-  /** 描边宽度按像素恒定：把 1 px 换算成单位深度处的世界尺寸交给着色器。 */
-  private updateOutlineScale(heightPx: number): void {
-    const material = this.outline.material as ShaderMaterial;
-    const uniform = material.uniforms?.uPixelScale;
-    if (!uniform) return;
-    const fovRad = (this.rig.camera.fov * Math.PI) / 180;
-    uniform.value = (2 * Math.tan(fovRad / 2)) / Math.max(heightPx, 1);
+  // ---- 画质档位 ------------------------------------------------------------
+
+  getQuality(): QualityTier {
+    return this.quality;
+  }
+
+  canToggleQuality(): boolean {
+    return canToggleHighQuality(this.quality);
+  }
+
+  /** 切换画质：重建后处理链、开关阴影，并把当前选中重新交给描边通道。 */
+  setQuality(tier: QualityTier): void {
+    if (tier === this.quality) return;
+    this.quality = tier;
+    this.applyQuality();
+    const selected = this.state.selected ? this.structures.get(this.state.selected) : null;
+    this.setOutlineTarget(selected ? [selected.mesh] : []);
+    this.dispatchEvent(new CustomEvent('quality', { detail: { quality: tier } }));
+  }
+
+  private applyQuality(): void {
+    const caps = QUALITY_CAPS[this.quality];
+    this.pipeline?.dispose();
+    this.pipeline = caps.postprocessing
+      ? createRenderPipeline(this.renderer, this.scene, this.rig.camera, caps)
+      : null;
+
+    this.renderer.shadowMap.enabled = caps.softShadows;
+    this.renderer.shadowMap.type = PCFSoftShadowMap;
+    this.stage.key.castShadow = caps.softShadows;
+    this.stage.key.shadow.mapSize.set(2048, 2048);
+    this.stage.key.shadow.bias = -0.0006;
+    this.stage.key.shadow.normalBias = 2;
+    this.stage.shadowCatcher.visible = caps.softShadows;
+    // 真阴影开着时假接触阴影淡一点，免得脚下糊成一团黑
+    (this.stage.contactShadow.material as Material).opacity = caps.softShadows ? 0.45 : 0.9;
+    for (const entry of this.structures.values()) {
+      entry.mesh.castShadow = caps.softShadows && entry.system !== 'skin';
+    }
+
+    const w = this.container.clientWidth || 1;
+    const h = this.container.clientHeight || 1;
+    this.pipeline?.setSize(w, h, this.renderer.getPixelRatio());
+  }
+
+  private setOutlineTarget(objects: Object3D[]): void {
+    this.pipeline?.setSelected(objects);
   }
 
   private tick(): void {
@@ -560,7 +595,8 @@ export class HyiViewer extends EventTarget {
       if (this.flight.t >= 1) this.flight = null;
     }
     this.rig.controls.update();
-    this.renderer.render(this.scene, this.rig.camera);
+    if (this.pipeline) this.pipeline.render();
+    else this.renderer.render(this.scene, this.rig.camera);
   }
 
   dispose(): void {
@@ -571,6 +607,7 @@ export class HyiViewer extends EventTarget {
     dom.removeEventListener('pointerup', this.onPointerUp);
     dom.removeEventListener('pointermove', this.onPointerMove);
     dom.removeEventListener('pointerleave', this.onPointerLeave);
+    this.pipeline?.dispose();
     this.renderer.setAnimationLoop(null);
     this.resizeObserver.disconnect();
     this.rig.dispose();
