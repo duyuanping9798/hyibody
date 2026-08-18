@@ -19,6 +19,17 @@ base_url: https://cdn.humanatlas.io/digital-objects/ref-organ
 # 明确不取 brain-male（3d-allen-m-brain.glb）——它派生自 Allen 脑图谱，
 # 许可证不在 CLAUDE.md 的允许清单里。
 files:
+  # 全身皮肤：不进产物，只用来算 HRA → BP3D 的全局定标（两具身体的身高比）。
+  # 为什么需要它：BP3D 的器官网格在前后方向普遍偏薄（气管 0.49、胰腺 0.61、肾 0.56），
+  # 逐器官按包围盒缩放会把 HRA 器官整体缩掉四分之一。改成"全局按身高定标 +
+  # 逐器官对中心"：位置信 BP3D，形状与比例信 HRA（2026-08-18 决策，见 DECISIONS.md）。
+  - name: 3d-vh-m-skin.glb
+    kind: glb
+    url_path: skin-male/v1.4/assets/3d-vh-m-skin.glb
+    object: https://purl.humanatlas.io/ref-organ/skin-male/v1.4
+    creator: Kristen Browne (ORCID 0000-0003-4066-7531)
+    bytes: 19901928
+    sha256: 4764602f0866fbdad19382e7f12ba148ee33141677153b556f7238116bc33c2a
   - name: 3d-vh-m-heart.glb
     kind: glb
     url_path: heart-male/v1.3/assets/3d-vh-m-heart.glb
@@ -26,3 +37,47 @@ files:
     creator: Kristen Browne (ORCID 0000-0003-4066-7531)
     bytes: 4071772
     sha256: 689df039c8bc264ea06a44cd926762976f0666c0ff2dc532d046409b185e6b0c
+  - name: 3d-vh-m-trachea.glb
+    kind: glb
+    url_path: trachea-male/v1.1/assets/3d-vh-m-trachea.glb
+    object: https://purl.humanatlas.io/ref-organ/trachea-male/v1.1
+    creator: Kristen Browne (ORCID 0000-0003-4066-7531)
+    bytes: 1184848
+    sha256: bca5616e505baff61dce1bbc31d6602eb72c112bcbe4531931e37e0c254ddd8d
+  - name: 3d-vh-m-larynx.glb
+    kind: glb
+    url_path: larynx-male/v1.1/assets/3d-vh-m-larynx.glb
+    object: https://purl.humanatlas.io/ref-organ/larynx-male/v1.1
+    creator: Kristen Browne (ORCID 0000-0003-4066-7531)
+    bytes: 335576
+    sha256: cdb6b3b5b0abd2b06e99913a8f4719e7b0784421b0534ae728e832197d30e287
+  - name: 3d-vh-m-pancreas.glb
+    kind: glb
+    url_path: pancreas-male/v1.3/assets/3d-vh-m-pancreas.glb
+    object: https://purl.humanatlas.io/ref-organ/pancreas-male/v1.3
+    creator: Kristen Browne (ORCID 0000-0003-4066-7531)
+    bytes: 2110316
+    sha256: a89d7acbc9448ca1e6c09f7f6d6a18b2bd8a2e94cd4a0b51709915a8b7bea84e
+  - name: 3d-vh-m-spleen.glb
+    kind: glb
+    url_path: spleen-male/v1.3/assets/3d-vh-m-spleen.glb
+    object: https://purl.humanatlas.io/ref-organ/spleen-male/v1.3
+    creator: Kristen Browne (ORCID 0000-0003-4066-7531)
+    bytes: 540348
+    sha256: 826012b9dc6b69064b76c3aabbce32a2baa32d1f97fde3e88a015f399c9040b8
+  # 左右肾是两个 glb，但在 HyiBody 里仍然是"肾"一条：结构清单里用 assets 列两个，
+  # 定位锚点也按两个合起来算（BP3D 的 kidney 概念本来就含左右两件）
+  - name: 3d-vh-m-kidney-l.glb
+    kind: glb
+    url_path: kidney-male-left/v1.3/assets/3d-vh-m-kidney-l.glb
+    object: https://purl.humanatlas.io/ref-organ/kidney-male-left/v1.3
+    creator: Kristen Browne (ORCID 0000-0003-4066-7531)
+    bytes: 1536980
+    sha256: 1e9f54281652d0b05c9ae54a06380a41a8d9c62c1036829180750995b1730fac
+  - name: 3d-vh-m-kidney-r.glb
+    kind: glb
+    url_path: kidney-male-right/v1.3/assets/3d-vh-m-kidney-r.glb
+    object: https://purl.humanatlas.io/ref-organ/kidney-male-right/v1.3
+    creator: Kristen Browne (ORCID 0000-0003-4066-7531)
+    bytes: 1547360
+    sha256: f23bac3f62fd050b689bdee86bb8a20bff6997e830cb508c847f74c03c6a964b

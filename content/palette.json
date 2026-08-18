@@ -41,5 +41,16 @@
   "heart_tricuspid_valve": "#d8cec0",
   "heart_aortic_valve": "#e3dbcf",
   "heart_pulmonary_valve": "#dcd3c6",
-  "heart_papillary_muscles": "#a8524a"
+  "heart_papillary_muscles": "#a8524a",
+  "tracheal_cartilages": "#c3ced8",
+  "carina": "#b8c6d2",
+  "thyroid_cartilage": "#b6c4d2",
+  "cricoid_cartilage": "#adbcca",
+  "epiglottic_cartilage": "#c6d0da",
+  "pancreas_head": "#d8c07a",
+  "pancreas_body": "#d2b76c",
+  "pancreas_tail": "#cbae61",
+  "kidney_cortex": "#a4514a",
+  "kidney_pyramids": "#8b3d38",
+  "kidney_hilum": "#c8a58f"
 }

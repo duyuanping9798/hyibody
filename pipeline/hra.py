@@ -10,11 +10,14 @@ HRA 的参考器官是医学插画师按 Visible Human 男性数据做的，解�
 * 轴向：HRA 是 glTF 惯例 Y 向上、+Z 朝前；BP3D 是 Z 向上、−Y 朝前。
   两者的 +X 都是被试的左侧（用左右心房质心实测确认，见 tests）。
   所以 (x, y, z)_hra → (x, −z, y)_bp3d，是绕 X 轴 +90° 的纯旋转（行列式 +1，不镜像）。
-* 位置与大小：HRA 与 BP3D 是两个不同的人，全局对齐只能做到厘米级。
-  所以逐器官做**等比拟合**：把 HRA 器官的包围盒等比缩放并平移到 BP3D 同名结构的
-  包围盒上（`fit_to_fma`）。这样新器官正好占据老器官的位置，与 BP3D 的骨骼/肌肉
-  仍然对得上；等比（不是逐轴）保证器官自身不变形，内部件用**同一个**变换，
-  相互关系原封不动。
+* 大小：**全局按身高定标一次**（两具身体皮肤网格的身高比，实测 0.9426）。
+  一开始试过逐器官按包围盒缩放，结果发现 BP3D 的器官网格在前后方向普遍偏薄
+  （气管 0.49、胰腺 0.61、肾 0.56，而全身皮肤的前后比是 0.90），
+  按包围盒缩会把 HRA 器官整体缩掉四分之一。
+* 位置：**逐器官对中心**——把缩放后的 HRA 器官平移到 BP3D 同名结构包围盒的中心
+  （`fit_to_fma`）。位置信 BP3D（那样才和 BP3D 的骨骼肌肉对得上），
+  形状与比例信 HRA（那本来就是这套数据的价值所在）。
+  同一个 glb 的所有部件用**同一个**变换，内部相互关系原封不动。
 """
 
 from __future__ import annotations
@@ -110,6 +113,31 @@ class Fit:
 
     def apply(self, vertices: np.ndarray) -> np.ndarray:
         return np.asarray(vertices, dtype=np.float64) * self.scale + np.asarray(self.offset)
+
+
+def axis_ratios(source: np.ndarray, target: np.ndarray) -> np.ndarray:
+    """逐轴尺寸比（target / source）。用来在日志里暴露两套数据分歧大的器官。"""
+    src_size = source[1] - source[0]
+    if np.any(src_size <= 0):
+        raise ValueError(f"源包围盒退化：{src_size}")
+    return (target[1] - target[0]) / src_size
+
+
+def height_scale(source: np.ndarray, target: np.ndarray, axis: int = 2) -> float:
+    """全局定标：两具身体的身高比（BP3D 坐标下 Z 轴），由各自的全身皮肤网格给出。"""
+    src = float(source[1][axis] - source[0][axis])
+    tgt = float(target[1][axis] - target[0][axis])
+    if src <= 0 or tgt <= 0:
+        raise ValueError(f"皮肤包围盒退化：源 {src}、目标 {tgt}")
+    return tgt / src
+
+
+def fit_centered(source: np.ndarray, target: np.ndarray, scale: float) -> Fit:
+    """给定缩放，把 source 包围盒的中心平移到 target 包围盒的中心。"""
+    src_center = (source[0] + source[1]) / 2.0
+    tgt_center = (target[0] + target[1]) / 2.0
+    offset = tgt_center - src_center * scale
+    return Fit(scale=float(scale), offset=(float(offset[0]), float(offset[1]), float(offset[2])))
 
 
 def fit_to_bounds(source: np.ndarray, target: np.ndarray) -> Fit:

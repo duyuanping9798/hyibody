@@ -460,17 +460,6 @@
   source: bp3d_partof
   target_faces: 21000
   priority: 1
-- slug: trachea
-  zh: 气管
-  en: Trachea
-  system: organs
-  region: neck
-  side: none
-  fma:
-    - FMA7394
-  source: bp3d
-  target_faces: 4500
-  priority: 1
 - slug: esophagus
   zh: 食管
   en: Esophagus
@@ -514,39 +503,6 @@
     - FMA7202
   source: bp3d
   target_faces: 2400
-  priority: 1
-- slug: pancreas
-  zh: 胰腺
-  en: Pancreas
-  system: organs
-  region: abdomen
-  side: none
-  fma:
-    - FMA7198
-  source: bp3d
-  target_faces: 4500
-  priority: 1
-- slug: spleen
-  zh: 脾
-  en: Spleen
-  system: organs
-  region: abdomen
-  side: none
-  fma:
-    - FMA7196
-  source: bp3d
-  target_faces: 4500
-  priority: 1
-- slug: kidneys
-  zh: 肾
-  en: Kidneys
-  system: organs
-  region: abdomen
-  side: both
-  fma:
-    - FMA7203
-  source: bp3d
-  target_faces: 9000
   priority: 1
 - slug: urinary_bladder
   zh: 膀胱
@@ -635,19 +591,6 @@
     - FMA13889
   source: bp3d
   target_faces: 1500
-  priority: 2
-- slug: larynx_cartilages
-  zh: 喉软骨（含喉结）
-  en: Laryngeal cartilages
-  system: organs
-  region: neck
-  side: none
-  fma:
-    - FMA55099
-    - FMA9615
-    - FMA55130
-  source: bp3d
-  target_faces: 5000
   priority: 2
 - slug: thymus
   zh: 胸腺
@@ -1755,3 +1698,332 @@
       - VH_M_papillary_muscle_of_heart_posteromedial
   target_faces: 2000
   priority: 2
+- slug: trachea
+  zh: 气管
+  en: Trachea
+  system: organs
+  region: neck
+  side: none
+  fma:
+    - FMA7394
+  uberon: UBERON:0003126
+  source: hra
+  hra:
+    asset: 3d-vh-m-trachea.glb
+    meshes: []
+    fit_to_set: isa
+    fit_to_fma:
+      - FMA7394
+  target_faces: 12000
+  priority: 1
+- slug: tracheal_cartilages
+  zh: 气管软骨环
+  en: Tracheal cartilages
+  system: organs
+  region: neck
+  side: none
+  parent: trachea
+  fma: []
+  uberon: UBERON:0003604
+  source: hra
+  hra:
+    asset: 3d-vh-m-trachea.glb
+    meshes:
+      - VH_M_tracheal_cartilage
+  target_faces: 8000
+  priority: 2
+- slug: carina
+  zh: 气管隆嵴
+  en: Carina of trachea
+  system: organs
+  region: thorax
+  side: none
+  parent: trachea
+  fma: []
+  uberon: UBERON:0006679
+  source: hra
+  hra:
+    asset: 3d-vh-m-trachea.glb
+    meshes:
+      - VH_M_carina
+  target_faces: 900
+  priority: 3
+- slug: larynx_cartilages
+  zh: 喉软骨（含喉结）
+  en: Laryngeal cartilages
+  system: organs
+  region: neck
+  side: none
+  fma:
+    - FMA55099
+    - FMA9615
+    - FMA55130
+  uberon: UBERON:0001739
+  source: hra
+  hra:
+    asset: 3d-vh-m-larynx.glb
+    meshes: []
+    fit_to_set: isa
+    fit_to_fma:
+      - FMA55099
+      - FMA9615
+      - FMA55130
+  target_faces: 8000
+  priority: 2
+- slug: thyroid_cartilage
+  zh: 甲状软骨
+  en: Thyroid cartilage
+  system: organs
+  region: neck
+  side: none
+  parent: larynx_cartilages
+  fma:
+    - FMA55099
+  uberon: UBERON:0001738
+  source: hra
+  hra:
+    asset: 3d-vh-m-larynx.glb
+    meshes:
+      - VH_M_thyroid_cartilage
+  target_faces: 4000
+  priority: 2
+- slug: cricoid_cartilage
+  zh: 环状软骨
+  en: Cricoid cartilage
+  system: organs
+  region: neck
+  side: none
+  parent: larynx_cartilages
+  fma:
+    - FMA9615
+  uberon: UBERON:0002375
+  source: hra
+  hra:
+    asset: 3d-vh-m-larynx.glb
+    meshes:
+      - VH_M_cricoid_cartilage
+  target_faces: 2000
+  priority: 3
+- slug: epiglottic_cartilage
+  zh: 会厌软骨
+  en: Epiglottic cartilage
+  system: organs
+  region: neck
+  side: none
+  parent: larynx_cartilages
+  fma: []
+  uberon: UBERON:0001742
+  source: hra
+  hra:
+    asset: 3d-vh-m-larynx.glb
+    meshes:
+      - VH_M_epiglottic_cartilage
+  target_faces: 800
+  priority: 3
+- slug: pancreas
+  zh: 胰腺
+  en: Pancreas
+  system: organs
+  region: abdomen
+  side: none
+  fma:
+    - FMA7198
+  uberon: UBERON:0001264
+  source: hra
+  hra:
+    asset: 3d-vh-m-pancreas.glb
+    meshes: []
+    fit_to_set: isa
+    fit_to_fma:
+      - FMA7198
+  target_faces: 10000
+  priority: 1
+- slug: pancreas_head
+  zh: 胰头
+  en: Head of pancreas
+  system: organs
+  region: abdomen
+  side: none
+  parent: pancreas
+  # 含钩突：钩突本来就是胰头向左下伸出的一块
+  fma: []
+  uberon: UBERON:0001069
+  source: hra
+  hra:
+    asset: 3d-vh-m-pancreas.glb
+    meshes:
+      - VH_M_head_of_pancreas
+      - VH_M_uncinate_process_of_the_pancreas
+  target_faces: 4000
+  priority: 2
+- slug: pancreas_body
+  zh: 胰体
+  en: Body of pancreas
+  system: organs
+  region: abdomen
+  side: none
+  parent: pancreas
+  fma: []
+  uberon: UBERON:0001150
+  source: hra
+  hra:
+    asset: 3d-vh-m-pancreas.glb
+    meshes:
+      - VH_M_neck_of_pancreas
+      - VH_M_body_of_pancreas
+  target_faces: 6000
+  priority: 2
+- slug: pancreas_tail
+  zh: 胰尾
+  en: Tail of pancreas
+  system: organs
+  region: abdomen
+  side: none
+  parent: pancreas
+  fma: []
+  uberon: UBERON:0001151
+  source: hra
+  hra:
+    asset: 3d-vh-m-pancreas.glb
+    meshes:
+      - VH_M_tail_of_pancreas
+  target_faces: 6000
+  priority: 2
+- slug: spleen
+  zh: 脾
+  en: Spleen
+  system: organs
+  region: abdomen
+  side: none
+  fma:
+    - FMA7196
+  uberon: UBERON:0002106
+  source: hra
+  hra:
+    asset: 3d-vh-m-spleen.glb
+    meshes: []
+    fit_to_set: isa
+    fit_to_fma:
+      - FMA7196
+  target_faces: 9000
+  priority: 1
+- slug: kidneys
+  zh: 肾
+  en: Kidneys
+  system: organs
+  region: abdomen
+  side: both
+  # 整肾只取被膜（外表面）；皮质/锥体在内部件里，叠着画会打架
+  fma:
+    - FMA7203
+  uberon: UBERON:0002113
+  source: hra
+  hra:
+    assets:
+      - 3d-vh-m-kidney-l.glb
+      - 3d-vh-m-kidney-r.glb
+    meshes:
+      - VH_M_kidney_capsule_L
+      - VH_M_kidney_capsule_R
+    fit_to_set: isa
+    fit_to_fma:
+      - FMA7203
+  target_faces: 12000
+  priority: 1
+- slug: kidney_cortex
+  zh: 肾皮质
+  en: Renal cortex
+  system: organs
+  region: abdomen
+  side: both
+  parent: kidneys
+  # 含肾柱：肾柱就是皮质伸进髓质之间的部分
+  fma: []
+  uberon: UBERON:0002189
+  source: hra
+  hra:
+    assets:
+      - 3d-vh-m-kidney-l.glb
+      - 3d-vh-m-kidney-r.glb
+    meshes:
+      - VH_M_outer_cortex_of_kidney_L
+      - VH_M_outer_cortex_of_kidney_R
+      - VH_M_renal_column_L
+      - VH_M_renal_column_R
+  target_faces: 8000
+  priority: 2
+- slug: kidney_pyramids
+  zh: 肾锥体
+  en: Renal pyramids
+  system: organs
+  region: abdomen
+  side: both
+  parent: kidneys
+  # 含肾乳头：乳头就是锥体的尖，尿从这里滴进肾盏
+  fma: []
+  uberon: UBERON:0004200
+  source: hra
+  hra:
+    assets:
+      - 3d-vh-m-kidney-l.glb
+      - 3d-vh-m-kidney-r.glb
+    meshes:
+      - VH_M_renal_pyramid_L_a
+      - VH_M_renal_pyramid_L_b
+      - VH_M_renal_pyramid_L_c
+      - VH_M_renal_pyramid_L_d
+      - VH_M_renal_pyramid_L_e
+      - VH_M_renal_pyramid_L_f
+      - VH_M_renal_pyramid_L_g
+      - VH_M_renal_pyramid_L_h
+      - VH_M_renal_pyramid_L_i
+      - VH_M_renal_pyramid_a
+      - VH_M_renal_pyramid_b
+      - VH_M_renal_pyramid_c
+      - VH_M_renal_pyramid_d
+      - VH_M_renal_pyramid_e
+      - VH_M_renal_pyramid_f
+      - VH_M_renal_pyramid_g
+      - VH_M_renal_pyramid_h
+      - VH_M_renal_pyramid_i
+      - VH_M_renal_pyramid_j
+      - VH_M_renal_papilla_L_a
+      - VH_M_renal_papilla_L_b
+      - VH_M_renal_papilla_L_c
+      - VH_M_renal_papilla_L_d
+      - VH_M_renal_papilla_L_e
+      - VH_M_renal_papilla_L_f
+      - VH_M_renal_papilla_L_g
+      - VH_M_renal_papilla_L_h
+      - VH_M_renal_papilla_L_i
+      - VH_M_renal_papilla_R_a
+      - VH_M_renal_papilla_R_b
+      - VH_M_renal_papilla_R_c
+      - VH_M_renal_papilla_R_d
+      - VH_M_renal_papilla_R_e
+      - VH_M_renal_papilla_R_f
+      - VH_M_renal_papilla_R_g
+      - VH_M_renal_papilla_R_h
+      - VH_M_renal_papilla_R_i
+      - VH_M_renal_papilla_R_j
+  target_faces: 8000
+  priority: 2
+- slug: kidney_hilum
+  zh: 肾门
+  en: Hilum of kidney
+  system: organs
+  region: abdomen
+  side: both
+  parent: kidneys
+  fma: []
+  uberon: UBERON:0008716
+  source: hra
+  hra:
+    assets:
+      - 3d-vh-m-kidney-l.glb
+      - 3d-vh-m-kidney-r.glb
+    meshes:
+      - VH_M_hilum_of_kidney_L
+      - VH_M_hilum_of_kidney_R
+  target_faces: 3000
+  priority: 3

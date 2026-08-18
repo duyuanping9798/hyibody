@@ -229,25 +229,62 @@ def bp3d_bounds(set_name: str, fma_list: list[str]) -> np.ndarray:
     return np.vstack([lo, hi])
 
 
+def hra_assets_of(spec: dict) -> list[str]:
+    """一条 HRA 结构用到的 glb 列表。`asset`（单个）是 `assets`（多个）的简写。"""
+    if spec.get("assets"):
+        return list(spec["assets"])
+    if spec.get("asset"):
+        return [spec["asset"]]
+    raise ValueError(f"hra 配置缺 asset/assets：{spec}")
+
+
+# 全局定标的两个参照：HRA 的全身皮肤 glb 与 BP3D 的皮肤概念
+HRA_SKIN_ASSET = "3d-vh-m-skin.glb"
+BP3D_SKIN_FMA = ["FMA7163"]
+
+
+def hra_global_scale() -> float:
+    """HRA → BP3D 的全局缩放：两具身体皮肤网格的身高比（实测 0.9426）。"""
+    verts = [v for v, _ in hra.load_organ(HRA_SKIN_ASSET).values()]
+    src = hra.bounds_of(np.vstack(verts))
+    tgt = bp3d_bounds("isa", BP3D_SKIN_FMA)
+    return hra.height_scale(src, tgt)
+
+
 def hra_fit_for(entries: list[dict]) -> dict[str, hra.Fit]:
     """按资产算一次等比拟合变换：同一个 glb 的所有部件必须共用一个变换。
 
-    锚点由声明了 `hra.fit_to_fma` 的那条（顶层结构）给出。
+    锚点由声明了 `hra.fit_to_fma` 的那条（顶层结构）给出。一条锚点可以覆盖多个 glb
+    （左右肾是两个文件但在本站是一条"肾"）：这时按几个 glb 合起来的包围盒算一次，
+    再登记给组里每个 glb——各算各的会让左右肾缩放不一致。
     """
+    anchors = [
+        e for e in entries if e.get("source") == HRA_SOURCE and "fit_to_fma" in (e.get("hra") or {})
+    ]
+    if not anchors:
+        return {}
+    scale = hra_global_scale()
+    print(f"  HRA → BP3D 全局定标 ×{scale:.4f}（两具身体皮肤网格的身高比）")
     fits: dict[str, hra.Fit] = {}
-    for entry in entries:
-        spec = entry.get("hra") or {}
-        if entry.get("source") != HRA_SOURCE or "fit_to_fma" not in spec:
-            continue
-        asset = spec["asset"]
-        parts = hra.load_organ(asset)
-        source = hra.bounds_of(hra.concat_parts(list(parts.values()))[0])
+    for entry in anchors:
+        spec = entry["hra"]
+        assets = hra_assets_of(spec)
+        verts = []
+        for asset in assets:
+            verts.extend(v for v, _ in hra.load_organ(asset).values())
+        source = hra.bounds_of(np.vstack(verts))
         target = bp3d_bounds(spec.get("fit_to_set", "partof"), list(spec["fit_to_fma"]))
-        fit = hra.fit_to_bounds(source, target)
-        fits[asset] = fit
+        fit = hra.fit_centered(source, target, scale)
+        for asset in assets:
+            fits[asset] = fit
+        # 逐轴比暴露两套数据分歧大的器官（脾在两边的长轴方向就不一样），
+        # 这里只报告不纠正——纠正就等于按 BP3D 的粗网格去改 HRA 的形状
+        ratios = hra.axis_ratios(source, target)
+        flag = " ← 两套数据尺寸分歧较大" if float(np.min(ratios)) < 0.7 else ""
         print(
-            f"  {asset}: 等比拟合到 BP3D {'/'.join(spec['fit_to_fma'])} 包围盒，"
-            f"缩放 ×{fit.scale:.4f}，平移 {np.round(fit.offset, 1).tolist()} mm"
+            f"  {'+'.join(assets)}: 对中到 BP3D {'/'.join(spec['fit_to_fma'])}，"
+            f"平移 {np.round(fit.offset, 1).tolist()} mm，"
+            f"逐轴尺寸比 {np.round(ratios, 2).tolist()}{flag}"
         )
     return fits
 
@@ -258,18 +295,22 @@ def process_hra_structure(entry: dict, center: np.ndarray, fits: dict[str, hra.F
     不做 Taubin 平滑：HRA 是医学插画师建的模型，本来就光顺，平滑只会磨掉瓣叶边缘。
     """
     spec = entry["hra"]
-    asset = spec["asset"]
-    fit = fits.get(asset)
-    if fit is None:
-        raise ValueError(f"{entry['slug']}: {asset} 没有定位锚点（哪条结构都没写 fit_to_fma）")
-    parts = hra.load_organ(asset)
+    assets = hra_assets_of(spec)
+    parts: dict[str, tuple[np.ndarray, np.ndarray]] = {}
+    for asset in assets:
+        fit = fits.get(asset)
+        if fit is None:
+            raise ValueError(f"{entry['slug']}: {asset} 没有定位锚点（哪条结构都没写 fit_to_fma）")
+        # 拟合在这里就做掉：同一条结构可能横跨两个 glb（左右肾），拼起来之前先各自摆正
+        for name, (v_part, f_part) in hra.load_organ(asset).items():
+            parts[name] = (fit.apply(v_part), f_part)
     wanted = list(spec["meshes"]) if spec.get("meshes") else sorted(parts)
     missing = [n for n in wanted if n not in parts]
     if missing:
-        raise ValueError(f"{entry['slug']}: {asset} 里没有部件 {missing}（可用：{sorted(parts)}）")
+        raise ValueError(f"{entry['slug']}: {'+'.join(assets)} 里没有部件 {missing}（可用：{sorted(parts)}）")
     v, f = hra.concat_parts([parts[n] for n in wanted])
     raw_faces = len(f)
-    v = fit.apply(v).astype(np.float32)
+    v = v.astype(np.float32)
     v, f = simplify_mesh(v, f, int(entry["target_faces"]))
     v = v - center.astype(np.float32)
     bbox = np.concatenate([v.min(axis=0), v.max(axis=0)]).astype(float)

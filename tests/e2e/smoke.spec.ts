@@ -386,3 +386,26 @@ test('english info card shows english blurb', async ({ page }) => {
   await expect(infoCard.locator('.hyi-fact p')).toContainText('100,000 times');
   await page.screenshot({ path: 'test-results/smoke-infocard-en.png' });
 });
+
+/**
+ * HRA 第二批器官：肾在剖开层里能展开出皮质 / 锥体 / 肾门，
+ * 顺带留一张腹部器官的截图给人工比对位置（脾、胰、肾都换了数据源）。
+ */
+test('opening the kidneys reveals cortex and pyramids', async ({ page }) => {
+  test.setTimeout(240_000);
+  const state = encodeUrlState({ layer: 0.62, selected: 'kidneys' });
+  await page.goto(`/?v=${state}`);
+  await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
+    timeout: 60_000,
+  });
+  const infoCard = page.getByTestId('info-card');
+  await expect(infoCard).toBeVisible({ timeout: 30_000 });
+  await expect(infoCard.locator('h2')).toHaveText('肾');
+  // 肾也换成了 HRA，署名要跟着数据走
+  await expect(infoCard.locator('.meta')).toContainText('HuBMAP HRA');
+  await page.screenshot({ path: 'test-results/smoke-abdomen.png' });
+
+  await page.getByRole('button', { name: /展开内部/ }).click();
+  await expect(page.getByRole('button', { name: '收起内部' }).first()).toBeVisible();
+  await page.screenshot({ path: 'test-results/smoke-kidney-parts.png' });
+});
