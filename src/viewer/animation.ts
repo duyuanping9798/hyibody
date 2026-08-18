@@ -37,3 +37,38 @@ export function attractLayer(tSeconds: number): number {
   if (t < period / 2 + hold) return 1;
   return Math.max(0, 1 - (t - period / 2 - hold) / sweep);
 }
+
+/** 一个结构的基准变换（glb 节点自带的，量化后就是反量化矩阵）。 */
+export interface PulseBase {
+  position: { x: number; y: number; z: number };
+  /** 均匀缩放，取 x 分量即可 */
+  scale: number;
+  /** 几何体包围盒中心（物体空间，量化后在 ±1 附近） */
+  center: { x: number; y: number; z: number };
+}
+
+/**
+ * 把"绕自身中心缩放 s 倍"叠加到基准变换上，返回新的 position/scale。
+ *
+ * 之所以不能直接 `mesh.scale.setScalar(s)`：流水线用 KHR_mesh_quantization，
+ * 每个节点自带反量化的 translation + scale（肺是 116.7），直接写 scale 会把它抹掉，
+ * 结果心脏和双肺被缩到百分之一大小、塞回坐标原点——整个胸腔看着就是空的
+ * （2026-08-18 修，此前选中心脏什么也看不到）。
+ *
+ * 推导：世界坐标 P = T + S·p。要让几何中心 C 在缩放后停在原处，
+ * 需 T' + S·s·C = T + S·C，即 T' = T + S·C·(1 − s)。
+ */
+export function pulseTransform(
+  base: PulseBase,
+  s: number,
+): { position: { x: number; y: number; z: number }; scale: number } {
+  const k = base.scale * (1 - s);
+  return {
+    position: {
+      x: base.position.x + base.center.x * k,
+      y: base.position.y + base.center.y * k,
+      z: base.position.z + base.center.z * k,
+    },
+    scale: base.scale * s,
+  };
+}

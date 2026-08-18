@@ -21,7 +21,7 @@ import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { loadManifest } from '../data/manifest';
 import type { Manifest, SystemId } from '../data/types';
-import { ANIMATED_STRUCTURES } from './animation';
+import { ANIMATED_STRUCTURES, pulseTransform, type PulseBase } from './animation';
 import {
   createCameraRig,
   poseForBox,
@@ -129,6 +129,8 @@ export class HyiViewer extends EventTarget {
 
   private readonly structures = new Map<string, StructureEntry>();
   private readonly systemGroups = new Map<SystemId, Group>();
+  /** 会做微动画的结构（心/肺）的基准变换：glb 节点自带的反量化 TRS，动画只在其上叠加 */
+  private readonly pulseBases = new Map<string, PulseBase>();
   private readonly state = defaultViewerState();
   private hovered: string | null = null;
   /** ?v= 分享链接选中的结构可能还在后台加载：记下来，等它注册进来再选中。 */
@@ -272,6 +274,15 @@ export class HyiViewer extends EventTarget {
       mesh.geometry.computeBoundingBox();
       group.add(mesh);
       this.structures.set(slug, { slug, system: sys, mesh, material });
+      // 记下 glb 节点自带的反量化 TRS：微动画只能在它之上叠加，不能覆盖
+      if (slug in ANIMATED_STRUCTURES) {
+        const center = mesh.geometry.boundingBox?.getCenter(new Vector3()) ?? new Vector3();
+        this.pulseBases.set(slug, {
+          position: { x: mesh.position.x, y: mesh.position.y, z: mesh.position.z },
+          scale: mesh.scale.x,
+          center: { x: center.x, y: center.y, z: center.z },
+        });
+      }
     }
     this.systemGroups.set(sys, group);
     this.root.add(group);
@@ -372,6 +383,10 @@ export class HyiViewer extends EventTarget {
   isolate(slug: string | null): void {
     this.state.isolated = slug;
     this.applyVisibility();
+    // 隔离后自动飞到这个结构：否则一个拳头大的器官还停在全身取景里，等于没隔离
+    const entry = slug ? this.structures.get(slug) : null;
+    if (entry) this.focus(slug!);
+    else if (!this.contentBox.isEmpty()) this.frameContent();
   }
 
   hide(slug: string): void {
@@ -396,8 +411,14 @@ export class HyiViewer extends EventTarget {
     const s = this.state;
     if (!s.systemsVisible[entry.system] || s.hidden.has(entry.slug)) return 0;
     let opacity = computeSystemOpacity(entry.system, s.layer) * s.systemOpacity[entry.system];
-    if (s.isolated && s.isolated !== entry.slug) opacity = Math.min(opacity, 0.06);
-    if (s.selected === entry.slug) opacity = Math.max(opacity, 0.85);
+    if (s.isolated) {
+      // 隔离 = 只看这一个。其他结构压到只剩一点点轮廓做参照——
+      // 0.06 × 130 个结构叠起来仍是一团糊，主角照样看不清
+      if (s.isolated !== entry.slug) return Math.min(opacity, 0.015);
+      return 1;
+    }
+    // 选中的结构渲染成不透明：0.85 的心脏后面会透出肋骨，形状根本读不出来
+    if (s.selected === entry.slug) opacity = Math.max(opacity, 1);
     return opacity;
   }
 
@@ -541,12 +562,11 @@ export class HyiViewer extends EventTarget {
     if (this.reducedMotion) return;
     for (const [slug, scaleFn] of Object.entries(ANIMATED_STRUCTURES)) {
       const entry = this.structures.get(slug);
-      const box = entry?.mesh.geometry.boundingBox;
-      if (!entry || !box || !entry.material.visible) continue;
-      const s = scaleFn(elapsed);
-      const center = box.getCenter(new Vector3());
-      entry.mesh.scale.setScalar(s);
-      entry.mesh.position.copy(center).multiplyScalar(1 - s);
+      const base = this.pulseBases.get(slug);
+      if (!entry || !base || !entry.material.visible) continue;
+      const next = pulseTransform(base, scaleFn(elapsed));
+      entry.mesh.position.set(next.position.x, next.position.y, next.position.z);
+      entry.mesh.scale.setScalar(next.scale);
     }
     // 描边走 OutlinePass，直接描选中网格本身，动画时无需再同步 transform
   }
