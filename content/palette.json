@@ -52,5 +52,19 @@
   "pancreas_tail": "#cbae61",
   "kidney_cortex": "#a4514a",
   "kidney_pyramids": "#8b3d38",
-  "kidney_hilum": "#c8a58f"
+  "kidney_hilum": "#c8a58f",
+  "bladder_trigone": "#c2b273",
+  "prostate_peripheral_zone": "#b07f6b",
+  "prostate_transition_zone": "#c69a83",
+  "prostate_central_zone": "#a8776a",
+  "seminal_vesicles": "#c9a288",
+  "main_bronchus": "#b0bfcb",
+  "liver_caudate_lobe": "#9c5540",
+  "liver_quadrate_lobe": "#a35d47",
+  "liver_porta_hepatis": "#7d8a4a",
+  "liver_falciform_ligament": "#c9bfa4",
+  "spinal_cord_cervical": "#e7dcc6",
+  "spinal_cord_thoracic": "#ded2b9",
+  "spinal_cord_lumbar": "#d5c8ac",
+  "spinal_cord_sacral": "#ccbe9f"
 }

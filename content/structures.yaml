@@ -482,17 +482,6 @@
   source: bp3d
   target_faces: 6000
   priority: 1
-- slug: liver
-  zh: 肝
-  en: Liver
-  system: organs
-  region: abdomen
-  side: none
-  fma:
-    - FMA7197
-  source: bp3d_partof
-  target_faces: 30000
-  priority: 1
 - slug: gallbladder
   zh: 胆囊
   en: Gallbladder
@@ -503,17 +492,6 @@
     - FMA7202
   source: bp3d
   target_faces: 2400
-  priority: 1
-- slug: urinary_bladder
-  zh: 膀胱
-  en: Urinary bladder
-  system: organs
-  region: pelvis
-  side: none
-  fma:
-    - FMA15900
-  source: bp3d
-  target_faces: 4500
   priority: 1
 - slug: small_intestine
   zh: 小肠
@@ -603,17 +581,6 @@
   source: bp3d_partof
   target_faces: 2400
   priority: 3
-- slug: prostate
-  zh: 前列腺
-  en: Prostate
-  system: organs
-  region: pelvis
-  side: none
-  fma:
-    - FMA9600
-  source: bp3d
-  target_faces: 2400
-  priority: 2
 - slug: testes
   zh: 睾丸
   en: Testes
@@ -1009,17 +976,6 @@
     - FMA50801
   source: bp3d_partof
   target_faces: 30000
-  priority: 1
-- slug: spinal_cord
-  zh: 脊髓
-  en: Spinal cord
-  system: nerves
-  region: whole
-  side: none
-  fma:
-    - FMA7647
-  source: bp3d_partof
-  target_faces: 9000
   priority: 1
 - slug: optic_nerves
   zh: 视神经
@@ -2026,4 +1982,349 @@
       - VH_M_hilum_of_kidney_L
       - VH_M_hilum_of_kidney_R
   target_faces: 3000
+  priority: 3
+- slug: urinary_bladder
+  zh: 膀胱
+  en: Urinary bladder
+  system: organs
+  region: pelvis
+  side: none
+  fma:
+    - FMA15900
+  uberon: UBERON:0001255
+  source: hra
+  hra:
+    asset: 3d-vh-m-urinary-bladder.glb
+    meshes: []
+    fit_to_set: isa
+    fit_to_fma:
+      - FMA15900
+  target_faces: 9000
+  priority: 1
+- slug: bladder_trigone
+  zh: 膀胱三角
+  en: Trigone of urinary bladder
+  system: organs
+  region: pelvis
+  side: none
+  parent: urinary_bladder
+  # 含两个输尿管口与膀胱颈：三角的三个角就是这三处
+  fma: []
+  uberon: UBERON:0000365
+  source: hra
+  hra:
+    asset: 3d-vh-m-urinary-bladder.glb
+    meshes:
+      - VH_M_trigone_of_urinary_bladder
+      - VH_M_ureteral_orifice_L
+      - VH_M_ureteral_orifice_R
+      - VH_M_urinary_bladder_neck_smooth_muscle
+  target_faces: 700
+  priority: 3
+- slug: prostate
+  zh: 前列腺
+  en: Prostate
+  system: organs
+  region: pelvis
+  side: none
+  # 只取分区实质，不取射精管/前列腺小囊/腺导管——那几件加起来 19 万面全是内部细管
+  fma:
+    - FMA9600
+  uberon: UBERON:0002367
+  source: hra
+  hra:
+    asset: 3d-vh-m-prostate.glb
+    meshes:
+      - VH_M_peripheral_zone_of_prostate_L
+      - VH_M_peripheral_zone_of_prostate_R
+      - VH_M_central_zone_of_prostate_L
+      - VH_M_central_zone_of_prostate_R
+      - VH_M_transition_zone__of_prostate_L
+      - VH_M_transition_zone_of_prostate_R
+      - VH_M_anterior_fibromuscular_stroma_L
+      - VH_M_anterior_fibromuscular_stroma_R
+      - VH_M_base_of_prostate
+      - VH_M_apex_of_prostate
+    fit_to_set: isa
+    fit_to_fma:
+      - FMA9600
+  target_faces: 9000
+  priority: 2
+- slug: prostate_peripheral_zone
+  zh: 前列腺外周带
+  en: Peripheral zone of prostate
+  system: organs
+  region: pelvis
+  side: none
+  parent: prostate
+  fma: []
+  uberon: UBERON:0000079
+  source: hra
+  hra:
+    asset: 3d-vh-m-prostate.glb
+    meshes:
+      - VH_M_peripheral_zone_of_prostate_L
+      - VH_M_peripheral_zone_of_prostate_R
+  target_faces: 4000
+  priority: 3
+- slug: prostate_transition_zone
+  zh: 前列腺移行带
+  en: Transition zone of prostate
+  system: organs
+  region: pelvis
+  side: none
+  parent: prostate
+  fma: []
+  uberon: UBERON:0000079
+  source: hra
+  hra:
+    asset: 3d-vh-m-prostate.glb
+    meshes:
+      - VH_M_transition_zone__of_prostate_L
+      - VH_M_transition_zone_of_prostate_R
+  target_faces: 1500
+  priority: 3
+- slug: prostate_central_zone
+  zh: 前列腺中央带
+  en: Central zone of prostate
+  system: organs
+  region: pelvis
+  side: none
+  parent: prostate
+  fma: []
+  uberon: UBERON:0000079
+  source: hra
+  hra:
+    asset: 3d-vh-m-prostate.glb
+    meshes:
+      - VH_M_central_zone_of_prostate_L
+      - VH_M_central_zone_of_prostate_R
+  target_faces: 2500
+  priority: 3
+- slug: seminal_vesicles
+  zh: 精囊
+  en: Seminal vesicles
+  system: organs
+  region: pelvis
+  side: both
+  # 和前列腺同一个 glb，所以不用另立锚点；精囊不是前列腺的一部分，故不作内部件
+  fma: []
+  uberon: UBERON:0000998
+  source: hra
+  hra:
+    asset: 3d-vh-m-prostate.glb
+    meshes:
+      - VH_M_seminal_vesicle
+  target_faces: 8000
+  priority: 3
+- slug: main_bronchus
+  zh: 主支气管
+  en: Main bronchi
+  system: organs
+  region: thorax
+  side: both
+  # BP3D 两集都没有主支气管：借气管的变换对位，两者本来就首尾相连
+  fma: []
+  uberon: UBERON:0002182
+  source: hra
+  hra:
+    asset: 3d-vh-m-main-bronchus.glb
+    meshes: []
+    fit_from: 3d-vh-m-trachea.glb
+  target_faces: 5000
+  priority: 2
+- slug: liver
+  zh: 肝
+  en: Liver
+  system: organs
+  region: abdomen
+  side: none
+  # 整肝取肝被膜（外表面）；分叶与韧带在内部件里
+  fma:
+    - FMA7197
+  uberon: UBERON:0002107
+  source: hra
+  hra:
+    asset: 3d-vh-m-liver.glb
+    meshes:
+      - VH_M_liver_capsule
+    fit_to_set: partof
+    fit_to_fma:
+      - FMA7197
+  target_faces: 24000
+  priority: 1
+- slug: liver_caudate_lobe
+  zh: 肝尾状叶
+  en: Caudate lobe of liver
+  system: organs
+  region: abdomen
+  side: none
+  parent: liver
+  fma: []
+  uberon: UBERON:0001193
+  source: hra
+  hra:
+    asset: 3d-vh-m-liver.glb
+    meshes:
+      - VH_M_caudate_lobe_of_liver
+  target_faces: 2500
+  priority: 3
+- slug: liver_quadrate_lobe
+  zh: 肝方叶
+  en: Quadrate lobe of liver
+  system: organs
+  region: abdomen
+  side: none
+  parent: liver
+  fma: []
+  uberon: UBERON:0001192
+  source: hra
+  hra:
+    asset: 3d-vh-m-liver.glb
+    meshes:
+      - VH_M_quadrate_lobe_of_liver
+  target_faces: 1000
+  priority: 3
+- slug: liver_porta_hepatis
+  zh: 肝门
+  en: Porta hepatis
+  system: organs
+  region: abdomen
+  side: none
+  parent: liver
+  fma: []
+  uberon: UBERON:0001900
+  source: hra
+  hra:
+    asset: 3d-vh-m-liver.glb
+    meshes:
+      - VH_M_porta_hepatis
+  target_faces: 700
+  priority: 3
+- slug: liver_falciform_ligament
+  zh: 肝镰状韧带
+  en: Falciform ligament
+  system: organs
+  region: abdomen
+  side: none
+  parent: liver
+  # 含肝圆韧带：它就走在镰状韧带的游离缘里
+  fma: []
+  uberon: UBERON:0002333
+  source: hra
+  hra:
+    asset: 3d-vh-m-liver.glb
+    meshes:
+      - VH_M_falciform_ligament
+      - VH_M_round_ligament_of_liver
+  target_faces: 500
+  priority: 3
+- slug: spinal_cord
+  zh: 脊髓
+  en: Spinal cord
+  system: nerves
+  region: whole
+  side: none
+  # BP3D 的"脊髓"只是脑干下方 36 mm 的一截残桩（2.2 × 13.1 × 35.6 mm），
+  # 拿它对中心会把 HRA 的整条脊髓（C1–S5，465 mm）摆错位。
+  # 脊髓横跨全身，改用全身对齐：缩放照旧按身高，平移按两张皮肤的包围盒中心
+  fma:
+    - FMA7647
+  uberon: UBERON:0002240
+  source: hra
+  hra:
+    asset: 3d-vh-m-spinal-cord.glb
+    meshes: []
+    fit_from: 3d-vh-m-skin.glb
+  target_faces: 12000
+  priority: 1
+- slug: spinal_cord_cervical
+  zh: 颈髓
+  en: Cervical spinal cord
+  system: nerves
+  region: neck
+  side: none
+  parent: spinal_cord
+  fma: []
+  uberon: UBERON:0002726
+  source: hra
+  hra:
+    asset: 3d-vh-m-spinal-cord.glb
+    meshes:
+      - VH_M_C1_segment_of_cervical_spinal_cord
+      - VH_M_C2_segment_of_cervical_spinal_cord
+      - VH_M_C3_segment_of_cervical_spinal_cord
+      - VH_M_C4_segment_of_cervical_spinal_cord
+      - VH_M_C5_segment_of_cervical_spinal_cord
+      - VH_M_C6_segment_of_cervical_spinal_cord
+      - VH_M_C7_segment_of_cervical_spinal_cord
+      - VH_M_C8_segment_of_cervical_spinal_cord
+  target_faces: 4000
+  priority: 3
+- slug: spinal_cord_thoracic
+  zh: 胸髓
+  en: Thoracic spinal cord
+  system: nerves
+  region: thorax
+  side: none
+  parent: spinal_cord
+  fma: []
+  uberon: UBERON:0003038
+  source: hra
+  hra:
+    asset: 3d-vh-m-spinal-cord.glb
+    meshes:
+      - VH_M_first_thoracic_spinal_cord_segment
+      - VH_M_second_thoracic_spinal_cord_segment
+      - VH_M_third_thoracic_spinal_cord_segment
+      - VH_M_fourth_thoracic_spinal_cord_segment
+      - VH_M_fifth_thoracic_spinal_cord_segment
+      - VH_M_sixth_thoracic_spinal_cord_segment
+      - VH_M_seventh_thoracic_spinal_cord_segment
+      - VH_M_eighth_thoracic_spinal_cord_segment
+      - VH_M_ninth_thoracic_spinal_cord_segment
+      - VH_M_tenth_thoracic_spinal_cord_segment
+      - VH_M_eleventh_thoracic_spinal_cord_segment
+      - VH_M_twelfth_thoracic_spinal_cord_segment
+  target_faces: 6000
+  priority: 3
+- slug: spinal_cord_lumbar
+  zh: 腰髓
+  en: Lumbar spinal cord
+  system: nerves
+  region: abdomen
+  side: none
+  parent: spinal_cord
+  fma: []
+  uberon: UBERON:0002792
+  source: hra
+  hra:
+    asset: 3d-vh-m-spinal-cord.glb
+    meshes:
+      - VH_M_first_lumbar_spinal_cord_segment
+      - VH_M_second_lumbar_spinal_cord_segment
+      - VH_M_third_lumbar_spinal_cord_segment
+      - VH_M_fourth_lumbar_spinal_cord_segment
+      - VH_M_fifth_lumbar_spinal_cord_segment
+  target_faces: 2000
+  priority: 3
+- slug: spinal_cord_sacral
+  zh: 骶髓
+  en: Sacral spinal cord
+  system: nerves
+  region: pelvis
+  side: none
+  parent: spinal_cord
+  fma: []
+  uberon: UBERON:0003037
+  source: hra
+  hra:
+    asset: 3d-vh-m-spinal-cord.glb
+    meshes:
+      - VH_M_first_sacral_spinal_cord_segment
+      - VH_M_second_sacral_spinal_cord_segment
+      - VH_M_third_sacral_spinal_cord_segment
+      - VH_M_fourth_sacral_spinal_cord_segment
+      - VH_M_fifth_sacral_spinal_cord_segment
+  target_faces: 1500
   priority: 3

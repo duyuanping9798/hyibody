@@ -69,7 +69,8 @@ test('layer state and selection restore from share URL', async ({ page }) => {
 /** M2-1 故事线冒烟：从菜单启动"心跳"之旅，第一步文案出现，可下一步。 */
 test('heartbeat tour plays from the menu', async ({ page }) => {
   // 第二步会"打开心脏"（展开内部 + 隔离 + 相机飞行），软件渲染下这一帧很重
-  test.setTimeout(240_000);
+  // 结构涨到 170 个之后软件渲染更慢了，上一轮首跑卡在退出那一步、重试才过
+  test.setTimeout(360_000);
   await page.goto('/');
   await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
     timeout: 60_000,
@@ -408,4 +409,23 @@ test('opening the kidneys reveals cortex and pyramids', async ({ page }) => {
   await page.getByRole('button', { name: /展开内部/ }).click();
   await expect(page.getByRole('button', { name: '收起内部' }).first()).toBeVisible();
   await page.screenshot({ path: 'test-results/smoke-kidney-parts.png' });
+});
+
+/** HRA 第三批：脊髓现在是 C1–S5 的完整一条，能展开出颈 / 胸 / 腰 / 骶四段。 */
+test('spinal cord spans the trunk and opens into four regions', async ({ page }) => {
+  test.setTimeout(240_000);
+  const state = encodeUrlState({ layer: 0.95, selected: 'spinal_cord' });
+  await page.goto(`/?v=${state}`);
+  await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
+    timeout: 60_000,
+  });
+  const infoCard = page.getByTestId('info-card');
+  await expect(infoCard).toBeVisible({ timeout: 30_000 });
+  await expect(infoCard.locator('h2')).toHaveText('脊髓');
+  await expect(infoCard.locator('.meta')).toContainText('HuBMAP HRA');
+  await page.screenshot({ path: 'test-results/smoke-spinal-cord.png' });
+
+  await page.getByRole('button', { name: '展开内部（4）' }).click();
+  await expect(page.getByRole('button', { name: '收起内部' }).first()).toBeVisible();
+  await page.screenshot({ path: 'test-results/smoke-spinal-parts.png' });
 });

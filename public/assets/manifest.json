@@ -1,6 +1,6 @@
 {
   "version": "0.0.1",
-  "generatedAt": "2026-08-18T13:44:03+00:00",
+  "generatedAt": "2026-08-18T15:12:50+00:00",
   "systems": [
     {
       "id": "skin",
@@ -104,16 +104,14 @@
     {
       "id": "organs",
       "file": "assets/organs.glb",
-      "bytes": 2402612,
+      "bytes": 2667360,
       "structures": [
         "heart",
         "lung_right",
         "lung_left",
         "esophagus",
         "stomach",
-        "liver",
         "gallbladder",
-        "urinary_bladder",
         "small_intestine",
         "large_intestine",
         "tongue",
@@ -122,7 +120,6 @@
         "ureters",
         "pituitary_gland",
         "thymus",
-        "prostate",
         "testes",
         "heart_left_ventricle",
         "heart_right_ventricle",
@@ -149,7 +146,20 @@
         "kidneys",
         "kidney_cortex",
         "kidney_pyramids",
-        "kidney_hilum"
+        "kidney_hilum",
+        "urinary_bladder",
+        "bladder_trigone",
+        "prostate",
+        "prostate_peripheral_zone",
+        "prostate_transition_zone",
+        "prostate_central_zone",
+        "seminal_vesicles",
+        "main_bronchus",
+        "liver",
+        "liver_caudate_lobe",
+        "liver_quadrate_lobe",
+        "liver_porta_hepatis",
+        "liver_falciform_ligament"
       ]
     },
     {
@@ -193,11 +203,15 @@
     {
       "id": "nerves",
       "file": "assets/nerves.glb",
-      "bytes": 236856,
+      "bytes": 407820,
       "structures": [
         "brain",
+        "optic_nerves",
         "spinal_cord",
-        "optic_nerves"
+        "spinal_cord_cervical",
+        "spinal_cord_thoracic",
+        "spinal_cord_lumbar",
+        "spinal_cord_sacral"
       ]
     }
   ],
@@ -1820,25 +1834,6 @@
         370.23
       ]
     },
-    "liver": {
-      "zh": "肝",
-      "en": "Liver",
-      "system": "organs",
-      "region": "abdomen",
-      "side": "none",
-      "fma": [
-        "FMA7197"
-      ],
-      "source": "bp3d_partof",
-      "bbox": [
-        -114.4,
-        -101.6,
-        241.19,
-        95.07,
-        57.42,
-        396.37
-      ]
-    },
     "gallbladder": {
       "zh": "胆囊",
       "en": "Gallbladder",
@@ -1856,25 +1851,6 @@
         -26.16,
         -29.38,
         304.7
-      ]
-    },
-    "urinary_bladder": {
-      "zh": "膀胱",
-      "en": "Urinary bladder",
-      "system": "organs",
-      "region": "pelvis",
-      "side": "none",
-      "fma": [
-        "FMA15900"
-      ],
-      "source": "bp3d",
-      "bbox": [
-        -33.87,
-        -28.4,
-        3.72,
-        33.47,
-        44.23,
-        43.15
       ]
     },
     "small_intestine": {
@@ -2027,25 +2003,6 @@
         22.58,
         -18.95,
         543.07
-      ]
-    },
-    "prostate": {
-      "zh": "前列腺",
-      "en": "Prostate",
-      "system": "organs",
-      "region": "pelvis",
-      "side": "none",
-      "fma": [
-        "FMA9600"
-      ],
-      "source": "bp3d",
-      "bbox": [
-        -17.12,
-        4.31,
-        -14.82,
-        17.07,
-        36.35,
-        5.81
       ]
     },
     "testes": {
@@ -2591,6 +2548,254 @@
         72.99,
         24.62,
         273.95
+      ]
+    },
+    "urinary_bladder": {
+      "zh": "膀胱",
+      "en": "Urinary bladder",
+      "system": "organs",
+      "region": "pelvis",
+      "side": "none",
+      "fma": [
+        "FMA15900"
+      ],
+      "uberon": "UBERON:0001255",
+      "source": "hra",
+      "bbox": [
+        -30.19,
+        -25.69,
+        4.77,
+        29.96,
+        42.46,
+        41.89
+      ]
+    },
+    "bladder_trigone": {
+      "zh": "膀胱三角",
+      "en": "Trigone of urinary bladder",
+      "system": "organs",
+      "region": "pelvis",
+      "side": "none",
+      "fma": [],
+      "uberon": "UBERON:0000365",
+      "source": "hra",
+      "parent": "urinary_bladder",
+      "bbox": [
+        -25.04,
+        22.64,
+        4.31,
+        28.86,
+        42.04,
+        41.43
+      ]
+    },
+    "prostate": {
+      "zh": "前列腺",
+      "en": "Prostate",
+      "system": "organs",
+      "region": "pelvis",
+      "side": "none",
+      "fma": [
+        "FMA9600"
+      ],
+      "uberon": "UBERON:0002367",
+      "source": "hra",
+      "bbox": [
+        -13.96,
+        5.87,
+        -21.37,
+        13.93,
+        34.71,
+        12.39
+      ]
+    },
+    "prostate_peripheral_zone": {
+      "zh": "前列腺外周带",
+      "en": "Peripheral zone of prostate",
+      "system": "organs",
+      "region": "pelvis",
+      "side": "none",
+      "fma": [],
+      "uberon": "UBERON:0000079",
+      "source": "hra",
+      "parent": "prostate",
+      "bbox": [
+        -13.99,
+        8.46,
+        -21.38,
+        13.91,
+        34.7,
+        12.1
+      ]
+    },
+    "prostate_transition_zone": {
+      "zh": "前列腺移行带",
+      "en": "Transition zone of prostate",
+      "system": "organs",
+      "region": "pelvis",
+      "side": "none",
+      "fma": [],
+      "uberon": "UBERON:0000079",
+      "source": "hra",
+      "parent": "prostate",
+      "bbox": [
+        -9.69,
+        12.3,
+        -10.29,
+        9.58,
+        23.55,
+        4.4
+      ]
+    },
+    "prostate_central_zone": {
+      "zh": "前列腺中央带",
+      "en": "Central zone of prostate",
+      "system": "organs",
+      "region": "pelvis",
+      "side": "none",
+      "fma": [],
+      "uberon": "UBERON:0000079",
+      "source": "hra",
+      "parent": "prostate",
+      "bbox": [
+        -11.8,
+        15.07,
+        -6.31,
+        11.69,
+        33.74,
+        12.39
+      ]
+    },
+    "seminal_vesicles": {
+      "zh": "精囊",
+      "en": "Seminal vesicles",
+      "system": "organs",
+      "region": "pelvis",
+      "side": "both",
+      "fma": [],
+      "uberon": "UBERON:0000998",
+      "source": "hra",
+      "bbox": [
+        -25.53,
+        22.25,
+        5.5,
+        23.04,
+        43.96,
+        30.66
+      ]
+    },
+    "main_bronchus": {
+      "zh": "主支气管",
+      "en": "Main bronchi",
+      "system": "organs",
+      "region": "thorax",
+      "side": "both",
+      "fma": [],
+      "uberon": "UBERON:0002182",
+      "source": "hra",
+      "bbox": [
+        -21.39,
+        24.86,
+        465.53,
+        48.51,
+        50.79,
+        507.24
+      ]
+    },
+    "liver": {
+      "zh": "肝",
+      "en": "Liver",
+      "system": "organs",
+      "region": "abdomen",
+      "side": "none",
+      "fma": [
+        "FMA7197"
+      ],
+      "uberon": "UBERON:0002107",
+      "source": "hra",
+      "bbox": [
+        -99.89,
+        -113.49,
+        236.52,
+        80.49,
+        69.28,
+        401.04
+      ]
+    },
+    "liver_caudate_lobe": {
+      "zh": "肝尾状叶",
+      "en": "Caudate lobe of liver",
+      "system": "organs",
+      "region": "abdomen",
+      "side": "none",
+      "fma": [],
+      "uberon": "UBERON:0001193",
+      "source": "hra",
+      "parent": "liver",
+      "bbox": [
+        -15.74,
+        -38.54,
+        291.47,
+        40.85,
+        23.09,
+        389.81
+      ]
+    },
+    "liver_quadrate_lobe": {
+      "zh": "肝方叶",
+      "en": "Quadrate lobe of liver",
+      "system": "organs",
+      "region": "abdomen",
+      "side": "none",
+      "fma": [],
+      "uberon": "UBERON:0001192",
+      "source": "hra",
+      "parent": "liver",
+      "bbox": [
+        -60.8,
+        -107.58,
+        304.52,
+        15.57,
+        -24.57,
+        334.73
+      ]
+    },
+    "liver_porta_hepatis": {
+      "zh": "肝门",
+      "en": "Porta hepatis",
+      "system": "organs",
+      "region": "abdomen",
+      "side": "none",
+      "fma": [],
+      "uberon": "UBERON:0001900",
+      "source": "hra",
+      "parent": "liver",
+      "bbox": [
+        -36.43,
+        -49.87,
+        302.04,
+        22.33,
+        -13.12,
+        335.97
+      ]
+    },
+    "liver_falciform_ligament": {
+      "zh": "肝镰状韧带",
+      "en": "Falciform ligament",
+      "system": "organs",
+      "region": "abdomen",
+      "side": "none",
+      "fma": [],
+      "uberon": "UBERON:0002333",
+      "source": "hra",
+      "parent": "liver",
+      "bbox": [
+        -5.34,
+        -117.13,
+        296.71,
+        24.6,
+        -43.53,
+        378.25
       ]
     },
     "aorta": {
@@ -3234,25 +3439,6 @@
         843.85
       ]
     },
-    "spinal_cord": {
-      "zh": "脊髓",
-      "en": "Spinal cord",
-      "system": "nerves",
-      "region": "whole",
-      "side": "none",
-      "fma": [
-        "FMA7647"
-      ],
-      "source": "bp3d_partof",
-      "bbox": [
-        -1.12,
-        35.77,
-        671.84,
-        1.1,
-        48.9,
-        707.43
-      ]
-    },
     "optic_nerves": {
       "zh": "视神经",
       "en": "Optic nerves",
@@ -3270,6 +3456,102 @@
         32.66,
         -1.37,
         755.55
+      ]
+    },
+    "spinal_cord": {
+      "zh": "脊髓",
+      "en": "Spinal cord",
+      "system": "nerves",
+      "region": "whole",
+      "side": "none",
+      "fma": [
+        "FMA7647"
+      ],
+      "uberon": "UBERON:0002240",
+      "source": "hra",
+      "bbox": [
+        -10.07,
+        -2.98,
+        263.92,
+        9.45,
+        72.08,
+        702.38
+      ]
+    },
+    "spinal_cord_cervical": {
+      "zh": "颈髓",
+      "en": "Cervical spinal cord",
+      "system": "nerves",
+      "region": "neck",
+      "side": "none",
+      "fma": [],
+      "uberon": "UBERON:0002726",
+      "source": "hra",
+      "parent": "spinal_cord",
+      "bbox": [
+        -8.03,
+        -2.98,
+        604.13,
+        6.37,
+        17.58,
+        702.38
+      ]
+    },
+    "spinal_cord_thoracic": {
+      "zh": "胸髓",
+      "en": "Thoracic spinal cord",
+      "system": "nerves",
+      "region": "thorax",
+      "side": "none",
+      "fma": [],
+      "uberon": "UBERON:0003038",
+      "source": "hra",
+      "parent": "spinal_cord",
+      "bbox": [
+        -10.07,
+        10.03,
+        362.58,
+        6.04,
+        72.08,
+        607.33
+      ]
+    },
+    "spinal_cord_lumbar": {
+      "zh": "腰髓",
+      "en": "Lumbar spinal cord",
+      "system": "nerves",
+      "region": "abdomen",
+      "side": "none",
+      "fma": [],
+      "uberon": "UBERON:0002792",
+      "source": "hra",
+      "parent": "spinal_cord",
+      "bbox": [
+        -1.78,
+        47.05,
+        304.51,
+        9.29,
+        65.16,
+        363.59
+      ]
+    },
+    "spinal_cord_sacral": {
+      "zh": "骶髓",
+      "en": "Sacral spinal cord",
+      "system": "nerves",
+      "region": "pelvis",
+      "side": "none",
+      "fma": [],
+      "uberon": "UBERON:0003037",
+      "source": "hra",
+      "parent": "spinal_cord",
+      "bbox": [
+        0.85,
+        38.07,
+        263.92,
+        9.45,
+        53.92,
+        307.85
       ]
     }
   },
