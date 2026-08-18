@@ -134,6 +134,7 @@ def build_glb(metas: list[dict], npz_dir: Path, out_path: Path) -> None:
             "side": meta["side"],
             "fma": meta["fma"],
             "source": meta["source"],
+            **({"parent": meta["parent"]} if meta.get("parent") else {}),
         }
         gltf.scenes[0].nodes.append(len(gltf.nodes))
         gltf.nodes.append(node)
@@ -211,6 +212,7 @@ def write_manifest() -> None:
                 "side": m["side"],
                 "fma": m["fma"],
                 "source": m["source"],
+                **({"parent": m["parent"]} if m.get("parent") else {}),
                 "bbox": m["bbox"],
             }
     if not systems:

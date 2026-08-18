@@ -3,7 +3,6 @@
     "note": "逐结构配色（十六进制）。没写在这里的结构走 src/viewer/materials.ts 的系统色 + 微抖动。取色参考解剖图谱的习惯：心脏深红、肝红褐、肺粉、胆汁绿、软骨蓝灰、脑灰粉。人可直接改，改完刷新即生效。",
     "reviewed": false
   },
-
   "heart": "#a83f3d",
   "lung_right": "#dba0a0",
   "lung_left": "#d69a9a",
@@ -27,12 +26,18 @@
   "thymus": "#d9b9a0",
   "prostate": "#b58a7a",
   "testes": "#c3927e",
-
   "brain": "#cfc0bd",
   "spinal_cord": "#e2d5bd",
-
   "diaphragm": "#c96f5e",
   "intervertebral_disks": "#c9c3ae",
   "costal_cartilages": "#c8cfd6",
-  "calcaneal_tendon": "#ddd6c4"
+  "calcaneal_tendon": "#ddd6c4",
+  "heart_ventricle_wall": "#9c3a38",
+  "heart_atrium_wall_left": "#b0504c",
+  "heart_atrium_wall_right": "#a8524e",
+  "heart_mitral_valve": "#ded4c6",
+  "heart_tricuspid_valve": "#d8cec0",
+  "heart_aortic_valve": "#e3dbcf",
+  "heart_pulmonary_valve": "#dcd3c6",
+  "heart_papillary_muscles": "#a8524a"
 }

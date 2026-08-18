@@ -155,3 +155,48 @@ class TestGroupTargetFaces:
     def test_explicit_target_still_relaxed_by_compression(self):
         group = {"system": "organs", "target_faces": 15000}
         assert select.group_target_faces(group, self.defaults, faces_raw=102802) == 30000
+
+
+class TestParentValidation:
+    """内部件（parent）校验：只支持一层、必须同系统、父结构必须存在。"""
+
+    @staticmethod
+    def _entries(**overrides):
+        base = {
+            "slug": "heart",
+            "zh": "心脏",
+            "en": "Heart",
+            "system": "organs",
+            "region": "thorax",
+            "side": "none",
+            "fma": ["FMA7088"],
+            "source": "bp3d_partof",
+            "target_faces": 15000,
+            "priority": 1,
+        }
+        child = {**base, "slug": "heart_valve", "zh": "瓣膜", "en": "Valve", "parent": "heart"}
+        child.update(overrides)
+        return [base, child]
+
+    def _check(self, entries):
+        validate = _load("validate")
+        chk = validate.Checker()
+        validate.validate_structures(entries, chk)
+        return chk.errors
+
+    def test_valid_parent_passes(self):
+        assert self._check(self._entries()) == []
+
+    def test_unknown_parent_errors(self):
+        errors = self._check(self._entries(parent="nope"))
+        assert any("parent" in e for e in errors)
+
+    def test_cross_system_parent_errors(self):
+        errors = self._check(self._entries(system="vessels"))
+        assert any("同一系统" in e for e in errors)
+
+    def test_two_levels_error(self):
+        entries = self._entries()
+        entries[0]["parent"] = "something"  # 让父结构自己也成为内部件
+        errors = self._check(entries)
+        assert any("只支持一层" in e for e in errors)

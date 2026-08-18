@@ -1565,3 +1565,101 @@
   source: bp3d
   target_faces: 4500
   priority: 3
+
+# 以下 8 条为内部件（parent 指向父结构），由 select.py 自动补入
+- slug: heart_ventricle_wall
+  zh: 心室壁
+  en: Wall of ventricle
+  system: organs
+  region: thorax
+  side: none
+  parent: heart
+  fma:
+    - FMA13884
+  source: bp3d
+  target_faces: 19000
+  priority: 2
+- slug: heart_atrium_wall_left
+  zh: 左心房壁
+  en: Wall of left atrium
+  system: organs
+  region: thorax
+  side: left
+  parent: heart
+  fma:
+    - FMA9531
+  source: bp3d
+  target_faces: 6000
+  priority: 2
+- slug: heart_atrium_wall_right
+  zh: 右心房壁
+  en: Wall of right atrium
+  system: organs
+  region: thorax
+  side: right
+  parent: heart
+  fma:
+    - FMA9457
+  source: bp3d
+  target_faces: 9000
+  priority: 2
+- slug: heart_mitral_valve
+  zh: 二尖瓣
+  en: Mitral valve
+  system: organs
+  region: thorax
+  side: left
+  parent: heart
+  fma:
+    - FMA7241
+  source: bp3d
+  target_faces: 6000
+  priority: 2
+- slug: heart_tricuspid_valve
+  zh: 三尖瓣
+  en: Tricuspid valve
+  system: organs
+  region: thorax
+  side: right
+  parent: heart
+  fma:
+    - FMA7237
+  source: bp3d
+  target_faces: 9000
+  priority: 2
+- slug: heart_aortic_valve
+  zh: 主动脉瓣
+  en: Aortic valve
+  system: organs
+  region: thorax
+  side: none
+  parent: heart
+  fma:
+    - FMA7251
+  source: bp3d
+  target_faces: 2000
+  priority: 2
+- slug: heart_pulmonary_valve
+  zh: 肺动脉瓣
+  en: Pulmonary valve
+  system: organs
+  region: thorax
+  side: none
+  parent: heart
+  fma:
+    - FMA7248
+  source: bp3d
+  target_faces: 3600
+  priority: 2
+- slug: heart_papillary_muscles
+  zh: 乳头肌
+  en: Papillary muscles
+  system: organs
+  region: thorax
+  side: both
+  parent: heart
+  fma:
+    - FMA268955
+  source: bp3d
+  target_faces: 3200
+  priority: 2

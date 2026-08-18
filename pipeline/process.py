@@ -242,6 +242,7 @@ def process_structure(entry: dict, center: np.ndarray) -> dict | None:
         "side": entry["side"],
         "fma": list(entry["fma"]),
         "source": entry["source"],
+        **({"parent": entry["parent"]} if entry.get("parent") else {}),
         "faces_raw": int(raw_faces),
         "faces": int(len(f)),
         "vertices": int(len(v)),

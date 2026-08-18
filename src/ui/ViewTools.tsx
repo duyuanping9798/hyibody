@@ -20,6 +20,8 @@ export function ViewTools() {
   const quality = useUiStore((s) => s.quality);
   const qualityToggleable = useUiStore((s) => s.qualityToggleable);
   const setQuality = useUiStore((s) => s.setQuality);
+  const expanded = useUiStore((s) => s.expanded);
+  const expand = useUiStore((s) => s.expand);
 
   return (
     <>
@@ -94,6 +96,13 @@ export function ViewTools() {
         )}
         {qualityToggleable && <p className="hyi-hint">{t.qualityHint}</p>}
       </section>
+      {expanded && (
+        <section>
+          <button className="hyi-btn" onClick={() => expand(null)}>
+            {t.collapseParts}
+          </button>
+        </section>
+      )}
       {(hiddenCount > 0 || isolated) && (
         <section>
           <button className="hyi-btn" onClick={resetVisibility}>

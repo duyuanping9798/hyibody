@@ -20,6 +20,8 @@ interface UiState {
   systemOpacity: Record<SystemId, number>;
   selected: string | null;
   isolated: string | null;
+  /** 正在展开内部的父结构（心脏 → 心室壁/瓣膜…） */
+  expanded: string | null;
   hiddenCount: number;
   clip: { axis: ClipAxis; pos: number; flip?: boolean } | null;
   attributionOpen: boolean;
@@ -47,6 +49,7 @@ interface UiState {
   setSystemOpacity(id: SystemId, v: number): void;
   select(slug: string | null): void;
   isolate(slug: string | null): void;
+  expand(slug: string | null): void;
   hide(slug: string): void;
   resetVisibility(): void;
   setClip(clip: { axis: ClipAxis; pos: number; flip?: boolean } | null): void;
@@ -151,6 +154,7 @@ export const useUiStore = create<UiState>((set, get) => ({
   systemOpacity: { ...FULL_OPACITY },
   selected: null,
   isolated: null,
+  expanded: null,
   hiddenCount: 0,
   clip: null,
   attributionOpen: false,
@@ -199,13 +203,23 @@ export const useUiStore = create<UiState>((set, get) => ({
     viewer?.isolate(slug);
     set({ isolated: slug });
   },
+  expand: (slug) => {
+    viewer?.expand(slug);
+    const state = viewer?.getState();
+    set({
+      expanded: slug,
+      isolated: state?.isolated ?? null,
+      selected: state?.selected ?? null,
+    });
+  },
   hide: (slug) => {
     viewer?.hide(slug);
     set({ hiddenCount: viewer?.hiddenCount() ?? 0 });
   },
   resetVisibility: () => {
     viewer?.resetVisibility();
-    set({ hiddenCount: 0, isolated: null });
+    viewer?.expand(null);
+    set({ hiddenCount: 0, isolated: null, expanded: null });
   },
   setClip: (clip) => {
     viewer?.setClip(clip);
@@ -249,6 +263,7 @@ export const useUiStore = create<UiState>((set, get) => ({
       }
     }
     if (s.clip) st.setClip({ axis: s.clip.axis, pos: s.clip.pos, flip: s.clip.flip === true });
+    if (s.expanded) st.expand(s.expanded);
     if (s.selected) st.select(s.selected);
     if (s.lang) st.setLang(s.lang);
     if (s.cam && viewer) viewer.setCameraPose(s.cam.pos, s.cam.target);
@@ -262,8 +277,15 @@ export function toUrlState(): ViewerUrlState {
   const hiddenSystems = Object.entries(s.systemsVisible).filter(([, v]) => !v);
   if (hiddenSystems.length > 0)
     state.systems = Object.fromEntries(hiddenSystems.map(([id]) => [id, false]));
-  if (s.clip) state.clip = { axis: s.clip.axis, pos: Math.round(s.clip.pos * 100) / 100 };
+  if (s.clip) {
+    state.clip = {
+      axis: s.clip.axis,
+      pos: Math.round(s.clip.pos * 100) / 100,
+      ...(s.clip.flip ? { flip: true } : {}),
+    };
+  }
   if (s.selected) state.selected = s.selected;
+  if (s.expanded) state.expanded = s.expanded;
   if (s.lang === 'en') state.lang = 'en';
   const pose = viewer?.getCameraPose();
   if (pose)

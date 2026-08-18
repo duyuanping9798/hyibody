@@ -81,5 +81,7 @@
     "both": "Both"
   },
   "clipThroughSelected": "Cut through this structure",
-  "clipFlip": "Flip"
+  "clipFlip": "Flip",
+  "expandParts": "Open up ({n})",
+  "collapseParts": "Close up"
 }

@@ -279,3 +279,30 @@ test('half-section cuts through the selected structure', async ({ page }) => {
   );
   await page.screenshot({ path: 'test-results/smoke-halfcut.png' });
 });
+
+/**
+ * 结构层级：选中心脏 →「展开内部」→ 父结构让位给心室壁/瓣膜等内部件，
+ * 点其中一件能看到它自己的名字与科普；「收起内部」回到整颗心脏。
+ */
+test('opening the heart reveals its inner parts', async ({ page }) => {
+  const state = encodeUrlState({ layer: 0.55, selected: 'heart' });
+  await page.goto(`/?v=${state}`);
+  await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
+    timeout: 60_000,
+  });
+  const infoCard = page.getByTestId('info-card');
+  await expect(infoCard).toBeVisible({ timeout: 30_000 });
+
+  await page.getByRole('button', { name: /展开内部/ }).click();
+  // 展开后父结构不再被选中，右侧面板出现"收起内部"
+  await expect(page.getByRole('button', { name: '收起内部' }).first()).toBeVisible();
+
+  // 点中间，命中某个内部件
+  await page.mouse.click(500, 430);
+  await expect(infoCard).toBeVisible({ timeout: 20_000 });
+  await expect(infoCard.locator('h2')).not.toHaveText('心脏');
+  await page.screenshot({ path: 'test-results/smoke-heart-parts.png' });
+
+  await page.getByRole('button', { name: '收起内部' }).first().click();
+  await expect(page.getByRole('button', { name: '收起内部' })).toHaveCount(0);
+});

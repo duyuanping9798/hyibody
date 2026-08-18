@@ -801,6 +801,182 @@
     volume_cm3: 1286.7
     parents:
     - content of middle mediastinum
+- slug: heart_ventricle_wall
+  zh: 心室壁
+  en: Wall of ventricle
+  system: organs
+  region: thorax
+  side: none
+  fma:
+  - FMA13884
+  source: bp3d
+  target_faces: 19000
+  priority: 2
+  parent: heart
+  meta:
+    elements: 1
+    faces_raw: 37442
+    bbox_size_mm:
+    - 102.2
+    - 93.5
+    - 91.7
+    volume_cm3: 876.1
+    parents:
+    - wall of cardiac chamber
+- slug: heart_atrium_wall_left
+  zh: 左心房壁
+  en: Wall of left atrium
+  system: organs
+  region: thorax
+  side: left
+  fma:
+  - FMA9531
+  source: bp3d
+  target_faces: 6000
+  priority: 2
+  parent: heart
+  meta:
+    elements: 1
+    faces_raw: 7544
+    bbox_size_mm:
+    - 86.1
+    - 81.0
+    - 73.0
+    volume_cm3: 508.9
+    parents:
+    - wall of atrium
+- slug: heart_atrium_wall_right
+  zh: 右心房壁
+  en: Wall of right atrium
+  system: organs
+  region: thorax
+  side: right
+  fma:
+  - FMA9457
+  source: bp3d
+  target_faces: 9000
+  priority: 2
+  parent: heart
+  meta:
+    elements: 1
+    faces_raw: 17784
+    bbox_size_mm:
+    - 43.1
+    - 66.3
+    - 96.4
+    volume_cm3: 275.4
+    parents:
+    - wall of atrium
+- slug: heart_mitral_valve
+  zh: 二尖瓣
+  en: Mitral valve
+  system: organs
+  region: thorax
+  side: left
+  fma:
+  - FMA7241
+  source: bp3d
+  target_faces: 6000
+  priority: 2
+  parent: heart
+  meta:
+    elements: 2
+    faces_raw: 11378
+    bbox_size_mm:
+    - 51.1
+    - 56.2
+    - 36.3
+    volume_cm3: 104.3
+    parents:
+    - leaf of cardiac valve
+- slug: heart_tricuspid_valve
+  zh: 三尖瓣
+  en: Tricuspid valve
+  system: organs
+  region: thorax
+  side: right
+  fma:
+  - FMA7237
+  source: bp3d
+  target_faces: 9000
+  priority: 2
+  parent: heart
+  meta:
+    elements: 3
+    faces_raw: 17612
+    bbox_size_mm:
+    - 50.6
+    - 42.7
+    - 47.8
+    volume_cm3: 103.4
+    parents:
+    - leaf of cardiac valve
+- slug: heart_aortic_valve
+  zh: 主动脉瓣
+  en: Aortic valve
+  system: organs
+  region: thorax
+  side: none
+  fma:
+  - FMA7251
+  source: bp3d
+  target_faces: 2000
+  priority: 2
+  parent: heart
+  meta:
+    elements: 3
+    faces_raw: 2150
+    bbox_size_mm:
+    - 26.7
+    - 27.6
+    - 21.7
+    volume_cm3: 16.0
+    parents:
+    - cusp of cardiac valve
+- slug: heart_pulmonary_valve
+  zh: 肺动脉瓣
+  en: Pulmonary valve
+  system: organs
+  region: thorax
+  side: none
+  fma:
+  - FMA7248
+  source: bp3d
+  target_faces: 3600
+  priority: 2
+  parent: heart
+  meta:
+    elements: 3
+    faces_raw: 3638
+    bbox_size_mm:
+    - 32.2
+    - 32.0
+    - 20.4
+    volume_cm3: 20.9
+    parents:
+    - cusp of cardiac valve
+- slug: heart_papillary_muscles
+  zh: 乳头肌
+  en: Papillary muscles
+  system: organs
+  region: thorax
+  side: both
+  fma:
+  - FMA268955
+  source: bp3d
+  target_faces: 3200
+  priority: 2
+  parent: heart
+  meta:
+    elements: 4
+    faces_raw: 3198
+    bbox_size_mm:
+    - 67.4
+    - 67.9
+    - 61.7
+    volume_cm3: 282.6
+    parents:
+    - region of organ component
 - slug: lung_right
   zh: 右肺
   en: Right lung
