@@ -95,6 +95,31 @@
   （PCFSoftShadowMap + ShadowMaterial 接影地面，皮肤不投影）· 假接触阴影几乎零成本
   就能把人"放"在地面上；真阴影只在有 GPU 的桌面开。
 
+- 2026-08-18 · 界面升级（步骤 C）：科普文案从 `content/definitions/zh.md` 换成
+  `content/definitions/zh.json`（每条 `blurb` + `fact`）· 人类提供了成稿的 json，
+  比原来的 md 多了"你知道吗"小知识；json 也便于将来加 en。md 已删，解析器与
+  双向契约单测同步改写（新增"每个结构都要有 fact"的断言）。
+  `_meta.reviewed` 为 false 时信息卡标注"AI 初稿，待人工校对"。
+- 2026-08-18 · 本地打包 Noto Sans SC 子集（`scripts/build_font_subset.py`，
+  `pnpm font:subset`）· 整套思源黑体单字重 8 MB，而本站中文是封闭字符集
+  （content/ 下的界面文案、科普、故事线、结构名共 1,205 字），子集后两个字重共 328 KB。
+  源文件取自 notofonts/noto-cjk（raw.githubusercontent.com 在白名单内），
+  许可证 SIL OFL 1.1，署名写进 ATTRIBUTION.md。**改了中文文案要重跑 `pnpm font:subset`**。
+- 2026-08-18 · 分层滑块改为按系统色渐变的轨道 + 可点击的刻度按钮 · 原来只有五个静态
+  文字标签，看不出"滑到哪一段在看哪一层"。
+- 2026-08-18 · 选中结构加 3D 标签引线（`StructureLabel.tsx`）· viewer 暴露
+  `projectStructure(slug)` 做投影，React 侧用 rAF 跟帧、位移小于半像素不 setState；
+  故事线播放时隐藏（底部有文案卡会打架）。
+- 2026-08-18 · 分层滑块跨度 > 0.08 才做缓动（时间常数 0.12 s）· 拖滑块要跟手，
+  故事线/预设跳转要顺滑；`?v=` 分享链接恢复走 immediate，不该看到过渡动画。
+- 2026-08-18 · 移动端信息卡改真正的底部抽屉（把手、可滚动、安全区内边距），
+  并用 `body:has(.hyi-info)` 把分层滑块与面板标签抬到抽屉之上 · 之前抽屉一弹出来就
+  盖住分层滑块，手机上选中结构后再也够不到滑块。
+- 2026-08-18 · `prototype/index.html` 仍不在仓库里（启动包未上传该目录），
+  C 步的"按原型视觉语言重做界面"只能按 KICKOFF 第 6 节记录的基调执行：深色舞台、
+  玻璃拟态面板、青色强调色、暖色故事线按钮 · 若人类手头有原型文件，上传到
+  `prototype/` 后可再对齐一次细节。
+
 ## 待定（不做，等人类点头）
 
 - 剖切模板封盖（stencil cap，真实断面填色）：每结构需两个 pass，移动端性能与实现复杂度高，等真机反馈决定是否值得。

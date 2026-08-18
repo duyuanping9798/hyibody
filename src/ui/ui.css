@@ -1,3 +1,23 @@
+/*
+ * 本地打包的思源黑体（Noto Sans SC）子集：只含 content/ 里实际用到的 1,205 个字，
+ * 两个字重合计约 328 KB。改了中文文案要重跑 `pnpm font:subset`，否则新字掉回系统字体。
+ * 许可证：SIL Open Font License 1.1（见 docs/ATTRIBUTION.md）。
+ */
+@font-face {
+  font-family: 'Noto Sans SC Subset';
+  src: url('../assets/fonts/noto-sans-sc-400-subset.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Noto Sans SC Subset';
+  src: url('../assets/fonts/noto-sans-sc-700-subset.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* HyiBody UI：深色舞台 + 玻璃拟态面板 + 青色强调（原型视觉基调，KICKOFF 第 6 节） */
 
 :root {
@@ -563,4 +583,354 @@ body.hyi-kiosk .hyi-info .blurb {
   font-size: 11.5px;
   line-height: 1.5;
   color: var(--hyi-text-dim);
+}
+
+/* ---------- C 步：界面视觉语言（玻璃面板 / 顶栏 / 彩色滑块 / 标签引线） ---------- */
+
+.hyi-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 14px 20px;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(7, 11, 22, 0.9), rgba(7, 11, 22, 0));
+  z-index: 3;
+}
+.hyi-header h1 {
+  margin: 0;
+  font-size: 22px;
+  letter-spacing: 1px;
+  color: var(--hyi-accent);
+  text-shadow: 0 0 18px #4fe3e03d;
+}
+.hyi-header-sub {
+  font-size: 13px;
+  color: var(--hyi-text-dim);
+}
+.hyi-center-status {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+/* 加载进度 */
+.hyi-loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(60% 60% at 50% 45%, #0e1730f2, #070b16fa);
+  z-index: 6;
+}
+.hyi-loading-inner {
+  width: min(320px, 72vw);
+  text-align: center;
+}
+.hyi-loading-title {
+  margin: 0 0 12px;
+  font-size: 14px;
+  color: var(--hyi-text);
+}
+.hyi-loading-sub {
+  margin: 10px 0 0;
+  font-size: 12px;
+  color: var(--hyi-text-dim);
+}
+.hyi-progress {
+  height: 4px;
+  border-radius: 999px;
+  background: #ffffff14;
+  overflow: hidden;
+}
+.hyi-progress span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #4fe3e0, #7aa2ff);
+  transition: width 0.35s ease;
+}
+.hyi-progress-thin {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 7;
+  background: transparent;
+  pointer-events: none;
+}
+.hyi-progress-thin span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #4fe3e0, #7aa2ff);
+  transition: width 0.4s ease;
+  box-shadow: 0 0 10px #4fe3e07a;
+}
+
+/* 彩色分层滑块 */
+.hyi-layer-track {
+  position: relative;
+  padding: 2px 0 6px;
+}
+.hyi-range-layer {
+  --hyi-track-image: var(--hyi-layer-track);
+}
+.hyi-range-layer::-webkit-slider-runnable-track {
+  background: var(--hyi-layer-track);
+  opacity: 0.85;
+  height: 6px;
+  border-radius: 999px;
+}
+.hyi-range-layer::-moz-range-track {
+  background: var(--hyi-layer-track);
+  opacity: 0.85;
+  height: 6px;
+  border-radius: 999px;
+}
+.hyi-layer-stop {
+  appearance: none;
+  border: 0;
+  background: none;
+  padding: 4px 2px;
+  font: inherit;
+  font-size: 11.5px;
+  color: var(--hyi-text-dim);
+  cursor: pointer;
+  position: relative;
+  transition: color 0.15s;
+}
+.hyi-layer-stop::before {
+  content: '';
+  display: block;
+  width: 6px;
+  height: 6px;
+  margin: 0 auto 4px;
+  border-radius: 50%;
+  background: var(--hyi-stop-color);
+  opacity: 0.55;
+  transition:
+    opacity 0.15s,
+    transform 0.15s;
+}
+.hyi-layer-stop.active {
+  color: var(--hyi-text);
+}
+.hyi-layer-stop.active::before {
+  opacity: 1;
+  transform: scale(1.5);
+}
+.hyi-layer-stop:focus-visible {
+  outline: 2px solid var(--hyi-accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* 3D 标签引线 */
+.hyi-label-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+.hyi-label-line {
+  position: absolute;
+  inset: 0;
+}
+.hyi-label-line polyline {
+  fill: none;
+  stroke: #4fe3e0b8;
+  stroke-width: 1.25;
+}
+.hyi-label-line circle {
+  fill: #4fe3e0;
+  stroke: #04121799;
+  stroke-width: 1;
+}
+.hyi-label {
+  position: absolute;
+  transform: translate(0, -50%);
+  padding: 5px 10px;
+  border-radius: 8px;
+  background: #071018cc;
+  border: 1px solid #4fe3e03d;
+  backdrop-filter: blur(6px);
+  white-space: nowrap;
+  line-height: 1.25;
+}
+.hyi-label.left {
+  transform: translate(-100%, -50%);
+}
+.hyi-label .zh {
+  display: block;
+  font-size: 13px;
+  color: var(--hyi-text);
+}
+.hyi-label .en {
+  display: block;
+  font-size: 10.5px;
+  color: var(--hyi-text-dim);
+}
+
+/* 信息卡：系统色点 + 标签 + 你知道吗 */
+.hyi-info-head {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.hyi-info-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-top: 7px;
+  flex: none;
+  box-shadow: 0 0 10px currentColor;
+}
+.hyi-tags {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0 0;
+  padding: 0;
+}
+.hyi-tags li {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #ffffff12;
+  border: 1px solid #ffffff1a;
+  color: var(--hyi-text-dim);
+}
+.hyi-fact {
+  margin-top: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: #4fe3e00f;
+  border-left: 2px solid var(--hyi-accent);
+}
+.hyi-fact-title {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  color: var(--hyi-accent);
+  margin-bottom: 3px;
+}
+.hyi-fact p {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--hyi-text-dim);
+}
+
+/* ---------- C 步：移动端底部抽屉与顶栏排版修正 ---------- */
+@media (max-width: 720px) {
+  /* 顶栏原来把品牌和四个按钮挤在同一行，中文标题直接压在按钮上 */
+  .hyi-header {
+    padding: 10px 12px 6px;
+  }
+  .hyi-header h1 {
+    font-size: 17px;
+  }
+  .hyi-header-sub {
+    display: none;
+  }
+  .hyi-topbar {
+    top: 8px;
+    right: 8px;
+    left: auto;
+    gap: 6px;
+  }
+  .hyi-topbar .hyi-btn {
+    padding: 7px 9px;
+    font-size: 12px;
+    min-height: 38px;
+  }
+  .hyi-search {
+    top: 52px;
+  }
+
+  /* 信息卡改成真正的底部抽屉：全宽、圆角只在上方、内容可滚动、带把手 */
+  .hyi-info {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: auto;
+    max-height: 58vh;
+    overflow-y: auto;
+    border-radius: 18px 18px 0 0;
+    padding-top: 18px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    z-index: 7;
+    animation: hyi-sheet-in 0.22s ease-out;
+  }
+  .hyi-info::before {
+    content: '';
+    position: absolute;
+    top: 7px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 36px;
+    height: 4px;
+    border-radius: 999px;
+    background: #ffffff33;
+  }
+  .hyi-info .actions {
+    position: sticky;
+    bottom: 0;
+    padding-top: 8px;
+    background: linear-gradient(180deg, transparent, var(--hyi-panel) 40%);
+  }
+  /* 抽屉弹出时把滑块与侧栏标签让开 */
+  .hyi-layer-slider {
+    bottom: 8px;
+  }
+  .hyi-mobile-tabs {
+    bottom: 108px;
+  }
+  .hyi-side {
+    bottom: 108px;
+  }
+  /* 小屏上标签引线容易压住抽屉，缩短并缩小字号 */
+  .hyi-label .zh {
+    font-size: 12px;
+  }
+}
+
+@keyframes hyi-sheet-in {
+  from {
+    transform: translateY(16px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hyi-info {
+    animation: none;
+  }
+}
+
+/* 底部抽屉打开时，把分层滑块与面板标签抬到抽屉之上——否则手机上选中一个结构
+   就再也够不到分层滑块了。:has() 在目标浏览器（Chrome 105+/Safari 15.4+）可用。 */
+@media (max-width: 720px) {
+  .hyi-info {
+    max-height: 46vh;
+  }
+  body:has(.hyi-info) .hyi-layer-slider {
+    bottom: calc(46vh + 10px);
+  }
+  body:has(.hyi-info) .hyi-mobile-tabs,
+  body:has(.hyi-info) .hyi-side {
+    bottom: calc(46vh + 78px);
+  }
 }

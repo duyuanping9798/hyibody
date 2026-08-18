@@ -1,9 +1,18 @@
 import { STRINGS } from './i18n';
-import { definitionsZh } from '../data/definitions';
+import { definitionsReviewed, definitionsZh } from '../data/definitions';
 import type { SystemId } from '../data/types';
+import { SYSTEM_COLORS } from '../viewer/materials';
 import { useUiStore } from './store';
 
-/** 信息卡：中英名、一句话科普（占位）、系统/部位、来源署名、隔离/隐藏/聚焦（KICKOFF 第 6 节）。 */
+/** 系统色点：让信息卡一眼能对上左侧系统面板的配色。 */
+function systemDot(system: SystemId): string {
+  return `#${SYSTEM_COLORS[system].toString(16).padStart(6, '0')}`;
+}
+
+/**
+ * 信息卡：中英名 + FMA、系统/部位标签、一句话科普、"你知道吗"小知识、
+ * 来源署名、隔离/隐藏/聚焦（KICKOFF 第 6 节）。
+ */
 export function InfoCard() {
   const lang = useUiStore((s) => s.lang);
   const t = STRINGS[lang];
@@ -20,20 +29,42 @@ export function InfoCard() {
   if (!info) return null;
   const system = info.system as SystemId;
   const isIsolated = isolated === selected;
+  // 英文文案还没有（content/definitions/en.json 待补），英文态回退到占位句
+  const definition = lang === 'zh' ? definitionsZh[selected] : undefined;
 
   return (
     <div className="hyi-panel hyi-info" data-testid="info-card">
-      <h2>{lang === 'zh' ? info.zh : info.en}</h2>
-      <p className="en">
-        {lang === 'zh' ? info.en : info.zh}
-        {info.fma.length > 0 && <span> · {info.fma[0]}</span>}
-      </p>
-      <p className="blurb">
-        {(lang === 'zh' ? definitionsZh[selected] : undefined) ?? t.infoBlurbPending}
-      </p>
+      <header className="hyi-info-head">
+        <span className="hyi-info-dot" style={{ background: systemDot(system) }} aria-hidden />
+        <div>
+          <h2>{lang === 'zh' ? info.zh : info.en}</h2>
+          <p className="en">
+            {lang === 'zh' ? info.en : info.zh}
+            {info.fma.length > 0 && <span> · {info.fma[0]}</span>}
+          </p>
+        </div>
+      </header>
+
+      <ul className="hyi-tags">
+        <li>{t.systems[system]}</li>
+        <li>{t.regions[info.region]}</li>
+        {info.side !== 'none' && <li>{t.sides[info.side]}</li>}
+      </ul>
+
+      <p className="blurb">{definition?.blurb ?? t.infoBlurbPending}</p>
+
+      {definition?.fact && (
+        <aside className="hyi-fact">
+          <span className="hyi-fact-title">{t.infoFactTitle}</span>
+          <p>{definition.fact}</p>
+        </aside>
+      )}
+
       <p className="meta">
-        {t.systems[system]} · {t.regions[info.region]} · {t.sourceLabel}: {t.sourceBp3d}
+        {t.sourceLabel}: {t.sourceBp3d}
+        {definition && !definitionsReviewed ? ` · ${t.infoUnreviewed}` : ''}
       </p>
+
       <div className="actions">
         <button className="hyi-btn" onClick={() => isolate(isIsolated ? null : selected)}>
           {isIsolated ? t.actionUnisolate : t.actionIsolate}

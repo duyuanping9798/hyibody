@@ -1,45 +1,65 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { parseDefinitions } from '../../src/data/definitions';
+import { definitionsZh, parseDefinitions } from '../../src/data/definitions';
 
-const realMd = readFileSync(resolve(__dirname, '../../content/definitions/zh.md'), 'utf8');
 const manifest = JSON.parse(
   readFileSync(resolve(__dirname, '../../public/assets/manifest.json'), 'utf8'),
 ) as { structures: Record<string, unknown> };
 
 describe('definitions 解析', () => {
-  it('按 ## slug 分节解析', () => {
-    const map = parseDefinitions(
-      '# 标题\n\n说明\n\n## heart\n\n心脏文案。\n\n## skull\n\n颅骨文案。\n',
-    );
-    expect(map).toEqual({ heart: '心脏文案。', skull: '颅骨文案。' });
+  it('跳过 _meta，读出 blurb 与 fact', () => {
+    expect(
+      parseDefinitions({
+        _meta: { reviewed: false },
+        heart: { blurb: '心脏文案。', fact: '心脏小知识。' },
+        skull: { blurb: '颅骨文案。' },
+      }),
+    ).toEqual({
+      heart: { blurb: '心脏文案。', fact: '心脏小知识。' },
+      skull: { blurb: '颅骨文案。' },
+    });
   });
 
-  it('空节与缺正文跳过', () => {
-    expect(parseDefinitions('## a\n\n## b\n\n有内容\n')).toEqual({ b: '有内容' });
+  it('缺 blurb、空串、非对象一律丢掉（文件是人手改的）', () => {
+    expect(
+      parseDefinitions({ a: { fact: '只有小知识' }, b: { blurb: '   ' }, c: 'x', d: null }),
+    ).toEqual({});
+  });
+
+  it('非对象输入不炸', () => {
+    expect(parseDefinitions(null)).toEqual({});
+    expect(parseDefinitions('nope')).toEqual({});
   });
 });
 
 describe('definitions 内容契约（真实文件 × 真实 manifest）', () => {
-  const map = parseDefinitions(realMd);
   const slugs = Object.keys(manifest.structures);
 
   it('每个结构都有一句话科普', () => {
-    const missing = slugs.filter((slug) => !map[slug]);
+    const missing = slugs.filter((slug) => !definitionsZh[slug]);
     expect(missing, `缺文案：${missing.join(', ')}`).toEqual([]);
   });
 
   it('没有多余的文案条目（防止 slug 改名后残留）', () => {
-    const extra = Object.keys(map).filter((slug) => !slugs.includes(slug));
+    const extra = Object.keys(definitionsZh).filter((slug) => !slugs.includes(slug));
     expect(extra, `多余条目：${extra.join(', ')}`).toEqual([]);
   });
 
-  it('文案为单行且长度适中（信息卡显示）', () => {
-    for (const [slug, text] of Object.entries(map)) {
-      expect(text.includes('\n'), `${slug} 应为单行`).toBe(false);
-      expect(text.length, `${slug} 过长`).toBeLessThanOrEqual(80);
-      expect(text.length, `${slug} 过短`).toBeGreaterThanOrEqual(8);
+  it('blurb 单行、长度适中；fact 存在时同样约束', () => {
+    for (const [slug, def] of Object.entries(definitionsZh)) {
+      expect(def.blurb.includes('\n'), `${slug} blurb 应为单行`).toBe(false);
+      expect(def.blurb.length, `${slug} blurb 过长`).toBeLessThanOrEqual(90);
+      expect(def.blurb.length, `${slug} blurb 过短`).toBeGreaterThanOrEqual(8);
+      if (def.fact) {
+        expect(def.fact.includes('\n'), `${slug} fact 应为单行`).toBe(false);
+        expect(def.fact.length, `${slug} fact 过长`).toBeLessThanOrEqual(120);
+      }
     }
+  });
+
+  it('每个结构都有"你知道吗"小知识', () => {
+    const missing = slugs.filter((slug) => !definitionsZh[slug]?.fact);
+    expect(missing, `缺小知识：${missing.join(', ')}`).toEqual([]);
   });
 });

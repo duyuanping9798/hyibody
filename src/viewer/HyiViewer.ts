@@ -59,6 +59,10 @@ export interface HyiViewerOptions {
 /** 首屏系统：先加载完这两个就派发 ready，其余后台补（KICKOFF 第 5 节 M1-6）。 */
 const FIRST_SCREEN_SYSTEMS: readonly SystemId[] = ['skin', 'skeleton'];
 
+/** 分层缓动：跨度超过阈值才缓动（拖滑块要跟手，故事线跳转要顺滑），时间常数秒。 */
+const LAYER_EASE_THRESHOLD = 0.08;
+const LAYER_EASE_TAU = 0.12;
+
 /** 透明排序辅助：由内到外的渲染顺序。 */
 const RENDER_ORDER: Record<SystemId, number> = {
   nerves: 1,
@@ -142,6 +146,9 @@ export class HyiViewer extends EventTarget {
     t: number;
   } | null = null;
   private pointerDownAt: { x: number; y: number } | null = null;
+  /** 分层滑块缓动：大跳（故事线、预设）平滑过渡，小步（拖滑块）立即跟手 */
+  private layerTarget = 0;
+  private layerEasing = false;
 
   constructor(
     container: HTMLElement,
@@ -200,7 +207,16 @@ export class HyiViewer extends EventTarget {
       const rest = systems.filter((s) => !(FIRST_SCREEN_SYSTEMS as string[]).includes(s.id));
       // 占位 manifest（无皮肤/骨骼）时退化为全量加载
       const firstBatch = first.length > 0 ? first : systems;
-      await Promise.all(firstBatch.map((s) => this.loadSystem(s.id as SystemId, s.file)));
+      let loaded = 0;
+      this.emitProgress(0, systems.length);
+      await Promise.all(
+        firstBatch.map((s) =>
+          this.loadSystem(s.id as SystemId, s.file).then(() => {
+            loaded += 1;
+            this.emitProgress(loaded, systems.length);
+          }),
+        ),
+      );
       this.contentBox = new Box3().setFromObject(this.root);
       fitStage(this.stage, this.contentBox);
       this.frameContent();
@@ -211,6 +227,8 @@ export class HyiViewer extends EventTarget {
         for (const s of first.length > 0 ? rest : []) {
           try {
             await this.loadSystem(s.id as SystemId, s.file);
+            loaded += 1;
+            this.emitProgress(loaded, systems.length);
             this.contentBox = new Box3().setFromObject(this.root);
             fitStage(this.stage, this.contentBox);
             this.applyVisibility();
@@ -264,6 +282,28 @@ export class HyiViewer extends EventTarget {
     }
   }
 
+  private emitProgress(loaded: number, total: number): void {
+    this.dispatchEvent(new CustomEvent('progress', { detail: { loaded, total } }));
+  }
+
+  /**
+   * 结构中心投影到容器像素坐标，供 3D 标签引线用。
+   * 结构不存在、不可见或在相机背后时返回 null。
+   */
+  projectStructure(slug: string): { x: number; y: number } | null {
+    const entry = this.structures.get(slug);
+    if (!entry || !entry.material.visible) return null;
+    const box = entry.mesh.geometry.boundingBox;
+    if (!box) return null;
+    const center = box.getCenter(new Vector3());
+    entry.mesh.localToWorld(center);
+    const ndc = center.project(this.rig.camera);
+    if (ndc.z > 1) return null;
+    const w = this.container.clientWidth || 1;
+    const h = this.container.clientHeight || 1;
+    return { x: ((ndc.x + 1) / 2) * w, y: ((1 - ndc.y) / 2) * h };
+  }
+
   getManifest(): Manifest | null {
     return this.manifest;
   }
@@ -291,8 +331,30 @@ export class HyiViewer extends EventTarget {
 
   // ---- 分层与显隐 ----------------------------------------------------------
 
-  setLayer(value: number): void {
-    this.state.layer = Math.min(1, Math.max(0, value));
+  setLayer(value: number, immediate = false): void {
+    const next = Math.min(1, Math.max(0, value));
+    this.layerTarget = next;
+    // 拖滑块时每帧都在小步变化，缓动会拖泥带水；故事线/预设是大跳，缓动才有意义
+    if (immediate || Math.abs(next - this.state.layer) < LAYER_EASE_THRESHOLD) {
+      this.layerEasing = false;
+      this.state.layer = next;
+      this.applyVisibility();
+      return;
+    }
+    this.layerEasing = true;
+  }
+
+  /** 每帧把当前分层值指数逼近目标值。 */
+  private tickLayer(dt: number): void {
+    if (!this.layerEasing) return;
+    const k = 1 - Math.exp(-dt / LAYER_EASE_TAU);
+    const next = this.state.layer + (this.layerTarget - this.state.layer) * k;
+    if (Math.abs(this.layerTarget - next) < 0.002) {
+      this.state.layer = this.layerTarget;
+      this.layerEasing = false;
+    } else {
+      this.state.layer = next;
+    }
     this.applyVisibility();
   }
 
@@ -586,6 +648,7 @@ export class HyiViewer extends EventTarget {
   private tick(): void {
     if (this.disposed) return;
     const dt = this.clock.getDelta();
+    this.tickLayer(dt);
     this.animateOrgans(this.clock.elapsedTime);
     if (this.flight) {
       this.flight.t = Math.min(1, this.flight.t + dt / 0.6);

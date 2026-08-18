@@ -1,7 +1,7 @@
 {
   "brand": "HyiBody",
   "subtitle": "人体透视科普",
-  "loading": "模型加载中…",
+  "loading": "正在加载人体模型…",
   "loadError": "模型加载失败，请刷新重试",
   "placeholderNotice": "当前为占位模型，正式解剖数据将在 M1 数据流水线完成后接入",
   "attribution": "数据来源与署名",
@@ -68,5 +68,16 @@
   "qualityTitle": "画质",
   "qualityHigh": "高画质",
   "qualityHint": "软阴影与环境光遮蔽，性能开销较大",
-  "qualityUnavailable": "当前设备用软件渲染，已自动降到基础画质"
+  "qualityUnavailable": "当前设备用软件渲染，已自动降到基础画质",
+  "infoFactTitle": "你知道吗",
+  "infoUnreviewed": "AI 初稿，待人工校对",
+  "infoTagSystem": "系统",
+  "infoTagRegion": "部位",
+  "loadingSystems": "{done}/{total} 个系统",
+  "sides": {
+    "left": "左",
+    "right": "右",
+    "none": "—",
+    "both": "双侧"
+  }
 }

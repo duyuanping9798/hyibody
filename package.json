@@ -22,7 +22,8 @@
     "test:e2e": "playwright test",
     "assets:placeholder": "node scripts/generate-placeholder.mjs",
     "pipeline:all": "python3 pipeline/run_all.py",
-    "pipeline:test": "python3 -m pytest pipeline/tests -q"
+    "pipeline:test": "python3 -m pytest pipeline/tests -q",
+    "font:subset": "python3 scripts/build_font_subset.py"
   },
   "dependencies": {
     "qrcode": "^1.5.4",
