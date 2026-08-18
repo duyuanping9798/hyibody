@@ -16,12 +16,12 @@
     },
     {
       "text": {
-        "zh": "把心脏打开看看：四个腔室由厚厚的心室壁和心房壁围成，中间靠四个瓣膜控制血流方向。",
-        "en": "Open it up: four chambers walled by thick ventricular and atrial muscle, with four valves steering the flow."
+        "zh": "把心脏打开看看：左右心房在上、左右心室在下，中间靠四个瓣膜控制血流方向。",
+        "en": "Open it up: two atria on top, two ventricles below, with four valves steering the flow between them."
       },
       "layer": 0.6,
       "expand": "heart",
-      "selected": "heart_ventricle_wall",
+      "selected": "heart_left_ventricle",
       "focus": true,
       "durationMs": 11000
     },
@@ -43,7 +43,7 @@
       },
       "layer": 0.6,
       "expand": "heart",
-      "selected": "heart_ventricle_wall",
+      "selected": "heart_left_ventricle",
       "focus": true,
       "clip": {
         "axis": "y",

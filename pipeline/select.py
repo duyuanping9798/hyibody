@@ -216,6 +216,11 @@ def sync_targets(entries: list[dict]) -> int:
     if not path.exists():
         return 0
     want = {e["slug"]: int(e["target_faces"]) for e in entries}
+    # 非 BP3D 来源（HRA 等）的 target_faces 由人在 structures.yaml 里定：
+    # groups.yaml 的基准是按 BP3D 源网格面数算的，套到别的数据源上没有意义。
+    for entry in bp3d.load_structure_list()[1]:
+        if entry.get("source") not in bp3d.SOURCE_SETS:
+            want.pop(entry["slug"], None)
     existing = {
         line.strip().split(":", 1)[1].strip()
         for line in path.read_text(encoding="utf-8").split("\n")

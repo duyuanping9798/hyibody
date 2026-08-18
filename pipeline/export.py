@@ -133,6 +133,7 @@ def build_glb(metas: list[dict], npz_dir: Path, out_path: Path) -> None:
             "region": meta["region"],
             "side": meta["side"],
             "fma": meta["fma"],
+            **({"uberon": meta["uberon"]} if meta.get("uberon") else {}),
             "source": meta["source"],
             **({"parent": meta["parent"]} if meta.get("parent") else {}),
         }
@@ -184,6 +185,9 @@ def load_metas(system: str) -> list[dict]:
 def write_manifest() -> None:
     """按 public/assets/ 现有系统 glb + work 元数据生成 manifest.json。"""
     sources = bp3d.load_sources()
+    hra_sources = (
+        bp3d.load_sources(bp3d.SOURCES_HRA_YAML) if bp3d.SOURCES_HRA_YAML.exists() else None
+    )
     with (ROOT / "package.json").open(encoding="utf-8") as f:
         version = json.load(f)["version"]
     systems = []
@@ -211,21 +215,29 @@ def write_manifest() -> None:
                 "region": m["region"],
                 "side": m["side"],
                 "fma": m["fma"],
+                **({"uberon": m["uberon"]} if m.get("uberon") else {}),
                 "source": m["source"],
                 **({"parent": m["parent"]} if m.get("parent") else {}),
                 "bbox": m["bbox"],
             }
     if not systems:
         raise SystemExit("错误：public/assets/ 没有任何系统 glb，先跑 export")
+    # 署名逐条按数据源写：用到哪个源就署哪个源（CLAUDE.md 的许可证铁律）
+    attribution = [
+        sources["license"]["attribution"],
+        "数据来源：BodyParts3D 4.0（NBDC LSDB 存档站），CC BY 4.0。",
+    ]
+    if hra_sources and any(info["source"] == bp3d.HRA_SOURCE for info in structures.values()):
+        attribution += [
+            hra_sources["license"]["attribution"],
+            "心脏内部结构来自 HuBMAP Human Reference Atlas 3D 参考器官，CC BY 4.0。",
+        ]
     manifest = {
         "version": version,
         "generatedAt": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "systems": systems,
         "structures": structures,
-        "attribution": [
-            sources["license"]["attribution"],
-            "数据来源：BodyParts3D 4.0（NBDC LSDB 存档站），CC BY 4.0。",
-        ],
+        "attribution": attribution,
     }
     out = ASSETS_DIR / "manifest.json"
     with out.open("w", encoding="utf-8") as f:

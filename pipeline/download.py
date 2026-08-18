@@ -27,7 +27,7 @@ import urllib.request
 import zipfile
 from pathlib import Path
 
-from bp3d import RAW_DIR, load_sources
+from bp3d import HRA_RAW_DIR, RAW_DIR, SOURCES_HRA_YAML, SOURCES_YAML, load_sources
 
 
 def sha256_of(path: Path) -> str:
@@ -64,7 +64,7 @@ def ensure_file(entry: dict, base_url: str, raw_dir: Path, force: bool) -> Path:
             f"错误：{dest} 已存在但 sha256 不符\n  期望 {entry['sha256']}\n  实际 {actual}\n"
             f"删除该文件或用 --force 重新下载。"
         )
-    download_file(f"{base_url}/{entry['name']}", dest)
+    download_file(f"{base_url}/{entry.get('url_path', entry['name'])}", dest)
     actual = sha256_of(dest)
     if actual != entry["sha256"]:
         dest.unlink(missing_ok=True)
@@ -101,15 +101,25 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--force", action="store_true", help="重新下载与解压")
     args = ap.parse_args(argv)
 
-    cfg = load_sources()
-    RAW_DIR.mkdir(parents=True, exist_ok=True)
-    entries = [e for e in cfg["files"] if not args.only or e["name"] == args.only]
-    if not entries:
-        raise SystemExit(f"错误：sources.yaml 中没有 {args.only!r}")
-    for entry in entries:
-        path = ensure_file(entry, cfg["base_url"], RAW_DIR, args.force)
-        if entry["kind"] == "obj_zip":
-            extract_zip(path, entry, RAW_DIR, args.force)
+    # 每个数据源一份配置（各自的许可证与署名），落到各自的 raw 目录
+    plans = [(SOURCES_YAML, RAW_DIR), (SOURCES_HRA_YAML, HRA_RAW_DIR)]
+    matched = 0
+    for cfg_path, raw_dir in plans:
+        if not cfg_path.exists():
+            continue
+        cfg = load_sources(cfg_path)
+        entries = [e for e in cfg["files"] if not args.only or e["name"] == args.only]
+        if not entries:
+            continue
+        matched += len(entries)
+        print(f"---- {cfg['dataset']}（{cfg['license']['name']}）→ {raw_dir.name}/")
+        raw_dir.mkdir(parents=True, exist_ok=True)
+        for entry in entries:
+            path = ensure_file(entry, cfg["base_url"], raw_dir, args.force)
+            if entry["kind"] == "obj_zip":
+                extract_zip(path, entry, raw_dir, args.force)
+    if not matched:
+        raise SystemExit(f"错误：数据源清单里没有 {args.only!r}")
     print("下载完成。")
     return 0
 

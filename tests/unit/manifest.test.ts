@@ -48,7 +48,12 @@ describe('流水线产物契约', () => {
     const defined = new Set(Object.keys(manifest.structures));
     expect([...listed].sort()).toEqual([...defined].sort());
     for (const [slug, info] of Object.entries(manifest.structures)) {
-      expect(info.fma.length, `${slug} 缺 fma（许可证铁律）`).toBeGreaterThan(0);
+      // 许可证铁律：每个结构都要留一个本体 id。BP3D 没有的概念（室间隔）
+      // 用 HRA 给的 UBERON 顶上，两者都没有才算缺
+      expect(
+        info.fma.length > 0 || Boolean(info.uberon),
+        `${slug} 既没有 fma 也没有 uberon（许可证铁律）`,
+      ).toBe(true);
       expect(info.zh, slug).toBeTruthy();
       expect(info.en, slug).toBeTruthy();
     }
@@ -100,9 +105,13 @@ describe('manifest: 内部件层级（parent）', () => {
     }
   });
 
-  it('心脏带出了内部件（心室壁/瓣膜等）', () => {
+  it('心脏带出了内部件（心腔/瓣膜等）', () => {
     const children = Object.entries(structures).filter(([, s]) => s.parent === 'heart');
     expect(children.length).toBeGreaterThanOrEqual(4);
-    expect(children.map(([slug]) => slug)).toContain('heart_ventricle_wall');
+    expect(children.map(([slug]) => slug)).toContain('heart_left_ventricle');
+    // 四个瓣膜都在，心脏才算真打开了
+    for (const valve of ['mitral', 'tricuspid', 'aortic', 'pulmonary']) {
+      expect(children.map(([slug]) => slug)).toContain(`heart_${valve}_valve`);
+    }
   });
 });

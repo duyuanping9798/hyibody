@@ -32,7 +32,7 @@ docs/           KICKOFF.md STATUS.md DECISIONS.md ATTRIBUTION.md
 
 ## 数据与许可证铁律
 
-只允许使用以下来源：BodyParts3D 4.0（NBDC 存档站，CC BY 4.0，署名文本见 docs/ATTRIBUTION.md）、HuBMAP HRA 3D 参考器官（CC BY 4.0）、CC0 体表/体型网格（Blender Studio Human Base Meshes、MakeHuman/MPFB2 资产）。禁止把 Z-Anatomy 网格/层级、Open3DModel、任何 NC/ND/需协议的数据（Allen、BigBrain、MedShapeNet、Dundee NC 素材、ViP/MIDA、CVH 等）放进仓库或产物。原始数据永不提交到 git（放 `pipeline/raw/`，已 gitignore；可上传到本仓库 Release 作镜像）。每个结构保留 `fma` 字段（BodyParts3D 的 FMA/FJ ID 列表）以便将来对接本体。新增任何数据源前先在 docs/DECISIONS.md 记录并确认许可证。
+只允许使用以下来源：BodyParts3D 4.0（NBDC 存档站，CC BY 4.0，署名文本见 docs/ATTRIBUTION.md）、HuBMAP HRA 3D 参考器官（CC BY 4.0）、CC0 体表/体型网格（Blender Studio Human Base Meshes、MakeHuman/MPFB2 资产）。禁止把 Z-Anatomy 网格/层级、Open3DModel、任何 NC/ND/需协议的数据（Allen、BigBrain、MedShapeNet、Dundee NC 素材、ViP/MIDA、CVH 等）放进仓库或产物。原始数据永不提交到 git（放 `pipeline/raw/`，已 gitignore；可上传到本仓库 Release 作镜像）。每个结构保留本体 id 以便将来对接：BodyParts3D 结构用 `fma`（FMA/FJ ID 列表），HRA 结构额外带 `uberon`；BP3D 两集都没有的概念（如室间隔）允许 `fma: []` 但必须有 `uberon`，两者不能都空（2026-08-18 修订，见 DECISIONS.md）。新增任何数据源前先在 docs/DECISIONS.md 记录并确认许可证。
 
 ## 性能与体积预算（PR 若突破需说明）
 

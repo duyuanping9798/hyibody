@@ -1,6 +1,6 @@
 {
   "version": "0.0.1",
-  "generatedAt": "2026-08-18T08:45:27+00:00",
+  "generatedAt": "2026-08-18T11:56:32+00:00",
   "systems": [
     {
       "id": "skin",
@@ -104,7 +104,7 @@
     {
       "id": "organs",
       "file": "assets/organs.glb",
-      "bytes": 1714952,
+      "bytes": 1690256,
       "structures": [
         "heart",
         "lung_right",
@@ -129,9 +129,11 @@
         "thymus",
         "prostate",
         "testes",
-        "heart_ventricle_wall",
-        "heart_atrium_wall_left",
-        "heart_atrium_wall_right",
+        "heart_left_ventricle",
+        "heart_right_ventricle",
+        "heart_left_atrium",
+        "heart_right_atrium",
+        "heart_interventricular_septum",
         "heart_mitral_valve",
         "heart_tricuspid_valve",
         "heart_aortic_valve",
@@ -1720,14 +1722,15 @@
       "fma": [
         "FMA7088"
       ],
-      "source": "bp3d_partof",
+      "uberon": "UBERON:0000948",
+      "source": "hra",
       "bbox": [
-        -35.68,
-        -75.77,
-        388.14,
-        80.1,
-        30.72,
-        492.9
+        -38.56,
+        -73.95,
+        388.87,
+        82.94,
+        28.88,
+        491.93
       ]
     },
     "lung_right": {
@@ -2150,64 +2153,107 @@
         -67.62
       ]
     },
-    "heart_ventricle_wall": {
-      "zh": "心室壁",
-      "en": "Wall of ventricle",
-      "system": "organs",
-      "region": "thorax",
-      "side": "none",
-      "fma": [
-        "FMA13884"
-      ],
-      "source": "bp3d",
-      "parent": "heart",
-      "bbox": [
-        -22.38,
-        -75.85,
-        387.44,
-        79.77,
-        17.68,
-        479.21
-      ]
-    },
-    "heart_atrium_wall_left": {
-      "zh": "左心房壁",
-      "en": "Wall of left atrium",
+    "heart_left_ventricle": {
+      "zh": "左心室",
+      "en": "Left ventricle",
       "system": "organs",
       "region": "thorax",
       "side": "left",
       "fma": [
-        "FMA9531"
+        "FMA7101"
       ],
-      "source": "bp3d",
+      "uberon": "UBERON:0002084",
+      "source": "hra",
       "parent": "heart",
       "bbox": [
-        -22.28,
-        -50.48,
-        412.63,
-        63.95,
-        30.72,
-        485.65
+        8.33,
+        -71.61,
+        391.41,
+        82.94,
+        18.87,
+        466.46
       ]
     },
-    "heart_atrium_wall_right": {
-      "zh": "右心房壁",
-      "en": "Wall of right atrium",
+    "heart_right_ventricle": {
+      "zh": "右心室",
+      "en": "Right ventricle",
       "system": "organs",
       "region": "thorax",
       "side": "right",
       "fma": [
-        "FMA9457"
+        "FMA7098"
       ],
-      "source": "bp3d",
+      "uberon": "UBERON:0002080",
+      "source": "hra",
       "parent": "heart",
       "bbox": [
-        -35.68,
-        -61.89,
-        396.24,
-        7.39,
-        4.41,
-        492.97
+        -19.44,
+        -73.92,
+        388.95,
+        61.76,
+        -10.13,
+        484.31
+      ]
+    },
+    "heart_left_atrium": {
+      "zh": "左心房",
+      "en": "Left atrium",
+      "system": "organs",
+      "region": "thorax",
+      "side": "left",
+      "fma": [
+        "FMA7097"
+      ],
+      "uberon": "UBERON:0002079",
+      "source": "hra",
+      "parent": "heart",
+      "bbox": [
+        -27.5,
+        -17.08,
+        421.38,
+        43.8,
+        28.83,
+        491.9
+      ]
+    },
+    "heart_right_atrium": {
+      "zh": "右心房",
+      "en": "Right atrium",
+      "system": "organs",
+      "region": "thorax",
+      "side": "right",
+      "fma": [
+        "FMA7096"
+      ],
+      "uberon": "UBERON:0002078",
+      "source": "hra",
+      "parent": "heart",
+      "bbox": [
+        -38.56,
+        -50.13,
+        398.39,
+        12.42,
+        11.26,
+        491.96
+      ]
+    },
+    "heart_interventricular_septum": {
+      "zh": "室间隔",
+      "en": "Interventricular septum",
+      "system": "organs",
+      "region": "thorax",
+      "side": "none",
+      "fma": [],
+      "uberon": "UBERON:0002094",
+      "source": "hra",
+      "parent": "heart",
+      "bbox": [
+        10.38,
+        -67.46,
+        392.5,
+        61.06,
+        -2.21,
+        463.32
       ]
     },
     "heart_mitral_valve": {
@@ -2217,17 +2263,18 @@
       "region": "thorax",
       "side": "left",
       "fma": [
-        "FMA7241"
+        "FMA7235"
       ],
-      "source": "bp3d",
+      "uberon": "UBERON:0002135",
+      "source": "hra",
       "parent": "heart",
       "bbox": [
-        12.35,
-        -40.85,
-        412.83,
-        63.54,
-        15.27,
-        449.14
+        8.17,
+        -12.16,
+        421.34,
+        43.92,
+        17.6,
+        461.48
       ]
     },
     "heart_tricuspid_valve": {
@@ -2237,17 +2284,18 @@
       "region": "thorax",
       "side": "right",
       "fma": [
-        "FMA7237"
+        "FMA7234"
       ],
-      "source": "bp3d",
+      "uberon": "UBERON:0002134",
+      "source": "hra",
       "parent": "heart",
       "bbox": [
-        -20.46,
-        -55.55,
-        401.86,
-        30.15,
-        -12.76,
-        449.75
+        -19.91,
+        -48.87,
+        402.1,
+        16.96,
+        -12.13,
+        447.24
       ]
     },
     "heart_aortic_valve": {
@@ -2257,17 +2305,18 @@
       "region": "thorax",
       "side": "none",
       "fma": [
-        "FMA7251"
+        "FMA7236"
       ],
-      "source": "bp3d",
+      "uberon": "UBERON:0002137",
+      "source": "hra",
       "parent": "heart",
       "bbox": [
-        6.2,
-        -31.67,
-        446.71,
-        33.07,
-        -4.12,
-        468.44
+        -1.5,
+        -24.32,
+        450.64,
+        22.61,
+        -3.36,
+        475.47
       ]
     },
     "heart_pulmonary_valve": {
@@ -2277,17 +2326,18 @@
       "region": "thorax",
       "side": "none",
       "fma": [
-        "FMA7248"
+        "FMA7246"
       ],
-      "source": "bp3d",
+      "uberon": "UBERON:0002146",
+      "source": "hra",
       "parent": "heart",
       "bbox": [
-        9.4,
-        -58.82,
-        458.14,
-        41.58,
-        -26.83,
-        478.6
+        8.16,
+        -38.41,
+        460.28,
+        33.29,
+        -15.92,
+        483.95
       ]
     },
     "heart_papillary_muscles": {
@@ -2297,17 +2347,21 @@
       "region": "thorax",
       "side": "both",
       "fma": [
-        "FMA268955"
+        "FMA7261",
+        "FMA7262",
+        "FMA7264",
+        "FMA7265"
       ],
-      "source": "bp3d",
+      "uberon": "UBERON:0002494",
+      "source": "hra",
       "parent": "heart",
       "bbox": [
-        7.71,
-        -71.77,
-        391.85,
-        75.15,
-        -3.89,
-        453.49
+        11.05,
+        -69.23,
+        396.8,
+        62.61,
+        -8.77,
+        447.81
       ]
     },
     "aorta": {
@@ -2992,6 +3046,8 @@
   },
   "attribution": [
     "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International",
-    "数据来源：BodyParts3D 4.0（NBDC LSDB 存档站），CC BY 4.0。"
+    "数据来源：BodyParts3D 4.0（NBDC LSDB 存档站），CC BY 4.0。",
+    "3D Reference Organs from the Human Reference Atlas (HRA), HuBMAP Consortium — Kristen Browne (NIH/NIAID) — licensed under CC BY 4.0",
+    "心脏内部结构来自 HuBMAP Human Reference Atlas 3D 参考器官，CC BY 4.0。"
   ]
 }

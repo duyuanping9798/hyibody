@@ -27,6 +27,9 @@ CONTENT_DIR = ROOT / "content"
 ASSETS_DIR = ROOT / "public" / "assets"
 
 SOURCES_YAML = CONFIG_DIR / "sources.yaml"
+# HRA（HuBMAP 3D 参考器官）另起一个源文件：许可证与署名按数据源各记一份
+SOURCES_HRA_YAML = CONFIG_DIR / "sources_hra.yaml"
+HRA_RAW_DIR = RAW_DIR / "hra"
 GROUPS_YAML = CONFIG_DIR / "groups.yaml"
 CANDIDATES_YAML = CONTENT_DIR / "structures.candidates.yaml"
 STRUCTURES_YAML = CONTENT_DIR / "structures.yaml"
@@ -35,6 +38,8 @@ SYSTEMS = ("skin", "muscles", "skeleton", "organs", "vessels", "nerves")
 REGIONS = ("head", "neck", "thorax", "abdomen", "pelvis", "upper_limb", "lower_limb", "whole")
 SIDES = ("left", "right", "none", "both")
 SOURCE_SETS = {"bp3d": "isa", "bp3d_partof": "partof"}
+# 非 BP3D 的来源标记（结构清单的 source 字段），process.py 按此分流
+HRA_SOURCE = "hra"
 
 # 面数预算（CLAUDE.md，2026-08-18 数据质量升级修订——见 docs/DECISIONS.md）：
 # 单结构下限 500、常规上限 30,000（groups.yaml 的 max_target_faces），
@@ -140,22 +145,29 @@ def load_sources(path: Path = SOURCES_YAML) -> dict:
         cfg = yaml.safe_load(f)
     for key in ("dataset", "license", "base_url", "files"):
         if key not in cfg:
-            raise ValueError(f"sources.yaml 缺少 {key}")
+            raise ValueError(f"{path.name} 缺少 {key}")
     lic = cfg["license"]
     for key in ("name", "url", "attribution"):
         if not lic.get(key):
-            raise ValueError(f"sources.yaml license 缺少 {key}")
+            raise ValueError(f"{path.name} license 缺少 {key}")
     if not str(cfg["base_url"]).startswith("https://"):
-        raise ValueError("sources.yaml base_url 必须是 https")
+        raise ValueError(f"{path.name} base_url 必须是 https")
     names: set[str] = set()
     for entry in cfg["files"]:
-        for key in ("name", "kind", "set", "bytes", "sha256"):
+        for key in ("name", "kind", "bytes", "sha256"):
             if key not in entry:
-                raise ValueError(f"sources.yaml 文件项缺少 {key}: {entry}")
-        if entry["kind"] not in ("table", "obj_zip"):
+                raise ValueError(f"{path.name} 文件项缺少 {key}: {entry}")
+        if entry["kind"] not in ("table", "obj_zip", "glb"):
             raise ValueError(f"未知 kind {entry['kind']!r}")
-        if entry["set"] not in ("isa", "partof"):
-            raise ValueError(f"未知 set {entry['set']!r}")
+        # BP3D 的表与 obj 包分属 isa / partof 两集；HRA 的 glb 没有集的概念
+        if entry["kind"] == "glb":
+            if "url_path" not in entry:
+                raise ValueError(f"{entry['name']}: glb 需要 url_path")
+        else:
+            if "set" not in entry:
+                raise ValueError(f"{path.name} 文件项缺少 set: {entry}")
+            if entry["set"] not in ("isa", "partof"):
+                raise ValueError(f"未知 set {entry['set']!r}")
         if not re.fullmatch(r"[0-9a-f]{64}", entry["sha256"]):
             raise ValueError(f"{entry['name']}: sha256 非法")
         if entry["kind"] == "obj_zip" and "extract_dir" not in entry:

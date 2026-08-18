@@ -306,6 +306,8 @@ test('opening the heart reveals its inner parts', async ({ page }) => {
   await page.mouse.click(500, 430);
   await expect(infoCard).toBeVisible({ timeout: 20_000 });
   await expect(infoCard.locator('h2')).not.toHaveText('心脏');
+  // 心脏内部件来自 HuBMAP HRA，信息卡必须署这个源而不是 BodyParts3D
+  await expect(infoCard.locator('.meta')).toContainText('HuBMAP HRA');
   await page.screenshot({ path: 'test-results/smoke-heart-parts.png' });
 
   await page.getByRole('button', { name: '收起内部' }).first().click();
