@@ -52,6 +52,8 @@ interface UiState {
   expand(slug: string | null): void;
   hide(slug: string): void;
   resetVisibility(): void;
+  /** 一键回到全身：清掉隔离/展开/剖切/隐藏，并把相机拉回默认取景 */
+  backToBody(): void;
   setClip(clip: { axis: ClipAxis; pos: number; flip?: boolean } | null): void;
   clipThroughSelected(): void;
   applyPreset(id: ViewPresetId): void;
@@ -77,6 +79,9 @@ function applyTourStep(step: TourStep): void {
     const want = step.systems?.[id] ?? true;
     if (st.systemsVisible[id] !== want) st.toggleSystem(id);
   }
+  // 展开/剖切要在选中之前定好：内部件得先登场，才轮得到选中它
+  st.expand(step.expand ?? null);
+  st.setClip(step.clip ?? null);
   if (step.preset) st.applyPreset(step.preset);
   if (step.selected) {
     st.select(step.selected);
@@ -220,6 +225,13 @@ export const useUiStore = create<UiState>((set, get) => ({
     viewer?.resetVisibility();
     viewer?.expand(null);
     set({ hiddenCount: 0, isolated: null, expanded: null });
+  },
+  backToBody: () => {
+    const st = get();
+    st.resetVisibility();
+    st.setClip(null);
+    st.select(null);
+    st.applyPreset('hero');
   },
   setClip: (clip) => {
     viewer?.setClip(clip);

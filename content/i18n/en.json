@@ -83,5 +83,6 @@
   "clipThroughSelected": "Cut through this structure",
   "clipFlip": "Flip",
   "expandParts": "Open up ({n})",
-  "collapseParts": "Close up"
+  "collapseParts": "Close up",
+  "backToBody": "Back to full body"
 }

@@ -75,3 +75,44 @@ describe('TourEngine 播放状态机', () => {
     expect(engine.currentIndex).toBe(1);
   });
 });
+
+describe('故事线：展开与剖切字段（M2 收尾）', () => {
+  it('expand 指向的结构必须真的有内部件', () => {
+    const manifest = JSON.parse(
+      readFileSync(resolve(__dirname, '../../public/assets/manifest.json'), 'utf8'),
+    ) as { structures: Record<string, { parent?: string }> };
+    for (const tour of TOURS) {
+      for (const step of tour.steps) {
+        if (!step.expand) continue;
+        const children = Object.values(manifest.structures).filter((s) => s.parent === step.expand);
+        expect(children.length, `${tour.id}: ${step.expand} 没有内部件`).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('展开状态下选中的结构要么是父结构的内部件，要么与展开无关', () => {
+    const manifest = JSON.parse(
+      readFileSync(resolve(__dirname, '../../public/assets/manifest.json'), 'utf8'),
+    ) as { structures: Record<string, { parent?: string }> };
+    for (const tour of TOURS) {
+      for (const step of tour.steps) {
+        if (!step.expand || !step.selected) continue;
+        const info = manifest.structures[step.selected];
+        expect(info, `${tour.id}: 选中的 ${step.selected} 不存在`).toBeTruthy();
+        // 展开某结构时若选中它自己，界面上会指着一个隐形结构
+        expect(step.selected, `${tour.id}: 展开 ${step.expand} 时不该选中它自己`).not.toBe(
+          step.expand,
+        );
+      }
+    }
+  });
+
+  it('剖切位置在 [-1, 1] 之内', () => {
+    for (const tour of TOURS) {
+      for (const step of tour.steps) {
+        if (!step.clip) continue;
+        expect(Math.abs(step.clip.pos), `${tour.id}: 剖切位置越界`).toBeLessThanOrEqual(1);
+      }
+    }
+  });
+});
