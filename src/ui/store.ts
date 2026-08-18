@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import type { Locale } from './i18n';
 import { SYSTEM_IDS, type Manifest, type SystemId } from '../data/types';
 import type { ViewerUrlState } from '../data/urlState';
 import { TourEngine, type Tour, type TourStep } from '../tours/engine';
@@ -23,11 +24,14 @@ interface UiState {
   attributionOpen: boolean;
   /** 小屏抽屉：当前展开的工具面板（桌面端两块面板常驻，忽略此值） */
   activePanel: 'systems' | 'views' | null;
+  /** 界面语言（M2-5，默认中文） */
+  lang: Locale;
   /** 故事线播放状态（M2-1） */
   tour: Tour | null;
   tourIndex: number;
   tourPlaying: boolean;
 
+  setLang(lang: Locale): void;
   setLoadState(s: LoadState): void;
   setManifest(m: Manifest): void;
   markSystemLoaded(id: string): void;
@@ -141,7 +145,12 @@ export const useUiStore = create<UiState>((set, get) => ({
   tour: null,
   tourIndex: 0,
   tourPlaying: false,
+  lang: 'zh',
 
+  setLang: (lang) => {
+    document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+    set({ lang });
+  },
   setLoadState: (loadState) => set({ loadState }),
   setManifest: (manifest) =>
     set({ manifest, loadedSystems: manifest.systems.map((s) => s.id) as string[] }),
@@ -213,6 +222,7 @@ export const useUiStore = create<UiState>((set, get) => ({
     }
     if (s.clip) st.setClip({ axis: s.clip.axis, pos: s.clip.pos });
     if (s.selected) st.select(s.selected);
+    if (s.lang) st.setLang(s.lang);
     if (s.cam && viewer) viewer.setCameraPose(s.cam.pos, s.cam.target);
   },
 }));
@@ -226,6 +236,7 @@ export function toUrlState(): ViewerUrlState {
     state.systems = Object.fromEntries(hiddenSystems.map(([id]) => [id, false]));
   if (s.clip) state.clip = { axis: s.clip.axis, pos: Math.round(s.clip.pos * 100) / 100 };
   if (s.selected) state.selected = s.selected;
+  if (s.lang === 'en') state.lang = 'en';
   const pose = viewer?.getCameraPose();
   if (pose)
     state.cam = {

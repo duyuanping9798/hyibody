@@ -96,6 +96,23 @@ test('heartbeat tour plays from the menu', async ({ page }) => {
   await expect(player).not.toBeVisible();
 });
 
+/** M2-5 冒烟：中英切换按钮实时切换界面语言。 */
+test('language toggle switches UI to English and back', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
+    timeout: 60_000,
+  });
+  const toggle = page.getByRole('button', { name: '切换语言 / Switch language' });
+  await expect(page.locator('header')).toContainText('人体透视科普');
+  await expect(toggle).toHaveText('EN');
+  await toggle.click();
+  await expect(page.locator('header')).toContainText('See-through Human Anatomy');
+  await expect(page.getByRole('button', { name: 'Tours' })).toBeVisible();
+  await expect(toggle).toHaveText('中文');
+  await toggle.click();
+  await expect(page.locator('header')).toContainText('人体透视科普');
+});
+
 /** M2-2/M2-3 冒烟：Kiosk 闲置吸引动画出现（?idle=2 加速），分享弹层出二维码。 */
 test('kiosk attract mode and share dialog', async ({ page }) => {
   await page.goto('/?kiosk=1&idle=2');
@@ -141,4 +158,44 @@ test.describe('mobile viewport', () => {
 
     await page.screenshot({ path: 'test-results/smoke-mobile.png' });
   });
+});
+
+/**
+ * 回归冒烟（2026-08-18）：
+ * 1) ?v= 选中后台加载的器官（心脏）也能恢复——之前首屏只有皮肤+骨骼，选中被丢掉；
+ * 2) 选中结构后背景仍是深色——描边外扩量曾按物体空间算，被量化缩放放大成巨壳，
+ *    整个视口糊成青色。
+ */
+test('share link restores an organ selection without flooding the background', async ({ page }) => {
+  const state = encodeUrlState({ layer: 0.5, selected: 'heart' });
+  await page.goto(`/?v=${state}`);
+  await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
+    timeout: 60_000,
+  });
+
+  const infoCard = page.getByTestId('info-card');
+  await expect(infoCard).toBeVisible({ timeout: 30_000 });
+  await expect(infoCard).toContainText('心脏');
+
+  await page.evaluate(
+    () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))),
+  );
+  const corners = await page.evaluate(() => {
+    const canvas = document.querySelector('canvas');
+    if (!canvas) return null;
+    const probe = document.createElement('canvas');
+    probe.width = canvas.width;
+    probe.height = canvas.height;
+    const ctx = probe.getContext('2d');
+    if (!ctx) return null;
+    ctx.drawImage(canvas, 0, 0);
+    const at = (x: number, y: number) => Array.from(ctx.getImageData(x, y, 1, 1).data).slice(0, 3);
+    return [at(4, 4), at(probe.width - 4, 4), at(4, probe.height - 4)];
+  });
+  expect(corners).not.toBeNull();
+  for (const [r, g, b] of corners!) {
+    // 深色舞台底：任何通道都不该被描边染亮
+    expect(Math.max(r!, g!, b!)).toBeLessThan(60);
+  }
+  await page.screenshot({ path: 'test-results/smoke-select-organ.png' });
 });

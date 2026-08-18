@@ -1,11 +1,12 @@
+import { STRINGS } from './i18n';
 import { toCanvas } from 'qrcode';
 import { useEffect, useRef, useState } from 'react';
-import zh from '../../content/i18n/zh.json';
 import { encodeUrlState } from '../data/urlState';
-import { toUrlState } from './store';
+import { toUrlState, useUiStore } from './store';
 
 /** 分享弹层（M2-3）：当前视图状态编码进 URL + 二维码 + 复制。 */
 export function ShareDialog({ onClose }: { onClose: () => void }) {
+  const t = STRINGS[useUiStore((s) => s.lang)];
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [copied, setCopied] = useState(false);
 
@@ -26,7 +27,7 @@ export function ShareDialog({ onClose }: { onClose: () => void }) {
   return (
     <div className="hyi-attribution-backdrop" onClick={onClose}>
       <div className="hyi-panel hyi-share" onClick={(e) => e.stopPropagation()}>
-        <h2>{zh.shareTitle}</h2>
+        <h2>{t.shareTitle}</h2>
         <canvas ref={canvasRef} data-testid="share-qr" />
         <p className="url">{shareUrl}</p>
         <div className="actions">
@@ -36,10 +37,10 @@ export function ShareDialog({ onClose }: { onClose: () => void }) {
               void navigator.clipboard?.writeText(shareUrl).then(() => setCopied(true));
             }}
           >
-            {copied ? zh.shareCopied : zh.shareCopy}
+            {copied ? t.shareCopied : t.shareCopy}
           </button>
           <button className="hyi-btn" onClick={onClose}>
-            {zh.close}
+            {t.close}
           </button>
         </div>
       </div>

@@ -1,5 +1,5 @@
+import { STRINGS } from './i18n';
 import { useEffect, useRef, useState } from 'react';
-import zh from '../../content/i18n/zh.json';
 import { decodeUrlState, encodeUrlState } from '../data/urlState';
 import { HyiViewer } from '../viewer/HyiViewer';
 import { Attribution } from './Attribution';
@@ -50,6 +50,7 @@ function useUrlSync(): void {
 }
 
 export function App() {
+  const t = STRINGS[useUiStore((s) => s.lang)];
   const containerRef = useRef<HTMLDivElement>(null);
   const loadState = useUiStore((s) => s.loadState);
   const manifest = useUiStore((s) => s.manifest);
@@ -58,6 +59,8 @@ export function App() {
   const togglePanel = useUiStore((s) => s.togglePanel);
   const tour = useUiStore((s) => s.tour);
   const [shareOpen, setShareOpen] = useState(false);
+  const lang = useUiStore((s) => s.lang);
+  const setLang = useUiStore((s) => s.setLang);
   const [{ kiosk, idleSeconds }] = useState(readKioskParams);
   useUrlSync();
 
@@ -102,8 +105,8 @@ export function App() {
           background: 'linear-gradient(180deg, rgba(11,16,32,0.85), rgba(11,16,32,0))',
         }}
       >
-        <h1 style={{ margin: 0, fontSize: 22, letterSpacing: 1, color: '#4fe3e0' }}>{zh.brand}</h1>
-        <span style={{ fontSize: 13, opacity: 0.75 }}>{zh.subtitle}</span>
+        <h1 style={{ margin: 0, fontSize: 22, letterSpacing: 1, color: '#4fe3e0' }}>{t.brand}</h1>
+        <span style={{ fontSize: 13, opacity: 0.75 }}>{t.subtitle}</span>
       </header>
       {loadState !== 'ready' && (
         <p
@@ -117,18 +120,25 @@ export function App() {
             opacity: 0.8,
           }}
         >
-          {loadState === 'loading' ? zh.loading : zh.loadError}
+          {loadState === 'loading' ? t.loading : t.loadError}
         </p>
       )}
       {loadState === 'ready' && !isPlaceholder && (
         <>
           <div className="hyi-topbar">
+            <button
+              className="hyi-btn"
+              aria-label="切换语言 / Switch language"
+              onClick={() => setLang(lang === 'zh' ? 'en' : 'zh')}
+            >
+              {lang === 'zh' ? 'EN' : '中文'}
+            </button>
             <TourMenu />
             <button className="hyi-btn" onClick={() => setShareOpen(true)}>
-              {zh.shareTitle}
+              {t.shareTitle}
             </button>
             <button className="hyi-btn" onClick={() => setAttributionOpen(true)}>
-              {zh.attribution}
+              {t.attribution}
             </button>
           </div>
           <SearchBox />
@@ -145,13 +155,13 @@ export function App() {
               className={`hyi-btn${activePanel === 'systems' ? ' active' : ''}`}
               onClick={() => togglePanel('systems')}
             >
-              {zh.systemsTitle}
+              {t.systemsTitle}
             </button>
             <button
               className={`hyi-btn${activePanel === 'views' ? ' active' : ''}`}
               onClick={() => togglePanel('views')}
             >
-              {zh.presetsTitle}
+              {t.presetsTitle}
             </button>
           </div>
           {!tour && <InfoCard />}
@@ -174,7 +184,7 @@ export function App() {
             pointerEvents: 'none',
           }}
         >
-          {zh.placeholderNotice}
+          {t.placeholderNotice}
         </footer>
       )}
     </div>
