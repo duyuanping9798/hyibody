@@ -91,6 +91,20 @@ def validate_structures(entries: list[dict], chk: Checker, list_name: str = "str
             chk.warn(f"{list_name}: {slug} 中英文名与其他条目重复 {key2}")
         names.add(key2)
 
+    # 内部件（parent）必须指向同一系统里真实存在的结构，且不能再套一层
+    slugs = {e.get("slug") for e in entries}
+    for entry in entries:
+        parent = entry.get("parent")
+        if parent is None:
+            continue
+        if parent not in slugs:
+            chk.error(f"{list_name}: {entry['slug']} 的 parent {parent!r} 不存在")
+            continue
+        parent_entry = next(e for e in entries if e.get("slug") == parent)
+        if parent_entry.get("parent"):
+            chk.error(f"{list_name}: {entry['slug']} 的父结构 {parent} 本身也是内部件（只支持一层）")
+        if parent_entry.get("system") != entry.get("system"):
+            chk.error(f"{list_name}: {entry['slug']} 与父结构 {parent} 不在同一系统")
 
 def validate_manifest_schema(manifest: dict, chk: Checker) -> None:
     for key in ("version", "generatedAt", "systems", "structures", "attribution"):

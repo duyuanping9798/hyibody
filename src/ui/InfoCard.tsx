@@ -23,12 +23,19 @@ export function InfoCard() {
   const isolate = useUiStore((s) => s.isolate);
   const hide = useUiStore((s) => s.hide);
   const focus = useUiStore((s) => s.focus);
+  const expanded = useUiStore((s) => s.expanded);
+  const expand = useUiStore((s) => s.expand);
 
   if (!selected || !manifest) return null;
   const info = manifest.structures[selected];
   if (!info) return null;
   const system = info.system as SystemId;
   const isIsolated = isolated === selected;
+  // 内部件（心脏 → 心室壁/瓣膜…）：有就给一个"展开内部"，正在展开就给"收起"
+  const children = Object.entries(manifest.structures).filter(
+    ([, s]) => (s as { parent?: string }).parent === selected,
+  );
+  const insideParent = (info as { parent?: string }).parent;
   // 英文文案还没有（content/definitions/en.json 待补），英文态回退到占位句
   const definition = lang === 'zh' ? definitionsZh[selected] : undefined;
 
@@ -66,6 +73,16 @@ export function InfoCard() {
       </p>
 
       <div className="actions">
+        {children.length > 0 && expanded !== selected && (
+          <button className="hyi-btn primary" onClick={() => expand(selected)}>
+            {t.expandParts.replace('{n}', String(children.length))}
+          </button>
+        )}
+        {(expanded === selected || (insideParent && expanded === insideParent)) && (
+          <button className="hyi-btn primary" onClick={() => expand(null)}>
+            {t.collapseParts}
+          </button>
+        )}
         <button className="hyi-btn" onClick={() => isolate(isIsolated ? null : selected)}>
           {isIsolated ? t.actionUnisolate : t.actionIsolate}
         </button>

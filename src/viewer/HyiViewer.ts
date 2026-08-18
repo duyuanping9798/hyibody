@@ -81,6 +81,8 @@ interface StructureEntry {
   material: Material;
   /** 结构本色，剖切封盖的断面用同一个颜色 */
   color: number;
+  /** 内部件指向父结构（心室壁 → 心脏）；顶层结构为 null */
+  parent: string | null;
 }
 
 export interface ViewerState {
@@ -90,6 +92,8 @@ export interface ViewerState {
   hidden: Set<string>;
   isolated: string | null;
   selected: string | null;
+  /** 正在"展开内部"的父结构：它自己隐藏、内部件显示 */
+  expanded: string | null;
   clip: { axis: ClipAxis; pos: number; flip?: boolean } | null;
 }
 
@@ -108,6 +112,7 @@ function defaultViewerState(): ViewerState {
     hidden: new Set(),
     isolated: null,
     selected: null,
+    expanded: null,
     clip: null,
   };
 }
@@ -271,7 +276,7 @@ export class HyiViewer extends EventTarget {
       if (obj instanceof Mesh) meshes.push(obj);
     });
     for (const mesh of meshes) {
-      const extras = (mesh.userData as { slug?: string; en?: string }) ?? {};
+      const extras = (mesh.userData as { slug?: string; en?: string; parent?: string }) ?? {};
       const slug = extras.slug ?? mesh.name;
       const color = colorForStructure(sys, extras.en ?? slug, slug);
       const material =
@@ -281,7 +286,8 @@ export class HyiViewer extends EventTarget {
       mesh.castShadow = QUALITY_CAPS[this.quality].softShadows && sys !== 'skin';
       mesh.geometry.computeBoundingBox();
       group.add(mesh);
-      this.structures.set(slug, { slug, system: sys, mesh, material, color });
+      const parent = typeof extras.parent === 'string' ? extras.parent : null;
+      this.structures.set(slug, { slug, system: sys, mesh, material, color, parent });
       // 记下 glb 节点自带的反量化 TRS：微动画只能在它之上叠加，不能覆盖
       if (slug in ANIMATED_STRUCTURES) {
         const center = mesh.geometry.boundingBox?.getCenter(new Vector3()) ?? new Vector3();
@@ -397,6 +403,32 @@ export class HyiViewer extends EventTarget {
     else if (!this.contentBox.isEmpty()) this.frameContent();
   }
 
+  /** 有哪些内部件（心脏 → 心室壁/瓣膜…）。 */
+  childrenOf(slug: string): string[] {
+    const out: string[] = [];
+    for (const entry of this.structures.values()) {
+      if (entry.parent === slug) out.push(entry.slug);
+    }
+    return out;
+  }
+
+  /**
+   * 展开内部：父结构隐藏、内部件登场，并顺手隔离+取景到这一家人。
+   * 传 null 收起。展开时若选中的是父结构，选中转移到"无"，免得信息卡指着一个隐形结构。
+   */
+  expand(slug: string | null): void {
+    if (slug !== null && this.childrenOf(slug).length === 0) return;
+    this.state.expanded = slug;
+    if (slug) {
+      if (this.state.selected === slug) this.select(null);
+      this.isolate(slug);
+    } else {
+      this.isolate(null);
+    }
+    this.applyVisibility();
+    this.dispatchEvent(new CustomEvent('expand', { detail: { slug } }));
+  }
+
   hide(slug: string): void {
     this.state.hidden.add(slug);
     if (this.state.selected === slug) this.select(null);
@@ -418,11 +450,15 @@ export class HyiViewer extends EventTarget {
   private effectiveOpacity(entry: StructureEntry): number {
     const s = this.state;
     if (!s.systemsVisible[entry.system] || s.hidden.has(entry.slug)) return 0;
+    // 内部件平时不出现；展开父结构时它们顶替父结构登场
+    if (entry.parent !== null && s.expanded !== entry.parent) return 0;
+    if (s.expanded === entry.slug) return 0;
     let opacity = computeSystemOpacity(entry.system, s.layer) * s.systemOpacity[entry.system];
     if (s.isolated) {
       // 隔离 = 只看这一个。其他结构压到只剩一点点轮廓做参照——
       // 0.06 × 130 个结构叠起来仍是一团糊，主角照样看不清
-      if (s.isolated !== entry.slug) return Math.min(opacity, 0.015);
+      // 隔离父结构时，它的内部件跟着一起留下（展开心脏就是要看这几件）
+      if (s.isolated !== entry.slug && entry.parent !== s.isolated) return Math.min(opacity, 0.015);
       return 1;
     }
     // 选中的结构渲染成不透明：0.85 的心脏后面会透出肋骨，形状根本读不出来
@@ -482,8 +518,17 @@ export class HyiViewer extends EventTarget {
   private aimAt(entry: StructureEntry): void {
     const box = entry.mesh.geometry.boundingBox;
     if (!box) return;
+    // 包围盒是物体空间的（量化后在 ±1 附近），必须先转世界坐标——
+    // 否则相机永远对准坐标原点附近，缩进去看某个部件时会直接飞到体外
     const center = box.getCenter(new Vector3());
+    entry.mesh.localToWorld(center);
     const offset = this.rig.camera.position.clone().sub(this.rig.controls.target);
+    // 已经贴得比结构本身还近时，改成重新框住它，免得相机停在结构内部什么也看不到
+    const radius = (box.getSize(new Vector3()).length() / 2) * (entry.mesh.scale.x || 1);
+    if (offset.length() < radius * 1.6) {
+      this.focus(entry.slug);
+      return;
+    }
     this.flyTo(center.clone().add(offset), center);
   }
 

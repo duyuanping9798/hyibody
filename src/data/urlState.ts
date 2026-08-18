@@ -8,6 +8,8 @@ export interface ViewerUrlState {
   systems?: Partial<Record<SystemId, boolean>>;
   /** 剖切：轴 + 位置（-1..1），undefined 表示未开启 */
   clip?: { axis: 'x' | 'y' | 'z'; pos: number; flip?: boolean };
+  /** 正在展开内部的父结构 */
+  expanded?: string;
   /** 相机位置与目标点 */
   cam?: { pos: [number, number, number]; target: [number, number, number] };
   /** 选中结构 slug */
@@ -56,6 +58,7 @@ export function decodeUrlState(encoded: string | null | undefined): ViewerUrlSta
     if (s.cam && Array.isArray(s.cam.pos) && Array.isArray(s.cam.target))
       state.cam = s.cam as NonNullable<ViewerUrlState['cam']>;
     if (typeof s.selected === 'string') state.selected = s.selected;
+    if (typeof s.expanded === 'string') state.expanded = s.expanded;
     if (s.lang === 'zh' || s.lang === 'en') state.lang = s.lang;
     if (typeof s.kiosk === 'boolean') state.kiosk = s.kiosk;
     return state;

@@ -77,3 +77,32 @@ describe('流水线产物契约', () => {
     expect(manifest.attribution.some((a) => a.includes('BodyParts3D'))).toBe(true);
   });
 });
+
+describe('manifest: 内部件层级（parent）', () => {
+  const structures = loadRealManifest().structures as unknown as Record<
+    string,
+    { system: string; parent?: string; zh: string }
+  >;
+
+  it('每个 parent 都指向真实存在、同系统的结构', () => {
+    for (const [slug, info] of Object.entries(structures)) {
+      if (!info.parent) continue;
+      const parent = structures[info.parent];
+      expect(parent, `${slug} 的父结构 ${info.parent} 不存在`).toBeTruthy();
+      expect(parent!.system, `${slug} 与父结构不在同一系统`).toBe(info.system);
+    }
+  });
+
+  it('层级只有一层（父结构自己不能再有 parent）', () => {
+    for (const [slug, info] of Object.entries(structures)) {
+      if (!info.parent) continue;
+      expect(structures[info.parent]?.parent, `${slug} 的层级超过一层`).toBeUndefined();
+    }
+  });
+
+  it('心脏带出了内部件（心室壁/瓣膜等）', () => {
+    const children = Object.entries(structures).filter(([, s]) => s.parent === 'heart');
+    expect(children.length).toBeGreaterThanOrEqual(4);
+    expect(children.map(([slug]) => slug)).toContain('heart_ventricle_wall');
+  });
+});

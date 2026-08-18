@@ -170,6 +170,8 @@ def build_candidates(groups_cfg: dict, sets: dict[str, bp3d.Bp3dSet], stats: dic
             "source": {"isa": "bp3d", "partof": "bp3d_partof"}[set_name],
             "target_faces": group_target_faces(group, groups_cfg["defaults"], faces),
             "priority": int(group["priority"]),
+            # 内部件：默认不显示，界面上"展开内部"才出现
+            **({"parent": group["parent"]} if group.get("parent") else {}),
         }
         meta: dict[str, Any] = {
             "elements": len(res["elements"]),
@@ -214,6 +216,11 @@ def sync_targets(entries: list[dict]) -> int:
     if not path.exists():
         return 0
     want = {e["slug"]: int(e["target_faces"]) for e in entries}
+    existing = {
+        line.strip().split(":", 1)[1].strip()
+        for line in path.read_text(encoding="utf-8").split("\n")
+        if line.strip().startswith("- slug:")
+    }
     out: list[str] = []
     slug: str | None = None
     changed = 0
@@ -229,6 +236,24 @@ def sync_targets(entries: list[dict]) -> int:
             out.append(new_line)
             continue
         out.append(line)
+    # 内部件（声明了 parent 的组）跟着父结构走，不需要人类逐条挑选：缺了就补进去。
+    # 顶层结构仍然只由人类增删——定稿清单是审阅结果，不该被 select 悄悄扩张。
+    added = [e for e in entries if e.get("parent") and e["slug"] not in existing]
+    if added:
+        block = ["", f"# 以下 {len(added)} 条为内部件（parent 指向父结构），由 select.py 自动补入"]
+        for entry in added:
+            block.append(f"- slug: {entry['slug']}")
+            for key in ("zh", "en", "system", "region", "side", "parent"):
+                block.append(f"  {key}: {entry[key]}")
+            block.append("  fma:")
+            for fma in entry["fma"]:
+                block.append(f"  - {fma}")
+            block.append(f"  source: {entry['source']}")
+            block.append(f"  target_faces: {entry['target_faces']}")
+            block.append(f"  priority: {entry['priority']}")
+        out.extend(block)
+        changed += len(added)
+        print(f"  新增 {len(added)} 条内部件：{', '.join(e['slug'] for e in added)}")
     if changed:
         path.write_text("\n".join(out), encoding="utf-8")
     return changed
