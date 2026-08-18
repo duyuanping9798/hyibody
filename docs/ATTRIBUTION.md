@@ -15,8 +15,13 @@ HyiBody 使用的所有第三方数据及其许可证与署名要求。站内"�
 
 ## HuBMAP Human Reference Atlas 3D 参考器官（已接入）
 
-- 用途：解剖结构分件、内部件齐全的"主角"器官。**2026-08-18 起心脏（含四腔、
-  室间隔、四个瓣膜、五束乳头肌）已换成 HRA 版**；其余器官仍为 BodyParts3D
+- 用途：解剖结构分件、内部件齐全的"主角"器官。2026-08-18 起以下结构已换成 HRA 版：
+  **心脏**（四腔、室间隔、四个瓣膜、乳头肌）、**气管**（软骨环、隆嵴）、
+  **喉软骨**（甲状软骨/环状软骨/会厌软骨）、**胰腺**（胰头/胰体/胰尾）、**脾**、
+  **肾**（皮质/锥体/肾门）。其余器官仍为 BodyParts3D
+- **肺没有换**：HRA 的 `lung-male` 里只有支气管树与肺门，没有肺实质
+- 另外下载 `skin-male`（全身皮肤）**只用于计算两具身体的身高比**（全局定标 ×0.9425），
+  不进产物、不显示
 - 来源：<https://humanatlas.io/3d-reference-library>；
   目录接口 <https://apps.humanatlas.io/api/v1/reference-organs>；
   资产直链与 sha256 记录于 `pipeline/config/sources_hra.yaml`

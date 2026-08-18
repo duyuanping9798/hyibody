@@ -1,6 +1,6 @@
 {
   "version": "0.0.1",
-  "generatedAt": "2026-08-18T11:56:32+00:00",
+  "generatedAt": "2026-08-18T13:44:03+00:00",
   "systems": [
     {
       "id": "skin",
@@ -104,19 +104,15 @@
     {
       "id": "organs",
       "file": "assets/organs.glb",
-      "bytes": 1690256,
+      "bytes": 2402612,
       "structures": [
         "heart",
         "lung_right",
         "lung_left",
-        "trachea",
         "esophagus",
         "stomach",
         "liver",
         "gallbladder",
-        "pancreas",
-        "spleen",
-        "kidneys",
         "urinary_bladder",
         "small_intestine",
         "large_intestine",
@@ -125,7 +121,6 @@
         "adrenal_glands",
         "ureters",
         "pituitary_gland",
-        "larynx_cartilages",
         "thymus",
         "prostate",
         "testes",
@@ -138,7 +133,23 @@
         "heart_tricuspid_valve",
         "heart_aortic_valve",
         "heart_pulmonary_valve",
-        "heart_papillary_muscles"
+        "heart_papillary_muscles",
+        "trachea",
+        "tracheal_cartilages",
+        "carina",
+        "larynx_cartilages",
+        "thyroid_cartilage",
+        "cricoid_cartilage",
+        "epiglottic_cartilage",
+        "pancreas",
+        "pancreas_head",
+        "pancreas_body",
+        "pancreas_tail",
+        "spleen",
+        "kidneys",
+        "kidney_cortex",
+        "kidney_pyramids",
+        "kidney_hilum"
       ]
     },
     {
@@ -1725,12 +1736,12 @@
       "uberon": "UBERON:0000948",
       "source": "hra",
       "bbox": [
-        -38.56,
-        -73.95,
-        388.87,
-        82.94,
-        28.88,
-        491.93
+        -36.39,
+        -72.02,
+        390.79,
+        80.69,
+        26.99,
+        490.12
       ]
     },
     "lung_right": {
@@ -1769,25 +1780,6 @@
         126.15,
         81.33,
         569.23
-      ]
-    },
-    "trachea": {
-      "zh": "气管",
-      "en": "Trachea",
-      "system": "organs",
-      "region": "neck",
-      "side": "none",
-      "fma": [
-        "FMA7394"
-      ],
-      "source": "bp3d",
-      "bbox": [
-        -12.52,
-        -9.46,
-        498.03,
-        13.48,
-        23.44,
-        609.18
       ]
     },
     "esophagus": {
@@ -1864,63 +1856,6 @@
         -26.16,
         -29.38,
         304.7
-      ]
-    },
-    "pancreas": {
-      "zh": "胰腺",
-      "en": "Pancreas",
-      "system": "organs",
-      "region": "abdomen",
-      "side": "none",
-      "fma": [
-        "FMA7198"
-      ],
-      "source": "bp3d",
-      "bbox": [
-        -47.34,
-        -45.56,
-        217.68,
-        73.36,
-        5.42,
-        291.32
-      ]
-    },
-    "spleen": {
-      "zh": "脾",
-      "en": "Spleen",
-      "system": "organs",
-      "region": "abdomen",
-      "side": "none",
-      "fma": [
-        "FMA7196"
-      ],
-      "source": "bp3d",
-      "bbox": [
-        56.15,
-        -40.53,
-        264.9,
-        114.55,
-        54.71,
-        335.35
-      ]
-    },
-    "kidneys": {
-      "zh": "肾",
-      "en": "Kidneys",
-      "system": "organs",
-      "region": "abdomen",
-      "side": "both",
-      "fma": [
-        "FMA7203"
-      ],
-      "source": "bp3d",
-      "bbox": [
-        -87.05,
-        -11.06,
-        180.04,
-        91.08,
-        41.21,
-        303.7
       ]
     },
     "urinary_bladder": {
@@ -2075,27 +2010,6 @@
         748.87
       ]
     },
-    "larynx_cartilages": {
-      "zh": "喉软骨（含喉结）",
-      "en": "Laryngeal cartilages",
-      "system": "organs",
-      "region": "neck",
-      "side": "none",
-      "fma": [
-        "FMA55099",
-        "FMA9615",
-        "FMA55130"
-      ],
-      "source": "bp3d",
-      "bbox": [
-        -19.35,
-        -21.77,
-        600.45,
-        19.3,
-        9.31,
-        651.48
-      ]
-    },
     "thymus": {
       "zh": "胸腺",
       "en": "Thymus",
@@ -2166,12 +2080,12 @@
       "source": "hra",
       "parent": "heart",
       "bbox": [
-        8.33,
-        -71.61,
-        391.41,
-        82.94,
-        18.87,
-        466.46
+        8.82,
+        -69.88,
+        393.14,
+        80.79,
+        17.4,
+        465.54
       ]
     },
     "heart_right_ventricle": {
@@ -2187,12 +2101,12 @@
       "source": "hra",
       "parent": "heart",
       "bbox": [
-        -19.44,
-        -73.92,
-        388.95,
-        61.76,
-        -10.13,
-        484.31
+        -17.97,
+        -72.1,
+        390.79,
+        60.36,
+        -10.57,
+        482.77
       ]
     },
     "heart_left_atrium": {
@@ -2208,12 +2122,12 @@
       "source": "hra",
       "parent": "heart",
       "bbox": [
-        -27.5,
-        -17.08,
-        421.38,
-        43.8,
-        28.83,
-        491.9
+        -25.74,
+        -17.27,
+        422.01,
+        43.04,
+        27.01,
+        490.08
       ]
     },
     "heart_right_atrium": {
@@ -2229,12 +2143,12 @@
       "source": "hra",
       "parent": "heart",
       "bbox": [
-        -38.56,
-        -50.13,
-        398.39,
-        12.42,
-        11.26,
-        491.96
+        -36.4,
+        -49.16,
+        399.84,
+        12.77,
+        10.04,
+        490.13
       ]
     },
     "heart_interventricular_septum": {
@@ -2248,12 +2162,12 @@
       "source": "hra",
       "parent": "heart",
       "bbox": [
-        10.38,
-        -67.46,
-        392.5,
-        61.06,
-        -2.21,
-        463.32
+        10.8,
+        -65.87,
+        394.19,
+        59.69,
+        -2.92,
+        462.51
       ]
     },
     "heart_mitral_valve": {
@@ -2269,12 +2183,12 @@
       "source": "hra",
       "parent": "heart",
       "bbox": [
-        8.17,
-        -12.16,
-        421.34,
-        43.92,
-        17.6,
-        461.48
+        8.66,
+        -12.52,
+        422.01,
+        43.16,
+        16.18,
+        460.74
       ]
     },
     "heart_tricuspid_valve": {
@@ -2290,12 +2204,12 @@
       "source": "hra",
       "parent": "heart",
       "bbox": [
-        -19.91,
-        -48.87,
-        402.1,
-        16.96,
-        -12.13,
-        447.24
+        -18.42,
+        -47.93,
+        403.46,
+        17.14,
+        -12.5,
+        447.0
       ]
     },
     "heart_aortic_valve": {
@@ -2311,12 +2225,12 @@
       "source": "hra",
       "parent": "heart",
       "bbox": [
-        -1.5,
-        -24.32,
-        450.64,
-        22.61,
-        -3.36,
-        475.47
+        -0.66,
+        -24.26,
+        450.28,
+        22.59,
+        -4.04,
+        474.23
       ]
     },
     "heart_pulmonary_valve": {
@@ -2332,12 +2246,12 @@
       "source": "hra",
       "parent": "heart",
       "bbox": [
-        8.16,
-        -38.41,
-        460.28,
-        33.29,
-        -15.92,
-        483.95
+        8.65,
+        -37.86,
+        459.58,
+        32.88,
+        -16.16,
+        482.41
       ]
     },
     "heart_papillary_muscles": {
@@ -2356,12 +2270,327 @@
       "source": "hra",
       "parent": "heart",
       "bbox": [
-        11.05,
-        -69.23,
-        396.8,
-        62.61,
-        -8.77,
-        447.81
+        11.45,
+        -67.58,
+        398.34,
+        61.18,
+        -9.25,
+        447.55
+      ]
+    },
+    "trachea": {
+      "zh": "气管",
+      "en": "Trachea",
+      "system": "organs",
+      "region": "neck",
+      "side": "none",
+      "fma": [
+        "FMA7394"
+      ],
+      "uberon": "UBERON:0003126",
+      "source": "hra",
+      "bbox": [
+        -14.5,
+        -24.72,
+        494.1,
+        15.46,
+        38.67,
+        612.91
+      ]
+    },
+    "tracheal_cartilages": {
+      "zh": "气管软骨环",
+      "en": "Tracheal cartilages",
+      "system": "organs",
+      "region": "neck",
+      "side": "none",
+      "fma": [],
+      "uberon": "UBERON:0003604",
+      "source": "hra",
+      "parent": "trachea",
+      "bbox": [
+        -11.87,
+        -18.46,
+        505.31,
+        15.46,
+        33.09,
+        586.02
+      ]
+    },
+    "carina": {
+      "zh": "气管隆嵴",
+      "en": "Carina of trachea",
+      "system": "organs",
+      "region": "thorax",
+      "side": "none",
+      "fma": [],
+      "uberon": "UBERON:0006679",
+      "source": "hra",
+      "parent": "trachea",
+      "bbox": [
+        -14.48,
+        22.52,
+        494.13,
+        11.54,
+        37.99,
+        508.12
+      ]
+    },
+    "larynx_cartilages": {
+      "zh": "喉软骨（含喉结）",
+      "en": "Laryngeal cartilages",
+      "system": "organs",
+      "region": "neck",
+      "side": "none",
+      "fma": [
+        "FMA55099",
+        "FMA9615",
+        "FMA55130"
+      ],
+      "uberon": "UBERON:0001739",
+      "source": "hra",
+      "bbox": [
+        -25.35,
+        -24.41,
+        591.73,
+        25.35,
+        12.0,
+        660.18
+      ]
+    },
+    "thyroid_cartilage": {
+      "zh": "甲状软骨",
+      "en": "Thyroid cartilage",
+      "system": "organs",
+      "region": "neck",
+      "side": "none",
+      "fma": [
+        "FMA55099"
+      ],
+      "uberon": "UBERON:0001738",
+      "source": "hra",
+      "parent": "larynx_cartilages",
+      "bbox": [
+        -25.35,
+        -24.41,
+        600.99,
+        25.35,
+        12.0,
+        642.84
+      ]
+    },
+    "cricoid_cartilage": {
+      "zh": "环状软骨",
+      "en": "Cricoid cartilage",
+      "system": "organs",
+      "region": "neck",
+      "side": "none",
+      "fma": [
+        "FMA9615"
+      ],
+      "uberon": "UBERON:0002375",
+      "source": "hra",
+      "parent": "larynx_cartilages",
+      "bbox": [
+        -13.92,
+        -15.59,
+        591.73,
+        13.77,
+        9.94,
+        617.51
+      ]
+    },
+    "epiglottic_cartilage": {
+      "zh": "会厌软骨",
+      "en": "Epiglottic cartilage",
+      "system": "organs",
+      "region": "neck",
+      "side": "none",
+      "fma": [],
+      "uberon": "UBERON:0001742",
+      "source": "hra",
+      "parent": "larynx_cartilages",
+      "bbox": [
+        -14.22,
+        -11.86,
+        626.96,
+        10.55,
+        6.47,
+        660.18
+      ]
+    },
+    "pancreas": {
+      "zh": "胰腺",
+      "en": "Pancreas",
+      "system": "organs",
+      "region": "abdomen",
+      "side": "none",
+      "fma": [
+        "FMA7198"
+      ],
+      "uberon": "UBERON:0001264",
+      "source": "hra",
+      "bbox": [
+        -39.27,
+        -59.4,
+        220.53,
+        65.53,
+        19.24,
+        288.41
+      ]
+    },
+    "pancreas_head": {
+      "zh": "胰头",
+      "en": "Head of pancreas",
+      "system": "organs",
+      "region": "abdomen",
+      "side": "none",
+      "fma": [],
+      "uberon": "UBERON:0001069",
+      "source": "hra",
+      "parent": "pancreas",
+      "bbox": [
+        -39.48,
+        -59.53,
+        220.53,
+        0.57,
+        -19.3,
+        268.0
+      ]
+    },
+    "pancreas_body": {
+      "zh": "胰体",
+      "en": "Body of pancreas",
+      "system": "organs",
+      "region": "abdomen",
+      "side": "none",
+      "fma": [],
+      "uberon": "UBERON:0001150",
+      "source": "hra",
+      "parent": "pancreas",
+      "bbox": [
+        -20.05,
+        -59.48,
+        244.71,
+        35.06,
+        -14.7,
+        282.66
+      ]
+    },
+    "pancreas_tail": {
+      "zh": "胰尾",
+      "en": "Tail of pancreas",
+      "system": "organs",
+      "region": "abdomen",
+      "side": "none",
+      "fma": [],
+      "uberon": "UBERON:0001151",
+      "source": "hra",
+      "parent": "pancreas",
+      "bbox": [
+        15.94,
+        -27.01,
+        255.37,
+        65.53,
+        19.24,
+        288.41
+      ]
+    },
+    "spleen": {
+      "zh": "脾",
+      "en": "Spleen",
+      "system": "organs",
+      "region": "abdomen",
+      "side": "none",
+      "fma": [
+        "FMA7196"
+      ],
+      "uberon": "UBERON:0002106",
+      "source": "hra",
+      "bbox": [
+        33.34,
+        -34.73,
+        244.05,
+        137.44,
+        48.81,
+        355.88
+      ]
+    },
+    "kidneys": {
+      "zh": "肾",
+      "en": "Kidneys",
+      "system": "organs",
+      "region": "abdomen",
+      "side": "both",
+      "fma": [
+        "FMA7203"
+      ],
+      "uberon": "UBERON:0002113",
+      "source": "hra",
+      "bbox": [
+        -95.2,
+        -29.08,
+        181.84,
+        99.33,
+        59.17,
+        301.89
+      ]
+    },
+    "kidney_cortex": {
+      "zh": "肾皮质",
+      "en": "Renal cortex",
+      "system": "organs",
+      "region": "abdomen",
+      "side": "both",
+      "fma": [],
+      "uberon": "UBERON:0002189",
+      "source": "hra",
+      "parent": "kidneys",
+      "bbox": [
+        -95.09,
+        -29.18,
+        182.0,
+        98.85,
+        57.85,
+        301.0
+      ]
+    },
+    "kidney_pyramids": {
+      "zh": "肾锥体",
+      "en": "Renal pyramids",
+      "system": "organs",
+      "region": "abdomen",
+      "side": "both",
+      "fma": [],
+      "uberon": "UBERON:0004200",
+      "source": "hra",
+      "parent": "kidneys",
+      "bbox": [
+        -86.19,
+        -22.78,
+        188.94,
+        90.22,
+        52.54,
+        293.96
+      ]
+    },
+    "kidney_hilum": {
+      "zh": "肾门",
+      "en": "Hilum of kidney",
+      "system": "organs",
+      "region": "abdomen",
+      "side": "both",
+      "fma": [],
+      "uberon": "UBERON:0008716",
+      "source": "hra",
+      "parent": "kidneys",
+      "bbox": [
+        -72.05,
+        -23.15,
+        210.21,
+        72.99,
+        24.62,
+        273.95
       ]
     },
     "aorta": {

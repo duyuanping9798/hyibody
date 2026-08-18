@@ -24,6 +24,28 @@ def test_axis_mapping_keeps_left_right_and_flips_front():
     assert np.allclose(left, [1000, 0, 0])
 
 
+def test_height_scale_is_the_body_height_ratio():
+    src = np.array([[0.0, 0.0, -900.0], [0.0, 0.0, 900.0]])
+    tgt = np.array([[0.0, 0.0, -800.0], [0.0, 0.0, 900.0]])
+    assert hra.height_scale(src, tgt) == pytest.approx(1700 / 1800)
+
+
+def test_fit_centered_keeps_scale_and_matches_centres():
+    """全局定标 + 对中：尺寸只按给定缩放变，中心落到目标包围盒中心。"""
+    source = np.array([[0.0, 0.0, 0.0], [10.0, 20.0, 40.0]])
+    target = np.array([[100.0, 100.0, 100.0], [110.0, 110.0, 110.0]])
+    fit = hra.fit_centered(source, target, 0.5)
+    out = hra.bounds_of(fit.apply(source))
+    assert np.allclose((out[0] + out[1]) / 2, [105.0, 105.0, 105.0])
+    assert np.allclose(out[1] - out[0], [5.0, 10.0, 20.0])  # 形状没有被拉伸
+
+
+def test_axis_ratios_reports_per_axis_disagreement():
+    source = np.array([[0.0, 0.0, 0.0], [10.0, 10.0, 10.0]])
+    target = np.array([[0.0, 0.0, 0.0], [8.0, 5.0, 10.0]])
+    assert np.allclose(hra.axis_ratios(source, target), [0.8, 0.5, 1.0])
+
+
 def test_fit_is_uniform_and_centres_on_target():
     source = np.array([[0.0, 0.0, 0.0], [10.0, 10.0, 10.0]])
     target = np.array([[100.0, 100.0, 100.0], [120.0, 120.0, 120.0]])
@@ -74,13 +96,18 @@ def test_structure_list_hra_entries_declare_meshes_and_one_anchor():
     hra_entries = [e for e in entries if e.get("source") == bp3d.HRA_SOURCE]
     assert hra_entries, "结构清单里应该有 HRA 结构"
     anchors: dict[str, int] = {}
+    used: set[str] = set()
     for e in hra_entries:
         spec = e.get("hra")
-        assert spec and spec.get("asset"), f"{e['slug']}: 缺 hra.asset"
+        assert spec, f"{e['slug']}: 缺 hra 配置"
+        assets = list(spec.get("assets") or ([spec["asset"]] if spec.get("asset") else []))
+        assert assets, f"{e['slug']}: 缺 hra.asset/assets"
+        used.update(assets)
         assert "meshes" in spec, f"{e['slug']}: 缺 hra.meshes"
         assert e.get("fma") or e.get("uberon"), f"{e['slug']}: 本体 id 不能全空"
         if "fit_to_fma" in spec:
-            anchors[spec["asset"]] = anchors.get(spec["asset"], 0) + 1
-    for asset in {e["hra"]["asset"] for e in hra_entries}:
+            for asset in assets:
+                anchors[asset] = anchors.get(asset, 0) + 1
+    for asset in used:
         # 同一个 glb 的所有部件共用一个变换，锚点必须恰好一条
         assert anchors.get(asset) == 1, f"{asset}: 应恰好有一条声明 fit_to_fma"

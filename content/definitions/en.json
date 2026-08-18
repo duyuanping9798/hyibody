@@ -583,5 +583,49 @@
   "optic_nerves": {
     "blurb": "Carry the light signals picked up by the retina toward the brain — the data cable of vision.",
     "fact": "Each holds over a million nerve fibres, and where it leaves the eye there are no light receptors at all, which creates the blind spot in your field of view."
+  },
+  "tracheal_cartilages": {
+    "blurb": "Some sixteen C-shaped rings of cartilage hold the windpipe open, like the coil in a vacuum hose.",
+    "fact": "Each ring's gap faces backward toward the oesophagus, leaving it room to bulge when you swallow something large."
+  },
+  "carina": {
+    "blurb": "The carina is the ridge where the windpipe forks into the left and right main bronchi — the last stop of the trachea.",
+    "fact": "It is exquisitely sensitive: anything touching it sets off violent coughing, and bronchoscopists use it as their landmark."
+  },
+  "thyroid_cartilage": {
+    "blurb": "The largest cartilage of the voice box; its two plates meet at an angle in front, and that ridge is the Adam's apple.",
+    "fact": "In male puberty the angle sharpens from about 120° to 90°, which is why the Adam's apple juts out and the voice drops."
+  },
+  "cricoid_cartilage": {
+    "blurb": "Shaped like a signet ring, this is the only complete ring of cartilage anywhere in the airway.",
+    "fact": "Because it is a closed ring, pressing on it in an emergency squeezes the oesophagus behind it shut and helps stop stomach contents coming up."
+  },
+  "epiglottic_cartilage": {
+    "blurb": "A leaf-shaped flap standing at the entrance of the voice box; swallowing tips it back to cover the airway.",
+    "fact": "When it fails to close in time you choke — that cough after a sip of water is liquid slipping into an airway that was not quite covered."
+  },
+  "pancreas_head": {
+    "blurb": "The head nests in the C-shaped curve of the duodenum, the thickest end of the pancreas, with a small uncinate process hooking below it.",
+    "fact": "The bile duct passes right through the head, so anything growing here squeezes it shut and turns the skin yellow."
+  },
+  "pancreas_body": {
+    "blurb": "The body crosses in front of the spine, the middle stretch of the pancreas, with the stomach lying against it.",
+    "fact": "It sits directly on the first two lumbar vertebrae, which is where a blow to the abdomen can snap the pancreas in two."
+  },
+  "pancreas_tail": {
+    "blurb": "The tail reaches up to the left, its tip touching the hilum of the spleen — the only part of the pancreas wrapped in peritoneum and free to move.",
+    "fact": "The insulin-making islets are densest in the tail, so removing the tail affects blood sugar more than removing the head."
+  },
+  "kidney_cortex": {
+    "blurb": "The outer centimetre of the kidney, holding over a million filtering units — this is where cleaning the blood begins.",
+    "fact": "The renal columns dipping down between the pyramids are cortex too; blood vessels travel along them into the depths of the kidney."
+  },
+  "kidney_pyramids": {
+    "blurb": "Around a dozen cone-shaped blocks of medulla, tips pointing toward the hilum, where urine is concentrated and gathered.",
+    "fact": "Each tip is a renal papilla, and urine drips from it into a minor calyx before draining into the ureter."
+  },
+  "kidney_hilum": {
+    "blurb": "The notch on the inner edge of the kidney where the renal artery, renal vein and ureter enter and leave.",
+    "fact": "Their order is fixed — vein in front, artery in the middle, ureter behind — and surgeons rely on it to find their way."
   }
 }
