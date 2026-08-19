@@ -16,6 +16,15 @@ export interface CameraRig {
  */
 const MIN_DISTANCE_MM = 25;
 
+/**
+ * 聚焦时"当作至少这么大"的尺寸下限（毫米）。
+ *
+ * 原来是 60 mm，配的是 200 mm 的最近距离：晶状体（10 mm）按 60 mm 算出 139 mm，
+ * 屏幕上只占一成高，等于没凑近。最近距离降到 25 mm 之后这条也跟着降，
+ * 同一个晶状体现在算出 35 mm，占四成屏高——该看清的看得清。
+ */
+const FOCUS_MIN_SIZE_MM = 15;
+
 /** 创建相机 + 轨道控制器。默认自动旋转，用户一交互即停。 */
 export function createCameraRig(dom: HTMLElement, aspect: number): CameraRig {
   const camera = new PerspectiveCamera(38, aspect, 1, 20000);
@@ -109,7 +118,7 @@ export function poseForFocus(
 ): CameraPose {
   const center = box.getCenter(new Vector3());
   const size = box.getSize(new Vector3());
-  const radius = Math.max(size.x, size.y, size.z, 60) * 0.5;
+  const radius = Math.max(size.x, size.y, size.z, FOCUS_MIN_SIZE_MM) * 0.5;
   const dist = (radius / Math.tan(((fovDeg / 2) * Math.PI) / 180)) * 1.6;
   const dir = from
     ? VIEW_PRESETS[from].dir.clone().normalize()

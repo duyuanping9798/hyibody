@@ -127,8 +127,9 @@ export function bindViewer(v: HyiViewer | null): void {
   if (!v) return;
   v.addEventListener('select', (e) => {
     const slug = (e as CustomEvent<{ slug: string | null }>).detail.slug;
-    // 选中结构时收起小屏抽屉面板，避免与信息卡叠在一起（桌面端不受影响）
-    useUiStore.setState(slug ? { selected: slug, activePanel: null } : { selected: slug });
+    // 抽屉不再自动收起：信息卡与抽屉在两边（小屏上 CSS 会把抽屉抬到卡片之上），
+    // 原来"点一下结构面板就关了"在桌面端很别扭——刚调完不透明度就得重开
+    useUiStore.setState({ selected: slug });
   });
   useUiStore.setState({ quality: v.getQuality(), qualityToggleable: v.canToggleQuality() });
   v.addEventListener('progress', (e) => {
