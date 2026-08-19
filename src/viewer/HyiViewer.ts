@@ -172,6 +172,8 @@ export class HyiViewer extends EventTarget {
   /** 画布上下被界面挡住多少（CSS 像素），由 UI 层量好了推进来 */
   private safeInsets = { top: 0, bottom: 0 };
   private framedWithInsets = false;
+  /** 相机是否还停在自动算出来的全身取景上（用户一聚焦/一飞走就不是了） */
+  private autoFramed = false;
   /** WebGL 上下文丢失期间停帧循环，别对着死的上下文空转 */
   private contextLost = false;
   private clipPlane: Plane | null = null;
@@ -602,7 +604,9 @@ export class HyiViewer extends EventTarget {
     const bottom = Math.max(0, insets.bottom);
     if (top === this.safeInsets.top && bottom === this.safeInsets.bottom) return;
     this.safeInsets = { top, bottom };
-    if (this.contentBox.isEmpty() || this.state.isolated || this.state.expanded) return;
+    // 只有当前还是"自动全身取景"时才重取景。用户点了聚焦、或者分享链接
+    // (?v=selected=heart) 已经把相机飞到心脏上，这时候再框一次全身就把它顶掉了
+    if (this.contentBox.isEmpty() || !this.autoFramed) return;
     // 第一次量到真实的界面高度时硬切（那还在开场，用户没动过相机），
     // 之后再变（转屏、拉窗口、奥秘播放器换高度）就飞过去
     this.frameContent(!this.framedWithInsets);
@@ -635,6 +639,7 @@ export class HyiViewer extends EventTarget {
   }
 
   private flyTo(pos: Vector3, target: Vector3): void {
+    this.autoFramed = false;
     this.rig.controls.autoRotate = false;
     this.flight = {
       fromPos: this.rig.camera.position.clone(),
@@ -872,6 +877,7 @@ export class HyiViewer extends EventTarget {
     } else {
       this.flyTo(pose.pos, pose.target);
     }
+    this.autoFramed = true;
     this.syncClipPlanes();
   }
 
