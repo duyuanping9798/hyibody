@@ -429,3 +429,32 @@ test('spinal cord spans the trunk and opens into four regions', async ({ page })
   await expect(page.getByRole('button', { name: '收起内部' }).first()).toBeVisible();
   await page.screenshot({ path: 'test-results/smoke-spinal-parts.png' });
 });
+
+/**
+ * HRA 第四批：气道（气管 → 主支气管 → 支气管树）与眼球。
+ * 支气管树与主支气管借的是气管的变换，衔接处只能靠截图人工比对。
+ */
+test('airway and eyes are in place', async ({ page }) => {
+  test.setTimeout(240_000);
+  const airway = encodeUrlState({ layer: 0.75, selected: 'bronchial_tree' });
+  await page.goto(`/?v=${airway}`);
+  await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
+    timeout: 60_000,
+  });
+  const infoCard = page.getByTestId('info-card');
+  await expect(infoCard).toBeVisible({ timeout: 30_000 });
+  await expect(infoCard.locator('h2')).toHaveText('支气管树');
+  await page.screenshot({ path: 'test-results/smoke-airway.png' });
+
+  const eyes = encodeUrlState({ layer: 0.62, selected: 'eyes' });
+  await page.goto(`/?v=${eyes}`);
+  await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
+    timeout: 60_000,
+  });
+  await expect(infoCard).toBeVisible({ timeout: 30_000 });
+  await expect(infoCard.locator('h2')).toHaveText('眼球');
+  await expect(infoCard.locator('.meta')).toContainText('HuBMAP HRA');
+  await page.getByRole('button', { name: /展开内部/ }).click();
+  await expect(page.getByRole('button', { name: '收起内部' }).first()).toBeVisible();
+  await page.screenshot({ path: 'test-results/smoke-eyes.png' });
+});

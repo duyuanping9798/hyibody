@@ -116,3 +116,73 @@ files:
     creator: Kristen Browne (ORCID 0000-0003-4066-7531)
     bytes: 1136412
     sha256: 8e4c38293cfdb6b4f47ef2930c7f4af9e37b9144d1cf26d07c8f12c5045eb404
+  - name: 3d-vh-m-eye-l.glb
+    kind: glb
+    url_path: eye-male-left/v1.3/assets/3d-vh-m-eye-l.glb
+    object: https://purl.humanatlas.io/ref-organ/eye-male-left/v1.3
+    creator: Kristen Browne (ORCID 0000-0003-4066-7531)
+    bytes: 27462616
+    sha256: a918173575ed1b6dbf3d90344a144940b7f055590f40e119de0ad43abee50c64
+  - name: 3d-vh-m-eye-r.glb
+    kind: glb
+    url_path: eye-male-right/v1.3/assets/3d-vh-m-eye-r.glb
+    object: https://purl.humanatlas.io/ref-organ/eye-male-right/v1.3
+    creator: Kristen Browne (ORCID 0000-0003-4066-7531)
+    bytes: 20697584
+    sha256: 1a6ecc528e98e0bddb8e2905e4ddb799eb471383f7274dbb9bdd1676b06be73b
+  - name: 3d-vh-m-palatine-tonsil-l.glb
+    kind: glb
+    url_path: palatine-tonsil-male-left/v1.2/assets/3d-vh-m-palatine-tonsil-l.glb
+    object: https://purl.humanatlas.io/ref-organ/palatine-tonsil-male-left/v1.2
+    creator: Kristen Browne (ORCID 0000-0003-4066-7531)
+    bytes: 449008
+    sha256: 6bacedee00b821f05f24a06a434f867814ca233d2ec1b898bc8344c56aa7be80
+  - name: 3d-vh-m-palatine-tonsil-r.glb
+    kind: glb
+    url_path: palatine-tonsil-male-right/v1.2/assets/3d-vh-m-palatine-tonsil-r.glb
+    object: https://purl.humanatlas.io/ref-organ/palatine-tonsil-male-right/v1.2
+    creator: Kristen Browne (ORCID 0000-0003-4066-7531)
+    bytes: 222132
+    sha256: 7164e38f8cdbee2d6f107ce63bb666e52786871e78bd6724e9200a71eea59961
+  - name: 3d-vh-m-ureter-l.glb
+    kind: glb
+    url_path: ureter-male-left/v1.2/assets/3d-vh-m-ureter-l.glb
+    object: https://purl.humanatlas.io/ref-organ/ureter-male-left/v1.2
+    creator: Kristen Browne (ORCID 0000-0003-4066-7531)
+    bytes: 682892
+    sha256: ebdd493c2e8095ccb6e795f49bf26c94e8d205c94097a7e1f9a9d7b168a1173c
+  - name: 3d-vh-m-ureter-r.glb
+    kind: glb
+    url_path: ureter-male-right/v1.2/assets/3d-vh-m-ureter-r.glb
+    object: https://purl.humanatlas.io/ref-organ/ureter-male-right/v1.2
+    creator: Kristen Browne (ORCID 0000-0003-4066-7531)
+    bytes: 540788
+    sha256: 215978b67cf4d3876249a8dafb8c83a13471b5e1eb601559dca25a61a7c9d091
+  - name: 3d-vh-m-thymus.glb
+    kind: glb
+    url_path: thymus-male/v1.3/assets/3d-vh-m-thymus.glb
+    object: https://purl.humanatlas.io/ref-organ/thymus-male/v1.3
+    creator: Kristen Browne (ORCID 0000-0003-4066-7531)
+    bytes: 74912
+    sha256: 33119356ac2a1108bf8aeec7d27ab908213464e0dd4a8e0bd390f40a8848c933
+  - name: 3d-vh-m-small-intestine.glb
+    kind: glb
+    url_path: small-intestine-male/v1.2/assets/3d-vh-m-small-intestine.glb
+    object: https://purl.humanatlas.io/ref-organ/small-intestine-male/v1.2
+    creator: Kristen Browne (ORCID 0000-0003-4066-7531)
+    bytes: 618728
+    sha256: 5d51b9b102e762f9b64fd1e7d9fbd1f1a23ed9cfdb536a9e756cca3206fbc5bb
+  - name: 3d-sbu-m-large-intestine.glb
+    kind: glb
+    url_path: large-intestine-male/v1.3/assets/3d-sbu-m-large-intestine.glb
+    object: https://purl.humanatlas.io/ref-organ/large-intestine-male/v1.3
+    creator: Kristen Browne (ORCID 0000-0003-4066-7531)
+    bytes: 687076
+    sha256: 908a5c38bf14574a673f2d2619502281f7f9e47c46c4eba837aae2e80e38c489
+  - name: 3d-vh-m-lung.glb
+    kind: glb
+    url_path: lung-male/v1.4/assets/3d-vh-m-lung.glb
+    object: https://purl.humanatlas.io/ref-organ/lung-male/v1.4
+    creator: Kristen Browne (ORCID 0000-0003-4066-7531)
+    bytes: 10942332
+    sha256: bba95516fa993ac45c3b1c53f32b58d97232ffd78ae56397e5a2589c6ce4903d

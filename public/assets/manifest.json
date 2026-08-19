@@ -1,6 +1,6 @@
 {
   "version": "0.0.1",
-  "generatedAt": "2026-08-18T15:12:50+00:00",
+  "generatedAt": "2026-08-19T02:57:35+00:00",
   "systems": [
     {
       "id": "skin",
@@ -104,7 +104,7 @@
     {
       "id": "organs",
       "file": "assets/organs.glb",
-      "bytes": 2667360,
+      "bytes": 3957952,
       "structures": [
         "heart",
         "lung_right",
@@ -112,14 +112,9 @@
         "esophagus",
         "stomach",
         "gallbladder",
-        "small_intestine",
-        "large_intestine",
         "tongue",
-        "appendix",
         "adrenal_glands",
-        "ureters",
         "pituitary_gland",
-        "thymus",
         "testes",
         "heart_left_ventricle",
         "heart_right_ventricle",
@@ -159,7 +154,31 @@
         "liver_caudate_lobe",
         "liver_quadrate_lobe",
         "liver_porta_hepatis",
-        "liver_falciform_ligament"
+        "liver_falciform_ligament",
+        "eyes",
+        "eye_cornea",
+        "eye_iris",
+        "eye_lens",
+        "eye_retina",
+        "palatine_tonsils",
+        "bronchial_tree",
+        "bronchial_cartilage",
+        "small_intestine",
+        "duodenum",
+        "jejunum",
+        "ileum",
+        "large_intestine",
+        "caecum",
+        "ascending_colon",
+        "transverse_colon",
+        "descending_colon",
+        "sigmoid_colon",
+        "rectum",
+        "appendix",
+        "ureters",
+        "renal_pelvis",
+        "renal_calyces",
+        "thymus"
       ]
     },
     {
@@ -1853,44 +1872,6 @@
         304.7
       ]
     },
-    "small_intestine": {
-      "zh": "小肠",
-      "en": "Small intestine",
-      "system": "organs",
-      "region": "abdomen",
-      "side": "none",
-      "fma": [
-        "FMA7200"
-      ],
-      "source": "bp3d_partof",
-      "bbox": [
-        -86.71,
-        -82.65,
-        18.66,
-        107.3,
-        -2.93,
-        290.27
-      ]
-    },
-    "large_intestine": {
-      "zh": "大肠",
-      "en": "Large intestine",
-      "system": "organs",
-      "region": "abdomen",
-      "side": "none",
-      "fma": [
-        "FMA7201"
-      ],
-      "source": "bp3d_partof",
-      "bbox": [
-        -126.0,
-        -96.21,
-        -29.69,
-        118.15,
-        89.55,
-        277.9
-      ]
-    },
     "tongue": {
       "zh": "舌",
       "en": "Tongue",
@@ -1908,25 +1889,6 @@
         19.48,
         -9.48,
         680.6
-      ]
-    },
-    "appendix": {
-      "zh": "阑尾",
-      "en": "Appendix",
-      "system": "organs",
-      "region": "abdomen",
-      "side": "none",
-      "fma": [
-        "FMA14542"
-      ],
-      "source": "bp3d",
-      "bbox": [
-        -87.87,
-        -20.0,
-        78.79,
-        -18.04,
-        19.24,
-        96.91
       ]
     },
     "adrenal_glands": {
@@ -1948,25 +1910,6 @@
         321.47
       ]
     },
-    "ureters": {
-      "zh": "输尿管",
-      "en": "Ureters",
-      "system": "organs",
-      "region": "abdomen",
-      "side": "both",
-      "fma": [
-        "FMA9704"
-      ],
-      "source": "bp3d",
-      "bbox": [
-        -72.1,
-        -19.33,
-        24.67,
-        80.08,
-        40.5,
-        285.8
-      ]
-    },
     "pituitary_gland": {
       "zh": "垂体",
       "en": "Pituitary gland",
@@ -1984,25 +1927,6 @@
         6.16,
         -0.33,
         748.87
-      ]
-    },
-    "thymus": {
-      "zh": "胸腺",
-      "en": "Thymus",
-      "system": "organs",
-      "region": "thorax",
-      "side": "none",
-      "fma": [
-        "FMA9607"
-      ],
-      "source": "bp3d_partof",
-      "bbox": [
-        -24.2,
-        -58.32,
-        470.7,
-        22.58,
-        -18.95,
-        543.07
       ]
     },
     "testes": {
@@ -2796,6 +2720,471 @@
         24.6,
         -43.53,
         378.25
+      ]
+    },
+    "eyes": {
+      "zh": "眼球",
+      "en": "Eyes",
+      "system": "organs",
+      "region": "head",
+      "side": "both",
+      "fma": [
+        "FMA58269",
+        "FMA58238",
+        "FMA58241"
+      ],
+      "uberon": "UBERON:0000970",
+      "source": "hra",
+      "bbox": [
+        -45.06,
+        -62.34,
+        719.53,
+        45.05,
+        -41.0,
+        743.1
+      ]
+    },
+    "eye_cornea": {
+      "zh": "角膜",
+      "en": "Cornea",
+      "system": "organs",
+      "region": "head",
+      "side": "both",
+      "fma": [
+        "FMA58238"
+      ],
+      "uberon": "UBERON:0000964",
+      "source": "hra",
+      "parent": "eyes",
+      "bbox": [
+        -39.88,
+        -64.72,
+        725.58,
+        39.86,
+        -61.07,
+        737.7
+      ]
+    },
+    "eye_iris": {
+      "zh": "虹膜",
+      "en": "Iris",
+      "system": "organs",
+      "region": "head",
+      "side": "both",
+      "fma": [],
+      "uberon": "UBERON:0001769",
+      "source": "hra",
+      "bbox": [
+        -38.88,
+        -61.78,
+        726.19,
+        38.91,
+        -60.45,
+        736.64
+      ]
+    },
+    "eye_lens": {
+      "zh": "晶状体",
+      "en": "Lens",
+      "system": "organs",
+      "region": "head",
+      "side": "both",
+      "fma": [
+        "FMA58241"
+      ],
+      "uberon": "UBERON:0000965",
+      "source": "hra",
+      "parent": "eyes",
+      "bbox": [
+        -41.0,
+        -61.88,
+        724.4,
+        40.98,
+        -58.19,
+        738.9
+      ]
+    },
+    "eye_retina": {
+      "zh": "视网膜",
+      "en": "Retina",
+      "system": "organs",
+      "region": "head",
+      "side": "both",
+      "fma": [],
+      "uberon": "UBERON:0000966",
+      "source": "hra",
+      "parent": "eyes",
+      "bbox": [
+        -43.77,
+        -59.68,
+        720.66,
+        43.76,
+        -42.21,
+        741.92
+      ]
+    },
+    "palatine_tonsils": {
+      "zh": "腭扁桃体",
+      "en": "Palatine tonsils",
+      "system": "organs",
+      "region": "head",
+      "side": "both",
+      "fma": [],
+      "uberon": "UBERON:0002373",
+      "source": "hra",
+      "bbox": [
+        -22.91,
+        -14.22,
+        674.36,
+        20.82,
+        1.25,
+        697.54
+      ]
+    },
+    "bronchial_tree": {
+      "zh": "支气管树",
+      "en": "Bronchial tree",
+      "system": "organs",
+      "region": "thorax",
+      "side": "both",
+      "fma": [],
+      "uberon": "UBERON:0002185",
+      "source": "hra",
+      "bbox": [
+        -99.96,
+        -31.87,
+        384.54,
+        114.68,
+        100.61,
+        551.14
+      ]
+    },
+    "bronchial_cartilage": {
+      "zh": "支气管软骨",
+      "en": "Bronchial cartilage",
+      "system": "organs",
+      "region": "thorax",
+      "side": "both",
+      "fma": [],
+      "uberon": "UBERON:0002218",
+      "source": "hra",
+      "parent": "bronchial_tree",
+      "bbox": [
+        -49.11,
+        18.71,
+        443.1,
+        64.26,
+        66.78,
+        502.68
+      ]
+    },
+    "small_intestine": {
+      "zh": "小肠",
+      "en": "Small intestine",
+      "system": "organs",
+      "region": "abdomen",
+      "side": "none",
+      "fma": [
+        "FMA7200"
+      ],
+      "uberon": "UBERON:0002108",
+      "source": "hra",
+      "bbox": [
+        -78.11,
+        -100.58,
+        29.38,
+        99.1,
+        14.68,
+        279.5
+      ]
+    },
+    "duodenum": {
+      "zh": "十二指肠",
+      "en": "Duodenum",
+      "system": "organs",
+      "region": "abdomen",
+      "side": "none",
+      "fma": [],
+      "uberon": "UBERON:0002114",
+      "source": "hra",
+      "parent": "small_intestine",
+      "bbox": [
+        -66.47,
+        -57.04,
+        192.81,
+        35.04,
+        6.98,
+        279.5
+      ]
+    },
+    "jejunum": {
+      "zh": "空肠",
+      "en": "Jejunum",
+      "system": "organs",
+      "region": "abdomen",
+      "side": "none",
+      "fma": [],
+      "uberon": "UBERON:0002115",
+      "source": "hra",
+      "parent": "small_intestine",
+      "bbox": [
+        -43.02,
+        -94.81,
+        118.41,
+        99.1,
+        14.68,
+        278.46
+      ]
+    },
+    "ileum": {
+      "zh": "回肠",
+      "en": "Ileum",
+      "system": "organs",
+      "region": "abdomen",
+      "side": "none",
+      "fma": [],
+      "uberon": "UBERON:0002116",
+      "source": "hra",
+      "parent": "small_intestine",
+      "bbox": [
+        -78.11,
+        -100.47,
+        29.38,
+        60.01,
+        -0.07,
+        157.5
+      ]
+    },
+    "large_intestine": {
+      "zh": "大肠",
+      "en": "Large intestine",
+      "system": "organs",
+      "region": "abdomen",
+      "side": "none",
+      "fma": [
+        "FMA7201"
+      ],
+      "uberon": "UBERON:0000059",
+      "source": "hra",
+      "bbox": [
+        -126.12,
+        -109.3,
+        -87.95,
+        118.12,
+        102.63,
+        336.48
+      ]
+    },
+    "caecum": {
+      "zh": "盲肠",
+      "en": "Caecum",
+      "system": "organs",
+      "region": "abdomen",
+      "side": "none",
+      "fma": [],
+      "uberon": "UBERON:0001153",
+      "source": "hra",
+      "parent": "large_intestine",
+      "bbox": [
+        -119.28,
+        -80.99,
+        33.94,
+        -37.89,
+        -8.27,
+        138.16
+      ]
+    },
+    "ascending_colon": {
+      "zh": "升结肠",
+      "en": "Ascending colon",
+      "system": "organs",
+      "region": "abdomen",
+      "side": "none",
+      "fma": [],
+      "uberon": "UBERON:0001156",
+      "source": "hra",
+      "parent": "large_intestine",
+      "bbox": [
+        -126.12,
+        -90.12,
+        101.4,
+        -32.03,
+        22.3,
+        292.32
+      ]
+    },
+    "transverse_colon": {
+      "zh": "横结肠",
+      "en": "Transverse colon",
+      "system": "organs",
+      "region": "abdomen",
+      "side": "none",
+      "fma": [],
+      "uberon": "UBERON:0001157",
+      "source": "hra",
+      "parent": "large_intestine",
+      "bbox": [
+        -100.02,
+        -109.3,
+        153.49,
+        108.63,
+        36.99,
+        336.48
+      ]
+    },
+    "descending_colon": {
+      "zh": "降结肠",
+      "en": "Descending colon",
+      "system": "organs",
+      "region": "abdomen",
+      "side": "none",
+      "fma": [],
+      "uberon": "UBERON:0001158",
+      "source": "hra",
+      "parent": "large_intestine",
+      "bbox": [
+        33.1,
+        -60.3,
+        8.52,
+        118.12,
+        36.99,
+        332.14
+      ]
+    },
+    "sigmoid_colon": {
+      "zh": "乙状结肠",
+      "en": "Sigmoid colon",
+      "system": "organs",
+      "region": "pelvis",
+      "side": "none",
+      "fma": [],
+      "uberon": "UBERON:0001159",
+      "source": "hra",
+      "parent": "large_intestine",
+      "bbox": [
+        -58.84,
+        -60.72,
+        -10.45,
+        39.03,
+        40.01,
+        63.5
+      ]
+    },
+    "rectum": {
+      "zh": "直肠",
+      "en": "Rectum",
+      "system": "organs",
+      "region": "pelvis",
+      "side": "none",
+      "fma": [],
+      "uberon": "UBERON:0001052",
+      "source": "hra",
+      "parent": "large_intestine",
+      "bbox": [
+        -43.76,
+        33.27,
+        -87.95,
+        6.89,
+        102.63,
+        55.59
+      ]
+    },
+    "appendix": {
+      "zh": "阑尾",
+      "en": "Appendix",
+      "system": "organs",
+      "region": "abdomen",
+      "side": "none",
+      "fma": [
+        "FMA14542"
+      ],
+      "uberon": "UBERON:0001154",
+      "source": "hra",
+      "bbox": [
+        -77.98,
+        -12.21,
+        57.19,
+        -20.93,
+        6.39,
+        77.8
+      ]
+    },
+    "ureters": {
+      "zh": "输尿管",
+      "en": "Ureters",
+      "system": "organs",
+      "region": "abdomen",
+      "side": "both",
+      "fma": [
+        "FMA9704"
+      ],
+      "uberon": "UBERON:0000056",
+      "source": "hra",
+      "bbox": [
+        -46.5,
+        -15.16,
+        34.56,
+        54.37,
+        36.6,
+        275.76
+      ]
+    },
+    "renal_pelvis": {
+      "zh": "肾盂",
+      "en": "Renal pelvis",
+      "system": "organs",
+      "region": "abdomen",
+      "side": "both",
+      "fma": [],
+      "uberon": "UBERON:0001224",
+      "source": "hra",
+      "parent": "ureters",
+      "bbox": [
+        -56.27,
+        -2.66,
+        248.54,
+        67.24,
+        31.62,
+        290.06
+      ]
+    },
+    "renal_calyces": {
+      "zh": "肾盏",
+      "en": "Renal calyces",
+      "system": "organs",
+      "region": "abdomen",
+      "side": "both",
+      "fma": [],
+      "uberon": "UBERON:0001227",
+      "source": "hra",
+      "parent": "ureters",
+      "bbox": [
+        -67.37,
+        1.4,
+        243.74,
+        78.03,
+        54.87,
+        311.46
+      ]
+    },
+    "thymus": {
+      "zh": "胸腺",
+      "en": "Thymus",
+      "system": "organs",
+      "region": "thorax",
+      "side": "none",
+      "fma": [
+        "FMA9607"
+      ],
+      "uberon": "UBERON:0002370",
+      "source": "hra",
+      "bbox": [
+        -18.26,
+        -55.28,
+        471.22,
+        16.61,
+        -22.22,
+        542.56
       ]
     },
     "aorta": {
