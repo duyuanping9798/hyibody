@@ -1,6 +1,9 @@
 {
   "id": "digestion",
-  "title": { "zh": "食物去哪了", "en": "Where Does Food Go?" },
+  "title": {
+    "zh": "食物去哪了",
+    "en": "Where Does Food Go?"
+  },
   "steps": [
     {
       "text": {
@@ -40,19 +43,19 @@
     },
     {
       "text": {
-        "zh": "重头戏在小肠：5–6 米长的\"吸收长廊\"盘在腹腔里，内壁绒毛展开接近一个网球场，营养几乎全在这里进入血液。",
-        "en": "The main act: 5–6 meters of small intestine, whose villi unfold to nearly a tennis court of absorbing surface."
+        "zh": "重头戏在小肠。五到七米的管子盘在肚子中央，内壁一点都不光滑：褶皱上长绒毛、绒毛上再长微绒毛，一层层放大，才够把一顿饭拆成分子交给血液。",
+        "en": "The main act is the small intestine: five to seven metres coiled through the middle of your belly. Its lining is anything but smooth — folds carry villi, villi carry microvilli, and only that stacking gives enough surface to hand a whole meal to the blood, molecule by molecule."
       },
       "layer": 0.7,
       "selected": "small_intestine",
-      "durationMs": 10000
+      "durationMs": 12000
     },
     {
       "text": {
-        "zh": "吸收的营养并不直接进入全身——肝门静脉先把它们押送到肝脏\"安检加工\"，再放行进入循环。",
-        "en": "Absorbed nutrients don't go straight to the body — the portal vein routes them to the liver for processing first."
+        "zh": "吸收到的营养不会直接进入全身循环。肝门静脉先把它们全部押送进肝脏——先查一遍、改一遍，剩下的才放行。",
+        "en": "Absorbed nutrients don't join the general circulation right away. The hepatic portal vein marches them all into the liver first — checked and rebuilt there before anything is released."
       },
-      "layer": 0.85,
+      "layer": 0.72,
       "selected": "hepatic_portal_vein",
       "durationMs": 9000
     },
