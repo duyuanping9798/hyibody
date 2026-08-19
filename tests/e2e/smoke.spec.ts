@@ -154,9 +154,10 @@ test.describe('mobile viewport', () => {
     await expect(page.getByTestId('info-card')).toBeVisible({ timeout: 20_000 });
     await expect(page.getByTestId('info-card')).toContainText('颅骨');
 
-    // 抽屉：默认收起 → 点标签展开系统面板
+    // 工具抽屉：默认全收起 → 点"系统"这一格展开
     const systemsTab = page.getByRole('button', { name: '系统', exact: true });
     await expect(systemsTab).toBeVisible();
+    await expect(page.getByRole('button', { name: '皮肤 显示/隐藏' })).toHaveCount(0);
     await systemsTab.click();
     await expect(page.getByRole('button', { name: '皮肤 显示/隐藏' })).toBeVisible();
 
@@ -214,13 +215,17 @@ test('quality tier falls back on software rendering and can be forced on', async
   await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
     timeout: 60_000,
   });
-  // 软件渲染：开关换成一句说明，不给切
+  // 软件渲染：开关换成一句说明，不给切（画质挪进了帮助面板，见 ShortcutHelp.tsx）
+  await page.keyboard.press('?');
+  await expect(page.getByTestId('shortcut-help')).toBeVisible();
   await expect(page.getByText('当前设备用软件渲染，已自动降到基础画质')).toBeVisible();
 
   await page.goto('/?hq=medium');
   await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
     timeout: 60_000,
   });
+  await page.keyboard.press('?');
+  await expect(page.getByTestId('shortcut-help')).toBeVisible();
   const toggle = page.getByRole('checkbox');
   await expect(toggle).toBeVisible();
   await expect(toggle).not.toBeChecked();
@@ -269,6 +274,9 @@ test('half-section cuts through the selected structure', async ({ page }) => {
     timeout: 60_000,
   });
   await expect(page.getByTestId('info-card')).toBeVisible({ timeout: 30_000 });
+
+  // 剖切工具在抽屉里，先展开那一格
+  await page.getByRole('button', { name: '剖切', exact: true }).click();
 
   // 剖切默认关闭时不出现"反向"
   await expect(page.getByRole('button', { name: '反向' })).toHaveCount(0);
@@ -351,7 +359,8 @@ test('keyboard shortcuts drive search, help and escape', async ({ page }) => {
   await page.keyboard.press('Escape');
   await expect(page.getByTestId('shortcut-help')).toHaveCount(0);
 
-  // / 聚焦搜索框，打字 → ↓ 走一格 → 回车选中
+  // / 展开并聚焦搜索框（默认收起成顶栏图标），打字 → ↓ 走一格 → 回车选中
+  await expect(page.locator('.hyi-search input')).toHaveCount(0);
   await page.keyboard.press('/');
   await expect(page.locator('.hyi-search input')).toBeFocused();
   await page.keyboard.type('骨');
@@ -477,4 +486,22 @@ test('info card lists wonders about the selected structure', async ({ page }) =>
   // 点进去应该直接开播，播放器取代分层滑块出现在底部
   await related.locator('.hyi-related-item').first().click();
   await expect(page.getByTestId('wonder-player')).toBeVisible({ timeout: 20_000 });
+});
+
+/** `?wonder=<id>` 直接开播某一则奥秘——分享链接与展厅排期都靠它。 */
+test('a wonder can be started straight from the url', async ({ page }) => {
+  test.setTimeout(240_000);
+  await page.goto('/?wonder=digestion');
+  await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
+    timeout: 60_000,
+  });
+  const player = page.getByTestId('wonder-player');
+  await expect(player).toBeVisible({ timeout: 30_000 });
+  await expect(player).toContainText('1 /');
+  // 不存在的 id 不该炸，安安静静回到普通视图
+  await page.goto('/?wonder=nope');
+  await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
+    timeout: 60_000,
+  });
+  await expect(page.getByTestId('wonder-player')).toHaveCount(0);
 });

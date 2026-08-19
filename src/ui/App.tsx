@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { decodeUrlState, encodeUrlState } from '../data/urlState';
 import { HyiViewer } from '../viewer/HyiViewer';
 import type { QualityTier } from '../viewer/quality';
+import { hasWebGL2 } from '../viewer/support';
 import { Attribution } from './Attribution';
 import { InfoCard } from './InfoCard';
 import { Kiosk } from './Kiosk';
@@ -13,10 +14,12 @@ import { SearchBox } from './SearchBox';
 import { ShortcutHelp } from './ShortcutHelp';
 import { ShareDialog } from './ShareDialog';
 import { useKeyboardShortcuts } from './keyboard';
+import { useSafeInsets } from './useSafeInsets';
+import { WONDERS } from '../wonders';
 import { bindViewer, toUrlState, useUiStore } from './store';
-import { SystemPanel } from './SystemPanel';
+import { Dock } from './Dock';
+import { InfoIcon, SearchIcon, ShareIcon } from './Icon';
 import { WonderMenu, WonderPlayer } from './WonderPlayer';
-import { ViewTools } from './ViewTools';
 import './ui.css';
 
 /** Kiosk 参数：?kiosk=1（或分享状态里带 kiosk）开启；?idle=秒 调闲置阈值。 */
@@ -66,8 +69,8 @@ export function App() {
   const loadState = useUiStore((s) => s.loadState);
   const manifest = useUiStore((s) => s.manifest);
   const setAttributionOpen = useUiStore((s) => s.setAttributionOpen);
-  const activePanel = useUiStore((s) => s.activePanel);
-  const togglePanel = useUiStore((s) => s.togglePanel);
+  const searchOpen = useUiStore((s) => s.searchOpen);
+  const setSearchOpen = useUiStore((s) => s.setSearchOpen);
   const wonder = useUiStore((s) => s.wonder);
   const [shareOpen, setShareOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
@@ -76,11 +79,17 @@ export function App() {
   const setLang = useUiStore((s) => s.setLang);
   const [{ kiosk, idleSeconds }] = useState(readKioskParams);
   useUrlSync();
+  useSafeInsets();
   useKeyboardShortcuts({ helpOpen, setHelpOpen, shareOpen, setShareOpen });
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
+    // three 0.185 没有 WebGL1 兜底，先问一句，好给出能照做的提示
+    if (!hasWebGL2()) {
+      useUiStore.getState().setLoadState('unsupported');
+      return;
+    }
     const viewer = new HyiViewer(container, {
       base: import.meta.env.BASE_URL,
       quality: readQualityParam(),
@@ -93,8 +102,15 @@ export function App() {
         if (m) useUiStore.getState().setManifest(m);
         useUiStore.getState().setLoadState('ready');
         // 恢复分享链接状态（?v=）
-        const encoded = new URLSearchParams(window.location.search).get('v');
+        const params = new URLSearchParams(window.location.search);
+        const encoded = params.get('v');
         if (encoded) useUiStore.getState().applyUrlState(decodeUrlState(encoded));
+        // ?wonder=<id> 直接开播某一则奥秘（分享链接用）
+        const wantWonder = params.get('wonder');
+        if (wantWonder) {
+          const found = WONDERS.find((w) => w.id === wantWonder);
+          if (found) useUiStore.getState().startWonder(found);
+        }
       })
       .catch(() => useUiStore.getState().setLoadState('error'));
     return () => {
@@ -113,60 +129,58 @@ export function App() {
         <span className="hyi-header-sub">{t.subtitle}</span>
       </header>
       <LoadingOverlay />
-      {loadState === 'error' && (
+      {(loadState === 'error' || loadState === 'unsupported') && (
         <p data-testid="viewer-status" className="hyi-center-status">
-          {t.loadError}
+          {loadState === 'unsupported' ? t.unsupportedWebgl : t.loadError}
         </p>
       )}
       {loadState === 'ready' && !isPlaceholder && (
         <>
           <div className="hyi-topbar">
+            <WonderMenu />
             <button
-              className="hyi-btn"
+              className={`hyi-btn hyi-btn-icon${searchOpen ? ' active' : ''}`}
+              aria-label={t.searchTitle}
+              title={`${t.searchTitle}（/）`}
+              aria-expanded={searchOpen}
+              onClick={() => setSearchOpen(!searchOpen)}
+            >
+              <SearchIcon />
+            </button>
+            <button
+              className="hyi-btn hyi-btn-icon"
+              aria-label={t.shareTitle}
+              title={t.shareTitle}
+              onClick={() => setShareOpen(true)}
+            >
+              <ShareIcon />
+            </button>
+            <button
+              className="hyi-btn hyi-btn-icon"
+              aria-label={t.attribution}
+              title={t.attribution}
+              onClick={() => setAttributionOpen(true)}
+            >
+              <InfoIcon />
+            </button>
+            <button
+              className="hyi-btn hyi-btn-icon hyi-btn-help"
+              aria-label={t.helpTitle}
+              title={`${t.helpTitle}（?）`}
+              onClick={() => setHelpOpen(true)}
+            >
+              ?
+            </button>
+            <button
+              className="hyi-btn hyi-btn-lang"
               aria-label="切换语言 / Switch language"
               onClick={() => setLang(lang === 'zh' ? 'en' : 'zh')}
             >
               {lang === 'zh' ? 'EN' : '中文'}
             </button>
-            <WonderMenu />
-            <button className="hyi-btn" onClick={() => setShareOpen(true)}>
-              {t.shareTitle}
-            </button>
-            <button className="hyi-btn" onClick={() => setAttributionOpen(true)}>
-              {t.attribution}
-            </button>
-            <button
-              className="hyi-btn hyi-btn-icon"
-              aria-label={t.shortcutsTitle}
-              title={t.shortcutsTitle}
-              onClick={() => setHelpOpen(true)}
-            >
-              ?
-            </button>
           </div>
-          <SearchBox />
-          <div className={`hyi-side panel-${activePanel ?? 'none'}`}>
-            <div className="hyi-panel hyi-sec-systems">
-              <SystemPanel />
-            </div>
-            <div className="hyi-panel hyi-sec-views">
-              <ViewTools />
-            </div>
-          </div>
-          <div className="hyi-mobile-tabs">
-            <button
-              className={`hyi-btn${activePanel === 'systems' ? ' active' : ''}`}
-              onClick={() => togglePanel('systems')}
-            >
-              {t.systemsTitle}
-            </button>
-            <button
-              className={`hyi-btn${activePanel === 'views' ? ' active' : ''}`}
-              onClick={() => togglePanel('views')}
-            >
-              {t.presetsTitle}
-            </button>
-          </div>
+          {searchOpen && <SearchBox />}
+          <Dock />
           {!wonder && <StructureLabel />}
           {!wonder && <InfoCard />}
           {wonder ? <WonderPlayer /> : <LayerSlider />}

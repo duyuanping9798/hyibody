@@ -36,7 +36,44 @@
 
 ## 发布后要做的事
 
-- 在 GitHub 网页上补一个 `v0.1` 标签（云端 git 代理拒绝推 tag ref，本地已打在 `80e5cd7`）
+- **补 `v0.1` 标签**：云端 git 代理会用 HTTP 403 拒掉 tag ref 的推送
+  （`git push --dry-run` 会骗人地成功，因为它根本没发包），只能由人类来做，
+  三选一，具体步骤见下面「v0.1 标签怎么打」
 - 人类在手机 / 电脑 / 展厅设备各跑一遍上面三条 ⚠️
 - 校对中英文案与三条奥秘，改完把各自的 `_meta.reviewed` 置 `true`
 - 决定是否引入 HuBMAP HRA 器官与周围神经数据源（DECISIONS.md 待定节）
+
+## v0.1 标签（已完成 2026-08-19）
+
+`refs/tags/v0.1` → `80e5cd73ff5249dde2fe5487815c167902e7417b`（PR #28 的合并提交），
+Release 页已发布并标记 Latest。
+
+打的过程绕了一圈，把云端代理的行为记在这里，省得下次重新摸索：
+
+| 操作                       | 云端 Claude 能不能做 |
+| -------------------------- | -------------------- |
+| 推 `refs/tags/*`（建标签） | ❌ HTTP 403          |
+| 推 `refs/heads/*`（建分支）| ✅                   |
+| 删 `refs/heads/*`（删分支）| ❌ 连接被断          |
+| GitHub MCP 工具建标签/Release | ❌ 只有只读工具   |
+
+注意 `git push --dry-run` 推标签时**会假成功**——它根本没发包，别拿它当证据。
+
+最后走通的路子：Claude 用 `git push origin <sha>:refs/heads/release/v0.1` 建一个
+临时分支指到目标提交 → 人类在 Release 页的 **Branches** 标签页选它 → Publish，
+标签就落在那个提交上 → 人类再手动删掉临时分支（Claude 删不掉）。
+
+为什么不能直接在 Release 页选提交：那个「Pick a branch or recent commit」的搜索框
+**只过滤分支**，不过滤提交。框里有字时 Recent Commits 一律显示 No results found，
+敲 PR 号（`#28`）或 SHA（`80e5cd7`）都一样。得把框清空才能看到 Recent Commits 列表，
+而目标提交要往下滚十几条才出现。
+
+如果将来要重打（比如标签指错了）：
+
+```bash
+git clone https://github.com/duyuanping9798/hyibody.git && cd hyibody
+git tag -a v0.1 <目标提交> -m "..."
+git push origin v0.1
+```
+
+撤销：`git push --delete origin v0.1 && git tag -d v0.1`（Release 要在网页上单独删）。

@@ -16,9 +16,17 @@ const ROWS: { keys: string[]; key: ShortcutKey }[] = [
   { keys: ['Esc'], key: 'escape' },
 ];
 
-/** 键盘快捷键说明。`?` 打开，Esc 或点背景关闭（无障碍：所有功能都有键盘入口）。 */
+/**
+ * 帮助面板：键盘快捷键 + 画质开关。`?` 打开，Esc 或点背景关闭。
+ *
+ * 画质原来常驻在右侧面板里，可它一年也调不了两次，还占三行——挪进来，
+ * 主界面就少一块（界面减负，见 Dock.tsx）。
+ */
 export function ShortcutHelp({ onClose }: { onClose: () => void }) {
   const t = STRINGS[useUiStore((s) => s.lang)];
+  const quality = useUiStore((s) => s.quality);
+  const qualityToggleable = useUiStore((s) => s.qualityToggleable);
+  const setQuality = useUiStore((s) => s.setQuality);
   return (
     <div className="hyi-attribution-backdrop" onClick={onClose}>
       <div
@@ -40,6 +48,22 @@ export function ShortcutHelp({ onClose }: { onClose: () => void }) {
             </div>
           ))}
         </dl>
+        <h3>{t.qualityTitle}</h3>
+        {qualityToggleable ? (
+          <>
+            <label className="hyi-switch">
+              <input
+                type="checkbox"
+                checked={quality === 'high'}
+                onChange={(e) => setQuality(e.target.checked ? 'high' : 'medium')}
+              />
+              <span>{t.qualityHigh}</span>
+            </label>
+            <p className="hyi-hint">{t.qualityHint}</p>
+          </>
+        ) : (
+          <p className="hyi-hint">{t.qualityUnavailable}</p>
+        )}
         <button className="hyi-btn" onClick={onClose} autoFocus>
           {t.close}
         </button>

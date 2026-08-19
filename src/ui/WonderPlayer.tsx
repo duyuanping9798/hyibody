@@ -1,7 +1,20 @@
 import { STRINGS } from './i18n';
 import { useState } from 'react';
 import { WONDERS } from '../wonders';
+import { estimatedSeconds } from '../wonders/engine';
+import { SYSTEM_IDS, type SystemId } from '../data/types';
 import { useUiStore } from './store';
+
+/** 按系统分组：上百条时平铺列表不可用，分组顺序跟分层滑块一致（由外到内）。 */
+function groupBySystem() {
+  const groups = new Map<SystemId, typeof WONDERS>();
+  for (const id of SYSTEM_IDS) {
+    const list = WONDERS.filter((w) => w.system === id);
+    if (list.length) groups.set(id, list);
+  }
+  const rest = WONDERS.filter((w) => !w.system || !SYSTEM_IDS.includes(w.system));
+  return { groups, rest };
+}
 
 /** 奥秘入口按钮 + 下拉列表（暖色强调，KICKOFF 第 6 节视觉基调）。 */
 export function WonderMenu() {
@@ -10,6 +23,7 @@ export function WonderMenu() {
   const startWonder = useUiStore((s) => s.startWonder);
   const wonder = useUiStore((s) => s.wonder);
   const [open, setOpen] = useState(false);
+  const { groups, rest } = groupBySystem();
 
   if (wonder) return null;
   return (
@@ -19,7 +33,24 @@ export function WonderMenu() {
       </button>
       {open && (
         <div className="hyi-panel hyi-wonder-list" data-testid="wonder-list">
-          {WONDERS.map((item) => (
+          {[...groups.entries()].map(([system, list]) => (
+            <section key={system}>
+              <h4>{t.systems[system]}</h4>
+              {list.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => {
+                    setOpen(false);
+                    startWonder(item);
+                  }}
+                >
+                  <span>{item.title[lang]}</span>
+                  <span className="dur">{estimatedSeconds(item)}s</span>
+                </button>
+              ))}
+            </section>
+          ))}
+          {rest.map((item) => (
             <button
               key={item.id}
               onClick={() => {
@@ -27,7 +58,8 @@ export function WonderMenu() {
                 startWonder(item);
               }}
             >
-              {item.title[lang]}
+              <span>{item.title[lang]}</span>
+              <span className="dur">{estimatedSeconds(item)}s</span>
             </button>
           ))}
         </div>

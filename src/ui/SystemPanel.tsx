@@ -7,7 +7,10 @@ function colorHex(system: SystemId): string {
   return `#${SYSTEM_COLORS[system].toString(16).padStart(6, '0')}`;
 }
 
-/** 系统面板：显隐开关 + 每系统透明度（KICKOFF 第 6 节"手动锁定某系统显隐与透明度"）。 */
+/**
+ * 系统面板：显隐开关 + 每系统透明度（KICKOFF 第 6 节"手动锁定某系统显隐与透明度"）。
+ * 标题由外层抽屉给（Dock.tsx），这里不再重复一遍。
+ */
 export function SystemPanel() {
   const t = STRINGS[useUiStore((s) => s.lang)];
   const systemsVisible = useUiStore((s) => s.systemsVisible);
@@ -17,8 +20,7 @@ export function SystemPanel() {
   const setSystemOpacity = useUiStore((s) => s.setSystemOpacity);
 
   return (
-    <section>
-      <h3>{t.systemsTitle}</h3>
+    <>
       {SYSTEM_IDS.map((id) => {
         const loaded = loadedSystems.includes(id);
         return (
@@ -47,6 +49,6 @@ export function SystemPanel() {
           </div>
         );
       })}
-    </section>
+    </>
   );
 }

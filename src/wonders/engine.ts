@@ -1,3 +1,4 @@
+import type { ViewPresetId } from '../viewer/camera';
 import type { SystemId } from '../data/types';
 
 /**
@@ -14,10 +15,19 @@ export interface WonderStep {
   selected?: string;
   /** 相机拉近框住选中结构（默认 true，有 selected 时生效） */
   focus?: boolean;
-  /** 预设视角（与 focus 互斥，优先生效） */
-  preset?: 'front' | 'back' | 'left' | 'right' | 'top' | 'hero';
-  /** 显隐覆盖：未列出的系统一律可见 */
-  systems?: Partial<Record<SystemId, boolean>>;
+  /** 预设视角（整具人体宽景，与 focus 互斥，优先生效） */
+  preset?: ViewPresetId;
+  /**
+   * 只定观察方向，距离仍由 focus 按结构包围盒算。
+   * "从左侧凑近看这个瓣膜" = `from: 'left'` + `focus: true`；
+   * 而 `preset: 'left'` 是把整具人体摆成左视图的宽景，两者不是一回事。
+   */
+  from?: ViewPresetId;
+  /**
+   * 系统覆盖：`false` 关掉、数字（0–1）压暗到指定不透明度、缺省为完全可见。
+   * "在肋骨里面看心脏"要的是把骨骼压到 0.2 而不是关掉，二选一不够用。
+   */
+  systems?: Partial<Record<SystemId, boolean | number>>;
   /** 展开某个结构的内部件（心脏 → 心室壁/瓣膜…）；不给则收起 */
   expand?: string;
   /** 剖切面；不给则关闭剖切 */
@@ -27,6 +37,8 @@ export interface WonderStep {
 }
 
 export interface Wonder {
+  /** 数据格式版本。UGC 上线后旧内容要能被新版播放器认出来。 */
+  schema?: number;
   id: string;
   title: { zh: string; en: string };
   /** 主系统：菜单按系统分组用，上百条时平铺列表不可用 */
@@ -38,6 +50,9 @@ export interface Wonder {
   structures?: string[];
   steps: WonderStep[];
 }
+
+/** 当前的奥秘数据格式版本。 */
+export const WONDER_SCHEMA = 1;
 
 /** 一条奥秘涉及的全部结构：显式声明优先，否则从步骤里推导。 */
 export function structuresOf(wonder: Wonder): string[] {

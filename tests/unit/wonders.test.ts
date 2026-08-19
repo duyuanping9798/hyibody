@@ -2,8 +2,10 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { WonderEngine, type Wonder } from '../../src/wonders/engine';
+// schema 声明的是 draft 2020-12，要用 ajv 的 2020 入口，默认入口只认 draft-07
+import Ajv from 'ajv/dist/2020';
 import { WONDERS, wondersForStructure } from '../../src/wonders';
-import { estimatedSeconds, structuresOf } from '../../src/wonders/engine';
+import { WONDER_SCHEMA, estimatedSeconds, structuresOf } from '../../src/wonders/engine';
 import { clipConstant } from '../../src/viewer/clipping';
 import { computeSystemOpacity } from '../../src/viewer/layers';
 import type { SystemId } from '../../src/data/types';
@@ -34,6 +36,25 @@ const CONTENT_BOX = (() => {
 })();
 
 describe('奥秘内容契约', () => {
+  /**
+   * content/schema/wonder.schema.json 是 UGC 投稿的校验依据——内置内容自己得先合规，
+   * 否则等外部作者按 schema 写出来的东西反而和内置的不是一回事。
+   */
+  it('每条奥秘都通过 JSON Schema 校验', () => {
+    const schema = JSON.parse(
+      readFileSync(resolve(__dirname, '../../content/schema/wonder.schema.json'), 'utf8'),
+    );
+    const validate = new Ajv({ allErrors: true, strict: false }).compile(schema);
+    for (const wonder of WONDERS) {
+      const ok = validate(wonder);
+      const errs = (validate.errors ?? [])
+        .map((e) => `${e.instancePath || '/'} ${e.message}`)
+        .join('; ');
+      expect(ok, `${wonder.id} 不符合 schema：${errs}`).toBe(true);
+      expect(wonder.schema, `${wonder.id} 缺 schema 版本号`).toBe(WONDER_SCHEMA);
+    }
+  });
+
   it('内置三条奥秘（按文件名自动收录，顺序稳定）', () => {
     expect(WONDERS.map((t) => t.id)).toEqual(['digestion', 'heartbeat', 'nerve']);
   });

@@ -115,6 +115,7 @@ export function useKeyboardShortcuts(handlers: KeyboardHandlers): void {
         case 'escape':
           if (helpOpen) setHelpOpen(false);
           else if (shareOpen) setShareOpen(false);
+          else if (st.searchOpen) st.setSearchOpen(false);
           else if (st.attributionOpen) st.setAttributionOpen(false);
           else if (st.wonder) st.exitWonder();
           else if (st.selected) st.select(null);
@@ -122,6 +123,8 @@ export function useKeyboardShortcuts(handlers: KeyboardHandlers): void {
           else return;
           break;
         case 'focusSearch': {
+          // 搜索框默认收起，先展开——SearchBox 挂载后会自己聚焦
+          if (!st.searchOpen) st.setSearchOpen(true);
           const input = document.querySelector<HTMLInputElement>('.hyi-search input');
           input?.focus();
           input?.select();

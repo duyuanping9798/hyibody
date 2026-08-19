@@ -334,10 +334,11 @@ def process_hra_structure(entry: dict, center: np.ndarray, fits: dict[str, hra.F
     missing = [n for n in wanted if n not in parts]
     if missing:
         raise ValueError(f"{entry['slug']}: {'+'.join(assets)} 里没有部件 {missing}（可用：{sorted(parts)}）")
-    v, f = hra.concat_parts([parts[n] for n in wanted])
-    raw_faces = len(f)
+    raw_faces = sum(len(parts[n][1]) for n in wanted)
+    # 逐部件焊接 + 减面 + 清碎屑，见 hra.simplify_parts 的注释
+    v, f, dropped = hra.simplify_parts([parts[n] for n in wanted], int(entry["target_faces"]))
     v = v.astype(np.float32)
-    v, f = simplify_mesh(v, f, int(entry["target_faces"]))
+    f = f.astype(np.int64)
     v = v - center.astype(np.float32)
     bbox = np.concatenate([v.min(axis=0), v.max(axis=0)]).astype(float)
 
@@ -358,6 +359,7 @@ def process_hra_structure(entry: dict, center: np.ndarray, fits: dict[str, hra.F
         "source": entry["source"],
         **({"parent": entry["parent"]} if entry.get("parent") else {}),
         "faces_raw": int(raw_faces),
+        "fragment_ratio": round(float(dropped), 4),
         "faces": int(len(f)),
         "vertices": int(len(v)),
         "bbox": [round(float(x), 2) for x in bbox],
@@ -453,9 +455,11 @@ def main(argv: list[str] | None = None) -> int:
                 meta = process_structure(e, center)
             if meta is None:
                 continue
+            frag = meta.get("fragment_ratio") or 0
+            extra = f"，清掉碎屑 {frag * 100:.1f}%" if frag > 0.001 else ""
             print(
                 f"  {meta['slug']}: {meta['elements']} 件（{meta['merge_mode']}）, "
-                f"{meta['faces_raw']} → {meta['faces']} 面"
+                f"{meta['faces_raw']} → {meta['faces']} 面{extra}"
             )
             metas.append(meta)
         out_dir = WORK_DIR / "processed" / system

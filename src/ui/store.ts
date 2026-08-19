@@ -8,7 +8,10 @@ import type { ViewPresetId } from '../viewer/camera';
 import type { HyiViewer } from '../viewer/HyiViewer';
 import type { QualityTier } from '../viewer/quality';
 
-export type LoadState = 'loading' | 'ready' | 'error';
+export type LoadState = 'loading' | 'ready' | 'error' | 'unsupported';
+
+/** 工具抽屉里的三格。 */
+export type PanelId = 'systems' | 'views' | 'clip';
 
 /** UI 状态（Zustand）。viewer 实例不进 store，动作经 bindViewer 的引用转发。 */
 interface UiState {
@@ -25,8 +28,10 @@ interface UiState {
   hiddenCount: number;
   clip: { axis: ClipAxis; pos: number; flip?: boolean } | null;
   attributionOpen: boolean;
-  /** 小屏抽屉：当前展开的工具面板（桌面端两块面板常驻，忽略此值） */
-  activePanel: 'systems' | 'views' | null;
+  /** 工具抽屉：当前展开的那一格，null = 全收起（桌面与小屏同一套，见 Dock.tsx） */
+  activePanel: PanelId | null;
+  /** 搜索框是否展开（默认收起成一个图标，见 App.tsx 的界面减负说明） */
+  searchOpen: boolean;
   /** 界面语言（M2-5，默认中文） */
   lang: Locale;
   /** 资产加载进度（loaded/total 个系统 glb） */
@@ -57,9 +62,10 @@ interface UiState {
   setClip(clip: { axis: ClipAxis; pos: number; flip?: boolean } | null): void;
   clipThroughSelected(): void;
   applyPreset(id: ViewPresetId): void;
-  focus(slug: string): void;
+  focus(slug: string, from?: ViewPresetId): void;
   setAttributionOpen(open: boolean): void;
-  togglePanel(panel: 'systems' | 'views'): void;
+  togglePanel(panel: PanelId): void;
+  setSearchOpen(open: boolean): void;
   startWonder(wonder: Wonder): void;
   exitWonder(): void;
   wonderNext(): void;
@@ -77,7 +83,11 @@ function applyWonderStep(step: WonderStep): void {
   st.setLayer(step.layer);
   for (const id of SYSTEM_IDS) {
     const want = step.systems?.[id] ?? true;
-    if (st.systemsVisible[id] !== want) st.toggleSystem(id);
+    // false = 关掉；数字 = 压暗到该不透明度；true/缺省 = 完全可见
+    const visible = want !== false;
+    if (st.systemsVisible[id] !== visible) st.toggleSystem(id);
+    const opacity = typeof want === 'number' ? Math.min(1, Math.max(0, want)) : 1;
+    if (st.systemOpacity[id] !== opacity) st.setSystemOpacity(id, opacity);
   }
   // 展开/剖切要在选中之前定好：内部件得先登场，才轮得到选中它
   st.expand(step.expand ?? null);
@@ -85,7 +95,8 @@ function applyWonderStep(step: WonderStep): void {
   if (step.preset) st.applyPreset(step.preset);
   if (step.selected) {
     st.select(step.selected);
-    if (step.focus !== false && !step.preset) st.focus(step.selected);
+    // from 只定方向、focus 定距离；preset 是整具人体宽景，给了就不再特写
+    if (step.focus !== false && !step.preset) st.focus(step.selected, step.from);
   } else {
     st.select(null);
   }
@@ -104,6 +115,8 @@ wonderEngine.addEventListener('end', () => {
   st.resetVisibility();
   for (const id of SYSTEM_IDS) {
     if (!st.systemsVisible[id]) st.toggleSystem(id);
+    // 步骤可能把某个系统压暗过，退出时要还原，否则画面一直是灰的
+    if (st.systemOpacity[id] !== 1) st.setSystemOpacity(id, 1);
   }
   useUiStore.setState({ wonder: null, wonderIndex: 0, wonderPlaying: false });
 });
@@ -114,8 +127,9 @@ export function bindViewer(v: HyiViewer | null): void {
   if (!v) return;
   v.addEventListener('select', (e) => {
     const slug = (e as CustomEvent<{ slug: string | null }>).detail.slug;
-    // 选中结构时收起小屏抽屉面板，避免与信息卡叠在一起（桌面端不受影响）
-    useUiStore.setState(slug ? { selected: slug, activePanel: null } : { selected: slug });
+    // 抽屉不再自动收起：信息卡与抽屉在两边（小屏上 CSS 会把抽屉抬到卡片之上），
+    // 原来"点一下结构面板就关了"在桌面端很别扭——刚调完不透明度就得重开
+    useUiStore.setState({ selected: slug });
   });
   useUiStore.setState({ quality: v.getQuality(), qualityToggleable: v.canToggleQuality() });
   v.addEventListener('progress', (e) => {
@@ -164,6 +178,7 @@ export const useUiStore = create<UiState>((set, get) => ({
   clip: null,
   attributionOpen: false,
   activePanel: null,
+  searchOpen: false,
   wonder: null,
   wonderIndex: 0,
   wonderPlaying: false,
@@ -247,14 +262,15 @@ export const useUiStore = create<UiState>((set, get) => ({
   applyPreset: (id) => {
     viewer?.applyPreset(id);
   },
-  focus: (slug) => {
-    viewer?.focus(slug);
+  focus: (slug, from) => {
+    viewer?.focus(slug, from);
   },
   setAttributionOpen: (attributionOpen) => set({ attributionOpen }),
+  setSearchOpen: (searchOpen) => set({ searchOpen }),
   togglePanel: (panel) => set((s) => ({ activePanel: s.activePanel === panel ? null : panel })),
 
   startWonder: (wonder) => {
-    set({ wonder, wonderIndex: 0, wonderPlaying: true, activePanel: null });
+    set({ wonder, wonderIndex: 0, wonderPlaying: true, activePanel: null, searchOpen: false });
     wonderEngine.start(wonder);
   },
   exitWonder: () => wonderEngine.stop(),

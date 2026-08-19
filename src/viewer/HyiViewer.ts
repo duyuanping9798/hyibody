@@ -8,8 +8,10 @@ import {
   Mesh,
   PCFSoftShadowMap,
   PMREMGenerator,
+  Raycaster,
   Scene,
   ShaderMaterial,
+  Vector2,
   Vector3,
   WebGLRenderer,
   type Material,
@@ -27,6 +29,7 @@ import {
   poseForBox,
   poseForFocus,
   type CameraRig,
+  type SafeInsets,
   type ViewPresetId,
 } from './camera';
 import { CAP_MIN_OPACITY, ClipCaps } from './clipCaps';
@@ -48,6 +51,7 @@ import {
   type QualityTier,
 } from './quality';
 import { createStage, fitStage, type Stage } from './stage';
+import { anchorPoint } from './anchor';
 import { CLICK_MOVE_TOLERANCE_PX, StructurePicker } from './picking';
 
 export interface HyiViewerOptions {
@@ -56,6 +60,19 @@ export interface HyiViewerOptions {
   /** 强制画质档位（?hq= 或测试用）；不传则按设备能力自动判断 */
   quality?: QualityTier | undefined;
 }
+
+/** 近裁剪面的下限（毫米）：再近就没有深度精度可言了，也没人会凑得比这更近。 */
+const NEAR_MIN_MM = 0.2;
+/** 标签落点重算间隔（毫秒）。 */
+const ANCHOR_CACHE_MS = 120;
+const SCRATCH_SIZE = new Vector3();
+
+/** 两次点击间隔小于这个毫秒数、位移小于这个像素，算一次双击（鼠标和触屏同一套逻辑）。 */
+const DOUBLE_TAP_MS = 320;
+const DOUBLE_TAP_MOVE_PX = 24;
+/** 双击重新定心时凑近到原距离的这个比例，但不近于这个毫米数。 */
+const RECENTER_FACTOR = 0.55;
+const RECENTER_MIN_MM = 60;
 
 /** 首屏系统：先加载完这两个就派发 ready，其余后台补（KICKOFF 第 5 节 M1-6）。 */
 const FIRST_SCREEN_SYSTEMS: readonly SystemId[] = ['skin', 'skeleton'];
@@ -132,6 +149,9 @@ export class HyiViewer extends EventTarget {
   private readonly clock = new Clock();
   private readonly resizeObserver: ResizeObserver;
   private readonly picker = new StructurePicker();
+  /** 标签引线的落点计算复用同一根射线，别每帧新建 */
+  private readonly anchorRay = new Raycaster();
+  private anchorCache: { slug: string; point: Vector3; at: number } | null = null;
   private disposed = false;
   private manifest: Manifest | null = null;
 
@@ -149,6 +169,13 @@ export class HyiViewer extends EventTarget {
   private pipeline: RenderPipeline | null = null;
   private quality: QualityTier = 'medium';
   private contentBox = new Box3();
+  /** 画布上下被界面挡住多少（CSS 像素），由 UI 层量好了推进来 */
+  private safeInsets = { top: 0, bottom: 0 };
+  private framedWithInsets = false;
+  /** 相机是否还停在自动算出来的全身取景上（用户一聚焦/一飞走就不是了） */
+  private autoFramed = false;
+  /** WebGL 上下文丢失期间停帧循环，别对着死的上下文空转 */
+  private contextLost = false;
   private clipPlane: Plane | null = null;
   private flight: {
     fromPos: Vector3;
@@ -158,6 +185,7 @@ export class HyiViewer extends EventTarget {
     t: number;
   } | null = null;
   private pointerDownAt: { x: number; y: number } | null = null;
+  private lastTap: { x: number; y: number; at: number } | null = null;
   /** 分层滑块缓动：大跳（奥秘、预设）平滑过渡，小步（拖滑块）立即跟手 */
   private layerTarget = 0;
   private layerEasing = false;
@@ -203,6 +231,8 @@ export class HyiViewer extends EventTarget {
     dom.addEventListener('pointerup', this.onPointerUp);
     dom.addEventListener('pointermove', this.onPointerMove);
     dom.addEventListener('pointerleave', this.onPointerLeave);
+    dom.addEventListener('webglcontextlost', this.onContextLost);
+    dom.addEventListener('webglcontextrestored', this.onContextRestored);
 
     this.resizeObserver = new ResizeObserver(() => this.resize());
     this.resizeObserver.observe(container);
@@ -318,11 +348,9 @@ export class HyiViewer extends EventTarget {
   projectStructure(slug: string): { x: number; y: number } | null {
     const entry = this.structures.get(slug);
     if (!entry || !entry.material.visible) return null;
-    const box = entry.mesh.geometry.boundingBox;
-    if (!box) return null;
-    const center = box.getCenter(new Vector3());
-    entry.mesh.localToWorld(center);
-    const ndc = center.project(this.rig.camera);
+    const point = this.cachedAnchor(slug, entry);
+    if (!point) return null;
+    const ndc = point.clone().project(this.rig.camera);
     if (ndc.z > 1) return null;
     const w = this.container.clientWidth || 1;
     const h = this.container.clientHeight || 1;
@@ -400,7 +428,8 @@ export class HyiViewer extends EventTarget {
     // 隔离后自动飞到这个结构：否则一个拳头大的器官还停在全身取景里，等于没隔离
     const entry = slug ? this.structures.get(slug) : null;
     if (entry) this.focus(slug!);
-    else if (!this.contentBox.isEmpty()) this.frameContent();
+    // 收起隔离/展开时飞回去而不是硬切——硬切会在收起内部件时"弹"一下
+    else if (!this.contentBox.isEmpty()) this.frameContent(false);
   }
 
   /** 有哪些内部件（心脏 → 心室壁/瓣膜…）。 */
@@ -536,8 +565,12 @@ export class HyiViewer extends EventTarget {
     return this.state.selected;
   }
 
-  /** 相机平滑对准并框住某结构。 */
-  focus(slug: string): void {
+  /**
+   * 相机平滑对准并框住某结构。`from` 只决定方向，距离仍由结构包围盒算——
+   * 这样奥秘脚本能说"从左侧凑近看"，而不必在 preset（整具人体宽景）与
+   * focus（当前角度特写）之间二选一。
+   */
+  focus(slug: string, from?: ViewPresetId): void {
     const entry = this.structures.get(slug);
     if (!entry?.mesh.geometry.boundingBox) return;
     const box = entry.mesh.geometry.boundingBox.clone().applyMatrix4(entry.mesh.matrixWorld);
@@ -546,14 +579,57 @@ export class HyiViewer extends EventTarget {
       this.rig.camera.position,
       this.rig.controls.target,
       this.rig.camera.fov,
+      from,
     );
     this.flyTo(pose.pos, pose.target);
   }
 
+  /**
+   * 切预设视角。隔离或展开某个结构之后，框住的应该是**它**而不是整具人体——
+   * 否则"隔离眼球 → 正面"会一下子退回全身，等于把刚做的隔离白做了。
+   */
   applyPreset(preset: ViewPresetId): void {
-    if (this.contentBox.isEmpty()) return;
-    const pose = poseForBox(this.contentBox, preset, this.rig.camera.fov);
+    const box = this.focusBox() ?? this.contentBox;
+    if (box.isEmpty()) return;
+    const pose = poseForBox(box, preset, this.rig.camera.fov, undefined, this.safeArea());
     this.flyTo(pose.pos, pose.target);
+  }
+
+  /**
+   * 告诉查看器画布上下各被界面挡住多少（CSS 像素）。UI 层量真实 DOM 之后推进来，
+   * 渲染核心不认识 React，也就不该猜面板有多高。
+   */
+  setSafeInsets(insets: { top: number; bottom: number }): void {
+    const top = Math.max(0, insets.top);
+    const bottom = Math.max(0, insets.bottom);
+    if (top === this.safeInsets.top && bottom === this.safeInsets.bottom) return;
+    this.safeInsets = { top, bottom };
+    // 只有当前还是"自动全身取景"时才重取景。用户点了聚焦、或者分享链接
+    // (?v=selected=heart) 已经把相机飞到心脏上，这时候再框一次全身就把它顶掉了
+    if (this.contentBox.isEmpty() || !this.autoFramed) return;
+    // 第一次量到真实的界面高度时硬切（那还在开场，用户没动过相机），
+    // 之后再变（转屏、拉窗口、奥秘播放器换高度）就飞过去
+    this.frameContent(!this.framedWithInsets);
+    this.framedWithInsets = true;
+  }
+
+  private safeArea(): SafeInsets {
+    return {
+      width: this.container.clientWidth || 1,
+      height: this.container.clientHeight || 1,
+      top: this.safeInsets.top,
+      bottom: this.safeInsets.bottom,
+    };
+  }
+
+  /** 当前"正在看"的那块的包围盒：隔离 > 展开 > 无。 */
+  private focusBox(): Box3 | null {
+    const slug = this.state.isolated ?? this.state.expanded;
+    if (!slug) return null;
+    const entry = this.structures.get(slug);
+    const local = entry?.mesh.geometry.boundingBox;
+    if (!entry || !local) return null;
+    return local.clone().applyMatrix4(entry.mesh.matrixWorld);
   }
 
   /** Kiosk 吸引动画用：开关相机自动旋转。 */
@@ -563,6 +639,7 @@ export class HyiViewer extends EventTarget {
   }
 
   private flyTo(pos: Vector3, target: Vector3): void {
+    this.autoFramed = false;
     this.rig.controls.autoRotate = false;
     this.flight = {
       fromPos: this.rig.camera.position.clone(),
@@ -573,11 +650,17 @@ export class HyiViewer extends EventTarget {
     };
   }
 
-  private pickAt(x: number, y: number): StructureEntry | null {
+  /** 当前不透明度够高、可以被射线打中的网格。 */
+  private pickables(): Mesh[] {
     const candidates: Mesh[] = [];
     for (const entry of this.structures.values()) {
       if (this.effectiveOpacity(entry) > PICKABLE_OPACITY_THRESHOLD) candidates.push(entry.mesh);
     }
+    return candidates;
+  }
+
+  private pickAt(x: number, y: number): StructureEntry | null {
+    const candidates = this.pickables();
     const mesh = this.picker.pick(x, y, this.renderer.domElement, this.rig.camera, candidates);
     if (!mesh) return null;
     for (const entry of this.structures.values()) if (entry.mesh === mesh) return entry;
@@ -594,9 +677,70 @@ export class HyiViewer extends EventTarget {
     if (!down) return;
     const moved = Math.hypot(e.clientX - down.x, e.clientY - down.y);
     if (moved > CLICK_MOVE_TOLERANCE_PX) return; // 拖拽相机，不算点击
+    const now = performance.now();
+    const prev = this.lastTap;
+    this.lastTap = { x: e.clientX, y: e.clientY, at: now };
+    if (
+      prev &&
+      now - prev.at < DOUBLE_TAP_MS &&
+      Math.hypot(e.clientX - prev.x, e.clientY - prev.y) < DOUBLE_TAP_MOVE_PX
+    ) {
+      this.lastTap = null;
+      this.recenterAt(e.clientX, e.clientY);
+      return;
+    }
     const entry = this.pickAt(e.clientX, e.clientY);
     this.select(entry ? entry.slug : null);
   };
+
+  /**
+   * 双击/双指双击：把轨道中心挪到点中的那个点上，并凑近一半。
+   *
+   * 滚轮有 zoomToCursor 顶着，但旋转和平移仍然绕着旧中心转；看肝门的时候
+   * 一转就把肝甩出画面。给一个"我要看这儿"的显式手势最省事：中心一挪，
+   * 旋转、平移、缩放就都围着它了。点空白处则退回整体视角。
+   */
+  recenterAt(clientX: number, clientY: number): void {
+    const hit = this.pickPoint(clientX, clientY);
+    if (!hit) {
+      this.frameContent(false);
+      return;
+    }
+    const cam = this.rig.camera.position;
+    const dir = cam.clone().sub(hit);
+    const dist = Math.max(RECENTER_MIN_MM, dir.length() * RECENTER_FACTOR);
+    this.flyTo(hit.clone().add(dir.normalize().multiplyScalar(dist)), hit.clone());
+  }
+
+  /**
+   * 标签落点带缓存：射线求交每帧都算太贵（三万面的结构约 1~2 ms），
+   * 但落点本身变化很慢。每 120 ms 重算一次，中间几帧沿用上次的世界坐标点
+   * ——反正投影是每帧做的，标签照样贴着结构走。
+   */
+  private cachedAnchor(slug: string, entry: StructureEntry): Vector3 | null {
+    const now = performance.now();
+    const hit = this.anchorCache;
+    if (hit && hit.slug === slug && now - hit.at < ANCHOR_CACHE_MS) return hit.point;
+    const point = anchorPoint(entry.mesh, this.rig.camera, this.anchorRay);
+    this.anchorCache = point ? { slug, point, at: now } : null;
+    return point;
+  }
+
+  /** 射线打到的世界坐标点（只算当前可拾取的结构）。 */
+  private pickPoint(clientX: number, clientY: number): Vector3 | null {
+    const candidates = this.pickables();
+    if (candidates.length === 0) return null;
+    const rect = this.renderer.domElement.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) return null;
+    this.anchorRay.setFromCamera(
+      new Vector2(
+        ((clientX - rect.left) / rect.width) * 2 - 1,
+        -((clientY - rect.top) / rect.height) * 2 + 1,
+      ),
+      this.rig.camera,
+    );
+    return this.anchorRay.intersectObjects(candidates, false)[0]?.point.clone() ?? null;
+  }
 
   private lastHoverCheck = 0;
   private readonly onPointerMove = (e: PointerEvent): void => {
@@ -613,6 +757,34 @@ export class HyiViewer extends EventTarget {
     if (entry && entry.slug !== this.state.selected) applyHighlight(entry.mesh, 'hover');
     this.renderer.domElement.style.cursor = entry ? 'pointer' : '';
     this.dispatchEvent(new CustomEvent('hover', { detail: { slug } }));
+  };
+
+  /**
+   * WebGL 上下文丢了。
+   *
+   * iOS Safari 切后台、来电话、内存紧张时会主动回收 GPU 上下文；安卓和桌面在
+   * 显卡驱动更新、休眠唤醒时也会。默认行为是画布直接变成一片空白，而且**不会**
+   * 自己恢复——必须 preventDefault 才能让浏览器后续派发 restored 事件。
+   */
+  private readonly onContextLost = (e: Event): void => {
+    e.preventDefault();
+    this.contextLost = true;
+    this.renderer.setAnimationLoop(null);
+    this.dispatchEvent(new CustomEvent('contextlost'));
+  };
+
+  /**
+   * 上下文回来了。three 的 WebGLRenderer 会自己重建着色器与缓冲（材质、几何都还在
+   * CPU 侧），这里只需要把后处理链重建一遍并恢复帧循环——EffectComposer 的
+   * 渲染目标是跟着旧上下文一起没的。
+   */
+  private readonly onContextRestored = (): void => {
+    if (this.disposed) return;
+    this.contextLost = false;
+    this.applyQuality();
+    this.resize();
+    this.renderer.setAnimationLoop(() => this.tick());
+    this.dispatchEvent(new CustomEvent('contextrestored'));
   };
 
   private readonly onPointerLeave = (): void => {
@@ -689,15 +861,47 @@ export class HyiViewer extends EventTarget {
 
   // ---- 帧循环等 ------------------------------------------------------------
 
-  private frameContent(): void {
+  /** `immediate` 只在首次加载时为真：那时还没有"上一个机位"可以飞。 */
+  private frameContent(immediate = true): void {
     if (this.contentBox.isEmpty()) return;
-    const pose = poseForBox(this.contentBox, 'hero', this.rig.camera.fov);
-    this.rig.controls.target.copy(pose.target);
-    this.rig.camera.position.copy(pose.pos);
-    const dist = pose.pos.distanceTo(pose.target);
-    this.rig.camera.near = Math.max(1, dist / 100);
-    this.rig.camera.far = dist * 10;
-    this.rig.camera.updateProjectionMatrix();
+    const pose = poseForBox(
+      this.contentBox,
+      'hero',
+      this.rig.camera.fov,
+      undefined,
+      this.safeArea(),
+    );
+    if (immediate) {
+      this.rig.controls.target.copy(pose.target);
+      this.rig.camera.position.copy(pose.pos);
+    } else {
+      this.flyTo(pose.pos, pose.target);
+    }
+    this.autoFramed = true;
+    this.syncClipPlanes();
+  }
+
+  /**
+   * 近远裁剪面跟着当前观察距离走。
+   *
+   * 原来只在取景时按当时的距离算一次：全身取景算出 near ≈ 26 mm，之后凑到
+   * 晶状体跟前（25 mm）就整个被裁掉了。反过来，如果一开始就把 near 写死成很小，
+   * 全身视角下深度缓冲的精度会浪费在近处，远端 z-fighting。所以每帧按距离重算，
+   * 变化超过 1% 才写回（updateProjectionMatrix 不算便宜）。
+   */
+  private syncClipPlanes(): void {
+    const cam = this.rig.camera;
+    const dist = cam.position.distanceTo(this.rig.controls.target);
+    if (!Number.isFinite(dist) || dist <= 0) return;
+    const span = this.contentBox.isEmpty()
+      ? dist * 4
+      : this.contentBox.getSize(SCRATCH_SIZE).length();
+    const near = Math.max(NEAR_MIN_MM, dist / 100);
+    const far = Math.max(dist * 4, span * 2);
+    if (Math.abs(cam.near - near) < near * 0.01 && Math.abs(cam.far - far) < far * 0.01) return;
+    cam.near = near;
+    cam.far = far;
+    cam.updateProjectionMatrix();
   }
 
   private resize(): void {
@@ -760,7 +964,7 @@ export class HyiViewer extends EventTarget {
   }
 
   private tick(): void {
-    if (this.disposed) return;
+    if (this.disposed || this.contextLost) return;
     const dt = this.clock.getDelta();
     this.tickLayer(dt);
     this.animateOrgans(this.clock.elapsedTime);
@@ -772,6 +976,7 @@ export class HyiViewer extends EventTarget {
       if (this.flight.t >= 1) this.flight = null;
     }
     this.rig.controls.update();
+    this.syncClipPlanes();
     this.clipCaps.syncToPlane();
     if (this.pipeline) this.pipeline.render();
     else this.renderer.render(this.scene, this.rig.camera);
@@ -785,6 +990,8 @@ export class HyiViewer extends EventTarget {
     dom.removeEventListener('pointerup', this.onPointerUp);
     dom.removeEventListener('pointermove', this.onPointerMove);
     dom.removeEventListener('pointerleave', this.onPointerLeave);
+    dom.removeEventListener('webglcontextlost', this.onContextLost);
+    dom.removeEventListener('webglcontextrestored', this.onContextRestored);
     this.pipeline?.dispose();
     this.renderer.setAnimationLoop(null);
     this.resizeObserver.disconnect();

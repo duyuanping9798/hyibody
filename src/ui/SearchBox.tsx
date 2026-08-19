@@ -5,7 +5,10 @@ import { useUiStore } from './store';
 
 /**
  * 搜索框：中英文子串匹配，点选或回车后选中并聚焦（KICKOFF 第 6 节）。
- * 键盘可用：`/` 聚焦到这里，↑↓ 在结果里走，回车选中，Esc 清空。
+ * 键盘可用：`/` 展开并聚焦到这里，↑↓ 在结果里走，回车选中，Esc 收起。
+ *
+ * 默认收起成顶栏上的一个放大镜（界面减负）：一个空搜索框常年占着左上角
+ * 三百像素，实际上大部分时间没人用。
  */
 export function SearchBox() {
   const lang = useUiStore((s) => s.lang);
@@ -13,9 +16,11 @@ export function SearchBox() {
   const manifest = useUiStore((s) => s.manifest);
   const select = useUiStore((s) => s.select);
   const focus = useUiStore((s) => s.focus);
+  const setSearchOpen = useUiStore((s) => s.setSearchOpen);
   const [query, setQuery] = useState('');
   const [cursor, setCursor] = useState(0);
   const listRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const hits = manifest && query.trim() ? searchStructures(manifest, query) : [];
 
@@ -24,6 +29,8 @@ export function SearchBox() {
   useEffect(() => {
     listRef.current?.children[cursor]?.scrollIntoView({ block: 'nearest' });
   }, [cursor]);
+  // 展开即聚焦，省得再点一下
+  useEffect(() => inputRef.current?.focus(), []);
 
   if (!manifest) return null;
 
@@ -31,11 +38,13 @@ export function SearchBox() {
     select(slug);
     focus(slug);
     setQuery('');
+    setSearchOpen(false);
   }
 
   return (
     <div className="hyi-panel hyi-search">
       <input
+        ref={inputRef}
         type="search"
         value={query}
         placeholder={t.searchPlaceholder}
@@ -46,10 +55,11 @@ export function SearchBox() {
         aria-activedescendant={hits[cursor] ? `hyi-hit-${hits[cursor].slug}` : undefined}
         onChange={(e) => setQuery(e.target.value)}
         onKeyDown={(e) => {
-          if (e.key === 'Escape' && query !== '') {
-            // 先清空搜索框，别一路冒泡到全局 Esc 把选中也清了
+          if (e.key === 'Escape') {
+            // 先清空 / 收起搜索框，别一路冒泡到全局 Esc 把选中也清了
             e.stopPropagation();
-            setQuery('');
+            if (query !== '') setQuery('');
+            else setSearchOpen(false);
             return;
           }
           if (hits.length === 0) return;

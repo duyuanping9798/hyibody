@@ -113,27 +113,62 @@
   letter-spacing: 0.05em;
 }
 
-.hyi-side {
+/* 工具抽屉（界面减负）：右上角三条标题栏，一次只展开一格，默认全收起。
+   原来这里是两块常驻大面板，六行滑块 + 十个按钮 + 一段画质说明常年挂在画面上。 */
+.hyi-dock {
   position: absolute;
-  top: 64px;
+  top: 58px;
   right: 12px;
-  width: 208px;
+  width: 216px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   max-height: calc(100% - 150px);
-  overflow-y: auto;
+  z-index: 4;
 }
-.hyi-side section {
-  padding: 10px 12px;
+.hyi-drawer {
+  background: var(--hyi-panel);
+  border: 1px solid var(--hyi-panel-border);
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--hyi-text);
 }
-.hyi-side h3 {
-  margin: 0 0 8px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
+.hyi-drawer-head {
+  display: flex;
+  width: 100%;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 9px 12px;
+  border: none;
+  background: none;
   color: var(--hyi-text-dim);
-  text-transform: uppercase;
+  font: inherit;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+}
+.hyi-drawer-head:focus-visible {
+  outline: 2px solid var(--hyi-accent);
+  outline-offset: -2px;
+  border-radius: 10px;
+}
+.hyi-drawer.open .hyi-drawer-head {
+  color: var(--hyi-accent);
+}
+.hyi-chevron {
+  opacity: 0.55;
+  transition: transform 0.15s;
+}
+.hyi-drawer.open .hyi-chevron {
+  transform: rotate(90deg);
+}
+.hyi-drawer-body {
+  padding: 0 12px 12px;
+  max-height: 52vh;
+  overflow-y: auto;
 }
 
 .hyi-system-row {
@@ -181,9 +216,10 @@
 
 .hyi-search {
   position: absolute;
-  top: 64px;
-  left: 12px;
-  width: min(280px, calc(100% - 24px));
+  top: 58px;
+  right: 12px;
+  width: min(300px, calc(100% - 24px));
+  z-index: 8;
 }
 .hyi-search input {
   width: 100%;
@@ -470,59 +506,61 @@ body.hyi-kiosk .hyi-info .blurb {
   }
 }
 
-.hyi-mobile-tabs {
-  display: none;
-}
-
-/* 小屏（手机）：右侧面板改抽屉，标签按钮唤出；信息卡改底部全宽卡片 */
+/* 小屏（手机）：工具抽屉横过来贴在滑块上方，展开的那格从上方弹出 */
 @media (max-width: 720px) {
-  .hyi-mobile-tabs {
-    display: flex;
-    position: absolute;
+  .hyi-dock {
+    top: auto;
+    bottom: 84px;
+    left: 8px;
     right: 8px;
-    bottom: 96px;
-    flex-direction: column;
+    width: auto;
+    flex-direction: row;
     gap: 8px;
+    max-height: none;
     z-index: 5;
   }
-  .hyi-mobile-tabs .hyi-btn {
-    min-width: 52px;
-    min-height: 48px;
-    font-size: 13px;
+  .hyi-drawer {
+    flex: 1;
   }
-  .hyi-side {
-    top: auto;
-    bottom: 96px;
-    left: 8px;
-    right: 68px;
-    width: auto;
-    max-height: 46%;
-    z-index: 4;
+  .hyi-drawer-head {
+    justify-content: center;
+    min-height: 42px;
   }
-  .hyi-side .hyi-panel {
+  .hyi-drawer .hyi-chevron {
     display: none;
   }
-  .hyi-side.panel-systems .hyi-sec-systems {
-    display: block;
+  .hyi-drawer-body {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    max-height: 44vh;
+    padding: 10px 12px;
+    background: var(--hyi-panel);
+    border: 1px solid var(--hyi-panel-border);
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
   }
-  .hyi-side.panel-views .hyi-sec-views {
-    display: block;
+  .hyi-dock .hyi-back-to-body {
+    flex: 1;
   }
   .hyi-info {
     left: 8px;
-    right: 68px;
-    bottom: 96px;
+    right: 8px;
+    bottom: 84px;
     width: auto;
     z-index: 6;
   }
   .hyi-search {
-    top: 56px;
+    top: 52px;
     left: 8px;
-    width: calc(100% - 16px);
+    right: 8px;
+    width: auto;
   }
   .hyi-layer-slider {
     width: calc(100% - 16px);
-    bottom: 10px;
+    bottom: calc(10px + env(safe-area-inset-bottom, 0px));
   }
 }
 
@@ -897,14 +935,13 @@ body.hyi-kiosk .hyi-info .blurb {
     background: linear-gradient(180deg, transparent, var(--hyi-panel) 40%);
   }
   /* 抽屉弹出时把滑块与侧栏标签让开 */
+  /* index.html 声明了 viewport-fit=cover，内容会铺到 home 指示条底下，
+     所以贴底的两块都要把安全区加回来 */
   .hyi-layer-slider {
-    bottom: 8px;
+    bottom: calc(8px + env(safe-area-inset-bottom, 0px));
   }
-  .hyi-mobile-tabs {
-    bottom: 108px;
-  }
-  .hyi-side {
-    bottom: 108px;
+  .hyi-dock {
+    bottom: calc(82px + env(safe-area-inset-bottom, 0px));
   }
   /* 小屏上标签引线容易压住抽屉，缩短并缩小字号 */
   .hyi-label .zh {
@@ -938,9 +975,30 @@ body.hyi-kiosk .hyi-info .blurb {
   body:has(.hyi-info) .hyi-layer-slider {
     bottom: calc(46vh + 10px);
   }
-  body:has(.hyi-info) .hyi-mobile-tabs,
-  body:has(.hyi-info) .hyi-side {
+  body:has(.hyi-info) .hyi-dock {
     bottom: calc(46vh + 78px);
+  }
+}
+
+/* iOS Safari 的 vh 指的是"工具栏收起后"的高度，比实际可见区域大一截；
+   有 dvh 的浏览器改用 dvh，弹出的抽屉才不会顶出屏幕 */
+@supports (height: 100dvh) {
+  .hyi-drawer-body {
+    max-height: 52dvh;
+  }
+  @media (max-width: 720px) {
+    .hyi-drawer-body {
+      max-height: 44dvh;
+    }
+    .hyi-info {
+      max-height: 46dvh;
+    }
+    body:has(.hyi-info) .hyi-layer-slider {
+      bottom: calc(46dvh + 10px);
+    }
+    body:has(.hyi-info) .hyi-dock {
+      bottom: calc(46dvh + 78px);
+    }
   }
 }
 
@@ -955,8 +1013,10 @@ body.hyi-kiosk .hyi-info .blurb {
   width: 100%;
 }
 
-/* 一键回全身：钻进某个器官内部之后总得有条出路 */
-.hyi-back-to-body {
+/* 一键回全身 / 收起内部：钻进某个器官内部之后总得有条出路。
+   这两条挂在抽屉外面常驻——展开内部会清掉选中，信息卡上的那个入口跟着没了 */
+.hyi-back-to-body,
+.hyi-dock .hyi-collapse-parts {
   width: 100%;
 }
 
@@ -977,9 +1037,18 @@ body.hyi-kiosk .hyi-info .blurb {
 /* 顶栏的图标按钮（键盘快捷键）：标签就是打开它的那个键 `?`，宽度收窄。
    不用键盘图标 ⌨（U+2328）——字体子集里没有这个字形，会掉成豆腐块 */
 .hyi-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding-inline: 9px;
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1;
+  min-width: 32px;
+}
+/* 语言按钮是两三个字母，别跟图标一样窄 */
+.hyi-btn-lang {
+  font-size: 12px;
+  letter-spacing: 0.04em;
 }
 
 /* 键盘快捷键说明 */
@@ -1031,8 +1100,8 @@ body.hyi-kiosk .hyi-info .blurb {
 }
 
 @media (max-width: 720px) {
-  /* 手机上没有键盘，快捷键按钮只会占地方 */
-  .hyi-btn-icon {
+  /* 手机上没有键盘，快捷键说明按钮只会占地方；其余图标按钮要留着 */
+  .hyi-btn-help {
     display: none;
   }
 }
@@ -1074,6 +1143,31 @@ body.hyi-kiosk .hyi-info .blurb {
   outline: none;
 }
 .hyi-related-item .dur {
+  flex: none;
+  color: var(--hyi-text-dim);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 奥秘菜单按系统分组：上百条时平铺列表不可用 */
+.hyi-wonder-list h4 {
+  margin: 8px 10px 4px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  color: var(--hyi-text-dim);
+  text-transform: uppercase;
+}
+.hyi-wonder-list section:first-child h4 {
+  margin-top: 2px;
+}
+.hyi-wonder-list button {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.hyi-wonder-list .dur {
   flex: none;
   color: var(--hyi-text-dim);
   font-size: 11px;
