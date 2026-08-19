@@ -37,6 +37,32 @@ async function canvasVsHost(page: Page) {
   });
 }
 
+/**
+ * 画面里有多少"亮"像素——只用来判断"不是白屏/黑屏"。
+ *
+ * 粗采样（每 8 行 × 每 8 列）。完整扫一遍 804×1560 的画布要把 WebGL 帧缓冲
+ * 读回内存再逐像素遍历，云端软件渲染下这一步能吃掉几十秒。
+ */
+async function litCount(page: Page) {
+  return page.evaluate(() => {
+    const c = document.querySelector('canvas')!;
+    const probe = document.createElement('canvas');
+    probe.width = c.width;
+    probe.height = c.height;
+    const ctx = probe.getContext('2d')!;
+    ctx.drawImage(c, 0, 0);
+    const data = ctx.getImageData(0, 0, probe.width, probe.height).data;
+    let lit = 0;
+    for (let y = 0; y < probe.height; y += 8) {
+      for (let x = 0; x < probe.width; x += 8) {
+        const i = (y * probe.width + x) * 4;
+        if (data[i]! + data[i + 1]! + data[i + 2]! > 110) lit++;
+      }
+    }
+    return lit;
+  });
+}
+
 /** 人体在画布上的竖向范围（按亮度阈值扫描像素）。 */
 async function bodyBand(page: Page) {
   return page.evaluate(() => {
@@ -115,7 +141,8 @@ test.describe('演示前自检 · 手机（Retina）', () => {
   });
 
   test('奥秘：深链开播并能一路讲到最后一步，末帧不空', async ({ page }) => {
-    test.setTimeout(240_000);
+    // 十步逐一走完，每步都要重新出图；云端软件渲染约 1 fps，给足预算
+    test.setTimeout(420_000);
     await page.setViewportSize(PHONE);
     await page.goto('/?wonder=heartbeat');
     await ready(page);
@@ -129,15 +156,25 @@ test.describe('演示前自检 · 手机（Retina）', () => {
 
     // 先停掉自动播放，再一步步走完（force 的原因见文件头）
     await player.getByRole('button', { name: '暂停' }).click({ force: true });
-    for (let i = 0; i < total - 1; i++) {
-      await player.getByRole('button', { name: '下一步' }).click({ force: true });
-      await page.waitForTimeout(400);
-    }
-    await expect(progress).toHaveText(`${total} / ${total}`, { timeout: 30_000 });
+    const current = async () => Number((await progress.innerText()).split('/')[0]!.trim());
 
-    // 讲到最后一步不能是白屏——奥秘是演示的主菜
-    const band = await bodyBand(page);
-    expect(band.lit).toBeGreaterThan(100);
+    // 按**实际进度**驱动，不能按 total - 1 死循环：深链是自动播放的，
+    // 等点到「暂停」时进度早已自己往前走了几步；而且走到最后一步时
+    // 「下一步」会变成「结束」，多点一次就会卡在找一个不存在的按钮上。
+    const start = await current();
+    let index = start;
+    for (let guard = 0; index < total && guard <= total; guard++) {
+      await player.getByRole('button', { name: '下一步' }).click({ force: true });
+      await page.waitForTimeout(250);
+      index = await current();
+    }
+    expect(index).toBe(total);
+    // 起步就已经在最后一步的话，上面的循环一次没跑，等于什么都没验证
+    expect(start).toBeLessThan(total);
+
+    // 讲到最后一步不能是白屏——奥秘是演示的主菜。这里只要"画面非空"，
+    // 用粗采样就够，不必做完整的包围盒扫描（那一步在软件渲染下太贵）
+    expect(await litCount(page)).toBeGreaterThan(30);
     await page.screenshot({ path: 'test-results/demo-wonder-last.png', timeout: 120_000 });
   });
 });
