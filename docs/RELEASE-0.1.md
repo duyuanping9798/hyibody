@@ -83,9 +83,12 @@ git push origin v0.1
 
 1. 打开 <https://github.com/duyuanping9798/hyibody/releases/new>
 2. 「Choose a tag」输入框里敲 `v0.1` → 点出现的「**Create new tag: v0.1 on publish**」
-3. 「Target」下拉 → 切到「Recent Commits」标签页 → 选
-   `80e5cd7 Merge pull request #28…`（**必须选这个，不要用默认的 main**，
-   main 上已经有 v0.1 之后的提交了）
+3. 「Target」下拉 → 切到「Recent Commits」标签页 → 搜索框里敲 **SHA** `80e5cd7`
+   （**认 SHA 不认 PR 号**，敲 `#28` 会显示 No results found），选出现的那条
+   `80e5cd7 Merge pull request #28…`。也可以不搜，直接在列表里往下翻——
+   它距 main 只有十来个提交。
+   **必须选它，不要用默认的 main**，main 上已经有 v0.1 之后的提交了；
+   选中后按钮会从 `Target: main` 变成 `Target: 80e5cd7`
 4. 「Release title」填 `HyiBody v0.1`，正文贴上面那段说明
 5. 勾「Set as the latest release」，点「Publish release」——标签和 Release 一起建好
 
