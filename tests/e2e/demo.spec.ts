@@ -141,8 +141,9 @@ test.describe('演示前自检 · 手机（Retina）', () => {
   });
 
   test('奥秘：深链开播并能一路讲到最后一步，末帧不空', async ({ page }) => {
-    // 十步逐一走完，每步都要重新出图；云端软件渲染约 1 fps，给足预算
-    test.setTimeout(420_000);
+    // 十步逐一走完，每步都要重新出图；云端软件渲染约 1 fps，且全量套件同时
+    // 跑的时候机器更忙，预算要按最坏情况给
+    test.setTimeout(600_000);
     await page.setViewportSize(PHONE);
     await page.goto('/?wonder=heartbeat');
     await ready(page);
@@ -175,7 +176,8 @@ test.describe('演示前自检 · 手机（Retina）', () => {
     // 讲到最后一步不能是白屏——奥秘是演示的主菜。这里只要"画面非空"，
     // 用粗采样就够，不必做完整的包围盒扫描（那一步在软件渲染下太贵）
     expect(await litCount(page)).toBeGreaterThan(30);
-    await page.screenshot({ path: 'test-results/demo-wonder-last.png', timeout: 120_000 });
+    // 这里**不**截图：给 804×1560 编码 PNG 是整条用例里最贵的一步，实测单跑能过、
+    // 放进全量套件就顶破预算，而它没有任何断言价值。留档交给便宜的取景用例。
   });
 });
 
