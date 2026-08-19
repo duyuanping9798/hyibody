@@ -60,6 +60,12 @@ export interface HyiViewerOptions {
   quality?: QualityTier | undefined;
 }
 
+/** 近裁剪面的下限（毫米）：再近就没有深度精度可言了，也没人会凑得比这更近。 */
+const NEAR_MIN_MM = 0.2;
+/** 标签落点重算间隔（毫秒）。 */
+const ANCHOR_CACHE_MS = 120;
+const SCRATCH_SIZE = new Vector3();
+
 /** 两次点击间隔小于这个毫秒数、位移小于这个像素，算一次双击（鼠标和触屏同一套逻辑）。 */
 const DOUBLE_TAP_MS = 320;
 const DOUBLE_TAP_MOVE_PX = 24;
@@ -144,6 +150,7 @@ export class HyiViewer extends EventTarget {
   private readonly picker = new StructurePicker();
   /** 标签引线的落点计算复用同一根射线，别每帧新建 */
   private readonly anchorRay = new Raycaster();
+  private anchorCache: { slug: string; point: Vector3; at: number } | null = null;
   private disposed = false;
   private manifest: Manifest | null = null;
 
@@ -331,7 +338,7 @@ export class HyiViewer extends EventTarget {
   projectStructure(slug: string): { x: number; y: number } | null {
     const entry = this.structures.get(slug);
     if (!entry || !entry.material.visible) return null;
-    const point = anchorPoint(entry.mesh, this.rig.camera, this.anchorRay);
+    const point = this.cachedAnchor(slug, entry);
     if (!point) return null;
     const ndc = point.clone().project(this.rig.camera);
     if (ndc.z > 1) return null;
@@ -567,10 +574,25 @@ export class HyiViewer extends EventTarget {
     this.flyTo(pose.pos, pose.target);
   }
 
+  /**
+   * 切预设视角。隔离或展开某个结构之后，框住的应该是**它**而不是整具人体——
+   * 否则"隔离眼球 → 正面"会一下子退回全身，等于把刚做的隔离白做了。
+   */
   applyPreset(preset: ViewPresetId): void {
-    if (this.contentBox.isEmpty()) return;
-    const pose = poseForBox(this.contentBox, preset, this.rig.camera.fov);
+    const box = this.focusBox() ?? this.contentBox;
+    if (box.isEmpty()) return;
+    const pose = poseForBox(box, preset, this.rig.camera.fov);
     this.flyTo(pose.pos, pose.target);
+  }
+
+  /** 当前"正在看"的那块的包围盒：隔离 > 展开 > 无。 */
+  private focusBox(): Box3 | null {
+    const slug = this.state.isolated ?? this.state.expanded;
+    if (!slug) return null;
+    const entry = this.structures.get(slug);
+    const local = entry?.mesh.geometry.boundingBox;
+    if (!entry || !local) return null;
+    return local.clone().applyMatrix4(entry.mesh.matrixWorld);
   }
 
   /** Kiosk 吸引动画用：开关相机自动旋转。 */
@@ -650,6 +672,20 @@ export class HyiViewer extends EventTarget {
     const dir = cam.clone().sub(hit);
     const dist = Math.max(RECENTER_MIN_MM, dir.length() * RECENTER_FACTOR);
     this.flyTo(hit.clone().add(dir.normalize().multiplyScalar(dist)), hit.clone());
+  }
+
+  /**
+   * 标签落点带缓存：射线求交每帧都算太贵（三万面的结构约 1~2 ms），
+   * 但落点本身变化很慢。每 120 ms 重算一次，中间几帧沿用上次的世界坐标点
+   * ——反正投影是每帧做的，标签照样贴着结构走。
+   */
+  private cachedAnchor(slug: string, entry: StructureEntry): Vector3 | null {
+    const now = performance.now();
+    const hit = this.anchorCache;
+    if (hit && hit.slug === slug && now - hit.at < ANCHOR_CACHE_MS) return hit.point;
+    const point = anchorPoint(entry.mesh, this.rig.camera, this.anchorRay);
+    this.anchorCache = point ? { slug, point, at: now } : null;
+    return point;
   }
 
   /** 射线打到的世界坐标点（只算当前可拾取的结构）。 */
@@ -769,10 +805,30 @@ export class HyiViewer extends EventTarget {
     } else {
       this.flyTo(pose.pos, pose.target);
     }
-    const dist = pose.pos.distanceTo(pose.target);
-    this.rig.camera.near = Math.max(1, dist / 100);
-    this.rig.camera.far = dist * 10;
-    this.rig.camera.updateProjectionMatrix();
+    this.syncClipPlanes();
+  }
+
+  /**
+   * 近远裁剪面跟着当前观察距离走。
+   *
+   * 原来只在取景时按当时的距离算一次：全身取景算出 near ≈ 26 mm，之后凑到
+   * 晶状体跟前（25 mm）就整个被裁掉了。反过来，如果一开始就把 near 写死成很小，
+   * 全身视角下深度缓冲的精度会浪费在近处，远端 z-fighting。所以每帧按距离重算，
+   * 变化超过 1% 才写回（updateProjectionMatrix 不算便宜）。
+   */
+  private syncClipPlanes(): void {
+    const cam = this.rig.camera;
+    const dist = cam.position.distanceTo(this.rig.controls.target);
+    if (!Number.isFinite(dist) || dist <= 0) return;
+    const span = this.contentBox.isEmpty()
+      ? dist * 4
+      : this.contentBox.getSize(SCRATCH_SIZE).length();
+    const near = Math.max(NEAR_MIN_MM, dist / 100);
+    const far = Math.max(dist * 4, span * 2);
+    if (Math.abs(cam.near - near) < near * 0.01 && Math.abs(cam.far - far) < far * 0.01) return;
+    cam.near = near;
+    cam.far = far;
+    cam.updateProjectionMatrix();
   }
 
   private resize(): void {
@@ -847,6 +903,7 @@ export class HyiViewer extends EventTarget {
       if (this.flight.t >= 1) this.flight = null;
     }
     this.rig.controls.update();
+    this.syncClipPlanes();
     this.clipCaps.syncToPlane();
     if (this.pipeline) this.pipeline.render();
     else this.renderer.render(this.scene, this.rig.camera);

@@ -507,8 +507,10 @@ UGC 前置）。
 
 ## 给人类的待办
 
-1. **`v0.1` 标签**：具体步骤见下（本次会话已给出）。目标提交
-   `80e5cd73ff5249dde2fe5487815c167902e7417b`。
+1. **`v0.1` 标签**：三条路线的完整命令见 `docs/RELEASE-0.1.md`「v0.1 标签怎么打」。
+   目标提交 `80e5cd73ff5249dde2fe5487815c167902e7417b`（PR #28 的合并提交，已在 main 上）。
+   云端 git 代理对 tag ref 的推送返回 403（`--dry-run` 会假成功），可用的 GitHub 工具
+   又全是只读的，所以这一步只能人来。
 2. **真机确认帧率**：面数已到 145 万，KICKOFF 要求中端安卓 30 fps。
 3. **校对文案**：`content/definitions/{zh,en}.json` 各 189 条已过一轮 AI 审核，
    `_meta.reviewed` 仍是 `false`。**改动中文后记得跑一次 `pnpm font:subset`**。

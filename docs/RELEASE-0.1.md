@@ -36,7 +36,73 @@
 
 ## 发布后要做的事
 
-- 在 GitHub 网页上补一个 `v0.1` 标签（云端 git 代理拒绝推 tag ref，本地已打在 `80e5cd7`）
+- **补 `v0.1` 标签**：云端 git 代理会用 HTTP 403 拒掉 tag ref 的推送
+  （`git push --dry-run` 会骗人地成功，因为它根本没发包），只能由人类来做，
+  三选一，具体步骤见下面「v0.1 标签怎么打」
 - 人类在手机 / 电脑 / 展厅设备各跑一遍上面三条 ⚠️
 - 校对中英文案与三条奥秘，改完把各自的 `_meta.reviewed` 置 `true`
 - 决定是否引入 HuBMAP HRA 器官与周围神经数据源（DECISIONS.md 待定节）
+
+## v0.1 标签怎么打
+
+目标提交 `80e5cd73ff5249dde2fe5487815c167902e7417b`（PR #28 的合并提交，已在 `main` 上）。
+三条路任选一条，效果一样。
+
+### 路线 A：本地命令行（推荐，能保留带说明的 annotated tag）
+
+```bash
+git clone https://github.com/duyuanping9798/hyibody.git   # 已有仓库就 git fetch origin
+cd hyibody
+git tag -a v0.1 80e5cd73ff5249dde2fe5487815c167902e7417b -F - <<'EOF'
+HyiBody v0.1
+
+143 个结构 / 1,154,816 三角面 / 资产 7.67 MB / 首屏 2.02 MB，数据全部来自
+BodyParts3D 4.0（CC BY 4.0）。
+
+- 六系统分层透视、点击识别、搜索、单剖切面（模板封盖）、6 预设视角
+- 结构层级：心脏可展开为心室壁、左右心房壁与四个瓣膜
+- 三条故事线（心跳 10 步 / 消化 7 步 / 神经 5 步），支持展开与剖切分镜
+- Kiosk 展厅模式、PWA 离线、中英切换、分享链接与二维码
+- 画质三档（软件渲染自动降级 / 移动端 / 桌面 SSAO+软阴影）
+
+验收清单见 docs/RELEASE-0.1.md；其中"手机 10 秒可交互""滑块流畅度""真机观感"
+三条需人类在真机确认。
+EOF
+git push origin v0.1
+```
+
+说明里写"故事线"是**故意的**：v0.1 那个提交上这个概念就叫故事线，2026-08-19 才更名
+为「奥秘」。标签描述的是当时的状态，不改。
+
+验证：`git ls-remote --tags origin | grep v0.1`，或打开
+<https://github.com/duyuanping9798/hyibody/tags>。
+
+打错了可以撤：`git push --delete origin v0.1 && git tag -d v0.1`。
+
+### 路线 B：GitHub 网页（不用装 git）
+
+1. 打开 <https://github.com/duyuanping9798/hyibody/releases/new>
+2. 「Choose a tag」输入框里敲 `v0.1` → 点出现的「**Create new tag: v0.1 on publish**」
+3. 「Target」下拉 → 切到「Recent Commits」标签页 → 选
+   `80e5cd7 Merge pull request #28…`（**必须选这个，不要用默认的 main**，
+   main 上已经有 v0.1 之后的提交了）
+4. 「Release title」填 `HyiBody v0.1`，正文贴上面那段说明
+5. 勾「Set as the latest release」，点「Publish release」——标签和 Release 一起建好
+
+### 路线 C：gh CLI
+
+```bash
+gh release create v0.1 --repo duyuanping9798/hyibody \
+  --target 80e5cd73ff5249dde2fe5487815c167902e7417b \
+  --title "HyiBody v0.1" --notes-file release-notes.md
+```
+
+### 为什么不能由 Claude 代劳
+
+- 云端 git 代理对 `refs/tags/*` 的推送返回 HTTP 403（`--dry-run` 会成功，别被骗）
+- 本会话可用的 GitHub MCP 工具只有 `get_tag` / `list_tags` / `get_release_by_tag` /
+  `list_releases` 这些**只读**的，没有创建标签或 Release 的工具
+
+顺带一提：本地仓库里那个 `v0.1` annotated tag 是上一次会话打的，只存在于云端工作区，
+容器回收就没了——所以上面路线 A 里把完整命令重贴了一遍，照抄即可。
+
