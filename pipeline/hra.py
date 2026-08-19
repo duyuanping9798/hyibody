@@ -104,6 +104,140 @@ def bounds_of(vertices: np.ndarray) -> np.ndarray:
     return np.vstack([v.min(axis=0), v.max(axis=0)])
 
 
+# 判定减面碎屑的两个安全系数：连通块的面数/尺寸都不到"减面前同部件最小连通块
+# 按比例缩完"的这个倍数，才算碎屑。取 0.5 是给减面算法留一倍的余量。
+FRAGMENT_FACE_SLACK = 0.5
+FRAGMENT_SIZE_SLACK = 0.5
+# 再小的合法闭合壳也有 4 个面（四面体）
+MIN_LEGIT_FACES = 4
+# 源网格里不到整体对角线这个比例、又不足 4 面的连通块，判定为建模垃圾
+JUNK_SIZE_RATIO = 0.01
+
+
+def weld(vertices: np.ndarray, faces: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """合并重合顶点。HRA 的 glb 有些是未焊接的（眼球巩膜 12192 面却有 24383 个顶点），
+    不焊就减面，算法会把它当成一堆互不相连的三角形，减完碎成几百块。"""
+    import trimesh
+
+    mesh = trimesh.Trimesh(vertices=vertices, faces=faces, process=False)
+    mesh.merge_vertices()
+    return np.asarray(mesh.vertices), np.asarray(mesh.faces)
+
+
+def clean_source(vertices: np.ndarray, faces: np.ndarray):
+    """焊接 + 剔除退化面 + 剔除源网格里的杂物，返回 (顶点, 面, 连通块列表)。
+
+    HRA 是美术建模，个别 glb 里混着零面积三角形和一两面的碎渣：右心房焊完有
+    1060 个连通块，其中 1058 个是 1~2 面、对角线为 0 的垃圾。这些垃圾会把
+    "减面前最小连通块"拉到 1 面 / 0 尺寸，让 drop_fragments 的门槛失效，
+    于是减面产生的真碎屑一个都清不掉。所以要先把源头扫干净。
+    """
+    import trimesh
+
+    wv, wf = weld(vertices, faces)
+    mesh = trimesh.Trimesh(vertices=wv, faces=wf, process=False)
+    mesh.update_faces(mesh.nondegenerate_faces())
+    mesh.remove_unreferenced_vertices()
+    pieces = mesh.split(only_watertight=False)
+    if len(pieces) <= 1:
+        return np.asarray(mesh.vertices), np.asarray(mesh.faces), list(pieces) or [mesh]
+    whole = _diag(mesh)
+    keep = [
+        p
+        for p in pieces
+        if len(p.faces) >= MIN_LEGIT_FACES or _diag(p) >= whole * JUNK_SIZE_RATIO
+    ]
+    if not keep:
+        return np.asarray(mesh.vertices), np.asarray(mesh.faces), list(pieces)
+    kv, kf = concat_parts([(np.asarray(p.vertices), np.asarray(p.faces)) for p in keep])
+    return kv, kf, keep
+
+
+def _split(vertices: np.ndarray, faces: np.ndarray):
+    import trimesh
+
+    return trimesh.Trimesh(vertices=vertices, faces=faces, process=False).split(
+        only_watertight=False
+    )
+
+
+def _diag(mesh) -> float:
+    return float(np.linalg.norm(mesh.bounds[1] - mesh.bounds[0]))
+
+
+def drop_fragments(
+    vertices: np.ndarray, faces: np.ndarray, before, ratio: float
+) -> tuple[np.ndarray, np.ndarray, int]:
+    """清掉减面产生的碎屑，返回 (顶点, 面, 被清掉的面数)。
+
+    判据来自**这个部件减面前的连通块**，而不是整个结构的总面数——这是关键。
+    晶状体悬韧带本来就是 322 根各 21~42 面的睫状小带，按"占总面数 0.5% 以下
+    就是碎屑"一刀切会把它整根删光（实测删掉 95%）；而右心房减面前只有 1 块，
+    减完多出来的 49 块小碎片确实全是垃圾。所以门槛必须按部件自身的尺度定：
+    合法连通块减面后至少还剩"最小块 × 减面比例 × 余量"这么大。
+    """
+    pieces = _split(vertices, faces)
+    if len(pieces) <= 1:
+        return vertices, faces, 0
+    face_floor = max(
+        float(MIN_LEGIT_FACES),
+        min(len(p.faces) for p in before) * ratio * FRAGMENT_FACE_SLACK,
+    )
+    size_floor = min(_diag(p) for p in before) * FRAGMENT_SIZE_SLACK
+    keep: list[tuple[np.ndarray, np.ndarray]] = []
+    dropped = 0
+    for piece in pieces:
+        if len(piece.faces) < face_floor and _diag(piece) < size_floor:
+            dropped += len(piece.faces)
+            continue
+        keep.append((np.asarray(piece.vertices), np.asarray(piece.faces)))
+    if not keep:  # 全被判成碎屑说明判据不适用，原样返回
+        return vertices, faces, 0
+    kv, kf = concat_parts(keep)
+    return kv, kf, dropped
+
+
+def simplify_parts(
+    parts: list[tuple[np.ndarray, np.ndarray]], target_faces: int
+) -> tuple[np.ndarray, np.ndarray, float]:
+    """逐部件减面再拼接，顺手清掉碎屑。返回 (顶点, 面, 被清掉的面数占比)。
+
+    为什么逐部件而不是拼起来一起减：一个结构常常由几十个各自封闭的小壳组成
+    （支气管树 34 件、大肠 10 段）。整体减面时算法会跨壳折叠，把管子掐断成
+    几千个碎片——实测大肠只减 18% 的面就碎成 6229 块，逐部件减完是 17 块。
+
+    即便逐部件，个别拓扑不干净的壳（HRA 是美术建模，不保证流形）减面后仍会掉渣，
+    交给 drop_fragments 按部件自身的尺度清理。
+    """
+    import fast_simplification
+
+    total_raw = sum(len(f) for _, f in parts)
+    if total_raw == 0:
+        raise ValueError("没有可减面的部件")
+    reduced: list[tuple[np.ndarray, np.ndarray]] = []
+    dropped = 0
+    for v, f in parts:
+        share = max(60, int(round(target_faces * len(f) / total_raw)))
+        if len(f) <= share:
+            reduced.append((np.asarray(v), np.asarray(f)))
+            continue
+        wv, wf, before = clean_source(v, f)
+        if len(wf) <= share:
+            reduced.append((wv, wf))
+            continue
+        ov, of = fast_simplification.simplify(
+            np.asarray(wv, dtype=np.float32), np.asarray(wf, dtype=np.int64), target_count=share
+        )
+        cv, cf, lost = drop_fragments(
+            np.asarray(ov), np.asarray(of), before, len(of) / max(1, len(wf))
+        )
+        dropped += lost
+        reduced.append((cv, cf))
+
+    v, f = concat_parts(reduced)
+    return v, f, dropped / max(1, dropped + len(f))
+
+
 @dataclass(frozen=True)
 class Fit:
     """等比相似变换：p' = p * scale + offset。"""

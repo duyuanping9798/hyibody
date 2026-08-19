@@ -2363,7 +2363,9 @@
       - VH_M_lens_R
       - VH_M_suspensory_ligament_of_lens_L
       - VH_M_suspensory_ligament_of_lens_R
-  target_faces: 4000
+  # 悬韧带是 322 根各 20~40 面的睫状小带，逐根减面减不下去（每根都是独立闭合壳），
+  # 面数写实测下限而不是理想值，免得 validate 天天报"没减到位"
+  target_faces: 12000
   priority: 2
 - slug: eye_retina
   zh: 视网膜
