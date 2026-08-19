@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hyibody.org/schema/wonder-1.json",
+  "title": "HyiBody 奥秘（Wonder）",
+  "description": "一段可播放的三维讲解。写作规范见 docs/CONTENT-GUIDE.md；UGC 上线后这份 schema 就是投稿的校验依据。",
+  "type": "object",
+  "required": ["id", "title", "steps"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "type": "integer", "const": 1, "description": "数据格式版本" },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$",
+      "description": "稳定标识：进 ?wonder= 深链与分享链接，定了就不要改"
+    },
+    "title": { "$ref": "#/$defs/text" },
+    "system": {
+      "enum": ["skin", "muscles", "skeleton", "organs", "vessels", "nerves"],
+      "description": "主系统，菜单分组用"
+    },
+    "structures": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+      "description": "讲到哪些结构，用来建反向索引。每一步点名的主角都必须在这里"
+    },
+    "steps": { "type": "array", "minItems": 4, "items": { "$ref": "#/$defs/step" } }
+  },
+  "$defs": {
+    "text": {
+      "type": "object",
+      "required": ["zh", "en"],
+      "additionalProperties": false,
+      "properties": {
+        "zh": { "type": "string", "minLength": 1 },
+        "en": { "type": "string", "minLength": 1 }
+      }
+    },
+    "preset": { "enum": ["front", "back", "left", "right", "top", "hero"] },
+    "step": {
+      "type": "object",
+      "required": ["text", "layer", "durationMs"],
+      "additionalProperties": false,
+      "properties": {
+        "text": { "$ref": "#/$defs/text" },
+        "layer": { "type": "number", "minimum": 0, "maximum": 1 },
+        "selected": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+        "focus": { "type": "boolean" },
+        "preset": { "$ref": "#/$defs/preset", "description": "整具人体宽景" },
+        "from": { "$ref": "#/$defs/preset", "description": "只定观察方向，距离由 focus 算" },
+        "expand": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+        "systems": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "false 关掉、数字 0–1 压暗、缺省完全可见",
+          "patternProperties": {
+            "^(skin|muscles|skeleton|organs|vessels|nerves)$": {
+              "oneOf": [{ "type": "boolean" }, { "type": "number", "minimum": 0, "maximum": 1 }]
+            }
+          }
+        },
+        "clip": {
+          "type": "object",
+          "required": ["axis", "pos"],
+          "additionalProperties": false,
+          "properties": {
+            "axis": { "enum": ["x", "y", "z"] },
+            "pos": {
+              "type": "number",
+              "minimum": -1,
+              "maximum": 1,
+              "description": "映射的是整具人体的包围盒，不是结构自己的——用 clipPosForCoordinate 反算，别手写"
+            },
+            "flip": { "type": "boolean" }
+          }
+        },
+        "durationMs": { "type": "integer", "minimum": 3000, "maximum": 20000 }
+      }
+    }
+  }
+}

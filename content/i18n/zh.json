@@ -98,5 +98,8 @@
     "wonderStep": "奥秘上一步 / 下一步",
     "wonderToggle": "奥秘播放 / 暂停",
     "escape": "逐层退出：弹窗 → 奥秘 → 取消选中 → 返回全身"
-  }
+  },
+  "searchTitle": "搜索",
+  "toolsTitle": "工具",
+  "helpTitle": "帮助"
 }

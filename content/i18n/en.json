@@ -98,5 +98,8 @@
     "wonderStep": "Wonder previous / next step",
     "wonderToggle": "Wonder play / pause",
     "escape": "Step back out: dialog → wonder → deselect → full body"
-  }
+  },
+  "searchTitle": "Search",
+  "toolsTitle": "Tools",
+  "helpTitle": "Help"
 }
