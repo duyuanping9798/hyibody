@@ -1,6 +1,6 @@
 # 项目进度（STATUS）
 
-最后更新：2026-08-19 · 取景避开界面遮挡 + 苹果设备适配（v0.3.3）
+最后更新：2026-08-19 · Retina 画布尺寸事故修复（v0.3.4）
 
 ## 已完成（本会话，issue #1–#5）
 
@@ -539,6 +539,26 @@ UGC 前置）。
 
 另补 **WebGL2 能力检测**：three 0.185 没有 WebGL1 兜底，原来落到"模型加载失败，
 请刷新重试"——刷一万次也没用。现在明确说不支持 WebGL2 并给出浏览器版本要求。
+
+## 已完成（Retina 画布事故，v0.3.4）
+
+用户在 iPhone 上打开只看到一点点人体（大片空背景 + 右下角露出一点头部）。
+
+根因：`renderer.setSize(w, h, false)` 的第三个参数是 `updateStyle`，传 `false` 时
+three 只设 `canvas.width/height`（绘制缓冲 = CSS 尺寸 × 像素比），**不设
+`canvas.style.width/height`**；而 `ui.css` 里主画布没有任何尺寸规则。于是 canvas
+按固有尺寸显示——DPR 1 恰好等于容器尺寸，DPR 2 的设备（**所有 Retina 苹果设备、
+多数手机**）画布被撑成容器的两倍，左上角对齐，只看得见整幅画面的左上四分之一。
+
+- 改回默认的 `updateStyle`，并在 `ui.css` 加兜底规则
+  `[data-testid='viewer'] > canvas { width: 100%; height: 100% }`
+- 顺带修工具抽屉压着分层滑块：滑块占底部 8~98 px，抽屉 `bottom` 是 82 px，
+  重叠 16 px，改成 106 px
+- **补 retina e2e 用例**：Playwright 默认 `deviceScaleFactor: 1`，19 条冒烟全瞎，
+  这个 bug 一路绿灯上线。新用例在 DPR 2 下断言画布尺寸与容器一致（误差 ≤1 px）
+
+DPR 2 复验（iPhone / 微信内置浏览器四档高度）：人体竖向占比 54~71%，
+与顶栏、工具抽屉均不重叠（脚离抽屉 12 px）。e2e 20/20。
 
 ## 未完成 / 下一步
 

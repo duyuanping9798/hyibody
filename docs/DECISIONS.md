@@ -341,6 +341,22 @@
   刷一万次也没用；现在给出能照做的提示（浏览器版本要求 + 远程桌面/虚拟机
   检查硬件加速）。
 
+- 2026-08-19 · **测试必须覆盖 Retina（DPR ≥ 2）** · 线上事故：
+  `renderer.setSize(w, h, false)` 不更新 canvas 的 CSS 尺寸，canvas 就按固有尺寸
+  （= CSS 尺寸 × 像素比）显示。DPR 1 的机器恰好等于容器尺寸看不出问题，
+  DPR 2 的设备（**所有 Retina 苹果设备、多数手机**）画布被撑成两倍，
+  用户只看得见整幅画面的左上四分之一。
+  真正的教训在测试侧：**Playwright 默认 `deviceScaleFactor: 1`**，
+  `playwright.config.ts` 也没设，19 条 e2e 冒烟和全部测量截图都跑在 DPR 1 下——
+  测试不是没跑，是跑在了一个不存在的设备上，于是一路绿灯上线。
+  已补 retina 用例（DPR 2 下断言画布尺寸与容器一致，误差 ≤1 px）。
+  凡是与像素比、屏幕尺寸相关的改动，DPR 1 的绿灯不算数。
+- 2026-08-19 · **e2e 必须用 `CI=1` 跑** · `playwright.config.ts` 里
+  `reuseExistingServer: !process.env.CI`：本地若有残留的 `vite preview` 占着 4173，
+  Playwright 会**复用它**，于是对着旧构建跑出一片绿。本会话中招两次
+  （第二次是"修好了但仍失败"，查了半天才发现 `dist` 是三十分钟前的）。
+  `CI=1` 强制自建服务，端口被占直接报错而不是悄悄复用。
+
 ## 待定（不做，等人类点头）
 
 - CC0 皮肤替换（Blender Studio Human Base Meshes / MPFB2）：涉及新数据源下载（域名需加入云环境白名单）与对齐工作，按 KICKOFF M2-4 流程先在此确认再动工。
