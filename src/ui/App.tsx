@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { decodeUrlState, encodeUrlState } from '../data/urlState';
 import { HyiViewer } from '../viewer/HyiViewer';
 import type { QualityTier } from '../viewer/quality';
+import { hasWebGL2 } from '../viewer/support';
 import { Attribution } from './Attribution';
 import { InfoCard } from './InfoCard';
 import { Kiosk } from './Kiosk';
@@ -13,6 +14,7 @@ import { SearchBox } from './SearchBox';
 import { ShortcutHelp } from './ShortcutHelp';
 import { ShareDialog } from './ShareDialog';
 import { useKeyboardShortcuts } from './keyboard';
+import { useSafeInsets } from './useSafeInsets';
 import { WONDERS } from '../wonders';
 import { bindViewer, toUrlState, useUiStore } from './store';
 import { Dock } from './Dock';
@@ -77,11 +79,17 @@ export function App() {
   const setLang = useUiStore((s) => s.setLang);
   const [{ kiosk, idleSeconds }] = useState(readKioskParams);
   useUrlSync();
+  useSafeInsets();
   useKeyboardShortcuts({ helpOpen, setHelpOpen, shareOpen, setShareOpen });
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
+    // three 0.185 没有 WebGL1 兜底，先问一句，好给出能照做的提示
+    if (!hasWebGL2()) {
+      useUiStore.getState().setLoadState('unsupported');
+      return;
+    }
     const viewer = new HyiViewer(container, {
       base: import.meta.env.BASE_URL,
       quality: readQualityParam(),
@@ -121,9 +129,9 @@ export function App() {
         <span className="hyi-header-sub">{t.subtitle}</span>
       </header>
       <LoadingOverlay />
-      {loadState === 'error' && (
+      {(loadState === 'error' || loadState === 'unsupported') && (
         <p data-testid="viewer-status" className="hyi-center-status">
-          {t.loadError}
+          {loadState === 'unsupported' ? t.unsupportedWebgl : t.loadError}
         </p>
       )}
       {loadState === 'ready' && !isPlaceholder && (

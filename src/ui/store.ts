@@ -8,7 +8,7 @@ import type { ViewPresetId } from '../viewer/camera';
 import type { HyiViewer } from '../viewer/HyiViewer';
 import type { QualityTier } from '../viewer/quality';
 
-export type LoadState = 'loading' | 'ready' | 'error';
+export type LoadState = 'loading' | 'ready' | 'error' | 'unsupported';
 
 /** 工具抽屉里的三格。 */
 export type PanelId = 'systems' | 'views' | 'clip';

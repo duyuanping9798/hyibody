@@ -29,6 +29,7 @@ import {
   poseForBox,
   poseForFocus,
   type CameraRig,
+  type SafeInsets,
   type ViewPresetId,
 } from './camera';
 import { CAP_MIN_OPACITY, ClipCaps } from './clipCaps';
@@ -168,6 +169,11 @@ export class HyiViewer extends EventTarget {
   private pipeline: RenderPipeline | null = null;
   private quality: QualityTier = 'medium';
   private contentBox = new Box3();
+  /** 画布上下被界面挡住多少（CSS 像素），由 UI 层量好了推进来 */
+  private safeInsets = { top: 0, bottom: 0 };
+  private framedWithInsets = false;
+  /** WebGL 上下文丢失期间停帧循环，别对着死的上下文空转 */
+  private contextLost = false;
   private clipPlane: Plane | null = null;
   private flight: {
     fromPos: Vector3;
@@ -223,6 +229,8 @@ export class HyiViewer extends EventTarget {
     dom.addEventListener('pointerup', this.onPointerUp);
     dom.addEventListener('pointermove', this.onPointerMove);
     dom.addEventListener('pointerleave', this.onPointerLeave);
+    dom.addEventListener('webglcontextlost', this.onContextLost);
+    dom.addEventListener('webglcontextrestored', this.onContextRestored);
 
     this.resizeObserver = new ResizeObserver(() => this.resize());
     this.resizeObserver.observe(container);
@@ -581,8 +589,33 @@ export class HyiViewer extends EventTarget {
   applyPreset(preset: ViewPresetId): void {
     const box = this.focusBox() ?? this.contentBox;
     if (box.isEmpty()) return;
-    const pose = poseForBox(box, preset, this.rig.camera.fov);
+    const pose = poseForBox(box, preset, this.rig.camera.fov, undefined, this.safeArea());
     this.flyTo(pose.pos, pose.target);
+  }
+
+  /**
+   * 告诉查看器画布上下各被界面挡住多少（CSS 像素）。UI 层量真实 DOM 之后推进来，
+   * 渲染核心不认识 React，也就不该猜面板有多高。
+   */
+  setSafeInsets(insets: { top: number; bottom: number }): void {
+    const top = Math.max(0, insets.top);
+    const bottom = Math.max(0, insets.bottom);
+    if (top === this.safeInsets.top && bottom === this.safeInsets.bottom) return;
+    this.safeInsets = { top, bottom };
+    if (this.contentBox.isEmpty() || this.state.isolated || this.state.expanded) return;
+    // 第一次量到真实的界面高度时硬切（那还在开场，用户没动过相机），
+    // 之后再变（转屏、拉窗口、奥秘播放器换高度）就飞过去
+    this.frameContent(!this.framedWithInsets);
+    this.framedWithInsets = true;
+  }
+
+  private safeArea(): SafeInsets {
+    return {
+      width: this.container.clientWidth || 1,
+      height: this.container.clientHeight || 1,
+      top: this.safeInsets.top,
+      bottom: this.safeInsets.bottom,
+    };
   }
 
   /** 当前"正在看"的那块的包围盒：隔离 > 展开 > 无。 */
@@ -721,6 +754,34 @@ export class HyiViewer extends EventTarget {
     this.dispatchEvent(new CustomEvent('hover', { detail: { slug } }));
   };
 
+  /**
+   * WebGL 上下文丢了。
+   *
+   * iOS Safari 切后台、来电话、内存紧张时会主动回收 GPU 上下文；安卓和桌面在
+   * 显卡驱动更新、休眠唤醒时也会。默认行为是画布直接变成一片空白，而且**不会**
+   * 自己恢复——必须 preventDefault 才能让浏览器后续派发 restored 事件。
+   */
+  private readonly onContextLost = (e: Event): void => {
+    e.preventDefault();
+    this.contextLost = true;
+    this.renderer.setAnimationLoop(null);
+    this.dispatchEvent(new CustomEvent('contextlost'));
+  };
+
+  /**
+   * 上下文回来了。three 的 WebGLRenderer 会自己重建着色器与缓冲（材质、几何都还在
+   * CPU 侧），这里只需要把后处理链重建一遍并恢复帧循环——EffectComposer 的
+   * 渲染目标是跟着旧上下文一起没的。
+   */
+  private readonly onContextRestored = (): void => {
+    if (this.disposed) return;
+    this.contextLost = false;
+    this.applyQuality();
+    this.resize();
+    this.renderer.setAnimationLoop(() => this.tick());
+    this.dispatchEvent(new CustomEvent('contextrestored'));
+  };
+
   private readonly onPointerLeave = (): void => {
     const prev = this.hovered ? this.structures.get(this.hovered) : null;
     if (prev && prev.slug !== this.state.selected) applyHighlight(prev.mesh, 'none');
@@ -798,7 +859,13 @@ export class HyiViewer extends EventTarget {
   /** `immediate` 只在首次加载时为真：那时还没有"上一个机位"可以飞。 */
   private frameContent(immediate = true): void {
     if (this.contentBox.isEmpty()) return;
-    const pose = poseForBox(this.contentBox, 'hero', this.rig.camera.fov);
+    const pose = poseForBox(
+      this.contentBox,
+      'hero',
+      this.rig.camera.fov,
+      undefined,
+      this.safeArea(),
+    );
     if (immediate) {
       this.rig.controls.target.copy(pose.target);
       this.rig.camera.position.copy(pose.pos);
@@ -891,7 +958,7 @@ export class HyiViewer extends EventTarget {
   }
 
   private tick(): void {
-    if (this.disposed) return;
+    if (this.disposed || this.contextLost) return;
     const dt = this.clock.getDelta();
     this.tickLayer(dt);
     this.animateOrgans(this.clock.elapsedTime);
@@ -917,6 +984,8 @@ export class HyiViewer extends EventTarget {
     dom.removeEventListener('pointerup', this.onPointerUp);
     dom.removeEventListener('pointermove', this.onPointerMove);
     dom.removeEventListener('pointerleave', this.onPointerLeave);
+    dom.removeEventListener('webglcontextlost', this.onContextLost);
+    dom.removeEventListener('webglcontextrestored', this.onContextRestored);
     this.pipeline?.dispose();
     this.renderer.setAnimationLoop(null);
     this.resizeObserver.disconnect();

@@ -84,23 +84,78 @@ export interface CameraPose {
   target: Vector3;
 }
 
-/** 由包围盒 + 预设算相机位姿：距离取"竖向充满视野"再放一点余量。 */
+/**
+ * 画布上被界面挡住的那一圈（CSS 像素）。取景要按**剩下的空当**来框，
+ * 而不是按整块画布——不然人体两端会缩进顶栏和分层滑块底下。
+ */
+export interface SafeInsets {
+  width: number;
+  height: number;
+  top: number;
+  bottom: number;
+}
+
+/**
+ * 安全区内部再留的余量。
+ *
+ * 原来是 1.15，配的是"按整块画布取景"——人体占满视口高度九成，上下各只剩三四十
+ * 像素，脚直接陷进分层滑块。改成按安全区取景之后这个数要**调小**而不是调大：
+ * 安全区本身已经只有视口的七到八成，再乘 1.28 就只剩六成，人小得像蚂蚁
+ * （实测 MacBook Air 61%、iPhone SE 53%）。安全区计算时每边已经各加了 8 px 留白，
+ * 这里 1.05 再补一点点，最终人体约占视口高度七成。
+ */
+export const FRAME_MARGIN = 1.05;
+
+/** 屏幕"上"方向在世界坐标里是哪一根轴（俯视时不是 +Z，所以要按观察方向现算）。 */
+function screenUpFor(dir: Vector3): Vector3 {
+  const forward = dir.clone().normalize().negate();
+  const right = new Vector3().crossVectors(forward, new Vector3(0, 0, 1));
+  if (right.lengthSq() < 1e-8) right.set(1, 0, 0);
+  right.normalize();
+  return new Vector3().crossVectors(right, forward).normalize();
+}
+
+/**
+ * 由包围盒 + 预设算相机位姿：距离取"竖向充满视野"再放一点余量。
+ *
+ * 给了 `safe` 就按安全区取景：先按安全区占画布的比例把相机再退远一点，
+ * 让人体只占那么高；再把画面整体平移，使人体中心落在**安全区的中心**上
+ * ——注意方向是反的，相机往下挪画面内容才往上走。
+ */
 export function poseForBox(
   box: Box3,
   preset: ViewPresetId,
   fovDeg: number,
-  margin = 1.15,
+  margin = FRAME_MARGIN,
+  safe?: SafeInsets,
 ): CameraPose {
   const center = box.getCenter(new Vector3());
   const size = box.getSize(new Vector3());
   const radius = Math.max(size.x, size.y, size.z) * 0.5;
-  const dist = (radius / Math.tan(((fovDeg / 2) * Math.PI) / 180)) * margin;
+  const halfFov = ((fovDeg / 2) * Math.PI) / 180;
+  let dist = (radius / Math.tan(halfFov)) * margin;
+
+  let shift = 0;
+  if (safe && safe.height > 0) {
+    const top = Math.max(0, safe.top);
+    const bottom = Math.min(safe.height, safe.height - Math.max(0, safe.bottom));
+    const usable = bottom - top;
+    // 安全区被挤没了（超小窗口）就退回按整块画布取景
+    if (usable > safe.height * 0.3) {
+      dist /= usable / safe.height;
+      const pxOffset = (top + bottom) / 2 - safe.height / 2;
+      shift = pxOffset * ((2 * dist * Math.tan(halfFov)) / safe.height);
+    }
+  }
+
   const { dir, lift } = VIEW_PRESETS[preset];
+  const offset = screenUpFor(dir).multiplyScalar(shift);
   const pos = center
     .clone()
     .add(dir.clone().normalize().multiplyScalar(dist))
-    .add(new Vector3(0, 0, size.z * lift));
-  return { pos, target: center };
+    .add(new Vector3(0, 0, size.z * lift))
+    .add(offset);
+  return { pos, target: center.clone().add(offset) };
 }
 
 /**
