@@ -140,6 +140,39 @@ test('kiosk attract mode and share dialog', async ({ page }) => {
   expect(size).toBeGreaterThan(100);
 });
 
+/**
+ * Retina 冒烟：画布必须正好铺满容器。
+ *
+ * 2026-08-19 线上事故：`renderer.setSize(w, h, false)` 不更新 canvas 的 CSS 尺寸，
+ * canvas 就按固有尺寸（= CSS 尺寸 × 像素比）显示。DPR 1 的机器看不出来——
+ * 而 Playwright 默认就是 DPR 1，19 条 e2e 全瞎了，用户在 iPhone 上只看得见
+ * 整幅画面的左上四分之一。这条专门盯着 DPR 2。
+ */
+test.describe('retina viewport', () => {
+  test.use({ viewport: { width: 402, height: 780 }, deviceScaleFactor: 2, hasTouch: true });
+
+  test('canvas fills its container on a 2x display', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
+      timeout: 60_000,
+    });
+    const size = await page.evaluate(() => {
+      const host = document.querySelector('[data-testid="viewer"]');
+      const canvas = document.querySelector('canvas');
+      if (!host || !canvas) return null;
+      const h = host.getBoundingClientRect();
+      const c = canvas.getBoundingClientRect();
+      return { hw: h.width, hh: h.height, cw: c.width, ch: c.height, dpr: window.devicePixelRatio };
+    });
+    expect(size).not.toBeNull();
+    expect(size!.dpr).toBe(2);
+    // 允许 1 px 的舍入误差，两倍那种错法差着几百像素，一抓一个准
+    expect(Math.abs(size!.cw - size!.hw)).toBeLessThanOrEqual(1);
+    expect(Math.abs(size!.ch - size!.hh)).toBeLessThanOrEqual(1);
+    await page.screenshot({ path: 'test-results/smoke-retina.png' });
+  });
+});
+
 /** M1-7 移动端冒烟：竖屏视口下抽屉面板可唤出、信息卡可见、留存截图。 */
 test.describe('mobile viewport', () => {
   test.use({ viewport: { width: 390, height: 844 }, hasTouch: true });
