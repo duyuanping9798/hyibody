@@ -316,6 +316,14 @@
   挪进帮助面板。顶栏图标用内联 SVG 而不是字符——中文字体是按 content/ 实际
   用字裁出来的子集，⌕ ↗ ⓘ 不在里面，回退时大小对不齐甚至掉成豆腐块。
 
+- 2026-08-19 · **云端 git 代理的 ref 权限摸清了** · 推 `refs/tags/*` 返回 HTTP 403，
+  推 `refs/heads/*` 放行，删 `refs/heads/*` 连接被断；GitHub MCP 工具里没有建标签或
+  Release 的写工具。**`git push --dry-run` 推标签会假成功**（它不发包），别拿它当证据。
+  所以打标签的可行路子是：Claude 用 `git push origin <sha>:refs/heads/release/vX.Y`
+  建临时分支指到目标提交 → 人类在 Release 页 Branches 里选它 → Publish → 人类删分支。
+  另记：Release 页那个「Pick a branch or recent commit」搜索框**只过滤分支**，
+  框里有字时 Recent Commits 恒显示 No results found，敲 PR 号或 SHA 都一样。
+
 ## 待定（不做，等人类点头）
 
 - CC0 皮肤替换（Blender Studio Human Base Meshes / MPFB2）：涉及新数据源下载（域名需加入云环境白名单）与对齐工作，按 KICKOFF M2-4 流程先在此确认再动工。

@@ -43,69 +43,37 @@
 - 校对中英文案与三条奥秘，改完把各自的 `_meta.reviewed` 置 `true`
 - 决定是否引入 HuBMAP HRA 器官与周围神经数据源（DECISIONS.md 待定节）
 
-## v0.1 标签怎么打
+## v0.1 标签（已完成 2026-08-19）
 
-目标提交 `80e5cd73ff5249dde2fe5487815c167902e7417b`（PR #28 的合并提交，已在 `main` 上）。
-三条路任选一条，效果一样。
+`refs/tags/v0.1` → `80e5cd73ff5249dde2fe5487815c167902e7417b`（PR #28 的合并提交），
+Release 页已发布并标记 Latest。
 
-### 路线 A：本地命令行（推荐，能保留带说明的 annotated tag）
+打的过程绕了一圈，把云端代理的行为记在这里，省得下次重新摸索：
+
+| 操作                       | 云端 Claude 能不能做 |
+| -------------------------- | -------------------- |
+| 推 `refs/tags/*`（建标签） | ❌ HTTP 403          |
+| 推 `refs/heads/*`（建分支）| ✅                   |
+| 删 `refs/heads/*`（删分支）| ❌ 连接被断          |
+| GitHub MCP 工具建标签/Release | ❌ 只有只读工具   |
+
+注意 `git push --dry-run` 推标签时**会假成功**——它根本没发包，别拿它当证据。
+
+最后走通的路子：Claude 用 `git push origin <sha>:refs/heads/release/v0.1` 建一个
+临时分支指到目标提交 → 人类在 Release 页的 **Branches** 标签页选它 → Publish，
+标签就落在那个提交上 → 人类再手动删掉临时分支（Claude 删不掉）。
+
+为什么不能直接在 Release 页选提交：那个「Pick a branch or recent commit」的搜索框
+**只过滤分支**，不过滤提交。框里有字时 Recent Commits 一律显示 No results found，
+敲 PR 号（`#28`）或 SHA（`80e5cd7`）都一样。得把框清空才能看到 Recent Commits 列表，
+而目标提交要往下滚十几条才出现。
+
+如果将来要重打（比如标签指错了）：
 
 ```bash
-git clone https://github.com/duyuanping9798/hyibody.git   # 已有仓库就 git fetch origin
-cd hyibody
-git tag -a v0.1 80e5cd73ff5249dde2fe5487815c167902e7417b -F - <<'EOF'
-HyiBody v0.1
-
-143 个结构 / 1,154,816 三角面 / 资产 7.67 MB / 首屏 2.02 MB，数据全部来自
-BodyParts3D 4.0（CC BY 4.0）。
-
-- 六系统分层透视、点击识别、搜索、单剖切面（模板封盖）、6 预设视角
-- 结构层级：心脏可展开为心室壁、左右心房壁与四个瓣膜
-- 三条故事线（心跳 10 步 / 消化 7 步 / 神经 5 步），支持展开与剖切分镜
-- Kiosk 展厅模式、PWA 离线、中英切换、分享链接与二维码
-- 画质三档（软件渲染自动降级 / 移动端 / 桌面 SSAO+软阴影）
-
-验收清单见 docs/RELEASE-0.1.md；其中"手机 10 秒可交互""滑块流畅度""真机观感"
-三条需人类在真机确认。
-EOF
+git clone https://github.com/duyuanping9798/hyibody.git && cd hyibody
+git tag -a v0.1 <目标提交> -m "..."
 git push origin v0.1
 ```
 
-说明里写"故事线"是**故意的**：v0.1 那个提交上这个概念就叫故事线，2026-08-19 才更名
-为「奥秘」。标签描述的是当时的状态，不改。
-
-验证：`git ls-remote --tags origin | grep v0.1`，或打开
-<https://github.com/duyuanping9798/hyibody/tags>。
-
-打错了可以撤：`git push --delete origin v0.1 && git tag -d v0.1`。
-
-### 路线 B：GitHub 网页（不用装 git）
-
-1. 打开 <https://github.com/duyuanping9798/hyibody/releases/new>
-2. 「Choose a tag」输入框里敲 `v0.1` → 点出现的「**Create new tag: v0.1 on publish**」
-3. 「Target」下拉 → 切到「Recent Commits」标签页 → 搜索框里敲 **SHA** `80e5cd7`
-   （**认 SHA 不认 PR 号**，敲 `#28` 会显示 No results found），选出现的那条
-   `80e5cd7 Merge pull request #28…`。也可以不搜，直接在列表里往下翻——
-   它距 main 只有十来个提交。
-   **必须选它，不要用默认的 main**，main 上已经有 v0.1 之后的提交了；
-   选中后按钮会从 `Target: main` 变成 `Target: 80e5cd7`
-4. 「Release title」填 `HyiBody v0.1`，正文贴上面那段说明
-5. 勾「Set as the latest release」，点「Publish release」——标签和 Release 一起建好
-
-### 路线 C：gh CLI
-
-```bash
-gh release create v0.1 --repo duyuanping9798/hyibody \
-  --target 80e5cd73ff5249dde2fe5487815c167902e7417b \
-  --title "HyiBody v0.1" --notes-file release-notes.md
-```
-
-### 为什么不能由 Claude 代劳
-
-- 云端 git 代理对 `refs/tags/*` 的推送返回 HTTP 403（`--dry-run` 会成功，别被骗）
-- 本会话可用的 GitHub MCP 工具只有 `get_tag` / `list_tags` / `get_release_by_tag` /
-  `list_releases` 这些**只读**的，没有创建标签或 Release 的工具
-
-顺带一提：本地仓库里那个 `v0.1` annotated tag 是上一次会话打的，只存在于云端工作区，
-容器回收就没了——所以上面路线 A 里把完整命令重贴了一遍，照抄即可。
-
+撤销：`git push --delete origin v0.1 && git tag -d v0.1`（Release 要在网页上单独删）。

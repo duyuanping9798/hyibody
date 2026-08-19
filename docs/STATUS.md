@@ -512,10 +512,10 @@ UGC 前置）。
 
 ## 给人类的待办
 
-1. **`v0.1` 标签**：三条路线的完整命令见 `docs/RELEASE-0.1.md`「v0.1 标签怎么打」。
-   目标提交 `80e5cd73ff5249dde2fe5487815c167902e7417b`（PR #28 的合并提交，已在 main 上）。
-   云端 git 代理对 tag ref 的推送返回 403（`--dry-run` 会假成功），可用的 GitHub 工具
-   又全是只读的，所以这一步只能人来。
+1. ~~**`v0.1` 标签**~~ **2026-08-19 已完成**：`refs/tags/v0.1` → `80e5cd7`，
+   Release 已发布并标记 Latest。过程与云端代理的限制记在 `docs/RELEASE-0.1.md`。
+   **还剩一步给人类：删掉临时分支 `release/v0.1`**（建它是为了在 Release 页选到
+   目标提交；代理允许建分支但拒绝删分支）。删分支不影响已建好的标签。
 2. **真机确认帧率**：面数已到 145 万，KICKOFF 要求中端安卓 30 fps。
 3. **校对文案**：`content/definitions/{zh,en}.json` 各 189 条已过一轮 AI 审核，
    `_meta.reviewed` 仍是 `false`。**改动中文后记得跑一次 `pnpm font:subset`**。
