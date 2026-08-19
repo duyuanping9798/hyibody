@@ -493,28 +493,6 @@
   source: bp3d
   target_faces: 2400
   priority: 1
-- slug: small_intestine
-  zh: 小肠
-  en: Small intestine
-  system: organs
-  region: abdomen
-  side: none
-  fma:
-    - FMA7200
-  source: bp3d_partof
-  target_faces: 20000
-  priority: 1
-- slug: large_intestine
-  zh: 大肠
-  en: Large intestine
-  system: organs
-  region: abdomen
-  side: none
-  fma:
-    - FMA7201
-  source: bp3d_partof
-  target_faces: 30000
-  priority: 1
 - slug: tongue
   zh: 舌
   en: Tongue
@@ -525,17 +503,6 @@
     - FMA54640
   source: bp3d
   target_faces: 3600
-  priority: 2
-- slug: appendix
-  zh: 阑尾
-  en: Appendix
-  system: organs
-  region: abdomen
-  side: none
-  fma:
-    - FMA14542
-  source: bp3d
-  target_faces: 1800
   priority: 2
 - slug: adrenal_glands
   zh: 肾上腺
@@ -548,17 +515,6 @@
   source: bp3d
   target_faces: 3500
   priority: 2
-- slug: ureters
-  zh: 输尿管
-  en: Ureters
-  system: organs
-  region: abdomen
-  side: both
-  fma:
-    - FMA9704
-  source: bp3d
-  target_faces: 2400
-  priority: 2
 - slug: pituitary_gland
   zh: 垂体
   en: Pituitary gland
@@ -570,17 +526,6 @@
   source: bp3d
   target_faces: 1500
   priority: 2
-- slug: thymus
-  zh: 胸腺
-  en: Thymus
-  system: organs
-  region: thorax
-  side: none
-  fma:
-    - FMA9607
-  source: bp3d_partof
-  target_faces: 2400
-  priority: 3
 - slug: testes
   zh: 睾丸
   en: Testes
@@ -2328,3 +2273,516 @@
       - VH_M_fifth_sacral_spinal_cord_segment
   target_faces: 1500
   priority: 3
+- slug: eyes
+  zh: 眼球
+  en: Eyes
+  system: organs
+  region: head
+  side: both
+  # 整只眼球只取巩膜。角膜在 HRA 里与巩膜前部重叠，两件一起画就是满屏
+  # z-fighting 麻点（实测），所以角膜只作内部件出现。
+  # 不收玻璃体：它几乎与视网膜内表面重合，两件一起画会满屏 z-fighting 麻点，
+  # 而且它本来就是一团透明胶冻，画出来和不画区别不大
+  fma:
+    - FMA58269
+    - FMA58238
+    - FMA58241
+  uberon: UBERON:0000970
+  source: hra
+  hra:
+    assets:
+      - 3d-vh-m-eye-l.glb
+      - 3d-vh-m-eye-r.glb
+    meshes:
+      - VH_M_sclera_L
+      - VH_M_sclera_R
+    fit_to_set: isa
+    fit_to_fma:
+      - FMA58269
+      - FMA58238
+      - FMA58241
+  target_faces: 20000
+  priority: 1
+- slug: eye_cornea
+  zh: 角膜
+  en: Cornea
+  system: organs
+  region: head
+  side: both
+  parent: eyes
+  fma:
+    - FMA58238
+  uberon: UBERON:0000964
+  source: hra
+  hra:
+    assets:
+      - 3d-vh-m-eye-l.glb
+      - 3d-vh-m-eye-r.glb
+    meshes:
+      - VH_M_cornea_L
+      - VH_M_cornea_R
+  target_faces: 6000
+  priority: 2
+- slug: eye_iris
+  zh: 虹膜
+  en: Iris
+  system: organs
+  region: head
+  side: both
+  # 不含瞳孔：瞳孔在 HRA 里是一片与虹膜共面的薄膜，一起画会打架
+  fma: []
+  uberon: UBERON:0001769
+  source: hra
+  hra:
+    assets:
+      - 3d-vh-m-eye-l.glb
+      - 3d-vh-m-eye-r.glb
+    meshes:
+      - VH_M_iris_L
+      - VH_M_iris_R
+  target_faces: 6000
+  priority: 2
+- slug: eye_lens
+  zh: 晶状体
+  en: Lens
+  system: organs
+  region: head
+  side: both
+  parent: eyes
+  # 含悬韧带：睫状肌就是靠它把晶状体拉扁
+  fma:
+    - FMA58241
+  uberon: UBERON:0000965
+  source: hra
+  hra:
+    assets:
+      - 3d-vh-m-eye-l.glb
+      - 3d-vh-m-eye-r.glb
+    meshes:
+      - VH_M_lens_L
+      - VH_M_lens_R
+      - VH_M_suspensory_ligament_of_lens_L
+      - VH_M_suspensory_ligament_of_lens_R
+  target_faces: 4000
+  priority: 2
+- slug: eye_retina
+  zh: 视网膜
+  en: Retina
+  system: organs
+  region: head
+  side: both
+  parent: eyes
+  # 只取视网膜本体。黄斑、中央凹、视盘在 HRA 里是贴在视网膜表面上的补片，
+  # 和视网膜完全重合，一起画就是满屏 z-fighting 麻点；它们写在"你知道吗"里
+  fma: []
+  uberon: UBERON:0000966
+  source: hra
+  hra:
+    assets:
+      - 3d-vh-m-eye-l.glb
+      - 3d-vh-m-eye-r.glb
+    meshes:
+      - VH_M_retina_L
+      - VH_M_retina_R
+  target_faces: 8000
+  priority: 2
+- slug: palatine_tonsils
+  zh: 腭扁桃体
+  en: Palatine tonsils
+  system: organs
+  region: head
+  side: both
+  # BP3D 两集都没有扁桃体：借喉的变换对位，两者同在咽这一段
+  fma: []
+  uberon: UBERON:0002373
+  source: hra
+  hra:
+    assets:
+      - 3d-vh-m-palatine-tonsil-l.glb
+      - 3d-vh-m-palatine-tonsil-r.glb
+    meshes: []
+    fit_from: 3d-vh-m-larynx.glb
+  target_faces: 8000
+  priority: 2
+- slug: bronchial_tree
+  zh: 支气管树
+  en: Bronchial tree
+  system: organs
+  region: thorax
+  side: both
+  # HRA 的 lung-male 里只有支气管树与肺门，没有肺实质，所以肺本身换不了。
+  # 借气管的变换，气管往下就是主支气管、再往下就是这棵树，整条气道当一个刚体。
+  # 不收 20 件 *_bronchopulmonary_segment：那是标记支气管肺段位置的小球，不是解剖形态
+  fma: []
+  uberon: UBERON:0002185
+  source: hra
+  hra:
+    asset: 3d-vh-m-lung.glb
+    meshes:
+      - VH_M_bronchus
+      - VH_M_left_anterior_basal_bronchus
+      - VH_M_left_anterior_bronchus
+      - VH_M_left_apical_bronchus
+      - VH_M_left_inferior_lobar_bronchus
+      - VH_M_left_lateral_basal_bronchus
+      - VH_M_left_lingula_inferior_bronchus
+      - VH_M_left_lingula_superior_bronchus
+      - VH_M_left_lingular_bronchus
+      - VH_M_left_medial_basal_bronchus
+      - VH_M_left_posterior_basal_bronchus
+      - VH_M_left_superior_bronchus
+      - VH_M_left_superior_lobar_bronchus
+      - VH_M_right_anterior_basal_bronchus
+      - VH_M_right_anterior_bronchus
+      - VH_M_right_apical_bronchus
+      - VH_M_right_intermediate_bronchus
+      - VH_M_right_lateral_basal_bronchus
+      - VH_M_right_lateral_bronchus
+      - VH_M_right_lower_lobar_bronchus
+      - VH_M_right_medial_basal_bronchus
+      - VH_M_right_medial_bronchus
+      - VH_M_right_middle_lobar_bronchus
+      - VH_M_right_posterior_basal
+      - VH_M_right_posterior_bronchus
+      - VH_M_right_superior_bronchus
+      - VH_M_right_superior_lobar_bronchus
+      - VH_M_hilum_L
+      - VH_M_hilum_R
+      - VH_M_hilum_lower_L
+      - VH_M_hilum_lower_R
+      - VH_M_hilum_middle_R
+      - VH_M_hilum_upper_L
+      - VH_M_hilum_upper_R
+    fit_from: 3d-vh-m-trachea.glb
+  target_faces: 16000
+  priority: 2
+- slug: bronchial_cartilage
+  zh: 支气管软骨
+  en: Bronchial cartilage
+  system: organs
+  region: thorax
+  side: both
+  parent: bronchial_tree
+  # 只收叶支气管的软骨环。三级支气管的软骨是两件各 2.6 万面的细密薄环，
+  # 减面到 1.2 万会散架（实测只能压到 3.3 万，超单结构上限），性价比不划算
+  fma: []
+  uberon: UBERON:0002218
+  source: hra
+  hra:
+    asset: 3d-vh-m-lung.glb
+    meshes:
+      - VH_M_cartilage_of_the_lobar_bronchus_L
+      - VH_M_cartilage_of_the_lobar_bronchus_R
+  target_faces: 6000
+  priority: 3
+- slug: small_intestine
+  zh: 小肠
+  en: Small intestine
+  system: organs
+  region: abdomen
+  side: none
+  fma:
+    - FMA7200
+  uberon: UBERON:0002108
+  source: hra
+  hra:
+    asset: 3d-vh-m-small-intestine.glb
+    meshes: []
+    fit_to_set: partof
+    fit_to_fma:
+      - FMA7200
+  target_faces: 20000
+  priority: 1
+- slug: duodenum
+  zh: 十二指肠
+  en: Duodenum
+  system: organs
+  region: abdomen
+  side: none
+  parent: small_intestine
+  # 含十二指肠壶腹与乳头：胆汁和胰液就从这里汇进肠道
+  fma: []
+  uberon: UBERON:0002114
+  source: hra
+  hra:
+    asset: 3d-vh-m-small-intestine.glb
+    meshes:
+      - VH_M_duodenum_superior
+      - VH_M_duodenum_descending
+      - VH_M_duodenum_horizonal
+      - VH_M_duodenum_ascending
+      - VH_M_duodenal_ampulla
+      - VH_M_papilla_of_santorini
+      - VH_M_sphincter_of_hepatopancreatic_ampulla
+  target_faces: 4000
+  priority: 2
+- slug: jejunum
+  zh: 空肠
+  en: Jejunum
+  system: organs
+  region: abdomen
+  side: none
+  parent: small_intestine
+  fma: []
+  uberon: UBERON:0002115
+  source: hra
+  hra:
+    asset: 3d-vh-m-small-intestine.glb
+    meshes:
+      - VH_M_jejunum
+  target_faces: 9000
+  priority: 2
+- slug: ileum
+  zh: 回肠
+  en: Ileum
+  system: organs
+  region: abdomen
+  side: none
+  parent: small_intestine
+  fma: []
+  uberon: UBERON:0002116
+  source: hra
+  hra:
+    asset: 3d-vh-m-small-intestine.glb
+    meshes:
+      - VH_M_ileum
+      - VH_M_ileum_terminal
+  target_faces: 7000
+  priority: 2
+- slug: large_intestine
+  zh: 大肠
+  en: Large intestine
+  system: organs
+  region: abdomen
+  side: none
+  # 含直肠与阑尾（阑尾另有一条顶层结构，数据同源）
+  fma:
+    - FMA7201
+  uberon: UBERON:0000059
+  source: hra
+  hra:
+    asset: 3d-sbu-m-large-intestine.glb
+    meshes: []
+    fit_to_set: partof
+    fit_to_fma:
+      - FMA7201
+  target_faces: 28000
+  priority: 1
+- slug: caecum
+  zh: 盲肠
+  en: Caecum
+  system: organs
+  region: abdomen
+  side: none
+  parent: large_intestine
+  # 含回盲瓣：小肠汇入大肠的那道阀门
+  fma: []
+  uberon: UBERON:0001153
+  source: hra
+  hra:
+    asset: 3d-sbu-m-large-intestine.glb
+    meshes:
+      - VH_M_caecum
+      - VH_M_ileocecal_valve
+  target_faces: 4000
+  priority: 2
+- slug: ascending_colon
+  zh: 升结肠
+  en: Ascending colon
+  system: organs
+  region: abdomen
+  side: none
+  parent: large_intestine
+  fma: []
+  uberon: UBERON:0001156
+  source: hra
+  hra:
+    asset: 3d-sbu-m-large-intestine.glb
+    meshes:
+      - VH_M_ascending_colon
+      - VH_M_hepatic_flexure_of_colon
+  target_faces: 5000
+  priority: 2
+- slug: transverse_colon
+  zh: 横结肠
+  en: Transverse colon
+  system: organs
+  region: abdomen
+  side: none
+  parent: large_intestine
+  fma: []
+  uberon: UBERON:0001157
+  source: hra
+  hra:
+    asset: 3d-sbu-m-large-intestine.glb
+    meshes:
+      - VH_M_transverse_colon
+      - VH_M_splenic_flexure_of_colon
+  target_faces: 8000
+  priority: 2
+- slug: descending_colon
+  zh: 降结肠
+  en: Descending colon
+  system: organs
+  region: abdomen
+  side: none
+  parent: large_intestine
+  fma: []
+  uberon: UBERON:0001158
+  source: hra
+  hra:
+    asset: 3d-sbu-m-large-intestine.glb
+    meshes:
+      - VH_M_descending_colon
+  target_faces: 3500
+  priority: 2
+- slug: sigmoid_colon
+  zh: 乙状结肠
+  en: Sigmoid colon
+  system: organs
+  region: pelvis
+  side: none
+  parent: large_intestine
+  fma: []
+  uberon: UBERON:0001159
+  source: hra
+  hra:
+    asset: 3d-sbu-m-large-intestine.glb
+    meshes:
+      - VH_M_sigmoid_colon
+  target_faces: 3500
+  priority: 2
+- slug: rectum
+  zh: 直肠
+  en: Rectum
+  system: organs
+  region: pelvis
+  side: none
+  parent: large_intestine
+  fma: []
+  uberon: UBERON:0001052
+  source: hra
+  hra:
+    asset: 3d-sbu-m-large-intestine.glb
+    meshes:
+      - VH_M_rectum
+  target_faces: 2000
+  priority: 2
+- slug: appendix
+  zh: 阑尾
+  en: Appendix
+  system: organs
+  region: abdomen
+  side: none
+  # 和大肠同一个 glb，锚点由大肠那条给出
+  fma:
+    - FMA14542
+  uberon: UBERON:0001154
+  source: hra
+  hra:
+    asset: 3d-sbu-m-large-intestine.glb
+    meshes:
+      - VH_M_vermiform_appendix
+  target_faces: 500
+  priority: 2
+- slug: ureters
+  zh: 输尿管
+  en: Ureters
+  system: organs
+  region: abdomen
+  side: both
+  # 整条输尿管只取管本身；肾盂与肾盏在内部件里
+  fma:
+    - FMA9704
+  uberon: UBERON:0000056
+  source: hra
+  hra:
+    assets:
+      - 3d-vh-m-ureter-l.glb
+      - 3d-vh-m-ureter-r.glb
+    meshes:
+      - VH_M_ureter_L
+      - VH_M_ureter_R
+    fit_to_set: isa
+    fit_to_fma:
+      - FMA9704
+  target_faces: 9000
+  priority: 2
+- slug: renal_pelvis
+  zh: 肾盂
+  en: Renal pelvis
+  system: organs
+  region: abdomen
+  side: both
+  parent: ureters
+  fma: []
+  uberon: UBERON:0001224
+  source: hra
+  hra:
+    assets:
+      - 3d-vh-m-ureter-l.glb
+      - 3d-vh-m-ureter-r.glb
+    meshes:
+      - VH_M_renal_pelvis_L
+      - VH_M_renal_pelvis_R
+  target_faces: 5000
+  priority: 2
+- slug: renal_calyces
+  zh: 肾盏
+  en: Renal calyces
+  system: organs
+  region: abdomen
+  side: both
+  parent: ureters
+  # 大盏 5 个 + 小盏 18 个：尿从肾乳头滴进小盏，汇进大盏再进肾盂
+  fma: []
+  uberon: UBERON:0001227
+  source: hra
+  hra:
+    assets:
+      - 3d-vh-m-ureter-l.glb
+      - 3d-vh-m-ureter-r.glb
+    meshes:
+      - VH_M_major_calyx_L_a
+      - VH_M_major_calyx_L_b
+      - VH_M_major_calyx_L_c
+      - VH_M_major_calyx_R_a
+      - VH_M_major_calyx_R_b
+      - VH_M_minor_calyx_L_a
+      - VH_M_minor_calyx_L_b
+      - VH_M_minor_calyx_L_c
+      - VH_M_minor_calyx_L_d
+      - VH_M_minor_calyx_L_e
+      - VH_M_minor_calyx_L_f
+      - VH_M_minor_calyx_L_g
+      - VH_M_minor_calyx_L_h
+      - VH_M_minor_calyx_L_i
+      - VH_M_minor_calyx_R_a
+      - VH_M_minor_calyx_R_b
+      - VH_M_minor_calyx_R_c
+      - VH_M_minor_calyx_R_d
+      - VH_M_minor_calyx_R_e
+      - VH_M_minor_calyx_R_f
+      - VH_M_minor_calyx_R_g
+      - VH_M_minor_calyx_R_h
+      - VH_M_minor_calyx_R_i
+  target_faces: 7000
+  priority: 3
+- slug: thymus
+  zh: 胸腺
+  en: Thymus
+  system: organs
+  region: thorax
+  side: none
+  fma:
+    - FMA9607
+  uberon: UBERON:0002370
+  source: hra
+  hra:
+    asset: 3d-vh-m-thymus.glb
+    meshes: []
+    fit_to_set: partof
+    fit_to_fma:
+      - FMA9607
+  target_faces: 2700
+  priority: 2

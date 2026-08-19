@@ -5,7 +5,7 @@
   target_faces 在 500–8000、fma 非空
 - manifest.json：schema（对齐 src/data/types.ts）、系统文件存在、结构互相对应
 - glb：单文件 < 50 MB；全部资产 ≤ 40 MB；首屏（皮肤+骨骼+manifest）≤ 5 MB；
-  单结构面数 ≤ 8000×1.05；总三角面 ≤ 150 万；节点名与 manifest 一致、extras 保留
+  单结构面数上限见 bp3d.max_faces_for；总三角面 ≤ 200 万；节点名与 manifest 一致、extras 保留
 
 用法：
     python3 pipeline/validate.py [--require-manifest]
@@ -36,10 +36,12 @@ MAX_FILE_BYTES = 50_000_000  # 仓库单文件上限（CLAUDE.md）
 # 2026-08-18 数据质量升级后收紧到本次验收标准（CLAUDE.md 的硬上限是 40 MB / 5 MB）
 MAX_TOTAL_BYTES = 25_000_000  # 全部资产
 MAX_FIRST_SCREEN_BYTES = 4_000_000  # 首屏：皮肤 + 骨骼 + manifest
-MAX_TOTAL_TRIANGLES = 1_500_000
+MAX_TOTAL_TRIANGLES = 2_000_000
 # 面数目标区间：低于下限说明网格被压得太狠（观感粗糙），只警告不报错
+# 2026-08-18 修订（用户拍板"完整性和效果优先"）：目标区间 100–180 万，硬上限 200 万。
+# 换 HRA 数据源之后结构从 135 涨到近 200 个，1.3 万上限已经卡住内容扩展。
 TARGET_TRIANGLES_MIN = 1_000_000
-TARGET_TRIANGLES_MAX = 1_300_000
+TARGET_TRIANGLES_MAX = 1_800_000
 # 每结构一份材质一次绘制 + 背景/描边等开销余量，静态估算不超过同屏 600 draw call
 MAX_STRUCTURES_FOR_DRAWCALLS = 580
 VALID_SOURCES = ("bp3d", "bp3d_partof", "hra", "cc0")
@@ -225,7 +227,7 @@ def validate_assets(manifest: dict, chk: Checker) -> None:
             f"{TARGET_TRIANGLES_MIN}–{TARGET_TRIANGLES_MAX}"
         )
     if total_tris > MAX_TOTAL_TRIANGLES:
-        chk.error(f"总三角面 {total_tris} 超过 150 万预算")
+        chk.error(f"总三角面 {total_tris} 超过 {MAX_TOTAL_TRIANGLES // 10000} 万硬上限")
     n_structures = len(manifest["structures"])
     if n_structures > MAX_STRUCTURES_FOR_DRAWCALLS:
         chk.error(

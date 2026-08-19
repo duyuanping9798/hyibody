@@ -683,5 +683,81 @@
   "spinal_cord_sacral": {
     "blurb": "Five segments handling the foot, the perineum and the reflexes of bladder and bowel — the cord ends here.",
     "fact": "In adults the cord stops around the first or second lumbar vertebra; below that only a bundle of roots continues, the cauda equina."
+  },
+  "eyes": {
+    "blurb": "A pair of spheres about 24 mm across that focus light onto the retina and hand the signal to the optic nerve.",
+    "fact": "They barely change size in a lifetime — a baby's eyes are already close to adult size, which is why children's eyes look so big."
+  },
+  "eye_cornea": {
+    "blurb": "The clear domed window at the front of the eye, responsible for about two-thirds of its focusing power.",
+    "fact": "It has no blood vessels, drawing oxygen from tears and the fluid behind it — which is also why corneal grafts are rarely rejected."
+  },
+  "eye_iris": {
+    "blurb": "The coloured ring, with the pupil as the hole in its middle; two sets of muscles adjust how much light gets through.",
+    "fact": "Its pattern is unique and stable for life, so it works for identification — and blue eyes hold no blue pigment, the colour comes from scattering."
+  },
+  "eye_lens": {
+    "blurb": "An elastic lens slung behind the iris on fine fibres, shifting focus between near and far.",
+    "fact": "It stiffens with age, and past forty focusing up close becomes hard work — that is presbyopia."
+  },
+  "eye_retina": {
+    "blurb": "The light-sensitive film lining the back of the eye, where hundreds of millions of cells turn light into nerve signals.",
+    "fact": "The macula at its centre is the sharpest spot, while the point where the optic nerve leaves has no receptors at all — your blind spot."
+  },
+  "palatine_tonsils": {
+    "blurb": "A pair of lymphoid masses on either side of the throat, standing guard at the entrance to both the airway and the gut.",
+    "fact": "They are largest in childhood and shrink in adults; they are the bumps you see either side of the throat when you say ah."
+  },
+  "bronchial_tree": {
+    "blurb": "From the main bronchi down through lobar and segmental branches, an upside-down tree delivering air to every corner of the lungs.",
+    "fact": "There are about twenty-three generations of branching from windpipe to air sac, and the small airways' combined cross-section is hundreds of times the trachea's."
+  },
+  "bronchial_cartilage": {
+    "blurb": "Plates of cartilage set into the airway walls, smaller with each branching, keeping the tubes from collapsing as you breathe out.",
+    "fact": "By the time the airways are down to bronchioles the cartilage is gone entirely, leaving only smooth muscle — the very muscle that tightens in an asthma attack."
+  },
+  "duodenum": {
+    "blurb": "The first stretch of small intestine, curving in a C around the head of the pancreas, where bile and pancreatic juice arrive.",
+    "fact": "Its name means twelve fingers wide, about 25 cm, and this is where alkaline pancreatic juice neutralises the acid coming out of the stomach."
+  },
+  "jejunum": {
+    "blurb": "The middle stretch of small intestine, thick-walled and densely folded, doing most of the work of absorbing nutrients.",
+    "fact": "It is usually found empty at dissection, which is where its name comes from — food passes through it quickly."
+  },
+  "ileum": {
+    "blurb": "The last stretch of small intestine, taking up what is left, particularly vitamin B12 and bile salts.",
+    "fact": "Its wall carries patches of lymphoid tissue, Peyer's patches, a key outpost of gut immunity."
+  },
+  "caecum": {
+    "blurb": "The pouch where the large intestine begins, in the lower right abdomen, fed by the ileum through the ileocaecal valve.",
+    "fact": "That valve is a one-way gate, keeping the bacteria of the large intestine from flooding back into the small."
+  },
+  "ascending_colon": {
+    "blurb": "Runs up the right side of the abdomen and turns beneath the liver, still reclaiming water as it goes.",
+    "fact": "The bend is tucked against the liver, which is why it is called the hepatic flexure."
+  },
+  "transverse_colon": {
+    "blurb": "Crosses the upper abdomen — the longest and most mobile stretch of the large intestine.",
+    "fact": "Slung on a mesentery, it often sags into a U when you stand, so its position varies with person and posture."
+  },
+  "descending_colon": {
+    "blurb": "Runs down the left side of the abdomen, where stool gradually takes shape.",
+    "fact": "Its upper bend presses against the spleen — the splenic flexure — and sits higher than the hepatic flexure on the other side."
+  },
+  "sigmoid_colon": {
+    "blurb": "An S-shaped loop in the lower left abdomen, the last stretch before the rectum.",
+    "fact": "Mobile and sharply curved, it is the commonest site of both volvulus and diverticula."
+  },
+  "rectum": {
+    "blurb": "The final 12 cm or so of the digestive tract, holding stool and triggering the urge to go.",
+    "fact": "It is not actually straight — it makes two curves in front of the sacrum, and a colonoscope has to follow both."
+  },
+  "renal_pelvis": {
+    "blurb": "The funnel inside the hilum of the kidney, gathering urine from the calyces and passing it into the ureter.",
+    "fact": "A stone stuck where the pelvis meets the ureter hurts the most — it is one of the three narrowest points in the urinary tract."
+  },
+  "renal_calyces": {
+    "blurb": "A set of cups upstream of the renal pelvis: minor calyces catch the drip from each papilla and empty into major ones.",
+    "fact": "A kidney has roughly 8-12 minor and 2-3 major calyces, nested funnels collecting urine stage by stage."
   }
 }
