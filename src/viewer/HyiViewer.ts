@@ -907,7 +907,12 @@ export class HyiViewer extends EventTarget {
   private resize(): void {
     const w = this.container.clientWidth || 1;
     const h = this.container.clientHeight || 1;
-    this.renderer.setSize(w, h, false);
+    // 第三个参数（updateStyle）必须留默认的 true：它负责把 canvas.style.width/height
+    // 设成 CSS 像素尺寸。传 false 时 three 只设绘制缓冲（= 尺寸 × 像素比），canvas
+    // 元素就按固有尺寸显示——在 DPR 2 的设备（所有 Retina 苹果设备、多数手机）上
+    // 画布被撑成容器的两倍，用户只看得见整幅画面的左上四分之一。ui.css 里还有一条
+    // 兜底规则，两边都改了才不会再踩。
+    this.renderer.setSize(w, h);
     this.rig.camera.aspect = w / h;
     this.rig.camera.updateProjectionMatrix();
     this.pipeline?.setSize(w, h, this.renderer.getPixelRatio());

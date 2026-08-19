@@ -18,6 +18,15 @@
   font-display: swap;
 }
 
+/* 三维画布必须铺满容器。three 的 setSize 会设 canvas.style，但这里再兜一层：
+   万一哪天又有人传 updateStyle=false，canvas 会按固有尺寸（= CSS 尺寸 × 像素比）
+   显示，Retina 设备上直接撑成两倍，只看得见左上四分之一。 */
+[data-testid='viewer'] > canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 /* HyiBody UI：深色舞台 + 玻璃拟态面板 + 青色强调（原型视觉基调，KICKOFF 第 6 节） */
 
 :root {
@@ -510,7 +519,8 @@ body.hyi-kiosk .hyi-info .blurb {
 @media (max-width: 720px) {
   .hyi-dock {
     top: auto;
-    bottom: 84px;
+    /* 分层滑块占了底部 8~98 px（面板高 90），抽屉得完全让开再留 8 px 空隙 */
+    bottom: 106px;
     left: 8px;
     right: 8px;
     width: auto;
@@ -941,7 +951,7 @@ body.hyi-kiosk .hyi-info .blurb {
     bottom: calc(8px + env(safe-area-inset-bottom, 0px));
   }
   .hyi-dock {
-    bottom: calc(82px + env(safe-area-inset-bottom, 0px));
+    bottom: calc(106px + env(safe-area-inset-bottom, 0px));
   }
   /* 小屏上标签引线容易压住抽屉，缩短并缩小字号 */
   .hyi-label .zh {
@@ -976,7 +986,7 @@ body.hyi-kiosk .hyi-info .blurb {
     bottom: calc(46vh + 10px);
   }
   body:has(.hyi-info) .hyi-dock {
-    bottom: calc(46vh + 78px);
+    bottom: calc(46vh + 108px);
   }
 }
 
@@ -997,7 +1007,7 @@ body.hyi-kiosk .hyi-info .blurb {
       bottom: calc(46dvh + 10px);
     }
     body:has(.hyi-info) .hyi-dock {
-      bottom: calc(46dvh + 78px);
+      bottom: calc(46dvh + 108px);
     }
   }
 }
