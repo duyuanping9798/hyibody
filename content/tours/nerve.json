@@ -1,6 +1,9 @@
 {
   "id": "nerve",
-  "title": { "zh": "一根神经的旅程", "en": "Journey of a Nerve Signal" },
+  "title": {
+    "zh": "一根神经的旅程",
+    "en": "Journey of a Nerve Signal"
+  },
   "steps": [
     {
       "text": {
@@ -13,12 +16,15 @@
     },
     {
       "text": {
-        "zh": "颅底藏着豌豆大的垂体——腺体\"总司令\"，用激素远程指挥生长、代谢与情绪。",
-        "en": "At the skull base hides the pea-sized pituitary — commander of hormones for growth, metabolism and mood."
+        "zh": "把大脑收起来，颅底正中就露出一颗豌豆大的垂体——它用激素远程指挥生长、代谢与生殖，是内分泌的总开关。",
+        "en": "Tuck the brain away and a pea-sized gland is left sitting in the floor of the skull: the pituitary, commanding growth, metabolism and reproduction by hormone alone."
       },
-      "layer": 0.9,
+      "layer": 0.7,
       "selected": "pituitary_gland",
-      "durationMs": 9000
+      "durationMs": 10000,
+      "systems": {
+        "nerves": false
+      }
     },
     {
       "text": {
@@ -31,22 +37,22 @@
     },
     {
       "text": {
-        "zh": "指令沿脊髓一路向下：这条藏在椎骨管道里的\"信息高速路\"，是大脑与全身之间的必经之路。",
-        "en": "Commands race down the spinal cord — the information highway sheltered inside your vertebrae."
+        "zh": "指令沿脊髓一路向下。它从不裸奔：一节节椎骨在它周围搭成一条骨头隧道，你能看到脊髓正从这条隧道里穿过去。",
+        "en": "Commands run down the spinal cord — and it never travels exposed. The vertebrae stack into a bone tunnel around it, and you can watch the cord threading straight through."
       },
       "layer": 0.9,
       "selected": "spinal_cord",
-      "systems": { "skeleton": false },
       "durationMs": 10000
     },
     {
       "text": {
-        "zh": "从脊髓出发，信号经周围神经奔向每块肌肉与皮肤——从起念到动指尖，只要百分之一秒。（周围神经的三维数据将在后续版本补充）",
-        "en": "From the cord, signals fan out through peripheral nerves to every muscle — thought to fingertip in a hundredth of a second."
+        "zh": "脊髓也不是一根均质的电缆：颈段管手臂、胸段管躯干、腰段管腿、骶段管盆底——信号从哪一节离开，就决定了它落在身体的哪一块。",
+        "en": "The cord is not one uniform cable: the cervical segment serves the arms, the thoracic the trunk, the lumbar the legs, the sacral the pelvic floor — where a signal leaves decides where in the body it lands."
       },
-      "layer": 0.75,
-      "selected": "spinal_cord",
-      "durationMs": 10000
+      "layer": 0.85,
+      "selected": "spinal_cord_cervical",
+      "durationMs": 12000,
+      "expand": "spinal_cord"
     }
   ]
 }

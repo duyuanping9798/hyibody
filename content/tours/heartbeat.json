@@ -47,7 +47,7 @@
       "focus": true,
       "clip": {
         "axis": "y",
-        "pos": 0.52,
+        "pos": -0.15,
         "flip": true
       },
       "durationMs": 11000
