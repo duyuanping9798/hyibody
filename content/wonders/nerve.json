@@ -4,6 +4,18 @@
     "zh": "一根神经的旅程",
     "en": "Journey of a Nerve Signal"
   },
+  "system": "nerves",
+  "structures": [
+    "brain",
+    "pituitary_gland",
+    "optic_nerves",
+    "eyes",
+    "spinal_cord",
+    "spinal_cord_cervical",
+    "spinal_cord_thoracic",
+    "spinal_cord_lumbar",
+    "spinal_cord_sacral"
+  ],
   "steps": [
     {
       "text": {

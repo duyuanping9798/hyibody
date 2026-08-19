@@ -11,8 +11,8 @@ const ROWS: { keys: string[]; key: ShortcutKey }[] = [
   { keys: ['1', '–', '6'], key: 'systems' },
   { keys: ['F'], key: 'focusSelected' },
   { keys: ['0'], key: 'backToBody' },
-  { keys: ['←', '→'], key: 'tourStep' },
-  { keys: ['Space'], key: 'tourToggle' },
+  { keys: ['←', '→'], key: 'wonderStep' },
+  { keys: ['Space'], key: 'wonderToggle' },
   { keys: ['Esc'], key: 'escape' },
 ];
 

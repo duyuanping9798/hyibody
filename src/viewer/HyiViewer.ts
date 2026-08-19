@@ -60,7 +60,7 @@ export interface HyiViewerOptions {
 /** 首屏系统：先加载完这两个就派发 ready，其余后台补（KICKOFF 第 5 节 M1-6）。 */
 const FIRST_SCREEN_SYSTEMS: readonly SystemId[] = ['skin', 'skeleton'];
 
-/** 分层缓动：跨度超过阈值才缓动（拖滑块要跟手，故事线跳转要顺滑），时间常数秒。 */
+/** 分层缓动：跨度超过阈值才缓动（拖滑块要跟手，奥秘跳转要顺滑），时间常数秒。 */
 const LAYER_EASE_THRESHOLD = 0.08;
 const LAYER_EASE_TAU = 0.12;
 
@@ -158,7 +158,7 @@ export class HyiViewer extends EventTarget {
     t: number;
   } | null = null;
   private pointerDownAt: { x: number; y: number } | null = null;
-  /** 分层滑块缓动：大跳（故事线、预设）平滑过渡，小步（拖滑块）立即跟手 */
+  /** 分层滑块缓动：大跳（奥秘、预设）平滑过渡，小步（拖滑块）立即跟手 */
   private layerTarget = 0;
   private layerEasing = false;
 
@@ -359,7 +359,7 @@ export class HyiViewer extends EventTarget {
   setLayer(value: number, immediate = false): void {
     const next = Math.min(1, Math.max(0, value));
     this.layerTarget = next;
-    // 拖滑块时每帧都在小步变化，缓动会拖泥带水；故事线/预设是大跳，缓动才有意义
+    // 拖滑块时每帧都在小步变化，缓动会拖泥带水；奥秘/预设是大跳，缓动才有意义
     if (immediate || Math.abs(next - this.state.layer) < LAYER_EASE_THRESHOLD) {
       this.layerEasing = false;
       this.state.layer = next;

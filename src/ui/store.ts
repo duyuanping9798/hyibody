@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import type { Locale } from './i18n';
 import { SYSTEM_IDS, type Manifest, type SystemId } from '../data/types';
 import type { ViewerUrlState } from '../data/urlState';
-import { TourEngine, type Tour, type TourStep } from '../tours/engine';
+import { WonderEngine, type Wonder, type WonderStep } from '../wonders/engine';
 import type { ClipAxis } from '../viewer/clipping';
 import type { ViewPresetId } from '../viewer/camera';
 import type { HyiViewer } from '../viewer/HyiViewer';
@@ -34,10 +34,10 @@ interface UiState {
   /** 画质档位（B 步渲染升级）：low 是软件渲染兜底，不给切 */
   quality: QualityTier;
   qualityToggleable: boolean;
-  /** 故事线播放状态（M2-1） */
-  tour: Tour | null;
-  tourIndex: number;
-  tourPlaying: boolean;
+  /** 奥秘播放状态（M2-1） */
+  wonder: Wonder | null;
+  wonderIndex: number;
+  wonderPlaying: boolean;
 
   setLang(lang: Locale): void;
   setQuality(q: QualityTier): void;
@@ -60,19 +60,19 @@ interface UiState {
   focus(slug: string): void;
   setAttributionOpen(open: boolean): void;
   togglePanel(panel: 'systems' | 'views'): void;
-  startTour(tour: Tour): void;
-  exitTour(): void;
-  tourNext(): void;
-  tourPrev(): void;
-  tourToggle(): void;
+  startWonder(wonder: Wonder): void;
+  exitWonder(): void;
+  wonderNext(): void;
+  wonderPrev(): void;
+  wonderToggle(): void;
   applyUrlState(s: ViewerUrlState): void;
 }
 
 let viewer: HyiViewer | null = null;
-const tourEngine = new TourEngine();
+const wonderEngine = new WonderEngine();
 
-/** 把一步故事线应用到画面：分层、显隐覆盖、选中与对准。 */
-function applyTourStep(step: TourStep): void {
+/** 把一步奥秘应用到画面：分层、显隐覆盖、选中与对准。 */
+function applyWonderStep(step: WonderStep): void {
   const st = useUiStore.getState();
   st.setLayer(step.layer);
   for (const id of SYSTEM_IDS) {
@@ -91,21 +91,21 @@ function applyTourStep(step: TourStep): void {
   }
 }
 
-tourEngine.addEventListener('step', (e) => {
-  const { step } = (e as CustomEvent<{ index: number; step: TourStep | null }>).detail;
-  if (step) applyTourStep(step);
-  useUiStore.setState({ tourIndex: tourEngine.currentIndex });
+wonderEngine.addEventListener('step', (e) => {
+  const { step } = (e as CustomEvent<{ index: number; step: WonderStep | null }>).detail;
+  if (step) applyWonderStep(step);
+  useUiStore.setState({ wonderIndex: wonderEngine.currentIndex });
 });
-tourEngine.addEventListener('play', () => useUiStore.setState({ tourPlaying: true }));
-tourEngine.addEventListener('pause', () => useUiStore.setState({ tourPlaying: false }));
-tourEngine.addEventListener('end', () => {
+wonderEngine.addEventListener('play', () => useUiStore.setState({ wonderPlaying: true }));
+wonderEngine.addEventListener('pause', () => useUiStore.setState({ wonderPlaying: false }));
+wonderEngine.addEventListener('end', () => {
   const st = useUiStore.getState();
   st.select(null);
   st.resetVisibility();
   for (const id of SYSTEM_IDS) {
     if (!st.systemsVisible[id]) st.toggleSystem(id);
   }
-  useUiStore.setState({ tour: null, tourIndex: 0, tourPlaying: false });
+  useUiStore.setState({ wonder: null, wonderIndex: 0, wonderPlaying: false });
 });
 
 /** App 挂载 viewer 后调用；canvas 侧的选中事件也在这里回写 store。 */
@@ -164,9 +164,9 @@ export const useUiStore = create<UiState>((set, get) => ({
   clip: null,
   attributionOpen: false,
   activePanel: null,
-  tour: null,
-  tourIndex: 0,
-  tourPlaying: false,
+  wonder: null,
+  wonderIndex: 0,
+  wonderPlaying: false,
   lang: 'zh',
   progress: { loaded: 0, total: 0 },
   quality: 'medium',
@@ -253,16 +253,16 @@ export const useUiStore = create<UiState>((set, get) => ({
   setAttributionOpen: (attributionOpen) => set({ attributionOpen }),
   togglePanel: (panel) => set((s) => ({ activePanel: s.activePanel === panel ? null : panel })),
 
-  startTour: (tour) => {
-    set({ tour, tourIndex: 0, tourPlaying: true, activePanel: null });
-    tourEngine.start(tour);
+  startWonder: (wonder) => {
+    set({ wonder, wonderIndex: 0, wonderPlaying: true, activePanel: null });
+    wonderEngine.start(wonder);
   },
-  exitTour: () => tourEngine.stop(),
-  tourNext: () => tourEngine.next(),
-  tourPrev: () => tourEngine.prev(),
-  tourToggle: () => {
-    if (tourEngine.isPlaying) tourEngine.pause();
-    else tourEngine.play();
+  exitWonder: () => wonderEngine.stop(),
+  wonderNext: () => wonderEngine.next(),
+  wonderPrev: () => wonderEngine.prev(),
+  wonderToggle: () => {
+    if (wonderEngine.isPlaying) wonderEngine.pause();
+    else wonderEngine.play();
   },
 
   applyUrlState: (s) => {

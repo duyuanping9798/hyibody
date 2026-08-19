@@ -1,8 +1,9 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { TourEngine, type Tour } from '../../src/tours/engine';
-import { TOURS } from '../../src/tours';
+import { WonderEngine, type Wonder } from '../../src/wonders/engine';
+import { WONDERS, wondersForStructure } from '../../src/wonders';
+import { estimatedSeconds, structuresOf } from '../../src/wonders/engine';
 import { clipConstant } from '../../src/viewer/clipping';
 import { computeSystemOpacity } from '../../src/viewer/layers';
 import type { SystemId } from '../../src/data/types';
@@ -32,16 +33,42 @@ const CONTENT_BOX = (() => {
   return { lo, hi };
 })();
 
-describe('故事线内容契约', () => {
-  it('内置三条故事线', () => {
-    expect(TOURS.map((t) => t.id)).toEqual(['heartbeat', 'digestion', 'nerve']);
+describe('奥秘内容契约', () => {
+  it('内置三条奥秘（按文件名自动收录，顺序稳定）', () => {
+    expect(WONDERS.map((t) => t.id)).toEqual(['digestion', 'heartbeat', 'nerve']);
+  });
+
+  it('每条奥秘都声明了主系统与涉及的结构，且结构真实存在', () => {
+    for (const wonder of WONDERS) {
+      expect(wonder.system, `${wonder.id} 缺 system`).toBeTruthy();
+      const slugs = structuresOf(wonder);
+      expect(slugs.length, `${wonder.id} 没有声明任何结构`).toBeGreaterThan(3);
+      for (const slug of slugs) {
+        expect(manifest.structures[slug], `${wonder.id} 引用不存在的 ${slug}`).toBeDefined();
+      }
+      // 每一步点名的主角都该在声明里，否则反向索引会漏掉它
+      for (const step of wonder.steps) {
+        if (step.selected)
+          expect(slugs, `${wonder.id} 漏声明 ${step.selected}`).toContain(step.selected);
+      }
+      expect(estimatedSeconds(wonder)).toBeGreaterThan(30);
+    }
+  });
+
+  it('反向索引：点开结构能找到讲它的奥秘，内部件回退到父结构', () => {
+    expect(wondersForStructure('heart').map((w) => w.id)).toContain('heartbeat');
+    expect(wondersForStructure('liver').map((w) => w.id)).toContain('digestion');
+    // 二尖瓣自己没被 heartbeat 声明时，应回退到父结构 heart 的内容
+    expect(wondersForStructure('heart_tricuspid_valve', 'heart').length).toBeGreaterThan(0);
+    // 没人讲到的结构就是空，不许瞎推荐
+    expect(wondersForStructure('patella_left')).toEqual([]);
   });
 
   it('步骤字段合法且引用的结构真实存在', () => {
-    for (const tour of TOURS) {
-      expect(tour.steps.length, tour.id).toBeGreaterThanOrEqual(4);
-      for (const [i, step] of tour.steps.entries()) {
-        const where = `${tour.id}[${i}]`;
+    for (const wonder of WONDERS) {
+      expect(wonder.steps.length, wonder.id).toBeGreaterThanOrEqual(4);
+      for (const [i, step] of wonder.steps.entries()) {
+        const where = `${wonder.id}[${i}]`;
         expect(step.text.zh, where).toBeTruthy();
         expect(step.text.en, where).toBeTruthy();
         expect(step.layer, where).toBeGreaterThanOrEqual(0);
@@ -67,8 +94,8 @@ describe('故事线内容契约', () => {
    * 切面落在 y ≈ +76 mm，而心脏在 y ∈ [-72, 27]，整颗心被切掉，11 秒白屏。
    */
   it('带剖切的步骤，切面必须与选中结构相交', () => {
-    for (const tour of TOURS) {
-      for (const [i, step] of tour.steps.entries()) {
+    for (const wonder of WONDERS) {
+      for (const [i, step] of wonder.steps.entries()) {
         if (!step.clip || !step.selected) continue;
         const info = manifest.structures[step.selected];
         if (!info?.bbox) continue;
@@ -77,7 +104,7 @@ describe('故事线内容契约', () => {
         const [min, max] = [info.bbox[a]!, info.bbox[a + 3]!];
         expect(
           cut > min && cut < max,
-          `${tour.id}[${i}] 剖切面 ${step.clip.axis}=${cut.toFixed(1)} 没落在 ` +
+          `${wonder.id}[${i}] 剖切面 ${step.clip.axis}=${cut.toFixed(1)} 没落在 ` +
             `${step.selected} 的 [${min.toFixed(1)}, ${max.toFixed(1)}] 里，这一步会切出空画面`,
         ).toBe(true);
       }
@@ -86,8 +113,8 @@ describe('故事线内容契约', () => {
 
   /** 主角必须看得见：选中结构所属系统在该 layer 下不透明度得大于拾取阈值。 */
   it('每一步的主角在该分层下可见', () => {
-    for (const tour of TOURS) {
-      for (const [i, step] of tour.steps.entries()) {
+    for (const wonder of WONDERS) {
+      for (const [i, step] of wonder.steps.entries()) {
         if (!step.selected) continue;
         const info = manifest.structures[step.selected];
         if (!info) continue;
@@ -95,7 +122,7 @@ describe('故事线内容契约', () => {
         const opacity = computeSystemOpacity(info.system as SystemId, step.layer);
         expect(
           opacity,
-          `${tour.id}[${i}] 主角 ${step.selected}（${info.system}）在 layer=${step.layer} 下` +
+          `${wonder.id}[${i}] 主角 ${step.selected}（${info.system}）在 layer=${step.layer} 下` +
             `不透明度只有 ${opacity.toFixed(2)}，观众看不到它`,
         ).toBeGreaterThan(0.15);
       }
@@ -107,10 +134,10 @@ describe('故事线内容契约', () => {
    * 观众会以为卡住了。至少要在 selected / expand / clip / preset / layer 里变一项。
    */
   it('相邻两步画面必须有变化', () => {
-    for (const tour of TOURS) {
-      for (let i = 1; i < tour.steps.length; i += 1) {
-        const a = tour.steps[i - 1]!;
-        const b = tour.steps[i]!;
+    for (const wonder of WONDERS) {
+      for (let i = 1; i < wonder.steps.length; i += 1) {
+        const a = wonder.steps[i - 1]!;
+        const b = wonder.steps[i]!;
         const changed =
           a.selected !== b.selected ||
           a.expand !== b.expand ||
@@ -118,7 +145,7 @@ describe('故事线内容契约', () => {
           JSON.stringify(a.clip ?? null) !== JSON.stringify(b.clip ?? null) ||
           JSON.stringify(a.systems ?? null) !== JSON.stringify(b.systems ?? null) ||
           Math.abs(a.layer - b.layer) >= 0.1;
-        expect(changed, `${tour.id}[${i}] 与上一步画面完全相同`).toBe(true);
+        expect(changed, `${wonder.id}[${i}] 与上一步画面完全相同`).toBe(true);
       }
     }
   });
@@ -126,10 +153,12 @@ describe('故事线内容契约', () => {
   /** 展词是给观众看的，不该出现开发排期与占位说明。 */
   it('展词里没有生产备注', () => {
     const leak = /(后续版本|待补充|尚未补齐|暂缺|TODO|待定|placeholder)/i;
-    for (const tour of TOURS) {
-      for (const [i, step] of tour.steps.entries()) {
+    for (const wonder of WONDERS) {
+      for (const [i, step] of wonder.steps.entries()) {
         for (const lang of ['zh', 'en'] as const) {
-          expect(leak.test(step.text[lang]), `${tour.id}[${i}].${lang} 混入了生产备注`).toBe(false);
+          expect(leak.test(step.text[lang]), `${wonder.id}[${i}].${lang} 混入了生产备注`).toBe(
+            false,
+          );
         }
       }
     }
@@ -137,21 +166,21 @@ describe('故事线内容契约', () => {
 
   /** 中英必须讲同一件事：一边有内容另一边只剩半句，等于英文观众少看一半。 */
   it('中英文案长度相当，不许一边缺内容', () => {
-    for (const tour of TOURS) {
-      for (const [i, step] of tour.steps.entries()) {
+    for (const wonder of WONDERS) {
+      for (const [i, step] of wonder.steps.entries()) {
         // 同一句话英文字符数约为中文的两倍，低于 1.2 倍说明英文丢了内容
         const ratio = step.text.en.length / step.text.zh.length;
         expect(
           ratio,
-          `${tour.id}[${i}] 英文只有中文的 ${ratio.toFixed(1)} 倍长，多半漏译了具体意象`,
+          `${wonder.id}[${i}] 英文只有中文的 ${ratio.toFixed(1)} 倍长，多半漏译了具体意象`,
         ).toBeGreaterThan(1.2);
       }
     }
   });
 });
 
-describe('TourEngine 播放状态机', () => {
-  const tour: Tour = {
+describe('WonderEngine 播放状态机', () => {
+  const wonder: Wonder = {
     id: 't',
     title: { zh: '测试', en: 'Test' },
     steps: [
@@ -164,22 +193,22 @@ describe('TourEngine 播放状态机', () => {
   afterEach(() => vi.useRealTimers());
 
   it('start 后自动按时长推进并在末尾结束', () => {
-    const engine = new TourEngine();
+    const engine = new WonderEngine();
     const events: string[] = [];
     for (const ev of ['step', 'end'] as const) engine.addEventListener(ev, () => events.push(ev));
 
-    engine.start(tour);
+    engine.start(wonder);
     expect(engine.currentIndex).toBe(0);
     vi.advanceTimersByTime(5000);
     expect(engine.currentIndex).toBe(1);
     vi.advanceTimersByTime(5000);
-    expect(engine.currentTour).toBeNull();
+    expect(engine.currentWonder).toBeNull();
     expect(events).toEqual(['step', 'step', 'end']);
   });
 
   it('pause 停止计时，play 恢复；prev/next 手动跳步', () => {
-    const engine = new TourEngine();
-    engine.start(tour);
+    const engine = new WonderEngine();
+    engine.start(wonder);
     engine.pause();
     vi.advanceTimersByTime(20000);
     expect(engine.currentIndex).toBe(0);
@@ -193,16 +222,16 @@ describe('TourEngine 播放状态机', () => {
   });
 });
 
-describe('故事线：展开与剖切字段（M2 收尾）', () => {
+describe('奥秘：展开与剖切字段（M2 收尾）', () => {
   it('expand 指向的结构必须真的有内部件', () => {
     const manifest = JSON.parse(
       readFileSync(resolve(__dirname, '../../public/assets/manifest.json'), 'utf8'),
     ) as { structures: Record<string, { parent?: string }> };
-    for (const tour of TOURS) {
-      for (const step of tour.steps) {
+    for (const wonder of WONDERS) {
+      for (const step of wonder.steps) {
         if (!step.expand) continue;
         const children = Object.values(manifest.structures).filter((s) => s.parent === step.expand);
-        expect(children.length, `${tour.id}: ${step.expand} 没有内部件`).toBeGreaterThan(0);
+        expect(children.length, `${wonder.id}: ${step.expand} 没有内部件`).toBeGreaterThan(0);
       }
     }
   });
@@ -211,13 +240,13 @@ describe('故事线：展开与剖切字段（M2 收尾）', () => {
     const manifest = JSON.parse(
       readFileSync(resolve(__dirname, '../../public/assets/manifest.json'), 'utf8'),
     ) as { structures: Record<string, { parent?: string }> };
-    for (const tour of TOURS) {
-      for (const step of tour.steps) {
+    for (const wonder of WONDERS) {
+      for (const step of wonder.steps) {
         if (!step.expand || !step.selected) continue;
         const info = manifest.structures[step.selected];
-        expect(info, `${tour.id}: 选中的 ${step.selected} 不存在`).toBeTruthy();
+        expect(info, `${wonder.id}: 选中的 ${step.selected} 不存在`).toBeTruthy();
         // 展开某结构时若选中它自己，界面上会指着一个隐形结构
-        expect(step.selected, `${tour.id}: 展开 ${step.expand} 时不该选中它自己`).not.toBe(
+        expect(step.selected, `${wonder.id}: 展开 ${step.expand} 时不该选中它自己`).not.toBe(
           step.expand,
         );
       }
@@ -225,10 +254,10 @@ describe('故事线：展开与剖切字段（M2 收尾）', () => {
   });
 
   it('剖切位置在 [-1, 1] 之内', () => {
-    for (const tour of TOURS) {
-      for (const step of tour.steps) {
+    for (const wonder of WONDERS) {
+      for (const step of wonder.steps) {
         if (!step.clip) continue;
-        expect(Math.abs(step.clip.pos), `${tour.id}: 剖切位置越界`).toBeLessThanOrEqual(1);
+        expect(Math.abs(step.clip.pos), `${wonder.id}: 剖切位置越界`).toBeLessThanOrEqual(1);
       }
     }
   });
