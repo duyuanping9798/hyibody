@@ -512,12 +512,14 @@ UGC 前置）。
 
 ## 给人类的待办
 
-1. ~~**`v0.1` 标签**~~ **2026-08-19 已完成**：`refs/tags/v0.1` → `80e5cd7`，
-   Release 已发布并标记 Latest。过程与云端代理的限制记在 `docs/RELEASE-0.1.md`。
-   **还剩一步给人类：删掉临时分支 `release/v0.1`**（建它是为了在 Release 页选到
-   目标提交；代理允许建分支但拒绝删分支）。删分支不影响已建好的标签。
+1. ~~**`v0.1` 标签**~~ **2026-08-19 已完成并收尾**：`refs/tags/v0.1` → `80e5cd7`，
+   Release 已发布并标记 Latest，临时分支 `release/v0.1` 已由人类删除。
+   过程与云端代理的 ref 权限记在 `docs/RELEASE-0.1.md`。
 2. **真机确认帧率**：面数已到 145 万，KICKOFF 要求中端安卓 30 fps。
 3. **校对文案**：`content/definitions/{zh,en}.json` 各 189 条已过一轮 AI 审核，
    `_meta.reviewed` 仍是 `false`。**改动中文后记得跑一次 `pnpm font:subset`**。
 4. **CI 未跑 Python 测试**：`.github/workflows/ci.yml` 属预置文件本会话未改。
 5. PWA 图标仍是占位色块。
+6. **可选**：远端还留着六个已合并的旧特性分支（`…-a-data` / `-b-render` / `-c-ui` /
+   `-d-organs` / `-e-clipcaps` / `claude/hyibody-setup-7eumlp`），想清就在
+   <https://github.com/duyuanping9798/hyibody/branches> 删掉；云端代理拒绝删分支操作。
