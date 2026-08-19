@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { LAYER_STEP, isTypingTarget, resolveShortcut } from '../../src/ui/keyboard';
 
-const idle = { tourActive: false, typing: false };
-const tour = { tourActive: true, typing: false };
-const typing = { tourActive: false, typing: true };
+const idle = { wonderActive: false, typing: false };
+const wonder = { wonderActive: true, typing: false };
+const typing = { wonderActive: false, typing: true };
 
 describe('resolveShortcut', () => {
   it('带修饰键的一律放行给浏览器', () => {
@@ -16,7 +16,7 @@ describe('resolveShortcut', () => {
     expect(resolveShortcut({ key: 'Escape' }, typing)).toEqual({ kind: 'escape' });
     expect(resolveShortcut({ key: '/' }, typing)).toEqual({ kind: 'none' });
     expect(resolveShortcut({ key: '1' }, typing)).toEqual({ kind: 'none' });
-    expect(resolveShortcut({ key: ' ' }, { tourActive: true, typing: true })).toEqual({
+    expect(resolveShortcut({ key: ' ' }, { wonderActive: true, typing: true })).toEqual({
       kind: 'none',
     });
   });
@@ -43,13 +43,16 @@ describe('resolveShortcut', () => {
     expect(resolveShortcut({ key: 'F' }, idle)).toEqual({ kind: 'focusSelected' });
   });
 
-  it('方向键与空格只在故事线里生效，平时留给轨道控制器', () => {
+  it('方向键与空格只在奥秘里生效，平时留给轨道控制器', () => {
     expect(resolveShortcut({ key: 'ArrowLeft' }, idle)).toEqual({ kind: 'none' });
     expect(resolveShortcut({ key: 'ArrowRight' }, idle)).toEqual({ kind: 'none' });
     expect(resolveShortcut({ key: ' ' }, idle)).toEqual({ kind: 'none' });
-    expect(resolveShortcut({ key: 'ArrowLeft' }, tour)).toEqual({ kind: 'tour', step: 'prev' });
-    expect(resolveShortcut({ key: 'ArrowRight' }, tour)).toEqual({ kind: 'tour', step: 'next' });
-    expect(resolveShortcut({ key: ' ' }, tour)).toEqual({ kind: 'tour', step: 'toggle' });
+    expect(resolveShortcut({ key: 'ArrowLeft' }, wonder)).toEqual({ kind: 'wonder', step: 'prev' });
+    expect(resolveShortcut({ key: 'ArrowRight' }, wonder)).toEqual({
+      kind: 'wonder',
+      step: 'next',
+    });
+    expect(resolveShortcut({ key: ' ' }, wonder)).toEqual({ kind: 'wonder', step: 'toggle' });
   });
 
   it('没绑的键不动', () => {

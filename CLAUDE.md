@@ -4,11 +4,11 @@
 
 ## 项目一句话
 
-HyiBody 是一个纯静态、轻量的三维人体"透视"科普网页：几百个核心解剖结构分层显示（皮肤→肌肉→骨骼→器官→血管/神经），点击识别、剖切、搜索、故事线引导游览，同一份代码全屏跑在展厅触摸屏上。不是医学级图谱，不做病人影像。
+HyiBody 是一个纯静态、轻量的三维人体"透视"科普网页：几百个核心解剖结构分层显示（皮肤→肌肉→骨骼→器官→血管/神经），点击识别、剖切、搜索、奥秘引导游览，同一份代码全屏跑在展厅触摸屏上。不是医学级图谱，不做病人影像。
 
 ## 范围与非目标
 
-做：三维分层查看器、约 300–600 个核心结构、中英文名与一句话科普、故事线（Tour）、展厅模式（Kiosk）、分享链接/二维码、PWA 离线、GitHub Pages 部署。
+做：三维分层查看器、约 300–600 个核心结构、中英文名与一句话科普、奥秘（Wonder，原「故事线」）、展厅模式（Kiosk）、分享链接/二维码、PWA 离线、GitHub Pages 部署。
 不做（除非 KICKOFF.md 改动）：WebGPU、顺序无关透明、万级结构优化、医学影像/DICOM、病人个体化分割、TA2/FMA 全量本体映射、VR、原生 App、后端与账号系统。
 
 ## 技术栈（固定，不要擅自更换）
@@ -21,8 +21,8 @@ pnpm + Vite + TypeScript(strict) + three.js（WebGL2 路径，`WebGLRenderer`）
 src/viewer/     纯 three.js 渲染核心（禁止 import React），对外暴露 HyiViewer 类
 src/ui/         React 界面（面板、滑块、卡片、搜索、Tour 播放器、Kiosk）
 src/data/       类型定义、manifest/hierarchy 加载器、URL 状态编解码
-src/tours/      故事线播放引擎（读取 content/tours/*.json）
-content/        结构清单、术语、定义、故事线（JSON/YAML，人可编辑）
+src/wonders/    奥秘播放引擎（读取 content/wonders/*.json）
+content/        结构清单、术语、定义、奥秘（JSON/YAML，人可编辑）
 pipeline/       Python 数据流水线（download / select / process / export / validate）
 prototype/      效果图原型（process.py + index.html + shot.mjs），只读参考，不再维护
 public/assets/  流水线产物：按系统分包的 .glb + manifest.json（提交到仓库，单文件 < 50 MB）

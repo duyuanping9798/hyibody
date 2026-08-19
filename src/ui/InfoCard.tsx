@@ -2,6 +2,8 @@ import { STRINGS } from './i18n';
 import { definitionsFor, definitionsReviewedFor } from '../data/definitions';
 import type { DataSource, SystemId } from '../data/types';
 import { SYSTEM_COLORS } from '../viewer/materials';
+import { estimatedSeconds } from '../wonders/engine';
+import { wondersForStructure } from '../wonders';
 import { useUiStore } from './store';
 
 /** 数据来源署名：用哪个源的网格就署哪个源（CLAUDE.md 的许可证铁律）。 */
@@ -30,6 +32,7 @@ export function InfoCard() {
   const focus = useUiStore((s) => s.focus);
   const expanded = useUiStore((s) => s.expanded);
   const expand = useUiStore((s) => s.expand);
+  const startWonder = useUiStore((s) => s.startWonder);
 
   if (!selected || !manifest) return null;
   const info = manifest.structures[selected];
@@ -40,6 +43,8 @@ export function InfoCard() {
   const children = Object.entries(manifest.structures).filter(([, s]) => s.parent === selected);
   const insideParent = info.parent;
   const definition = definitionsFor(lang)[selected];
+  // 讲到这个结构的奥秘。内部件没有自己的内容时回退到父结构（见 wondersForStructure）
+  const related = wondersForStructure(selected, insideParent);
 
   return (
     <div className="hyi-panel hyi-info" data-testid="info-card">
@@ -74,6 +79,22 @@ export function InfoCard() {
         {t.sourceLabel}: {sourceLabel(info.source, t)}
         {definition && !definitionsReviewedFor(lang) ? ` · ${t.infoUnreviewed}` : ''}
       </p>
+
+      {related.length > 0 && (
+        <section className="hyi-related">
+          <h3>{t.relatedWonders.replace('{n}', String(related.length))}</h3>
+          {related.map((wonder) => (
+            <button
+              key={wonder.id}
+              className="hyi-related-item"
+              onClick={() => startWonder(wonder)}
+            >
+              <span>{wonder.title[lang]}</span>
+              <span className="dur">{estimatedSeconds(wonder)}s</span>
+            </button>
+          ))}
+        </section>
+      )}
 
       <div className="actions">
         {children.length > 0 && expanded !== selected && (

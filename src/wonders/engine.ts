@@ -1,12 +1,12 @@
 import type { SystemId } from '../data/types';
 
 /**
- * 故事线播放引擎（M2-1，KICKOFF 第 5 节）。
+ * 奥秘播放引擎（M2-1，KICKOFF 第 5 节）。
  * 步骤是声明式的（分层值 + 选中结构 + 显隐覆盖），不硬编码相机坐标——
- * 相机由"selected + focus/preset"推导，数据更新后故事线依然成立。
+ * 相机由"selected + focus/preset"推导，数据更新后奥秘依然成立。
  * 引擎只管状态机与计时，应用到画面由 UI 层监听 'step' 事件完成。
  */
-export interface TourStep {
+export interface WonderStep {
   text: { zh: string; en: string };
   /** 分层滑块 0–1 */
   layer: number;
@@ -26,22 +26,45 @@ export interface TourStep {
   durationMs: number;
 }
 
-export interface Tour {
+export interface Wonder {
   id: string;
   title: { zh: string; en: string };
-  steps: TourStep[];
+  /** 主系统：菜单按系统分组用，上百条时平铺列表不可用 */
+  system?: SystemId;
+  /**
+   * 这条奥秘讲到哪些结构。用来建反向索引——点开一个结构时列出讲到它的几条奥秘。
+   * 不写则由步骤里的 selected / expand 自动推导（见 wondersForStructure）。
+   */
+  structures?: string[];
+  steps: WonderStep[];
 }
 
-export class TourEngine extends EventTarget {
-  private tour: Tour | null = null;
+/** 一条奥秘涉及的全部结构：显式声明优先，否则从步骤里推导。 */
+export function structuresOf(wonder: Wonder): string[] {
+  if (wonder.structures?.length) return [...new Set(wonder.structures)];
+  const out = new Set<string>();
+  for (const step of wonder.steps) {
+    if (step.selected) out.add(step.selected);
+    if (step.expand) out.add(step.expand);
+  }
+  return [...out];
+}
+
+/** 自动播放时这条奥秘一共多长（秒），菜单上显示时长用。 */
+export function estimatedSeconds(wonder: Wonder): number {
+  return Math.round(wonder.steps.reduce((sum, s) => sum + s.durationMs, 0) / 1000);
+}
+
+export class WonderEngine extends EventTarget {
+  private wonder: Wonder | null = null;
   private index = 0;
   private playing = false;
   private timer: ReturnType<typeof setTimeout> | null = null;
 
   /** 载入并从第一步开始自动播放。 */
-  start(tour: Tour): void {
+  start(wonder: Wonder): void {
     this.stopTimer();
-    this.tour = tour;
+    this.wonder = wonder;
     this.index = 0;
     this.playing = true;
     this.dispatchEvent(new CustomEvent('play'));
@@ -50,22 +73,22 @@ export class TourEngine extends EventTarget {
 
   stop(): void {
     this.stopTimer();
-    this.tour = null;
+    this.wonder = null;
     this.index = 0;
     this.playing = false;
     this.dispatchEvent(new CustomEvent('end'));
   }
 
-  get currentTour(): Tour | null {
-    return this.tour;
+  get currentWonder(): Wonder | null {
+    return this.wonder;
   }
 
   get currentIndex(): number {
     return this.index;
   }
 
-  get currentStep(): TourStep | null {
-    return this.tour?.steps[this.index] ?? null;
+  get currentStep(): WonderStep | null {
+    return this.wonder?.steps[this.index] ?? null;
   }
 
   get isPlaying(): boolean {
@@ -73,7 +96,7 @@ export class TourEngine extends EventTarget {
   }
 
   play(): void {
-    if (!this.tour || this.playing) return;
+    if (!this.wonder || this.playing) return;
     this.playing = true;
     this.dispatchEvent(new CustomEvent('play'));
     this.scheduleAdvance();
@@ -87,8 +110,8 @@ export class TourEngine extends EventTarget {
   }
 
   next(): void {
-    if (!this.tour) return;
-    if (this.index + 1 >= this.tour.steps.length) {
+    if (!this.wonder) return;
+    if (this.index + 1 >= this.wonder.steps.length) {
       this.stop();
       return;
     }
@@ -97,7 +120,7 @@ export class TourEngine extends EventTarget {
   }
 
   prev(): void {
-    if (!this.tour || this.index === 0) return;
+    if (!this.wonder || this.index === 0) return;
     this.index -= 1;
     this.emitStep();
   }

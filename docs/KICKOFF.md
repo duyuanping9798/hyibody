@@ -6,7 +6,7 @@
 
 项目名 **HyiBody**，仓库名 `hyibody`，界面品牌统一写 "HyiBody"（中文副标题"人体透视科普"，如需中文昵称在 `content/i18n/zh.json` 的 `brand` 字段设置）。
 
-一句话：一个打开就能看的三维人体透视网页，让普通人三分钟看懂"人体是分层的"，再跟着几条故事线认识核心器官系统；同一份代码全屏跑在展厅触摸屏上。它是完整版 BODYMAX 的轻量子集，数据格式与之兼容，将来可扩展。原型效果图已验证：BodyParts3D 全量 2,222 件经减面合并后 6 个 glb 共约 35 MB、173 万三角面，three.js 单场景 18 次绘制调用即可呈现分层透视。
+一句话：一个打开就能看的三维人体透视网页，让普通人三分钟看懂"人体是分层的"，再跟着几条奥秘认识核心器官系统；同一份代码全屏跑在展厅触摸屏上。它是完整版 BODYMAX 的轻量子集，数据格式与之兼容，将来可扩展。原型效果图已验证：BodyParts3D 全量 2,222 件经减面合并后 6 个 glb 共约 35 MB、173 万三角面，three.js 单场景 18 次绘制调用即可呈现分层透视。
 
 ## 1. 执行步骤（人类按顺序操作，约 30 分钟）
 
@@ -68,13 +68,13 @@ hyibody/
   src/
     main.tsx
     viewer/        HyiViewer.ts  layers.ts  picking.ts  clipping.ts  highlight.ts  camera.ts  labels.ts  materials.ts
-    ui/            App.tsx  LayerSlider.tsx  InfoCard.tsx  SearchBox.tsx  SystemPanel.tsx  TourPlayer.tsx  Kiosk.tsx  ShareDialog.tsx  Attribution.tsx
+    ui/            App.tsx  LayerSlider.tsx  InfoCard.tsx  SearchBox.tsx  SystemPanel.tsx  WonderPlayer.tsx  Kiosk.tsx  ShareDialog.tsx  Attribution.tsx
     data/          types.ts  manifest.ts  hierarchy.ts  urlState.ts
-    tours/         engine.ts
+    wonders/         engine.ts
   content/
     structures.yaml          结构清单（人可编辑，见第 7 节）
     i18n/zh.json  en.json
-    tours/heartbeat.json  digestion.json  nerve.json
+    wonders/heartbeat.json  digestion.json  nerve.json
     definitions/zh.md        每个结构一句话科普（按 slug 分节）
   pipeline/
     README.md  requirements.txt
@@ -115,8 +115,8 @@ M1 数据与查看器核心（约 3–5 个会话）：
 6. 查看器：加载 manifest → 首屏皮肤+骨骼，其他系统按需加载；分层滑块（皮肤→肌肉→骨骼→器官→血管→神经，连续透明过渡；原型的菲涅尔 X-ray 材质可直接迁移）；点击识别 + 悬停高亮 + 信息卡（中/英名、一句话、来源）；隔离/隐藏/恢复；每系统透明度；单剖切面（X/Y/Z 轴滑块）；搜索（中英子串）；6 个预设视角；URL 状态编解码；署名页。
 7. 移动端布局与触控；Playwright 截图冒烟测试；性能预算检查脚本。
 
-M2 故事线、展厅与打磨（约 3–4 个会话）：
-1. Tour 引擎与 3 条故事线（心跳血液旅程、食物去哪了、一根神经的旅程）：每步 = 相机位姿 + 可见集合 + 高亮 + 文案 + 时长，支持播放/暂停/上一步/下一步。
+M2 奥秘、展厅与打磨（约 3–4 个会话）：
+1. Wonder 引擎与 3 条奥秘（心跳血液旅程、食物去哪了、一根神经的旅程）：每步 = 相机位姿 + 可见集合 + 高亮 + 文案 + 时长，支持播放/暂停/上一步/下一步。
 2. Kiosk 模式（`?kiosk=1`）：全屏、大按钮、闲置 60 s 回到吸引动画（自动旋转 + 分层演示循环）、禁用右键与手势缩放、4K 与竖屏布局（原型 kiosk 样式可参考）。
 3. 分享：URL 状态 + 二维码；PWA 离线（vite-plugin-pwa）。
 4. HRA 器官替换与对齐（配置化缩放/偏移，保留 BP3D 版本回退）；BP3D partof 集补齐整肺/整心/主动脉/整脑；可选 CC0 皮肤替换；剖切封盖。
@@ -125,7 +125,7 @@ M2 故事线、展厅与打磨（约 3–4 个会话）：
 
 ## 6. 功能规格要点
 
-分层滑块是核心交互：一个 0–1 的连续值，各系统按顺序在区间内淡入淡出（皮肤 0–0.2 淡出、肌肉 0.2–0.45、骨骼始终可见但在 0.45–0.7 淡化、器官 0.45–0.8、血管/神经 0.7–1），用户也可在系统面板里手动锁定某系统显隐与透明度。点击：三维拾取只对可见且透明度 > 0.15 的结构生效；选中描边高亮 + 相机平滑对准；信息卡显示中/英名、一句话科普、所属系统、来源署名、"隔离/隐藏/聚焦"按钮。剖切：一个平面，轴向切换与位置滑块，可开关封盖颜色（M2 再做模板封盖）。搜索：输入中文或英文子串，列表点选即定位。URL 状态：`?v=<base64url(json)>` 编码层级值、系统开关、剖切、相机、选中、语言、kiosk。展厅：无键盘鼠标也可完全操作，所有按钮 ≥ 56 px。视觉基调沿用原型：深色舞台、玻璃拟态面板、青色强调色、暖色故事线按钮。
+分层滑块是核心交互：一个 0–1 的连续值，各系统按顺序在区间内淡入淡出（皮肤 0–0.2 淡出、肌肉 0.2–0.45、骨骼始终可见但在 0.45–0.7 淡化、器官 0.45–0.8、血管/神经 0.7–1），用户也可在系统面板里手动锁定某系统显隐与透明度。点击：三维拾取只对可见且透明度 > 0.15 的结构生效；选中描边高亮 + 相机平滑对准；信息卡显示中/英名、一句话科普、所属系统、来源署名、"隔离/隐藏/聚焦"按钮。剖切：一个平面，轴向切换与位置滑块，可开关封盖颜色（M2 再做模板封盖）。搜索：输入中文或英文子串，列表点选即定位。URL 状态：`?v=<base64url(json)>` 编码层级值、系统开关、剖切、相机、选中、语言、kiosk。展厅：无键盘鼠标也可完全操作，所有按钮 ≥ 56 px。视觉基调沿用原型：深色舞台、玻璃拟态面板、青色强调色、暖色奥秘按钮。
 
 ## 7. 数据规格
 
@@ -193,15 +193,15 @@ glTF 节点 `extras`：`{slug, zh, en, system, region, side, fma[], source}`。`
 
 ## 10. 人类清单
 
-建仓与 Pages 设置；上传启动包；安装 Claude GitHub App 与云环境；保存 BodyParts3D 许可证页快照到 docs/licenses/；审定 `structures.yaml`（AI 出候选，你定稿）；写或审核 `content/definitions/zh.md` 的一句话科普与三条故事线文案；找人校对中文名称并在 `content/review.csv` 标注；每次发布后在手机、电脑、展厅设备上试用并把问题写进 issue；准备展厅设备（触摸一体机或大屏 + 能开 Chrome/Edge 的主机）；域名与备案（若面向国内公网）。
+建仓与 Pages 设置；上传启动包；安装 Claude GitHub App 与云环境；保存 BodyParts3D 许可证页快照到 docs/licenses/；审定 `structures.yaml`（AI 出候选，你定稿）；写或审核 `content/definitions/zh.md` 的一句话科普与三条奥秘文案；找人校对中文名称并在 `content/review.csv` 标注；每次发布后在手机、电脑、展厅设备上试用并把问题写进 issue；准备展厅设备（触摸一体机或大屏 + 能开 Chrome/Edge 的主机）；域名与备案（若面向国内公网）。
 
 ## 11. 验收标准（v0.1）
 
-手机浏览器 10 秒内进入可交互状态；分层滑块流畅无明显掉帧；任意结构可点击并显示正确中英文名与一句话；三条故事线可播放；Kiosk 模式闲置自动回到吸引动画且无法退出全屏误操作；署名页完整；全部资产 ≤ 40 MB、首屏 ≤ 5 MB；CI 通过并自动发布。
+手机浏览器 10 秒内进入可交互状态；分层滑块流畅无明显掉帧；任意结构可点击并显示正确中英文名与一句话；三条奥秘可播放；Kiosk 模式闲置自动回到吸引动画且无法退出全屏误操作；署名页完整；全部资产 ≤ 40 MB、首屏 ≤ 5 MB；CI 通过并自动发布。
 
 ## 12. 原型说明（prototype/）
 
-`process.py`：效果图用的最小流水线，输入是 BodyParts3D 4.0 isa 部件清单 `data.json` 与 `obj/<id>.obj`，按系统分类、减面、合并，输出 6 个 glb（皮肤/骨骼/肌肉/器官/血管/神经）。`index.html`：three.js r185 单页场景 + 界面样机（分层滑块、系统面板、信息卡、故事线入口、展厅模式），支持 `?mode=desktop|kiosk&cam=hero|chest|kiosk&clip=1&layer=0.56` 参数，皮肤/肌肉用菲涅尔 X-ray 材质，剖切用 clippingPlanes。`shot.mjs`：Playwright 无头截图脚本。本地/云端复现：`npm i three playwright-core`，准备 `obj/` 与 `data.json` 后 `python process.py`，起静态服务器打开 `prototype/index.html`。已知局限：isa 集缺整肺、主动脉主干、整脑，心脏只有心室/心房壁；皮肤为 BP3D 原始网格；界面无交互；剖切无封盖。这些正是 M1/M2 要解决的事。
+`process.py`：效果图用的最小流水线，输入是 BodyParts3D 4.0 isa 部件清单 `data.json` 与 `obj/<id>.obj`，按系统分类、减面、合并，输出 6 个 glb（皮肤/骨骼/肌肉/器官/血管/神经）。`index.html`：three.js r185 单页场景 + 界面样机（分层滑块、系统面板、信息卡、奥秘入口、展厅模式），支持 `?mode=desktop|kiosk&cam=hero|chest|kiosk&clip=1&layer=0.56` 参数，皮肤/肌肉用菲涅尔 X-ray 材质，剖切用 clippingPlanes。`shot.mjs`：Playwright 无头截图脚本。本地/云端复现：`npm i three playwright-core`，准备 `obj/` 与 `data.json` 后 `python process.py`，起静态服务器打开 `prototype/index.html`。已知局限：isa 集缺整肺、主动脉主干、整脑，心脏只有心室/心房壁；皮肤为 BP3D 原始网格；界面无交互；剖切无封盖。这些正是 M1/M2 要解决的事。
 
 ## 附录 · workflows 文件内容（如需手工创建）
 

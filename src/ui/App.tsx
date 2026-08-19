@@ -15,7 +15,7 @@ import { ShareDialog } from './ShareDialog';
 import { useKeyboardShortcuts } from './keyboard';
 import { bindViewer, toUrlState, useUiStore } from './store';
 import { SystemPanel } from './SystemPanel';
-import { TourMenu, TourPlayer } from './TourPlayer';
+import { WonderMenu, WonderPlayer } from './WonderPlayer';
 import { ViewTools } from './ViewTools';
 import './ui.css';
 
@@ -68,7 +68,7 @@ export function App() {
   const setAttributionOpen = useUiStore((s) => s.setAttributionOpen);
   const activePanel = useUiStore((s) => s.activePanel);
   const togglePanel = useUiStore((s) => s.togglePanel);
-  const tour = useUiStore((s) => s.tour);
+  const wonder = useUiStore((s) => s.wonder);
   const [shareOpen, setShareOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
   const selected = useUiStore((s) => s.selected);
@@ -128,7 +128,7 @@ export function App() {
             >
               {lang === 'zh' ? 'EN' : '中文'}
             </button>
-            <TourMenu />
+            <WonderMenu />
             <button className="hyi-btn" onClick={() => setShareOpen(true)}>
               {t.shareTitle}
             </button>
@@ -167,9 +167,9 @@ export function App() {
               {t.presetsTitle}
             </button>
           </div>
-          {!tour && <StructureLabel />}
-          {!tour && <InfoCard />}
-          {tour ? <TourPlayer /> : <LayerSlider />}
+          {!wonder && <StructureLabel />}
+          {!wonder && <InfoCard />}
+          {wonder ? <WonderPlayer /> : <LayerSlider />}
           <Attribution />
           {shareOpen && <ShareDialog onClose={() => setShareOpen(false)} />}
           {helpOpen && <ShortcutHelp onClose={() => setHelpOpen(false)} />}

@@ -4,6 +4,21 @@
     "zh": "食物去哪了",
     "en": "Where Does Food Go?"
   },
+  "system": "organs",
+  "structures": [
+    "tongue",
+    "esophagus",
+    "stomach",
+    "small_intestine",
+    "duodenum",
+    "jejunum",
+    "ileum",
+    "large_intestine",
+    "liver",
+    "gallbladder",
+    "pancreas",
+    "hepatic_portal_vein"
+  ],
   "steps": [
     {
       "text": {

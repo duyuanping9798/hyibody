@@ -18,7 +18,7 @@ export function StructureLabel() {
   const lang = useUiStore((s) => s.lang);
   const selected = useUiStore((s) => s.selected);
   const manifest = useUiStore((s) => s.manifest);
-  const tour = useUiStore((s) => s.tour);
+  const wonder = useUiStore((s) => s.wonder);
   const [anchor, setAnchor] = useState<Anchor | null>(null);
   const frame = useRef(0);
 
@@ -44,8 +44,8 @@ export function StructureLabel() {
     return () => cancelAnimationFrame(frame.current);
   }, [selected]);
 
-  // 故事线播放时底部有文案卡，标签会打架，暂时让位
-  if (!selected || !anchor || !manifest || tour) return null;
+  // 奥秘播放时底部有文案卡，标签会打架，暂时让位
+  if (!selected || !anchor || !manifest || wonder) return null;
   const info = manifest.structures[selected];
   if (!info) return null;
 

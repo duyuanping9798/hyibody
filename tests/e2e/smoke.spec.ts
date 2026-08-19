@@ -66,8 +66,8 @@ test('layer state and selection restore from share URL', async ({ page }) => {
   await page.screenshot({ path: 'test-results/smoke-layered.png' });
 });
 
-/** M2-1 故事线冒烟：从菜单启动"心跳"之旅，第一步文案出现，可下一步。 */
-test('heartbeat tour plays from the menu', async ({ page }) => {
+/** M2-1 奥秘冒烟：从菜单启动"心跳"之旅，第一步文案出现，可下一步。 */
+test('heartbeat wonder plays from the menu', async ({ page }) => {
   // 第二步会"打开心脏"（展开内部 + 隔离 + 相机飞行），软件渲染下这一帧很重
   // 结构涨到 170 个之后软件渲染更慢了，上一轮首跑卡在退出那一步、重试才过
   test.setTimeout(360_000);
@@ -76,10 +76,10 @@ test('heartbeat tour plays from the menu', async ({ page }) => {
     timeout: 60_000,
   });
 
-  await page.getByRole('button', { name: '故事线' }).click();
-  await page.getByTestId('tour-list').getByRole('button', { name: '心跳与血液的旅程' }).click();
+  await page.getByRole('button', { name: '奥秘' }).click();
+  await page.getByTestId('wonder-list').getByRole('button', { name: '心跳与血液的旅程' }).click();
 
-  const player = page.getByTestId('tour-player');
+  const player = page.getByTestId('wonder-player');
   await expect(player).toBeVisible();
   await expect(player).toContainText('心跳与血液的旅程');
 
@@ -94,7 +94,7 @@ test('heartbeat tour plays from the menu', async ({ page }) => {
   await page.evaluate(
     () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))),
   );
-  await page.screenshot({ path: 'test-results/smoke-tour.png', timeout: 120_000 });
+  await page.screenshot({ path: 'test-results/smoke-wonder.png', timeout: 120_000 });
 
   await player.getByRole('button', { name: '退出' }).click();
   await expect(player).not.toBeVisible();
@@ -111,7 +111,7 @@ test('language toggle switches UI to English and back', async ({ page }) => {
   await expect(toggle).toHaveText('EN');
   await toggle.click();
   await expect(page.locator('header')).toContainText('See-through Human Anatomy');
-  await expect(page.getByRole('button', { name: 'Tours' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Wonders' })).toBeVisible();
   await expect(toggle).toHaveText('中文');
   await toggle.click();
   await expect(page.locator('header')).toContainText('人体透视科普');
@@ -457,4 +457,24 @@ test('airway and eyes are in place', async ({ page }) => {
   await page.getByRole('button', { name: /展开内部/ }).click();
   await expect(page.getByRole('button', { name: '收起内部' }).first()).toBeVisible();
   await page.screenshot({ path: 'test-results/smoke-eyes.png' });
+});
+
+/** 点开一个结构，信息卡上应列出讲到它的奥秘，点一下就开始播。 */
+test('info card lists wonders about the selected structure', async ({ page }) => {
+  test.setTimeout(240_000);
+  const state = encodeUrlState({ layer: 0.55, selected: 'heart' });
+  await page.goto(`/?v=${state}`);
+  await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
+    timeout: 60_000,
+  });
+  const infoCard = page.getByTestId('info-card');
+  await expect(infoCard).toBeVisible({ timeout: 30_000 });
+  const related = infoCard.locator('.hyi-related');
+  await expect(related).toBeVisible();
+  await expect(related.locator('h3')).toContainText('奥秘');
+  await page.screenshot({ path: 'test-results/smoke-related-wonders.png' });
+
+  // 点进去应该直接开播，播放器取代分层滑块出现在底部
+  await related.locator('.hyi-related-item').first().click();
+  await expect(page.getByTestId('wonder-player')).toBeVisible({ timeout: 20_000 });
 });

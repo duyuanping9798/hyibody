@@ -312,10 +312,10 @@
   background: rgba(240, 160, 70, 0.3);
 }
 
-.hyi-tour-menu {
+.hyi-wonder-menu {
   position: relative;
 }
-.hyi-tour-list {
+.hyi-wonder-list {
   position: absolute;
   top: calc(100% + 6px);
   right: 0;
@@ -325,7 +325,7 @@
   overflow: hidden;
   z-index: 15;
 }
-.hyi-tour-list button {
+.hyi-wonder-list button {
   padding: 10px 14px;
   border: none;
   background: none;
@@ -334,13 +334,13 @@
   text-align: left;
   cursor: pointer;
 }
-.hyi-tour-list button:hover,
-.hyi-tour-list button:focus-visible {
+.hyi-wonder-list button:hover,
+.hyi-wonder-list button:focus-visible {
   background: rgba(240, 160, 70, 0.18);
   outline: none;
 }
 
-.hyi-tour {
+.hyi-wonder {
   position: absolute;
   left: 50%;
   bottom: 18px;
@@ -348,28 +348,28 @@
   width: min(560px, calc(100% - 24px));
   padding: 14px 18px;
 }
-.hyi-tour header {
+.hyi-wonder header {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
   margin-bottom: 6px;
 }
-.hyi-tour header strong {
+.hyi-wonder header strong {
   color: #f0a046;
   font-size: 14px;
 }
-.hyi-tour .progress {
+.hyi-wonder .progress {
   font-size: 11px;
   color: var(--hyi-text-dim);
   font-variant-numeric: tabular-nums;
 }
-.hyi-tour p {
+.hyi-wonder p {
   margin: 0 0 10px;
   font-size: 14px;
   line-height: 1.6;
   min-height: 3.2em;
 }
-.hyi-tour .controls {
+.hyi-wonder .controls {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
@@ -1035,4 +1035,47 @@ body.hyi-kiosk .hyi-info .blurb {
   .hyi-btn-icon {
     display: none;
   }
+}
+
+/* 信息卡上的"关于它的 N 则奥秘"：点开一个结构就能看到讲到它的内容 */
+.hyi-related {
+  margin: 10px 0 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--hyi-panel-border);
+}
+.hyi-related h3 {
+  margin: 0 0 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--hyi-text-dim);
+  text-transform: uppercase;
+}
+.hyi-related-item {
+  display: flex;
+  width: 100%;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 6px 8px;
+  margin-bottom: 4px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--hyi-text);
+  font-size: 12.5px;
+  text-align: left;
+  cursor: pointer;
+}
+.hyi-related-item:hover,
+.hyi-related-item:focus-visible {
+  border-color: var(--hyi-warm, var(--hyi-accent));
+  background: rgba(255, 255, 255, 0.08);
+  outline: none;
+}
+.hyi-related-item .dur {
+  flex: none;
+  color: var(--hyi-text-dim);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
 }

@@ -52,7 +52,7 @@ export function Kiosk({ idleSeconds }: { idleSeconds: number }) {
   useEffect(() => {
     if (!attract) return;
     const st = useUiStore.getState();
-    if (st.tour) st.exitTour();
+    if (st.wonder) st.exitWonder();
     st.select(null);
     getViewer()?.setAutoRotate(true, 0.8);
     const start = performance.now();

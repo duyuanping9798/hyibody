@@ -4,6 +4,25 @@
     "zh": "心跳与血液的旅程",
     "en": "Journey of a Heartbeat"
   },
+  "system": "vessels",
+  "structures": [
+    "heart",
+    "heart_left_ventricle",
+    "heart_right_ventricle",
+    "heart_left_atrium",
+    "heart_right_atrium",
+    "heart_mitral_valve",
+    "heart_aortic_valve",
+    "aorta",
+    "coronary_arteries",
+    "pulmonary_arteries",
+    "pulmonary_veins",
+    "superior_vena_cava",
+    "inferior_vena_cava",
+    "common_carotid_arteries",
+    "pulmonary_trunk",
+    "lung_left"
+  ],
   "steps": [
     {
       "text": {

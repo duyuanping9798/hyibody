@@ -15,12 +15,12 @@ export type ShortcutAction =
   | { kind: 'toggleSystem'; index: number }
   | { kind: 'focusSelected' }
   | { kind: 'backToBody' }
-  | { kind: 'tour'; step: 'prev' | 'next' | 'toggle' };
+  | { kind: 'wonder'; step: 'prev' | 'next' | 'toggle' };
 
 /** 解析按键时需要知道的上下文。 */
 export interface ShortcutContext {
-  /** 故事线正在播放——方向键与空格才归它管，否则留给轨道控制器。 */
-  tourActive: boolean;
+  /** 奥秘正在播放——方向键与空格才归它管，否则留给轨道控制器。 */
+  wonderActive: boolean;
   /** 焦点在输入框里——除 Esc 外一律放行，不然打字会触发快捷键。 */
   typing: boolean;
 }
@@ -59,11 +59,11 @@ export function resolveShortcut(event: KeyLike, ctx: ShortcutContext): ShortcutA
     case '0':
       return { kind: 'backToBody' };
     case ' ':
-      return ctx.tourActive ? { kind: 'tour', step: 'toggle' } : { kind: 'none' };
+      return ctx.wonderActive ? { kind: 'wonder', step: 'toggle' } : { kind: 'none' };
     case 'ArrowLeft':
-      return ctx.tourActive ? { kind: 'tour', step: 'prev' } : { kind: 'none' };
+      return ctx.wonderActive ? { kind: 'wonder', step: 'prev' } : { kind: 'none' };
     case 'ArrowRight':
-      return ctx.tourActive ? { kind: 'tour', step: 'next' } : { kind: 'none' };
+      return ctx.wonderActive ? { kind: 'wonder', step: 'next' } : { kind: 'none' };
     default:
       break;
   }
@@ -96,7 +96,7 @@ export interface KeyboardHandlers {
 }
 
 /**
- * 把键盘接到 store 上。Esc 有优先级：说明页 → 分享 → 署名 → 故事线 → 取消选中 → 返回全身，
+ * 把键盘接到 store 上。Esc 有优先级：说明页 → 分享 → 署名 → 奥秘 → 取消选中 → 返回全身，
  * 这样"一直按 Esc"总能退回到初始状态（KICKOFF 第 6 节的可退出原则）。
  */
 export function useKeyboardShortcuts(handlers: KeyboardHandlers): void {
@@ -106,7 +106,7 @@ export function useKeyboardShortcuts(handlers: KeyboardHandlers): void {
     function onKeyDown(event: KeyboardEvent) {
       const st = useUiStore.getState();
       const action = resolveShortcut(event, {
-        tourActive: st.tour !== null,
+        wonderActive: st.wonder !== null,
         typing: isTypingTarget(event.target),
       });
       if (action.kind === 'none') return;
@@ -116,7 +116,7 @@ export function useKeyboardShortcuts(handlers: KeyboardHandlers): void {
           if (helpOpen) setHelpOpen(false);
           else if (shareOpen) setShareOpen(false);
           else if (st.attributionOpen) st.setAttributionOpen(false);
-          else if (st.tour) st.exitTour();
+          else if (st.wonder) st.exitWonder();
           else if (st.selected) st.select(null);
           else if (st.isolated || st.expanded || st.clip || st.hiddenCount > 0) st.backToBody();
           else return;
@@ -146,10 +146,10 @@ export function useKeyboardShortcuts(handlers: KeyboardHandlers): void {
         case 'backToBody':
           st.backToBody();
           break;
-        case 'tour':
-          if (action.step === 'prev') st.tourPrev();
-          else if (action.step === 'next') st.tourNext();
-          else st.tourToggle();
+        case 'wonder':
+          if (action.step === 'prev') st.wonderPrev();
+          else if (action.step === 'next') st.wonderNext();
+          else st.wonderToggle();
           break;
       }
       event.preventDefault();
