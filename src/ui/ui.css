@@ -989,8 +989,10 @@ body.hyi-kiosk .hyi-info .blurb {
   width: 100%;
 }
 
-/* 一键回全身：钻进某个器官内部之后总得有条出路 */
-.hyi-back-to-body {
+/* 一键回全身 / 收起内部：钻进某个器官内部之后总得有条出路。
+   这两条挂在抽屉外面常驻——展开内部会清掉选中，信息卡上的那个入口跟着没了 */
+.hyi-back-to-body,
+.hyi-dock .hyi-collapse-parts {
   width: 100%;
 }
 
