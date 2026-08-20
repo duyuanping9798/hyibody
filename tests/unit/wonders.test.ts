@@ -256,6 +256,36 @@ describe('奥秘内容契约', () => {
     }
   });
 
+  /**
+   * 展开某个父结构时，兄弟件一律是不透明的（isolate 期间同家结构不压暗）。
+   * 所以如果主角的包围盒被某个兄弟件整个包住，不剖开就一点也看不见。
+   *
+   * 2026-08-19 专家审核用真网格做屏幕空间遮挡光栅化，量出 urine[4] 的肾锥体
+   * 可见面积 **0.0%**——它整个躲在肾皮质里，观众盯着肾的外壳听了 9.5 秒。
+   * 那轮审核靠的是渲染，这里退而求其次用包围盒包含关系，抓得住"完全套住"
+   * 这一类；抓不住的部分遮挡只能靠人或 agent 复核（见 CONTENT-GUIDE）。
+   */
+  it('主角被同组兄弟件套住时必须剖开', () => {
+    const inside = (a: NonNullable<StructureInfo['bbox']>, b: NonNullable<StructureInfo['bbox']>) =>
+      [0, 1, 2].every((k) => a[k]! >= b[k]! && a[k + 3]! <= b[k + 3]!);
+
+    for (const wonder of WONDERS) {
+      for (const [i, step] of wonder.steps.entries()) {
+        if (!step.selected || !step.expand || step.clip) continue;
+        const self = manifest.structures[step.selected];
+        if (!self?.bbox || self.parent !== step.expand) continue;
+        for (const [slug, other] of Object.entries(manifest.structures)) {
+          if (slug === step.selected || other.parent !== step.expand || !other.bbox) continue;
+          expect(
+            inside(self.bbox, other.bbox),
+            `${wonder.id}[${i}] 主角 ${step.selected} 的包围盒整个套在兄弟件 ${slug} 里面，` +
+              `展开期间兄弟件是实心的，不加 clip 就一点也看不见`,
+          ).toBe(false);
+        }
+      }
+    }
+  });
+
   /** 展词是给观众看的，不该出现开发排期与占位说明。 */
   it('展词里没有生产备注', () => {
     const leak = /(后续版本|待补充|尚未补齐|暂缺|TODO|待定|placeholder)/i;

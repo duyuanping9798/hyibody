@@ -49,7 +49,7 @@
         "zh": "抬臂的第一棒交给冈上肌。它藏在肩胛骨上缘，负责把手臂从贴身位置“掰离”躯干。",
         "en": "The first leg of the relay goes to the supraspinatus. Tucked above the shoulder blade, its job is to prise the arm away from the body."
       },
-      "layer": 0.3,
+      "layer": 0.24,
       "selected": "supraspinatus",
       "from": "back",
       "durationMs": 9500
@@ -59,7 +59,7 @@
         "zh": "接棒的是三角肌，包住整个肩头的那块。它一发力手臂就抬到与肩齐平，再往上还得靠肩胛骨跟着转。",
         "en": "The deltoid takes over — the muscle wrapping the entire shoulder cap. It lifts the arm to shoulder height; going any higher needs the shoulder blade to rotate as well."
       },
-      "layer": 0.3,
+      "layer": 0.24,
       "selected": "deltoid",
       "durationMs": 10500
     },
@@ -68,25 +68,27 @@
         "zh": "顺手把肘弯起来看看。掌心朝上朝下都不影响力气的那一块，是藏在深处的肱肌——它不挑姿势。",
         "en": "Bend your elbow for a moment. The muscle whose pull is the same whether your palm faces up or down is the brachialis, buried deeper in — it is the one that never minds the angle."
       },
-      "layer": 0.3,
+      "layer": 0.24,
       "selected": "brachialis",
-      "durationMs": 10000
+      "durationMs": 10000,
+      "from": "front"
     },
     {
       "text": {
         "zh": "盖在它外面的是肱二头肌。它上端有两根腱分别绕过肩关节，所以你举手的时候，它其实也在帮忙。",
         "en": "Covering it is the biceps brachii. Its two upper tendons each hook around the shoulder joint, which means it lends a hand when you raise the arm as well."
       },
-      "layer": 0.3,
+      "layer": 0.24,
       "selected": "biceps_brachii",
-      "durationMs": 10000
+      "durationMs": 10000,
+      "from": "front"
     },
     {
       "text": {
         "zh": "手臂后面是肱三头肌，它干的正好是反的事：把肘推直。屈和伸各有各的肌肉，一块用力时另一块必须放开——这才叫一个动作。",
         "en": "Behind the arm sits the triceps brachii, doing the exact opposite: pushing the elbow straight. Bending and straightening have separate muscles, and one must let go as the other pulls — that is what a movement is."
       },
-      "layer": 0.3,
+      "layer": 0.24,
       "selected": "triceps_brachii",
       "from": "back",
       "durationMs": 12000

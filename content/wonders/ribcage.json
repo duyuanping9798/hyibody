@@ -67,7 +67,7 @@
         "zh": "肋骨之间填着两层肋间肌，纤维方向正好交叉。一层往上提，一层往下拉，同一处肌肉管着一进一出。",
         "en": "Two layers of intercostal muscle fill each gap, their fibres crossing at an angle. One layer lifts, the other pulls down — the same patch of muscle handles both the in and the out."
       },
-      "layer": 0.28,
+      "layer": 0.24,
       "selected": "intercostal_muscles",
       "durationMs": 10500
     },
@@ -78,7 +78,8 @@
       },
       "layer": 0.6,
       "selected": "heart",
-      "durationMs": 9000
+      "durationMs": 9000,
+      "from": "front"
     },
     {
       "text": {
@@ -87,7 +88,8 @@
       },
       "layer": 0.6,
       "selected": "lung_left",
-      "durationMs": 9500
+      "durationMs": 9500,
+      "from": "front"
     },
     {
       "text": {

@@ -61,7 +61,8 @@
       "layer": 0.6,
       "expand": "eyes",
       "selected": "eye_lens",
-      "durationMs": 13500
+      "durationMs": 13500,
+      "from": "left"
     },
     {
       "text": {

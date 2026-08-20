@@ -66,7 +66,7 @@
         "zh": "手指本身几乎没有肌肉。握拳时前臂的指浅屈肌先出力，它弯的是手指中间那一节，靠长长的肌腱远程拉动。",
         "en": "The fingers themselves carry almost no muscle. In a fist, flexor digitorum superficialis in the forearm pulls first, bending the middle joint of each finger through long, slender tendons."
       },
-      "layer": 0.3,
+      "layer": 0.24,
       "selected": "flexor_digitorum_superficialis",
       "durationMs": 10500
     },
@@ -75,7 +75,7 @@
         "zh": "前臂背面的指伸肌负责把手指拉直。手指之所以细，正因为发动机全都装在了远处。",
         "en": "On the back of the forearm, extensor digitorum pulls the fingers straight again. Fingers stay slim precisely because their engines are installed so far away."
       },
-      "layer": 0.3,
+      "layer": 0.24,
       "selected": "extensor_digitorum",
       "from": "back",
       "durationMs": 9500

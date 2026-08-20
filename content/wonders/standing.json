@@ -30,7 +30,7 @@
         "zh": "先看背后。竖脊肌沿脊柱两侧从骨盆一直排到后脑，只要你直着身子，它就一阵阵地在使劲。",
         "en": "Start at the back. The erector spinae run alongside the spine from the pelvis to the base of the skull, and unless you are lying face down, they keep firing in bursts."
       },
-      "layer": 0.3,
+      "layer": 0.24,
       "selected": "erector_spinae",
       "from": "back",
       "durationMs": 11500
@@ -40,7 +40,7 @@
         "zh": "臀大肌真正的用武之地不是站着，而是从站变成走：爬坡、起身、蹬地，都是它把折着的髋一把推直。",
         "en": "The gluteus maximus earns its keep not in standing but in setting off: climbing, rising from a chair, pushing off the ground — each time it drives the bent hip straight again."
       },
-      "layer": 0.3,
+      "layer": 0.24,
       "selected": "gluteus_maximus",
       "durationMs": 10500
     },
@@ -49,7 +49,7 @@
         "zh": "大腿后面的腘绳肌跨过髋和膝两个关节，一头拉住骨盆，一头拉住小腿，两边同时管。",
         "en": "Behind the thigh, the hamstrings cross both the hip and the knee — holding the pelvis at one end and the lower leg at the other, minding both at once."
       },
-      "layer": 0.3,
+      "layer": 0.24,
       "selected": "hamstrings",
       "durationMs": 9500
     },
@@ -58,7 +58,7 @@
         "zh": "小腿深处还埋着一块比目鱼肌。它不负责让你动，只负责让你不倒：站着的每一秒，它都在替你压住脚踝这个支点。",
         "en": "Deeper in the calf lies the soleus. Its job is not to move you but to keep you from toppling: every second you stand, it is holding the ankle steady beneath you."
       },
-      "layer": 0.3,
+      "layer": 0.24,
       "selected": "soleus",
       "durationMs": 11000
     },
@@ -67,7 +67,7 @@
         "zh": "盖在它外面的是腓肠肌。它跨过膝盖直接连到大腿骨上——所以你把膝盖伸直再踮脚，会明显更吃力。",
         "en": "Over it lies the gastrocnemius, which reaches past the knee to the thigh bone itself — which is why rising on your toes with the knee locked straight feels so much harder."
       },
-      "layer": 0.3,
+      "layer": 0.24,
       "selected": "gastrocnemius",
       "durationMs": 10500
     },
@@ -76,7 +76,7 @@
         "zh": "两块肌肉的力都汇进跟腱，全身最粗的一根。每走一步，它都在把身体弹向前方。",
         "en": "The force of both muscles funnels into the calcaneal tendon — the Achilles — the thickest tendon in the body. With every step it springs you forward again."
       },
-      "layer": 0.3,
+      "layer": 0.24,
       "selected": "calcaneal_tendon",
       "durationMs": 9000
     },
@@ -85,9 +85,10 @@
         "zh": "小腿前面这一条是胫骨前肌。落地那一瞬它并不是在勾脚，而是在把脚掌慢慢放下去——不然每走一步，脚都会啪地拍在地上。",
         "en": "At the front of the shin runs the tibialis anterior. As the heel lands it is not lifting the foot but lowering it slowly — without that, every step would slap flat onto the ground."
       },
-      "layer": 0.3,
+      "layer": 0.24,
       "selected": "tibialis_anterior",
-      "durationMs": 12000
+      "durationMs": 12000,
+      "from": "front"
     },
     {
       "text": {

@@ -61,7 +61,11 @@
       "layer": 0.6,
       "expand": "kidneys",
       "selected": "kidney_pyramids",
-      "durationMs": 9500
+      "durationMs": 11000,
+      "clip": {
+        "axis": "y",
+        "pos": 0.1
+      }
     },
     {
       "text": {
@@ -89,7 +93,10 @@
       },
       "layer": 0.6,
       "selected": "urinary_bladder",
-      "durationMs": 9500
+      "durationMs": 9500,
+      "systems": {
+        "organs": 0.35
+      }
     },
     {
       "text": {
