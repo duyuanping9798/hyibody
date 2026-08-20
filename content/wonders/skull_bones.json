@@ -1,0 +1,184 @@
+{
+  "schema": 1,
+  "id": "skull_bones",
+  "title": {
+    "zh": "一顶头盔，二十多块拼的",
+    "en": "One Helmet, Twenty-Odd Pieces"
+  },
+  "system": "skeleton",
+  "structures": [
+    "skull",
+    "frontal_bone",
+    "parietal_bones",
+    "temporal_bones",
+    "occipital_bone",
+    "sphenoid_bone",
+    "ethmoid_bone",
+    "maxillae",
+    "zygomatic_bones",
+    "nasal_bones",
+    "lacrimal_bones",
+    "palatine_bones",
+    "vomer",
+    "inferior_nasal_conchae",
+    "mandible"
+  ],
+  "steps": [
+    {
+      "text": {
+        "zh": "颅骨看着像一整个壳，其实是二十多块骨咬在一起。为什么不干脆长成一块？因为一整块的裂缝会一路劈到底。",
+        "en": "A skull looks like a single shell, but it is more than twenty bones bitten together. Why not grow it in one piece? Because a crack in one piece runs all the way across."
+      },
+      "layer": 0.5,
+      "selected": "skull",
+      "from": "left",
+      "durationMs": 11000
+    },
+    {
+      "text": {
+        "zh": "从前额开始。这一块管着额头和两个眼眶的上缘，往后在头顶那道横缝上交给下一块。",
+        "en": "Start at the forehead. This piece carries the brow and the upper rim of both eye sockets, handing over at a seam across the top of the head."
+      },
+      "layer": 0.5,
+      "selected": "frontal_bone",
+      "expand": "skull",
+      "from": "front",
+      "durationMs": 11000
+    },
+    {
+      "text": {
+        "zh": "接手的是覆盖颅盖大半的一对方板，左右各一。它们在正中对上，那道缝隔着头皮摸得到。",
+        "en": "What takes over is a pair of squarish plates that between them roof most of the vault. Where they butt together down the middle, the seam can be felt through the scalp."
+      },
+      "layer": 0.5,
+      "selected": "parietal_bones",
+      "expand": "skull",
+      "from": "left",
+      "durationMs": 9500
+    },
+    {
+      "text": {
+        "zh": "耳朵这一圈换成另一块。它不只是侧壁——整套听觉和平衡的零件都封在它内部。",
+        "en": "Around the ear a different bone takes over. It is not just side wall: the entire apparatus of hearing and balance is sealed inside it."
+      },
+      "layer": 0.5,
+      "selected": "temporal_bones",
+      "expand": "skull",
+      "from": "left",
+      "durationMs": 9000
+    },
+    {
+      "text": {
+        "zh": "转到后面。这一块托着后脑，底下开着一个大孔，脑干就是从这里接到脊髓的。",
+        "en": "Round to the back. This one cradles the rear of the brain, and a large opening in its underside is where the brainstem meets the spinal cord."
+      },
+      "layer": 0.5,
+      "selected": "occipital_bone",
+      "expand": "skull",
+      "from": "back",
+      "durationMs": 9000
+    },
+    {
+      "text": {
+        "zh": "切开看颅底正中。这一块横在中央，左右各伸出一对翼，几乎跟其余每块颅骨都接了边；当中那个马鞍形的窝，坐的正是垂体。",
+        "en": "Cut in to the middle of the skull base. This one lies across the centre with a pair of wings reaching out each side, bordering nearly every other bone of the skull; the saddle-shaped dip at its middle is where the pituitary sits."
+      },
+      "layer": 0.5,
+      "selected": "sphenoid_bone",
+      "expand": "skull",
+      "from": "left",
+      "clip": {
+        "axis": "x",
+        "pos": 0.0
+      },
+      "durationMs": 13500
+    },
+    {
+      "text": {
+        "zh": "蝴蝶前面这一块又轻又脆，是鼻腔的顶。顶上那层筛板全是小孔，嗅觉的细支就从孔里穿上来。",
+        "en": "In front of the butterfly sits a light, brittle piece forming the roof of the nose. Its upper plate is riddled with holes, and the threads of smell come up through them."
+      },
+      "layer": 0.5,
+      "selected": "ethmoid_bone",
+      "expand": "skull",
+      "from": "left",
+      "clip": {
+        "axis": "x",
+        "pos": 0.0
+      },
+      "durationMs": 10000
+    },
+    {
+      "text": {
+        "zh": "正中还竖着一块薄片，形状像犁地的铧。它把鼻腔分成左右两间，不过只管后半截，前半截交给软骨。",
+        "en": "A thin blade shaped like a ploughshare stands upright in the midline, dividing the nasal cavity into two rooms — but only over its back half; the front is left to cartilage."
+      },
+      "layer": 0.5,
+      "selected": "vomer",
+      "expand": "skull",
+      "from": "left",
+      "clip": {
+        "axis": "x",
+        "pos": 0.0
+      },
+      "durationMs": 10500
+    },
+    {
+      "text": {
+        "zh": "鼻腔两侧壁上还各卷着一片骨。气流被它们劈开、贴着黏膜走一段，进肺之前就已经加了温、加了湿。",
+        "en": "A scroll of bone curls out from each side wall. Air is split around them and made to run along the lining, so that by the time it reaches the lungs it has been warmed and moistened."
+      },
+      "layer": 0.5,
+      "selected": "inferior_nasal_conchae",
+      "expand": "skull",
+      "from": "front",
+      "clip": {
+        "axis": "x",
+        "pos": 0.0
+      },
+      "durationMs": 10500
+    },
+    {
+      "text": {
+        "zh": "回到脸上。托着上排牙的这一对同时是上腭、鼻腔侧壁和眼眶底，内部还挖空成一对最大的鼻窦。",
+        "en": "Back to the face. The pair carrying the upper teeth doubles as the palate, the side wall of the nose and the floor of the orbit — and is hollowed out into the largest pair of sinuses."
+      },
+      "layer": 0.5,
+      "selected": "maxillae",
+      "expand": "skull",
+      "from": "front",
+      "durationMs": 11500
+    },
+    {
+      "text": {
+        "zh": "颊部这一对凸得最靠外，往后搭上耳前那块骨，架起一道横过脸侧的桥。咀嚼肌就从桥下穿过去。",
+        "en": "The cheek pair stands furthest out, reaching back to the bone in front of the ear to throw a bridge across the side of the face. The chewing muscle runs underneath it."
+      },
+      "layer": 0.5,
+      "selected": "zygomatic_bones",
+      "expand": "skull",
+      "from": "front",
+      "durationMs": 10000
+    },
+    {
+      "text": {
+        "zh": "最后这一块是整顶头盔里唯一活的。别的都咬死在骨缝里，只有它挂在关节上，一天开合几千次。",
+        "en": "The last piece is the only living one in the whole helmet. Every other bone is locked into its seams; this one hangs from a joint and opens and closes thousands of times a day."
+      },
+      "layer": 0.5,
+      "selected": "mandible",
+      "expand": "skull",
+      "from": "left",
+      "durationMs": 10000
+    },
+    {
+      "text": {
+        "zh": "拼起来看：外面几块负责挡，中间几块负责撑，最里面几片薄骨负责把鼻腔和眼眶围出形状。二十多块，各有各的活。",
+        "en": "Put together: the outer pieces take the blows, the middle ones hold the shape, and the thin plates deepest in carve out the sockets and the nasal passages. Twenty-odd bones, each with its own job."
+      },
+      "layer": 0.45,
+      "preset": "hero",
+      "durationMs": 13000
+    }
+  ]
+}

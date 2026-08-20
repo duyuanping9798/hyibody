@@ -1,0 +1,101 @@
+{
+  "schema": 1,
+  "id": "ankle",
+  "title": {
+    "zh": "脚踝：四根绳子拐了个弯",
+    "en": "The Ankle: Four Ropes Round a Corner"
+  },
+  "system": "muscles",
+  "structures": [
+    "tibialis_posterior",
+    "fibularis_longus",
+    "extensor_digitorum_longus",
+    "flexor_digitorum_longus",
+    "tarsal_bones",
+    "foot_bones"
+  ],
+  "steps": [
+    {
+      "text": {
+        "zh": "脚上几乎没有大块肌肉——真正拉动脚趾和足弓的肌腹全都长在小腿上，靠长长的腱绕过踝关节伸下来。",
+        "en": "There is hardly any bulk of muscle in the foot itself. The bellies that actually move the toes and the arch all sit up in the calf, reaching down as long tendons that turn the corner at the ankle."
+      },
+      "layer": 0.06,
+      "preset": "front",
+      "durationMs": 12000
+    },
+    {
+      "text": {
+        "zh": "深层这一条从小腿后面绕到内踝底下，再散开钉在足底好几块骨头上。站久了足弓还没塌，多半是它一直在提着。",
+        "en": "This deep one swings from the back of the calf under the inner ankle bone, then fans out and pins itself to several bones in the sole. If your arch has not dropped after a long day standing, it is mostly because this has been holding it up."
+      },
+      "layer": 0.2,
+      "selected": "tibialis_posterior",
+      "from": "back",
+      "clip": {
+        "axis": "y",
+        "pos": 0.1369
+      },
+      "durationMs": 12500
+    },
+    {
+      "text": {
+        "zh": "外侧这一条走的是镜像路线：从外踝背后拐下去，横着穿过整个脚掌底面，止在对面。两条腱一内一外从下面兜住，足弓就吊在中间。",
+        "en": "The one on the outside takes the mirror route: down behind the outer ankle bone, across the whole underside of the foot, anchoring on the far side. With one cord slung from each side beneath it, the arch hangs in between."
+      },
+      "layer": 0.2,
+      "selected": "fibularis_longus",
+      "from": "right",
+      "durationMs": 13500
+    },
+    {
+      "text": {
+        "zh": "小腿前面这一条负责把脚趾勾起来。走路时脚离地那一瞬，它先把脚尖抬高，鞋头才不会剐到地面。",
+        "en": "The one on the front of the shin lifts the toes. In the instant your foot leaves the ground, it raises the toes first, so the front of your shoe does not scuff along the floor."
+      },
+      "layer": 0.2,
+      "selected": "extensor_digitorum_longus",
+      "from": "front",
+      "durationMs": 10000
+    },
+    {
+      "text": {
+        "zh": "后深层这一条做的是反向的动作，把外侧四个脚趾往下扣。赤脚站在斜坡上下意识\"抓地\"的那一下，就是它。",
+        "en": "Deep at the back, this one does the opposite, curling the outer four toes downwards. That instinctive grip when you stand barefoot on a slope is this muscle."
+      },
+      "layer": 0.2,
+      "selected": "flexor_digitorum_longus",
+      "from": "right",
+      "durationMs": 11000
+    },
+    {
+      "text": {
+        "zh": "这些腱最后都落在同一堆短骨上。肌肉在小腿、着力点在脚，中间隔着一整个踝关节——力量是拐着弯传过去的。",
+        "en": "All those tendons end on the same cluster of short bones. The muscle is in the calf, the attachment is in the foot, and a whole ankle joint lies in between: the force is delivered round a corner."
+      },
+      "layer": 0.5,
+      "selected": "tarsal_bones",
+      "from": "right",
+      "durationMs": 11000
+    },
+    {
+      "text": {
+        "zh": "把肌肉挪到远处有个好处：脚可以做得又轻又薄。真要在脚里塞进同样力量的肌肉，每一步都得多抬起一块砖。",
+        "en": "Moving the muscle far away has one great advantage: the foot can stay light and thin. Pack muscle of the same strength into the foot itself and every step would mean lifting a brick."
+      },
+      "layer": 0.5,
+      "selected": "foot_bones",
+      "from": "top",
+      "durationMs": 11000
+    },
+    {
+      "text": {
+        "zh": "脚更像一只被远程操控的手：抓握的力气留在小腿，落到地面上的只有骨头、韧带和几根绷紧的腱。",
+        "en": "A foot is closer to a remotely operated hand: the gripping power stays up in the calf, and what meets the ground is only bone, ligament and a few tightened cords."
+      },
+      "layer": 0.2,
+      "preset": "left",
+      "durationMs": 11500
+    }
+  ]
+}

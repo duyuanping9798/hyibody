@@ -39,7 +39,7 @@ import { computeSystemOpacity, PICKABLE_OPACITY_THRESHOLD } from './layers';
 import {
   colorForStructure,
   createSystemMaterial,
-  createXRayMaterial,
+  createSkinMaterial,
   setMaterialOpacity,
 } from './materials';
 import { createRenderPipeline, type RenderPipeline } from './postprocess';
@@ -205,7 +205,8 @@ export class HyiViewer extends EventTarget {
       preserveDrawingBuffer: true,
     });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    this.renderer.setClearColor(0x0b1020, 1);
+    // 清屏色跟着背景球一起压暗（背景球没盖到的角落用的是这个色）
+    this.renderer.setClearColor(0x03050b, 1);
     this.renderer.localClippingEnabled = true;
     // 电影级色调映射 + 程序化环境光照（观感升级，无外部 HDR 资源）
     this.renderer.toneMapping = ACESFilmicToneMapping;
@@ -310,10 +311,13 @@ export class HyiViewer extends EventTarget {
       const slug = extras.slug ?? mesh.name;
       const color = colorForStructure(sys, extras.en ?? slug, slug);
       const material =
-        sys === 'skin' ? createXRayMaterial(color, 1) : createSystemMaterial(sys, color);
+        sys === 'skin' ? createSkinMaterial(color) : createSystemMaterial(sys, color);
       mesh.material = material;
       mesh.renderOrder = RENDER_ORDER[sys];
+      // 自阴影才是深度感的来源：器官互相投影、肋骨在肺上留下条纹。
+      // 皮肤不投影（一张 6 万面的薄壳自投影只会长痤疮），但要接影。
       mesh.castShadow = QUALITY_CAPS[this.quality].softShadows && sys !== 'skin';
+      mesh.receiveShadow = QUALITY_CAPS[this.quality].softShadows;
       mesh.geometry.computeBoundingBox();
       group.add(mesh);
       const parent = typeof extras.parent === 'string' ? extras.parent : null;
@@ -476,12 +480,26 @@ export class HyiViewer extends EventTarget {
   }
 
   /** 结构的最终不透明度：分层 × 系统开关/透明度 × 隐藏/隔离。 */
+  /** `slug` 是不是 `expanded` 本身、或它的某一级祖先。 */
+  private coversExpanded(slug: string, expanded: string): boolean {
+    let cursor: string | null = expanded;
+    // 层级最多几级，加个上限只为防数据里出现环
+    for (let depth = 0; cursor !== null && depth < 8; depth += 1) {
+      if (cursor === slug) return true;
+      cursor = this.structures.get(cursor)?.parent ?? null;
+    }
+    return false;
+  }
+
   private effectiveOpacity(entry: StructureEntry): number {
     const s = this.state;
     if (!s.systemsVisible[entry.system] || s.hidden.has(entry.slug)) return 0;
     // 内部件平时不出现；展开父结构时它们顶替父结构登场
     if (entry.parent !== null && s.expanded !== entry.parent) return 0;
-    if (s.expanded === entry.slug) return 0;
+    // 展开的那一个让位给自己的内部件——**连同它的所有祖先**。
+    // 层级现在有三层（颅骨 → 额骨、脑 → 大脑 → 额叶）：只让位一级的话，
+    // 钻进「大脑」时外面那层「脑」会重新冒出来，把刚露出的脑叶又罩住。
+    if (s.expanded !== null && this.coversExpanded(entry.slug, s.expanded)) return 0;
     let opacity = computeSystemOpacity(entry.system, s.layer) * s.systemOpacity[entry.system];
     if (s.isolated) {
       // 隔离 = 只看这一个。其他结构压到只剩一点点轮廓做参照——
@@ -510,7 +528,9 @@ export class HyiViewer extends EventTarget {
     if (!this.clipPlane) return;
     const candidates = [];
     for (const entry of this.structures.values()) {
-      if (entry.material instanceof ShaderMaterial) continue; // 皮肤/X-ray 壳没有断面可言
+      // 皮肤是一整张外壳：给它做封盖会把整个人体断面填成一片肤色，
+      // 里面刚剖开的器官全被盖住。壳没有断面可言，跳过。
+      if (entry.system === 'skin' || entry.material instanceof ShaderMaterial) continue;
       if (!entry.material.visible) continue;
       if (this.effectiveOpacity(entry) < CAP_MIN_OPACITY) continue;
       candidates.push({ slug: entry.slug, mesh: entry.mesh, color: entry.color });
@@ -953,11 +973,11 @@ export class HyiViewer extends EventTarget {
     this.stage.key.shadow.mapSize.set(2048, 2048);
     this.stage.key.shadow.bias = -0.0006;
     this.stage.key.shadow.normalBias = 2;
-    this.stage.shadowCatcher.visible = caps.softShadows;
     // 真阴影开着时假接触阴影淡一点，免得脚下糊成一团黑
     (this.stage.contactShadow.material as Material).opacity = caps.softShadows ? 0.45 : 0.9;
     for (const entry of this.structures.values()) {
       entry.mesh.castShadow = caps.softShadows && entry.system !== 'skin';
+      entry.mesh.receiveShadow = caps.softShadows;
     }
 
     const w = this.container.clientWidth || 1;

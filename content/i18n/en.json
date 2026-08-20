@@ -102,5 +102,10 @@
   "searchTitle": "Search",
   "toolsTitle": "Tools",
   "helpTitle": "Help",
-  "unsupportedWebgl": "This browser does not support WebGL2, so the 3D model cannot be shown. Please upgrade to Chrome/Edge 105+, Safari 15.4+ or Firefox 121+; on a remote desktop or virtual machine, make sure hardware acceleration is enabled."
+  "unsupportedWebgl": "This browser does not support WebGL2, so the 3D model cannot be shown. Please upgrade to Chrome/Edge 105+, Safari 15.4+ or Firefox 121+; on a remote desktop or virtual machine, make sure hardware acceleration is enabled.",
+  "infoMore": "More",
+  "infoLess": "Less",
+  "infoAiReviewed": "AI cross-reviewed, not signed off by a clinician",
+  "infoHumanReviewed": "Medically reviewed",
+  "infoDisclaimer": "General education — not a substitute for a doctor's diagnosis"
 }

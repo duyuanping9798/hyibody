@@ -1,16 +1,18 @@
 {
   "_meta": {
-    "note": "HyiBody English one-liners (AI draft, pending review). blurb = the sentence in the info card; fact = the \"Did you know\" note. Figures are the usual popular-science ranges — set reviewed to true once a human has checked them.",
+    "note": "HyiBody one-line explainers. blurb = the sentence in the info card; fact = the \"Did you know\" note. aiReviewed=true means several rounds of AI cross-review have run (English parity, Chinese style, anatomical fact — see docs/CONTENT-GUIDE.md). reviewed stays false: it means sign-off by a qualified clinician, which AI review is not. Set reviewed to true once a human medical reviewer has been through it.",
+    "aiReviewed": true,
     "reviewed": false,
-    "generatedAt": "2026-08-18"
+    "generatedAt": "2026-08-18",
+    "aiReviewedAt": "2026-08-20"
   },
   "skin": {
     "blurb": "The body's largest organ: a waterproof wrapper that senses touch, helps control temperature and forms the first line of defence against germs.",
-    "fact": "Spread flat, an adult's skin covers about 1.5–2 square metres. You shed tens of thousands of dead cells every minute and grow a whole new outer layer roughly every four weeks."
+    "fact": "An adult's skin would spread out over 1.5–2 square metres; thirty to forty thousand dead cells flake off every minute, and the whole outer layer renews itself about every four weeks."
   },
   "sternocleidomastoid": {
-    "blurb": "A strap of muscle running diagonally down each side of the neck; it turns the head and tips it forward, and it is the most visible muscle in the neck.",
-    "fact": "Its name is its road map — from the sternum and clavicle up to the mastoid bump behind the ear. Turn your head and you can feel it stand out."
+    "blurb": "A strap of muscle running diagonally down each side of the neck; it turns the head and tips it forwards, and it is the most visible muscle in the neck.",
+    "fact": "Its name is its road map — from the sternum and clavicle up to the mastoid bump behind the ear. Turn your head to the left and the one that stands out is on the right."
   },
   "platysma": {
     "blurb": "A thin sheet of muscle just under the skin of the front of the neck; it pulls the corners of the mouth down and tightens the neck skin.",
@@ -21,19 +23,19 @@
     "fact": "Left and right together form a four-sided figure called a trapezium, which is where the name comes from. The sore spot on top of a stiff shoulder is its upper fibres."
   },
   "deltoid": {
-    "blurb": "The muscle that caps the shoulder joint and lifts the arm forward, out to the side and backward, giving the shoulder its rounded shape.",
+    "blurb": "The muscle that caps the shoulder joint and lifts the arm forwards, out to the side and backwards, giving the shoulder its rounded shape.",
     "fact": "The \"upper outer arm\" where vaccines are usually given is the deltoid."
   },
   "pectoralis_major": {
-    "blurb": "The big fan-shaped muscle across the front of the chest; it pulls the arm inward and forward and does the heavy lifting in a push-up or bench press.",
+    "blurb": "The big fan-shaped muscle across the front of the chest; it pulls the arm inward and forwards and does the heavy lifting in a push-up or bench press.",
     "fact": "It fans out from the collarbone, breastbone and rib cartilages into one flat tendon on the upper arm bone, so different fibres take over as the arm changes angle."
   },
   "pectoralis_minor": {
-    "blurb": "A smaller muscle hidden under pectoralis major, running from the ribs to the coracoid process of the shoulder blade, pulling it forward and down.",
-    "fact": "Slouching for years leaves it short and tight — one of the usual suspects behind rounded shoulders."
+    "blurb": "A smaller muscle hidden under pectoralis major, running from the ribs to the coracoid process of the shoulder blade, pulling it forwards and down.",
+    "fact": "The nerves and vessels of the arm pass right beneath it, and when that gap is too tight the hand goes numb as soon as it is raised overhead."
   },
   "serratus_anterior": {
-    "blurb": "A muscle wrapped around the side of the rib cage that pushes the shoulder blade forward and holds it flat against the chest wall.",
+    "blurb": "A muscle wrapped around the side of the rib cage that pushes the shoulder blade forwards and holds it flat against the chest wall.",
     "fact": "Its saw-toothed edge gives it the name \"serratus\", and because it drives a punch it is nicknamed the boxer's muscle."
   },
   "intercostal_muscles": {
@@ -49,7 +51,7 @@
     "fact": "Its fibres run in the direction your hands slide into your front pockets; the two sides must work together to turn the body."
   },
   "erector_spinae": {
-    "blurb": "A column of muscles running the length of the spine on both sides, holding the body upright and arching it backward.",
+    "blurb": "A column of muscles running the length of the spine on both sides, holding the body upright and arching it backwards.",
     "fact": "The ache in your lower back after a long day of sitting or standing is usually this group tiring out from holding you up."
   },
   "levator_scapulae": {
@@ -57,7 +59,7 @@
     "fact": "The sharpest point of pain in a stiff neck is often exactly where it attaches to the shoulder blade."
   },
   "splenius_capitis": {
-    "blurb": "A deep muscle at the back of the neck that tilts the head back and turns it toward the same side.",
+    "blurb": "A deep muscle at the back of the neck that tilts the head back and turns it towards the same side.",
     "fact": "It lies over the deeper neck muscles like a bandage, and that is exactly what its name means: splenion, the Greek word for a bandage or compress."
   },
   "supraspinatus": {
@@ -70,11 +72,11 @@
   },
   "teres_major": {
     "blurb": "Runs from the lower corner of the shoulder blade to the humerus, pulling the arm inward and rotating it inward.",
-    "fact": "It works so closely with latissimus dorsi that it is nicknamed \"lat's little helper\"."
+    "fact": "It runs from the lower tip of the shoulder blade round to the front of the arm bone, so pulling the arm down also twists it inwards."
   },
   "biceps_brachii": {
     "blurb": "The muscle on the front of the upper arm; it bends the elbow and turns the palm face-up.",
-    "fact": "It is the bulge you flex to show off, but the real workhorse of elbow bending is the brachialis underneath it."
+    "fact": "Its name means two heads, yet its real speciality is something else: turning the forearm palm-up, the movement behind every screwdriver and corkscrew."
   },
   "triceps_brachii": {
     "blurb": "Fills the back of the upper arm and straightens the elbow.",
@@ -82,19 +84,19 @@
   },
   "brachialis": {
     "blurb": "Hidden beneath the biceps, this is the strongest muscle for bending the elbow.",
-    "fact": "It pulls just as hard with the palm up or down, so it does the quiet, unglamorous half of every curl."
+    "fact": "It pulls just as hard with the palm up or down, the one elbow flexor that does not care how the arm is turned."
   },
   "brachioradialis": {
     "blurb": "Runs along the thumb side of the forearm and bends the elbow most powerfully when the thumb points up.",
     "fact": "Raising a glass — thumb up, elbow bending — is exactly the movement it is best at, which is why it is sometimes called the beer-drinker's muscle."
   },
   "flexor_carpi_radialis": {
-    "blurb": "A muscle on the front of the forearm that bends the wrist and pulls the hand toward the thumb side.",
+    "blurb": "A muscle on the front of the forearm that bends the wrist and pulls the hand towards the thumb side.",
     "fact": "Clench your fist and bend your wrist: the most obvious tendon on the thumb side of your wrist is this one."
   },
   "palmaris_longus": {
     "blurb": "A slender muscle on the front of the forearm that tightens the fascia of the palm and helps bend the wrist.",
-    "fact": "About one person in ten is born without it, with no loss of grip strength. Touch your thumb to your little finger and flex the wrist — if a cord pops up in the middle of your wrist, you have one."
+    "fact": "Some people are born without it — about one in seven in Europe and North America, far fewer in East Asia — and lose no grip by it; pinch thumb and little finger together, bend the wrist, and if a cord stands up in the middle you have one."
   },
   "flexor_digitorum_superficialis": {
     "blurb": "Sits on the front of the forearm and bends the middle joints of the fingers.",
@@ -110,7 +112,7 @@
   },
   "iliacus": {
     "blurb": "Lines the inner surface of the hip bone and joins psoas major to form the iliopsoas, the pair that lifts the thigh.",
-    "fact": "Every stride you run and every stair you climb depends on it."
+    "fact": "The two muscles end in one shared tendon on the femur, which is why in practice they are counted as a single muscle."
   },
   "gluteus_maximus": {
     "blurb": "One of the largest and strongest muscles in the body; it extends the hip so we can stand up, climb and run.",
@@ -118,7 +120,7 @@
   },
   "gluteus_medius": {
     "blurb": "Sits on the upper outer side of the hip, swinging the leg outward and keeping the pelvis level when you stand on one leg.",
-    "fact": "When it is weak the pelvis drops with every step, producing the lurching, side-to-side walk doctors call a waddling gait."
+    "fact": "If one side is weak, the opposite half of the pelvis drops the moment you stand on that leg, giving a lurching limp; the side-to-side waddle appears only when both sides go."
   },
   "tensor_fasciae_latae": {
     "blurb": "A small muscle at the upper outer thigh that tightens the iliotibial band, helping to flex the hip and stabilise the knee.",
@@ -130,14 +132,14 @@
   },
   "rectus_femoris": {
     "blurb": "The front-most of the four quadriceps muscles; it both straightens the knee and flexes the hip.",
-    "fact": "It is the only member of the quadriceps that crosses two joints, the hip as well as the knee."
+    "fact": "Kicking a ball flexes the hip and straightens the knee, and this one muscle drives both — which makes it powerful, and the likeliest to tear at the moment of the strike."
   },
   "vastus_muscles": {
-    "blurb": "Vastus lateralis and vastus medialis flank the thigh and, with rectus femoris and vastus intermedius, make up the quadriceps that straighten the knee.",
+    "blurb": "Vastus lateralis and vastus medialis lie along the outer and inner thigh; together with rectus femoris and vastus intermedius they make up the quadriceps, which straighten the knee.",
     "fact": "The teardrop-shaped bulge just above the inner knee is vastus medialis, and it matters a great deal for keeping the kneecap tracking straight."
   },
   "adductor_muscles": {
-    "blurb": "The group along the inner thigh that pulls the leg back toward the midline.",
+    "blurb": "The group along the inner thigh that pulls the leg back towards the midline.",
     "fact": "They are what grips a horse's flanks, which is why they are sometimes called the rider's muscles."
   },
   "hamstrings": {
@@ -150,7 +152,7 @@
   },
   "soleus": {
     "blurb": "Lies beneath gastrocnemius and is shaped like a flatfish; it supplies the steady push that holds you upright.",
-    "fact": "By squeezing the calf veins it pushes blood back to the heart, which earns it the nickname \"the second heart\"."
+    "fact": "Standing still, it squeezes and releases like a hand on a sponge, pushing the blood in the calf veins back up to the heart — which is why it is called the second heart."
   },
   "calcaneal_tendon": {
     "blurb": "Joins the calf muscles to the heel bone and is the thickest, strongest tendon in the body.",
@@ -170,14 +172,14 @@
   },
   "extensor_digitorum_longus": {
     "blurb": "Sits on the front and outer shin and straightens the outer four toes while lifting the foot.",
-    "fact": "Lift your toes and the cords that spring up across the top of your foot are its four tendons."
+    "fact": "It sends an extra tendon out to the fifth metatarsal, a slip with a name of its own — peroneus tertius — that about one person in five is born without."
   },
   "flexor_digitorum_longus": {
     "blurb": "A deep muscle at the back of the calf that curls the outer four toes.",
     "fact": "It is what grips the ground with your toes and what does the work when you walk barefoot on sand."
   },
   "skull": {
-    "blurb": "Some twenty bones locked together along zigzag sutures, forming a helmet around the brain and the sense organs.",
+    "blurb": "The skull is made of more than twenty bones; apart from the movable jaw they interlock along zigzag sutures, a helmet around the brain and the sense organs.",
     "fact": "A baby's skull still has soft gaps called fontanelles, so the head can squeeze through the birth canal and the brain has room to grow."
   },
   "mandible": {
@@ -198,7 +200,7 @@
   },
   "lumbar_vertebrae": {
     "blurb": "The five lower-back vertebrae are the largest in the spine and carry most of the weight of the upper body.",
-    "fact": "Bending over to lift something can load the lumbar discs with several times your body weight, which is why squatting down is the safer way."
+    "fact": "Bending over to lift can load the lumbar discs with several times your body weight, and the further the load sits from your body, the faster that number climbs."
   },
   "sacrum": {
     "blurb": "Five sacral vertebrae fused into a triangular wedge between the hip bones, passing the weight of the spine into the pelvis.",
@@ -214,11 +216,11 @@
   },
   "costal_cartilages": {
     "blurb": "Connect the front ends of the ribs to the breastbone, making the chest wall both firm and springy.",
-    "fact": "That springiness is what lets CPR push the breastbone down five or six centimetres and lets it spring back again between compressions."
+    "fact": "It calcifies and stiffens with age, which is why an older chest gives less and its ribs break more easily."
   },
   "sternum": {
     "blurb": "The breastbone runs down the front of the chest in three parts — manubrium, body and xiphoid process — anchoring the collarbones and rib cartilages.",
-    "fact": "CPR compressions belong on the lower half of the sternum, not on the xiphoid process below it."
+    "fact": "It grows from three pieces — the handle, the body and the small xiphoid tip — which only knit together into one bone after puberty."
   },
   "clavicle_right": {
     "blurb": "The collarbone is an S-shaped strut across the base of the neck that props the arm away from the trunk.",
@@ -262,10 +264,10 @@
   },
   "carpal_bones": {
     "blurb": "Eight small bones in two rows that let the wrist bend, straighten and tilt side to side.",
-    "fact": "A wrist that keeps aching after a sprain sometimes hides a scaphoid fracture, which is notoriously hard to see on an early X-ray."
+    "fact": "A fall onto an outstretched hand, written off as a sprain, with lingering tenderness in the hollow at the base of the thumb, is sometimes a scaphoid fracture — one an early X-ray can miss entirely."
   },
   "hand_bones": {
-    "blurb": "Five metacarpals and fourteen phalanges, plus the carpals, give each hand 27 bones — the most finely engineered tool in the body.",
+    "blurb": "Five metacarpals and fourteen phalanges, plus the eight carpal bones, give each hand 27 bones in all.",
     "fact": "The two hands hold 54 bones, more than a quarter of the entire skeleton, which is what buys us such delicate movement."
   },
   "hip_bone_right": {
@@ -318,11 +320,11 @@
   },
   "heart": {
     "blurb": "A fist-sized muscular pump with two atria and two ventricles, driving blood to the lungs and around the body without pause.",
-    "fact": "It beats about 100,000 times a day and some 2.5–3 billion times in a lifetime, moving enough blood to fill dozens of swimming pools."
+    "fact": "It beats about 100,000 times a day and some 2.5–3 billion times in a lifetime, pumping over 200 million litres — enough to fill close to a hundred Olympic-size pools."
   },
   "lung_right": {
     "blurb": "The right lung has three lobes, is slightly larger than the left, and is where most gas exchange happens.",
-    "fact": "The two lungs hold hundreds of millions of air sacs; unfolded, their surface would cover about 70 square metres — roughly a badminton court."
+    "fact": "The two lungs hold about 500 million air sacs with a combined surface of 70–100 square metres, and the gases cross a membrane less than a micrometre thick."
   },
   "lung_left": {
     "blurb": "The left lung has only two lobes and is a little smaller than the right, because it has to make room for the heart.",
@@ -330,7 +332,7 @@
   },
   "trachea": {
     "blurb": "The windpipe runs about 10–12 cm from the larynx to the bronchi, held open by a stack of C-shaped cartilage rings.",
-    "fact": "The gap in each ring faces backward toward the oesophagus, leaving it room to bulge when you swallow something large."
+    "fact": "The gap in each ring faces backwards towards the oesophagus, leaving it room to bulge when you swallow something large."
   },
   "esophagus": {
     "blurb": "A muscular tube about 25 cm long that pushes food from the throat to the stomach by waves of contraction.",
@@ -338,14 +340,14 @@
   },
   "stomach": {
     "blurb": "The widened mixing vessel of the gut, where acid and enzymes break food down into a paste.",
-    "fact": "Stomach acid is strong enough to dissolve metal; the lining survives by secreting mucus constantly and replacing itself every few days."
+    "fact": "Stomach acid is dilute hydrochloric acid at pH 1.5–3.5, enough to corrode iron and zinc and kill most bacteria; the lining defends itself twice over, with a constant film of mucus on top and a complete replacement of itself every few days."
   },
   "liver": {
     "blurb": "The largest internal organ, running hundreds of jobs at once: processing nutrients, detoxifying, building proteins and making bile.",
     "fact": "It regenerates remarkably well — after most of it is removed it can grow back to near its original size within months."
   },
   "gallbladder": {
-    "blurb": "A small pear-shaped sac tucked under the liver that stores and concentrates bile, releasing it into the small intestine to digest fat.",
+    "blurb": "The gall bladder is a small pear-shaped sac under the liver that stores and concentrates bile, then squeezes it into the small intestine after a meal to help digest fat.",
     "fact": "Bile is concentrated several times over inside it, and when the mix goes out of balance the surplus can crystallise into gallstones."
   },
   "pancreas": {
@@ -354,7 +356,7 @@
   },
   "spleen": {
     "blurb": "Sits in the upper left abdomen, filtering worn-out red blood cells and taking part in immune defence.",
-    "fact": "It is not essential — people live normally after it is removed following injury, though their risk of certain infections is a little higher."
+    "fact": "It is not essential: people live normally after it is removed following an injury, though their defence against certain encapsulated bacteria stays weaker for life, and doctors plan around that."
   },
   "kidneys": {
     "blurb": "A pair of filters beside the spine at waist level; they clean the blood, make urine and regulate salt, water and blood pressure.",
@@ -365,12 +367,12 @@
     "fact": "The urge usually starts at around 150–200 ml, and a comfortable full bladder holds roughly 400–500 ml."
   },
   "small_intestine": {
-    "blurb": "Coiled through the middle of the abdomen and 5–7 metres long, this is where most digestion and nutrient absorption happens.",
-    "fact": "Villi and microvilli multiply its inner surface to about 30 square metres — roughly the floor of a small room."
+    "blurb": "Coiled through the middle of the abdomen, this is where most digestion and nutrient absorption happens; it measures 3–5 metres in life and stretches to 5–7 once the muscle relaxes.",
+    "fact": "Folds, villi and microvilli magnify the lining stage by stage, stretching the absorbing surface to some 30 square metres — the floor of a small room."
   },
   "large_intestine": {
     "blurb": "Frames the small intestine, runs about 1.5 metres, and mainly reclaims water and forms stool.",
-    "fact": "It houses tens of trillions of bacteria, about as many cells as the body's own, helping with digestion and immunity."
+    "fact": "It houses tens of trillions of bacteria — roughly as many cells as the body's own — and they help with both digestion and immunity."
   },
   "tongue": {
     "blurb": "A bundle of agile muscle that moves food around, senses taste and shapes almost every sound we speak.",
@@ -378,7 +380,7 @@
   },
   "appendix": {
     "blurb": "A narrow blind-ended tube hanging off the caecum in the lower right abdomen.",
-    "fact": "Long dismissed as useless, it is now thought to act as a safe house for helpful gut bacteria and to carry immune tissue."
+    "fact": "Long dismissed as useless, it is now widely hypothesised to shelter the gut's helpful bacteria; what is certain is that it is itself a knot of lymphoid tissue."
   },
   "adrenal_glands": {
     "blurb": "Perched like caps on top of each kidney, they release stress hormones such as adrenaline and cortisol.",
@@ -386,15 +388,15 @@
   },
   "ureters": {
     "blurb": "Two narrow tubes about 25–30 cm long that squeeze urine from the kidneys down to the bladder.",
-    "fact": "A kidney stone stuck in a ureter causes what is often ranked among the most severe pains people ever experience."
+    "fact": "It moves urine along in waves of muscular squeezing, so even upside down the flow still reaches the bladder against gravity."
   },
   "pituitary_gland": {
     "blurb": "No bigger than a pea and tucked into a hollow at the base of the skull, it directs the thyroid, adrenals, gonads and much of the endocrine system.",
-    "fact": "Its growth hormone sets how tall we grow, and it keeps the thyroid, adrenals and gonads in step — which is why it is nicknamed the master gland."
+    "fact": "It weighs barely half a gram and hangs from the hypothalamus on a thin stalk, taking its orders from above; the growth hormone it releases is one of the things that decide how tall you become."
   },
   "larynx_cartilages": {
     "blurb": "The cartilages that frame the voice box; the largest is the thyroid cartilage, whose front ridge forms the Adam's apple.",
-    "fact": "In male puberty these cartilages enlarge and the vocal cords lengthen, so the Adam's apple juts out and the voice drops."
+    "fact": "Small joints link these cartilages, and as they draw together or apart in speech the vocal folds tighten and slacken, giving the voice its pitch."
   },
   "thymus": {
     "blurb": "Sits behind the breastbone and is the school where T lymphocytes mature.",
@@ -402,7 +404,7 @@
   },
   "prostate": {
     "blurb": "A walnut-sized gland in the male pelvis wrapped around the urethra; it adds part of the fluid in semen.",
-    "fact": "It grows with age and squeezes the urethra running through it, which is why urine flow often slows in older men."
+    "fact": "A little of the prostate-specific antigen it makes leaks into the blood, and measuring that level is the commonest way to screen the gland."
   },
   "testes": {
     "blurb": "Held in the scrotum, they produce sperm and secrete the male hormone testosterone.",
@@ -410,10 +412,10 @@
   },
   "heart_left_ventricle": {
     "blurb": "The left ventricle is the heart's main pump: its thick wall squeezes oxygen-rich blood into the aorta and out to the whole body.",
-    "fact": "Its wall is about a centimetre thick, three times the right ventricle's — the right side only has to reach the lungs, the left has to reach your toes."
+    "fact": "Its wall is about a centimetre thick, three times the right ventricle's: the right side only reaches the lungs, the left has to reach your toes."
   },
   "heart_right_ventricle": {
-    "blurb": "The right ventricle takes oxygen-poor blood from the right atrium and drives it into the pulmonary artery toward the lungs.",
+    "blurb": "The right ventricle takes oxygen-poor blood from the right atrium and drives it into the pulmonary artery towards the lungs.",
     "fact": "Resistance in the lung circuit is only about a sixth of that in the body circuit, so its wall is far thinner — in cross-section it hugs the left ventricle like a crescent."
   },
   "heart_left_atrium": {
@@ -421,15 +423,15 @@
     "fact": "Four openings in its back wall are the mouths of the pulmonary veins; in atrial fibrillation clots tend to form in its small pouch, the left atrial appendage."
   },
   "heart_right_atrium": {
-    "blurb": "The right atrium sits at the upper right of the heart, collecting oxygen-poor blood from the two venae cavae and passing it through the tricuspid valve.",
-    "fact": "The heart's natural pacemaker, the sinoatrial node, is buried in its wall near the mouth of the superior vena cava — every heartbeat starts here."
+    "blurb": "The right atrium is where all the body's venous blood arrives — from both venae cavae and from the heart's own veins — before passing through the tricuspid valve into the right ventricle.",
+    "fact": "The beat is set by the sinoatrial node, the heart's own pacemaker, buried in the wall of this chamber beside the mouth of the superior vena cava."
   },
   "heart_interventricular_septum": {
     "blurb": "A thick muscular wall dividing the left and right ventricles so oxygen-rich and oxygen-poor blood never mix.",
-    "fact": "If it fails to close before birth the result is a ventricular septal defect — the most common congenital heart condition."
+    "fact": "If it fails to close before birth the result is a ventricular septal defect — one of the commonest structural heart problems a baby is born with."
   },
   "heart_mitral_valve": {
-    "blurb": "Sits between the left atrium and left ventricle, its two leaflets stopping blood from washing back into the atrium.",
+    "blurb": "The mitral valve guards the way from left atrium to left ventricle — the gateway of the body's circulation, and the only one of the four that has to hold back pressure this high.",
     "fact": "It is named for its likeness to a bishop's mitre."
   },
   "heart_tricuspid_valve": {
@@ -441,15 +443,15 @@
     "fact": "The shorter, sharper second heart sound is this valve closing together with the pulmonary valve."
   },
   "heart_pulmonary_valve": {
-    "blurb": "Guards the outlet of the right ventricle, releasing blood toward the lungs and stopping it from returning.",
+    "blurb": "The pulmonary valve sits at the exit of the right ventricle, opening and closing a hundred thousand times a day under the lightest load of the four — and giving the least trouble.",
     "fact": "Its three cusps work like little pockets: blood trying to flow back fills them and snaps the valve shut."
   },
   "heart_papillary_muscles": {
     "blurb": "Cone-shaped muscular pillars on the inner wall of the ventricles that hold the valve leaflets through the chordae tendineae.",
-    "fact": "They tighten the cords just before the ventricle squeezes, so the high-pressure blood cannot push the leaflets up into the atrium."
+    "fact": "If a heart attack damages one, the cords go slack, the valve leaflet stops sealing, and heart failure can follow within hours."
   },
   "aorta": {
-    "blurb": "The body's widest artery: it leaves the left ventricle, arches over and runs down the trunk, distributing oxygen-rich blood everywhere.",
+    "blurb": "The aorta is the widest artery in the body: it leaves the left ventricle, arches upwards and over, then runs down along the spine, handing oxygen-rich blood out to everywhere.",
     "fact": "It is about 2.5–3 cm across where it leaves the heart, and its elastic wall stretches and springs back with every beat, smoothing the flow downstream."
   },
   "pulmonary_trunk": {
@@ -458,11 +460,11 @@
   },
   "pulmonary_arteries": {
     "blurb": "The left and right pulmonary arteries carry oxygen-poor blood from the right ventricle into the lungs, where gas exchange takes place.",
-    "fact": "Pressure in the lung circuit is only about a sixth of that in the body circuit, which is why the right ventricle is so much thinner than the left."
+    "fact": "It is far softer than the aorta, its wall half as thick, and measuring the flow through it on ultrasound reveals how high the pressure in the lungs has climbed."
   },
   "pulmonary_veins": {
-    "blurb": "Four veins returning freshly oxygenated blood from the lungs to the left atrium.",
-    "fact": "They are the only veins in the body that carry oxygen-rich blood."
+    "blurb": "Four pulmonary veins carry the blood that has taken on oxygen in the lungs back to the left atrium.",
+    "fact": "Blood in a vein is usually dark red; these four are the only ones carrying the bright red blood that has just taken on oxygen in the lungs."
   },
   "coronary_arteries": {
     "blurb": "Branch off the root of the aorta and wrap around the surface of the heart to feed the heart muscle itself.",
@@ -470,27 +472,27 @@
   },
   "superior_vena_cava": {
     "blurb": "Collects blood returning from the head, neck and arms and empties it into the right atrium.",
-    "fact": "It has no valves; the return depends on the suction created inside the chest each time you breathe in."
+    "fact": "It has no valves: blood returns simply because the pressure ahead of it is lower, and every breath in adds an extra tug of suction from inside the chest."
   },
   "inferior_vena_cava": {
     "blurb": "The widest vein in the body, gathering blood from the lower body and abdominal organs and returning it to the right atrium.",
-    "fact": "It runs up tight against the right of the spine, where a late-pregnancy uterus can press on it — hence the advice to sleep on your side."
+    "fact": "It runs up tight against the right of the spine, where a late-pregnancy uterus can press on it and cut the blood returning to the heart — which is why obstetric care pays attention to how a woman lies."
   },
   "common_carotid_arteries": {
     "blurb": "Run up either side of the neck and split at the level of the Adam's apple into internal and external carotid arteries feeding the head and neck.",
-    "fact": "The strong pulse you find by pressing beside the Adam's apple is this artery."
+    "fact": "The strong pulse beside the Adam's apple is this artery; a blood-pressure sensor sits here too, so press lightly and never on both sides at once."
   },
   "internal_carotid_arteries": {
     "blurb": "Pass through the base of the skull into the cranial cavity and are the main supply to the front of the brain and to the eye.",
-    "fact": "Inside the skull it makes several tight turns in an S shape that radiologists call the carotid siphon."
+    "fact": "Inside the skull it turns through several tight bends, winding into an S — a stretch anatomists call the carotid siphon."
   },
   "internal_jugular_veins": {
     "blurb": "Run alongside the internal carotid arteries and form the main return route for blood from the head and neck.",
-    "fact": "It is one of the routes doctors most often choose when placing a central venous line."
+    "fact": "When a catheter has to be threaded all the way up to the heart, this vein is the entry doctors choose most often."
   },
   "vertebral_arteries": {
     "blurb": "Branch from the subclavian arteries, thread up through holes in the neck vertebrae and enter the skull to supply the brainstem and cerebellum.",
-    "fact": "They are strung through the vertebrae like beads on a thread, so neck problems can occasionally affect blood flow to the back of the brain."
+    "fact": "They are strung through the neck vertebrae like beads on a thread, so turning the head shifts the flow a little; a worn neck joint genuinely squeezing one, though, is very rare."
   },
   "brachiocephalic_trunk": {
     "blurb": "The first branch off the aortic arch; it soon divides into the right common carotid and right subclavian arteries.",
@@ -498,15 +500,15 @@
   },
   "brachiocephalic_veins": {
     "blurb": "Each is formed where the internal jugular and subclavian veins meet, and the two of them join to make the superior vena cava.",
-    "fact": "The left one is far longer than the right, because it has to cross the midline of the body to reach its partner."
+    "fact": "It runs straight across behind the upper breastbone, the first structure a surgeon must avoid when the sternum is split for heart surgery."
   },
   "subclavian_arteries": {
     "blurb": "Pass beneath the collarbone as the main blood supply to the arm, and also give off the vertebral arteries to the brain.",
-    "fact": "It presses a shallow groove into the first rib — a mark of just how tightly vessel and bone are packed together here."
+    "fact": "Lying against the first rib year after year, it wears a shallow groove into the bone — that is how closely vessel and bone are pressed together."
   },
   "subclavian_veins": {
     "blurb": "Carry blood from the arm back into the chest and join the internal jugular veins to form the brachiocephalic veins.",
-    "fact": "This is where the body's lymph finally drains back into the bloodstream — at the venous angle, the corner where these two veins meet."
+    "fact": "All the body's lymph finally rejoins the bloodstream in the angle where this vein meets the internal jugular."
   },
   "axillary_brachial_arteries": {
     "blurb": "The axillary artery crosses the armpit and continues as the brachial artery down the inner upper arm, supplying the whole limb.",
@@ -518,43 +520,43 @@
   },
   "celiac_trunk": {
     "blurb": "The first big branch of the abdominal aorta — very short, and immediately dividing into the arteries of the stomach, liver and spleen.",
-    "fact": "It is only a centimetre or two long yet supplies most of the organs of the upper abdomen."
+    "fact": "It is so short that it branches almost before it has begun, and on an angiogram the eye can slide straight past it."
   },
   "mesenteric_arteries": {
     "blurb": "The superior and inferior mesenteric arteries leave the abdominal aorta and run through the mesentery to feed the small and large intestine.",
-    "fact": "Blood flow to the gut rises sharply after a meal, one reason hard exercise straight after eating feels so unpleasant."
+    "fact": "After a meal the flow to the gut rises sharply, to carry the freshly absorbed nutrients away in good time."
   },
   "celiac_branches": {
-    "blurb": "The common hepatic and splenic arteries are the two main branches of the coeliac trunk, supplying the liver, gallbladder and stomach, and the spleen.",
+    "blurb": "The coeliac trunk divides into three; the stoutest two are the common hepatic and splenic arteries, feeding the liver, gallbladder and stomach, and the spleen.",
     "fact": "The splenic artery winds along the top edge of the pancreas and is one of the most tortuous arteries in the abdomen."
   },
   "portal_tributaries": {
     "blurb": "The splenic and mesenteric veins collect blood from the spleen, stomach and intestines and merge to form the hepatic portal vein.",
-    "fact": "Everything absorbed by the gut — nutrients and swallowed medicines alike — travels this way to the liver for screening first."
+    "fact": "When cirrhosis blocks the way through, pressure backs up in these veins and blood is forced into the small vessels of the lower oesophagus — that is where varices come from."
   },
   "hepatic_portal_vein": {
     "blurb": "Delivers nutrient-laden blood from the digestive tract into the liver for processing before it joins the general circulation.",
-    "fact": "That gives the liver a double blood supply: nutrients through the portal vein, oxygen through the hepatic artery."
+    "fact": "The liver takes blood by two routes at once: the portal vein brings the nutrients — and about half the oxygen — while the hepatic artery tops the oxygen up."
   },
   "renal_arteries": {
     "blurb": "Branch off either side of the abdominal aorta and deliver a large share of the blood supply to the kidneys for filtering.",
-    "fact": "About a fifth of every heartbeat's output goes to the kidneys, even though together they are under 1% of body weight."
+    "fact": "The two kidneys together weigh less than a pack of cards, yet they take a fifth of everything the heart pumps out."
   },
   "renal_veins": {
     "blurb": "Return the filtered blood from the kidneys to the inferior vena cava.",
     "fact": "The left renal vein has to cross in front of the aorta to get there, so it is noticeably longer than the right."
   },
   "iliac_arteries": {
-    "blurb": "The abdominal aorta splits in the lower back into the common iliac arteries, each dividing again into an internal branch for the pelvis and an external branch for the leg.",
+    "blurb": "At waist level the abdominal aorta splits into the two common iliac arteries, each dividing again into an internal branch for the pelvis and an external one for the leg.",
     "fact": "The split sits roughly at navel level, in front of the fourth lumbar vertebra."
   },
   "femoral_arteries": {
     "blurb": "The main artery of the thigh, entering at the middle of the groin and supplying the whole lower limb.",
-    "fact": "Its pulse is easy to feel in the groin, which is why cardiac catheters are often threaded in from exactly this spot."
+    "fact": "Its pulse is easy to feel in the groin; wide and close to the surface, it is one of the classic entry points for cardiac and vascular catheters."
   },
   "femoral_veins": {
     "blurb": "Run beside the femoral arteries as the main deep drainage route of the leg.",
-    "fact": "Sitting still on a long flight lets clots form in these deep veins; getting up and working the calf muscles is what pumps the blood along."
+    "fact": "It shares one sheath with the femoral artery, and every pulse of the artery nudges it from the side, helping drive the blood upwards."
   },
   "popliteal_arteries": {
     "blurb": "The continuation of the femoral artery behind the knee, supplying the knee joint and the lower leg.",
@@ -566,7 +568,7 @@
   },
   "great_saphenous_veins": {
     "blurb": "The longest vein in the body, running from the inner side of the foot all the way up to the groin to join the femoral vein.",
-    "fact": "The blue-green lines showing through the skin of the calf are usually its branches, and surgeons often harvest it as a graft for heart bypass surgery."
+    "fact": "The blue cords showing through the skin of the calf are usually its branches, and surgeons often harvest it as a graft for heart bypass surgery."
   },
   "azygos_vein": {
     "blurb": "Runs up the right side of the spine, collecting blood from the chest wall and part of the abdominal wall into the superior vena cava.",
@@ -581,15 +583,15 @@
     "fact": "It is much shorter than the spine: in adults it ends around the first or second lumbar vertebra, below which only a bundle of nerve roots — the cauda equina — continues."
   },
   "optic_nerves": {
-    "blurb": "Carry the light signals picked up by the retina toward the brain — the data cable of vision.",
+    "blurb": "The optic nerve carries the retina's signals to the brain; it grew out of the brain itself in the embryo, and counts as an outpost of the brain reaching behind the eye.",
     "fact": "Each holds over a million nerve fibres, and where it leaves the eye there are no light receptors at all, which creates the blind spot in your field of view."
   },
   "tracheal_cartilages": {
     "blurb": "Sixteen to twenty C-shaped rings of cartilage hold the windpipe open, like the wire coil in a vacuum-cleaner hose.",
-    "fact": "Each ring's gap faces backward toward the oesophagus, leaving it room to bulge when you swallow something large."
+    "fact": "They are not loose separate hoops but strung together by ligaments, so the windpipe can stretch and shorten like a concertina as you raise or lower your head."
   },
   "carina": {
-    "blurb": "The ridge where the windpipe forks into the left and right main bronchi — the very end of the trachea.",
+    "blurb": "The carina is where the windpipe divides in two, the left and right main bronchi branching away on either side of this ridge.",
     "fact": "It is exquisitely sensitive: anything touching it sets off violent coughing, and bronchoscopists use it as their landmark."
   },
   "thyroid_cartilage": {
@@ -602,27 +604,27 @@
   },
   "epiglottic_cartilage": {
     "blurb": "A leaf-shaped flap standing at the entrance of the voice box; swallowing tips it back to cover the airway.",
-    "fact": "When it fails to close in time you choke — that cough after a sip of water is liquid slipping into an airway that was not quite covered."
+    "fact": "Swallowing lifts the whole voice box, shuts the vocal cords, and only then folds this flap down over the opening; choking on a drink is one step in that sequence arriving late."
   },
   "pancreas_head": {
-    "blurb": "The head nests in the C-shaped curve of the duodenum, the thickest end of the pancreas, with a small uncinate process hooking below it.",
-    "fact": "The bile duct passes right through the head, so anything growing here squeezes it shut and turns the skin yellow."
+    "blurb": "The head is the thickest end of the pancreas, tucked against the inner curve of the duodenum, with a small hook of tissue reaching under the mesenteric vessels.",
+    "fact": "The bile duct has to pass through the head before opening into the duodenum, so a growth here that presses on it turns a person yellow."
   },
   "pancreas_body": {
-    "blurb": "The body crosses in front of the spine, the middle stretch of the pancreas, with the stomach lying against it.",
+    "blurb": "The body is the middle stretch of the pancreas, lying across the front of the spine with only a thin sac of lining between it and the stomach.",
     "fact": "It sits directly on the first two lumbar vertebrae, which is where a blow to the abdomen can snap the pancreas in two."
   },
   "pancreas_tail": {
     "blurb": "The tail reaches up to the left, its tip touching the hilum of the spleen — the only part of the pancreas wrapped in peritoneum and free to move.",
-    "fact": "The insulin-making islets are densest in the tail, so removing the tail affects blood sugar more than removing the head."
+    "fact": "The insulin-making islets are densest in the tail, while the head end is richer in another cell type — one organ, two ends with different endocrine jobs."
   },
   "kidney_cortex": {
     "blurb": "The outer centimetre of the kidney, holding over a million filtering units — this is where cleaning the blood begins.",
     "fact": "The renal columns dipping down between the pyramids are cortex too; blood vessels travel along them into the depths of the kidney."
   },
   "kidney_pyramids": {
-    "blurb": "Around a dozen cone-shaped blocks of medulla, tips pointing toward the hilum, where urine is concentrated and gathered.",
-    "fact": "Each tip is a renal papilla, and urine drips from it into a minor calyx before draining into the ureter."
+    "blurb": "A dozen or more cone-shaped blocks of medulla, tips pointing towards the hilum, where urine is concentrated and gathered.",
+    "fact": "A pyramid is packed with parallel tubules; urine travels down them from the cortex to the tip, growing more concentrated with every millimetre of the journey."
   },
   "kidney_hilum": {
     "blurb": "The notch on the inner edge of the kidney where the renal artery, renal vein and ureter enter and leave.",
@@ -630,7 +632,7 @@
   },
   "bladder_trigone": {
     "blurb": "A triangular patch on the inner floor of the bladder: the two upper corners are the ureteral openings, the lower one leads to the urethra.",
-    "fact": "This lining stays smooth even when the bladder is empty, while the rest wrinkles — which is how it serves as a landmark during cystoscopy."
+    "fact": "When the bladder empties, the rest of the lining crumples into folds and this patch alone stays smooth — which is what makes it the landmark surgeons look for."
   },
   "prostate_peripheral_zone": {
     "blurb": "The peripheral zone wraps the back and sides of the prostate and makes up around 70% of the gland.",
@@ -646,7 +648,7 @@
   },
   "seminal_vesicles": {
     "blurb": "A pair of coiled pouches behind the bladder that produce most of the fluid in semen.",
-    "fact": "About 60% of semen comes from them, and the fructose it carries is the fuel sperm swim on."
+    "fact": "About 70% of semen comes from them, and the fructose in that fluid is the fuel sperm swim on."
   },
   "main_bronchus": {
     "blurb": "The left and right main bronchi branch off at the carina, each burrowing into one lung, held open by cartilage like the windpipe above.",
@@ -654,22 +656,22 @@
   },
   "liver_caudate_lobe": {
     "blurb": "Tucked on the back of the liver between the inferior vena cava and the ligamentum venosum, with a blood supply all its own.",
-    "fact": "Because its supply and drainage are independent, it can grow to compensate when the rest of the liver is congested."
+    "fact": "When the other lobes are congested and shrinking, this one grows to compensate — a change that stands out on a CT scan."
   },
   "liver_quadrate_lobe": {
     "blurb": "A square patch on the underside of the liver, framed by the gallbladder bed and the round ligament.",
-    "fact": "It looks like part of the left lobe but belongs to the right by blood supply — surgical and anatomical lobes disagree here."
+    "fact": "By shape it is counted as part of the right lobe, but its vessels and bile ducts belong to the left — surgical and anatomical lobes disagree here."
   },
   "liver_porta_hepatis": {
     "blurb": "The transverse fissure on the underside of the liver where the portal vein and hepatic artery go in and the bile ducts come out.",
-    "fact": "Their arrangement is fixed: duct to the right and front, artery to the left and front, portal vein behind."
+    "fact": "In a liver transplant the three tubes in this groove must each be sewn back one by one, on stumps only a couple of centimetres wide — the most exacting stretch of the whole operation."
   },
   "liver_falciform_ligament": {
     "blurb": "A sickle-shaped fold of peritoneum joining the top of the liver to the diaphragm and the front abdominal wall.",
     "fact": "Its free edge hides the round ligament — the closed-off remnant of the umbilical vein that fed you before birth."
   },
   "spinal_cord_cervical": {
-    "blurb": "The top eight segments of the cord, sending out the nerves for the neck, shoulder and the whole arm.",
+    "blurb": "The cervical cord is the top eight segments, and the nerves leaving it run the neck, the shoulder and the whole arm.",
     "fact": "It bulges here — the cervical enlargement — because it has to house all the nerve cells that run the arms."
   },
   "spinal_cord_thoracic": {
@@ -677,15 +679,15 @@
     "fact": "This is the narrowest stretch of cord and the narrowest part of the spinal canal, which makes injury here comparatively risky."
   },
   "spinal_cord_lumbar": {
-    "blurb": "Five segments giving rise to the nerves of the thigh and lower leg — the lower enlargement of the cord.",
+    "blurb": "The lumbar cord is five segments, and its nerves run the front of the thigh and the bending and straightening of the knee.",
     "fact": "It actually sits at the level of the lower thoracic vertebrae: the cord is shorter than the spine, so segments and vertebrae do not line up."
   },
   "spinal_cord_sacral": {
-    "blurb": "Five segments handling the foot, the perineum and the reflexes of bladder and bowel — the cord ends here.",
-    "fact": "In adults the cord stops around the first or second lumbar vertebra; below that only a bundle of roots continues, the cauda equina."
+    "blurb": "Five segments handling the foot, the perineum and the reflexes of bladder and bowel; with the single coccygeal segment below, they form the tip of the cord.",
+    "fact": "The cord itself stops high in the lumbar spine; below that the canal holds only a brush of nerve roots — which is precisely why a lumbar puncture needle is placed down there."
   },
   "eyes": {
-    "blurb": "A pair of spheres about 24 mm across that focus light onto the retina and hand the signal to the optic nerve.",
+    "blurb": "The eyeballs are a pair of spheres about the size of a table-tennis ball, focusing light onto the retina and handing it to the optic nerve for the brain.",
     "fact": "They grow far less than the rest of the body — a newborn's eye is already about two-thirds of its adult diameter, which is why children's eyes look so big."
   },
   "eye_cornea": {
@@ -694,7 +696,7 @@
   },
   "eye_iris": {
     "blurb": "The coloured ring, with the pupil as the hole in its middle; two sets of muscles adjust how much light gets through.",
-    "fact": "Its pattern is unique and stable for life, so it works for identification — and blue eyes hold no blue pigment, the colour comes from scattering."
+    "fact": "There is no blue pigment in a blue eye: the colour is scattered light, the same trick that makes the sky blue."
   },
   "eye_lens": {
     "blurb": "An elastic lens slung behind the iris on fine fibres, shifting focus between near and far.",
@@ -702,19 +704,19 @@
   },
   "eye_retina": {
     "blurb": "The light-sensitive film lining the back of the eye, where more than a hundred million light-sensing cells turn light into nerve signals.",
-    "fact": "The macula at its centre is the sharpest spot, while the point where the optic nerve leaves has no receptors at all — your blind spot."
+    "fact": "Only the macula, a small patch at the very centre, sees sharply: reading a word or recognising a face depends almost entirely on it."
   },
   "palatine_tonsils": {
     "blurb": "A pair of lymphoid masses on either side of the throat, standing guard at the entrance to both the airway and the gut.",
-    "fact": "They are largest in childhood and shrink in adults; they are the bumps you see either side of the throat when you say ah."
+    "fact": "Its surface is pitted with deep crypts where debris and bacteria pack into small white lumps — what people call tonsil stones."
   },
   "bronchial_tree": {
     "blurb": "From the main bronchi down through lobar and segmental branches, an upside-down tree delivering air to every corner of the lungs.",
-    "fact": "There are about twenty-three generations of branching from windpipe to air sac, and the small airways' combined cross-section is hundreds of times the trachea's."
+    "fact": "From windpipe to air sac the branching runs about 23 generations deep; each tube is narrower but far more numerous, so the combined cross-section is tens of times the windpipe's at the terminal bronchioles, a thousandfold in the air sacs."
   },
   "bronchial_cartilage": {
     "blurb": "Plates of cartilage set into the airway walls, smaller with each branching, keeping the tubes from collapsing as you breathe out.",
-    "fact": "By the time the airways are down to bronchioles the cartilage is gone entirely, leaving only smooth muscle — the very muscle that tightens in an asthma attack."
+    "fact": "By the time the tubes narrow into bronchioles the cartilage has vanished altogether, leaving only smooth muscle — and that is the stretch which tightens in an asthma attack."
   },
   "duodenum": {
     "blurb": "The first stretch of small intestine, curving in a C around the head of the pancreas, where bile and pancreatic juice arrive.",
@@ -734,11 +736,11 @@
   },
   "ascending_colon": {
     "blurb": "Runs up the right side of the abdomen and turns beneath the liver, still reclaiming water as it goes.",
-    "fact": "The bend is tucked against the liver, which is why it is called the hepatic flexure."
+    "fact": "From here on the gut changes its blood supply: this stretch still belongs to the midgut, everything beyond it to the hindgut."
   },
   "transverse_colon": {
-    "blurb": "Crosses the upper abdomen — the longest and most mobile stretch of the large intestine.",
-    "fact": "Slung on a mesentery, it often sags into a U when you stand, so its position varies with person and posture."
+    "blurb": "Crosses the upper abdomen from below the liver to below the spleen — the longest stretch of the large intestine.",
+    "fact": "Slung on a fold of membrane, it often sags into a U when you stand; where exactly it lies differs from person to person, and shifts with posture."
   },
   "descending_colon": {
     "blurb": "Runs down the left side of the abdomen, where stool gradually takes shape.",
@@ -746,18 +748,202 @@
   },
   "sigmoid_colon": {
     "blurb": "An S-shaped loop in the lower left abdomen, the last stretch before the rectum.",
-    "fact": "Mobile and sharply curved, it is the commonest site of both volvulus and diverticula."
+    "fact": "Mobile and sharply curved, it is the commonest site of a twisted bowel; in Europe and North America it is also where most of the small pouches called diverticula form."
   },
   "rectum": {
     "blurb": "The final 12 cm or so of the digestive tract, holding stool and triggering the urge to go.",
-    "fact": "It is not actually straight — it makes two curves in front of the sacrum, and a colonoscope has to follow both."
+    "fact": "It is not actually straight — it curves back along the hollow of the sacrum, turns again at the pelvic floor, and has three shelf-like folds jutting in from the sides."
   },
   "renal_pelvis": {
     "blurb": "The funnel inside the hilum of the kidney, gathering urine from the calyces and passing it into the ureter.",
-    "fact": "A stone stuck where the pelvis meets the ureter hurts the most — it is one of the three narrowest points in the urinary tract."
+    "fact": "Where the pelvis narrows into the ureter is one of the three tightest points along the whole urinary tract, and the commonest place for a stone to lodge."
   },
   "renal_calyces": {
     "blurb": "A set of cups upstream of the renal pelvis: minor calyces catch the drip from each papilla and empty into major ones.",
-    "fact": "A kidney has roughly 8-12 minor and 2-3 major calyces, nested funnels collecting urine stage by stage."
+    "fact": "A kidney has roughly 7–14 minor and 2–3 major calyces; the small ones merge into the large, and the large into the pelvis, like branches gathering back into a trunk."
+  },
+  "cerebrum": {
+    "blurb": "Two hemispheres with a deeply folded surface, handling sensation, movement, language and memory.",
+    "fact": "The cortex is only 2–4 mm thick, but folding packs in so much of it that flattened out it would cover a newspaper spread."
+  },
+  "cerebellum": {
+    "blurb": "Tucked under the back of the cerebrum, it makes movement accurate, steady and well timed.",
+    "fact": "It takes up about a tenth of the brain by volume yet holds more neurons than all the rest of the brain put together."
+  },
+  "brainstem": {
+    "blurb": "Midbrain, pons and medulla stacked top to bottom — the only route between the brain and the spinal cord.",
+    "fact": "The basic rhythm of breathing and heartbeat is generated in the medulla at its lower end, which is why this short stretch matters far more than its size suggests."
+  },
+  "thalamus": {
+    "blurb": "A pair of egg-shaped grey masses sitting deep in the middle of the brain.",
+    "fact": "Every sense except smell changes trains here before its signals are allowed on to the cortex."
+  },
+  "hypothalamus": {
+    "blurb": "No bigger than an almond and sitting below the thalamus, it governs temperature, hunger and sleep, and reaches the body’s hormones through the pituitary.",
+    "fact": "A short private set of vessels links it straight down to the pituitary, so its hormones arrive without a lap of the whole circulation."
+  },
+  "corpus_callosum": {
+    "blurb": "A thick bundle of nerve fibres bridging the two cerebral hemispheres across the midline.",
+    "fact": "Made of more than 200 million fibres, it is the largest bundle of white matter anywhere in the brain."
+  },
+  "brain_ventricles": {
+    "blurb": "A set of connected cavities inside the brain, filled with cerebrospinal fluid.",
+    "fact": "The fluid is replaced three or four times a day, and floating in it cuts the brain’s effective weight roughly thirtyfold — otherwise its own mass would crush its underside."
+  },
+  "hippocampus": {
+    "blurb": "A pair of curved structures deep in the temporal lobes that turn experience into long-term memory.",
+    "fact": "It is named for the seahorse it resembles; people who lose both sides keep their old memories but can form no new ones."
+  },
+  "peritoneum": {
+    "blurb": "A smooth, thin membrane lining the wall of the abdomen and wrapping most of the organs inside it.",
+    "fact": "Only a few tens of millilitres of fluid lie between its two layers, and that thin film is what lets loops of bowel slide over one another instead of sticking."
+  },
+  "mesentery": {
+    "blurb": "A fan-shaped double sheet that slings the small intestine from the back wall of the abdomen, carrying its vessels and nerves inside.",
+    "fact": "Metres of bowel are gathered into this pleated fan to fit inside the abdomen, and every loop still keeps room to move."
+  },
+  "salivary_glands": {
+    "blurb": "The submandibular and sublingual glands sit under the floor of the mouth and deliver saliva through short ducts.",
+    "fact": "A person makes on the order of a litre of saliva a day, most of it from the submandibular gland."
+  },
+  "cephalic_veins": {
+    "blurb": "Runs up the outer side of the arm and dives deep in the groove between deltoid and pectoralis major at the front of the shoulder.",
+    "fact": "The \"cephalic\" in its name is a translation accident: the Arabic word meant \"outer\", and was mistaken for the Greek word for \"head\"."
+  },
+  "basilic_veins": {
+    "blurb": "Runs up the inner side of the arm and pierces the deep fascia halfway up before joining the axillary vein.",
+    "fact": "A slanting branch links it to the cephalic vein at the crook of the elbow, and that connection is usually the one a needle finds when blood is taken."
+  },
+  "small_saphenous_veins": {
+    "blurb": "Climbs from the outer side of the foot up the middle of the back of the calf and joins the deep veins behind the knee.",
+    "fact": "It takes the back of the calf while the great saphenous takes the inner side, and between them they drain the whole superficial layer of the lower leg."
+  },
+  "popliteal_veins": {
+    "blurb": "Gathers the deep veins of the calf behind the knee and continues upwards as the femoral vein.",
+    "fact": "Three things lie in a fixed order in that hollow: the vein nearest the surface, the artery deeper, and the nerve to the outer side."
+  },
+  "tibial_veins": {
+    "blurb": "The anterior and posterior tibial veins each accompany the artery of the same name and merge behind the knee into the popliteal vein.",
+    "fact": "One artery is usually flanked by two veins carrying the same name, so the \"posterior tibial vein\" is in practice usually a pair."
+  },
+  "lumbar_arteries": {
+    "blurb": "Paired branches leaving the back of the abdominal aorta and curving round the lumbar vertebrae to supply the muscles of the back and the spinal cord.",
+    "fact": "The aorta gives off few paired branches along its length, and these are the tidiest of them: one pair to each lumbar vertebra."
+  },
+  "posterior_intercostal_arteries": {
+    "blurb": "Branches of the thoracic aorta that run forwards in the groove along the lower edge of each rib, supplying the chest wall.",
+    "fact": "It shelters in a groove under the lower edge of each rib, and where that groove sits is what decides which side of a rib a chest needle goes in."
+  },
+  "iliotibial_tract": {
+    "blurb": "A long, thick band of fascia down the outside of the thigh, running from the hip to the top of the shin bone.",
+    "fact": "It cannot contract on its own; two muscles at its upper end tension it, and that cable is what holds the pelvis level when you stand on one leg."
+  },
+  "pharyngeal_constrictors": {
+    "blurb": "Three pairs of flat muscles wrapped around the wall of the throat, tightening from the top down as you swallow.",
+    "fact": "The three pairs overlap like stacked funnels, each squeezing down onto the next, which is what stops a mouthful travelling back up."
+  },
+  "serratus_posterior": {
+    "blurb": "Two groups lying deep in the back at a slant, one pulling the ribs upwards and the other pulling them down.",
+    "fact": "The upper group lifts ribs to help you breathe in while the lower group pulls them down to help you breathe out — an unusual pair working in opposite directions."
+  },
+  "frontal_bone": {
+    "blurb": "Forms the forehead and the upper rim of the eye sockets, meeting the parietal bones behind at the coronal suture.",
+    "fact": "A baby’s frontal bone comes in two halves; the seam between them usually closes before the age of two, though in a few people it never does."
+  },
+  "parietal_bones": {
+    "blurb": "A squarish flat bone on each side of the vault, together making up most of the roof of the skull.",
+    "fact": "Where the two meet along the midline they form the sagittal suture, the longest seam in the skull."
+  },
+  "temporal_bones": {
+    "blurb": "Wraps around the ear, forming the side wall of the skull and housing the whole apparatus of hearing and balance.",
+    "fact": "The hardest bone in the body is buried inside it: the petrous portion that encases the cochlea."
+  },
+  "occipital_bone": {
+    "blurb": "Cradles the back of the brain and carries a large opening in its base where the brainstem meets the spinal cord.",
+    "fact": "That opening, the foramen magnum, is the only passage between the cranial cavity and the spinal canal."
+  },
+  "sphenoid_bone": {
+    "blurb": "Spans the middle of the skull base like a butterfly with spread wings, touching almost every other bone of the skull.",
+    "fact": "The hollow at its centre is the sella turcica, and the pituitary gland sits inside it."
+  },
+  "ethmoid_bone": {
+    "blurb": "Sits between the eyes, light and fragile, forming the roof of the nasal cavity and the inner wall of each orbit.",
+    "fact": "Its upper plate is peppered with holes, and the fine branches of the olfactory nerve thread through them."
+  },
+  "maxillae": {
+    "blurb": "Carries the upper teeth and forms the palate, the outer wall of the nasal cavity and the floor of the orbit.",
+    "fact": "It is hollow inside: the maxillary sinuses are the largest pair of air spaces in the skull."
+  },
+  "zygomatic_bones": {
+    "blurb": "The prominence of the cheek, bridging the maxilla and the temporal bone into an arch.",
+    "fact": "It juts out further than anything else on the face, which makes it one of the first bones to break in a punch."
+  },
+  "nasal_bones": {
+    "blurb": "A pair of small oblong bones at the top of the bridge of the nose; below them the nose is cartilage.",
+    "fact": "When a nose is knocked crooked it is usually this pair that breaks — the lower half cannot break, because it is not bone."
+  },
+  "lacrimal_bones": {
+    "blurb": "A small thin plate on the inner wall of the orbit, hollowed to hold the tear sac.",
+    "fact": "It is the smallest and thinnest bone in the skull — thin enough to let light through."
+  },
+  "palatine_bones": {
+    "blurb": "Slot in behind the maxillae to form the back of the hard palate and part of the side wall of the nose.",
+    "fact": "The hard palate is really two sets of bone joined front to back, and the seam between them can be felt with the tip of the tongue."
+  },
+  "vomer": {
+    "blurb": "A thin ploughshare-shaped blade standing in the midline of the nose, forming the lower back part of the septum.",
+    "fact": "The front of the septum is cartilage and only the back is this bone, which is why a deviated septum usually bends in the cartilage."
+  },
+  "inferior_nasal_conchae": {
+    "blurb": "A scroll of bone on the side wall of the nose that splits incoming air into thin layers.",
+    "fact": "A blocked nose in a cold is usually the lining over this bone swelling up, not something lodged in the passage."
+  },
+  "frontal_lobe": {
+    "blurb": "The front third of the cerebrum: motor commands, spoken language, planning and restraint.",
+    "fact": "It is the last part of the brain to finish developing, somewhere around the age of twenty-five."
+  },
+  "parietal_lobe": {
+    "blurb": "Behind the frontal lobe: touch, temperature, the sense of where your limbs are, and the spatial picture built from them.",
+    "fact": "Two mirror-image strips face each other across the central sulcus — the front one issues movement, the back one receives touch."
+  },
+  "temporal_lobe": {
+    "blurb": "Sits above the ear, handling hearing, the understanding of language, and the laying down of memory.",
+    "fact": "The hippocampus is tucked into its inner surface, which is why damage here so often costs the ability to form new memories."
+  },
+  "occipital_lobe": {
+    "blurb": "The rearmost part of the cerebrum, doing almost one thing only: processing what the eyes send.",
+    "fact": "Visual signals cross most of the brain to get here — the place that first \"sees\" is at the back of your head."
+  },
+  "limbic_lobe": {
+    "blurb": "A ring of cortex curling around the corpus callosum, involved in emotion, motivation and memory.",
+    "fact": "The \"limbic\" in its name means border: it lies exactly on the rim where the cerebrum meets the brainstem."
+  },
+  "basal_ganglia": {
+    "blurb": "Several masses of grey matter deep in the cerebrum that select and launch movements — and hold back the ones you do not want.",
+    "fact": "The stiffness and tremor of Parkinson’s disease follow directly from these nuclei receiving less dopamine."
+  },
+  "amygdala": {
+    "blurb": "A pair of almond-sized nuclei deep in the temporal lobes that attach emotional weight to what the senses bring in.",
+    "fact": "A fright can set your body going before you know what you saw, along a short cut that bypasses the cortex entirely."
+  },
+  "fornix": {
+    "blurb": "An arched bundle of white matter linking the hippocampus to the hypothalamus and beyond.",
+    "fact": "It vaults over the ventricles like a slung cable, and it is the main road of the memory circuit."
+  },
+  "pineal_gland": {
+    "blurb": "No bigger than a grain of rice, sitting behind the thalami and releasing melatonin to set the sleep rhythm.",
+    "fact": "It is one of the few unpaired structures in the brain, and among the first found to track the light outside."
+  },
+  "choroid_plexus": {
+    "blurb": "Tufts of vessel-rich tissue hanging inside the ventricles, where cerebrospinal fluid is made.",
+    "fact": "The fluid is replaced three or four times a day, and every drop of it comes from these tufts."
+  },
+  "optic_chiasm": {
+    "blurb": "Where the two optic nerves meet in front of the pituitary and part of their fibres cross to the other side.",
+    "fact": "Only the fibres from the inner half of each retina cross, so each hemisphere receives half the field of view — not one whole eye."
+  },
+  "nasal_septum": {
+    "blurb": "Divides the nasal cavity into left and right halves — cartilage at the front, bone behind.",
+    "fact": "Most people’s septum leans slightly to one side; a perfectly central one is the exception rather than the rule."
   }
 }

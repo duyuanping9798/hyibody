@@ -57,16 +57,32 @@ describe('奥秘内容契约', () => {
 
   it('内置奥秘按文件名自动收录，顺序稳定', () => {
     expect(WONDERS.map((t) => t.id)).toEqual([
+      'alarm',
+      'ankle',
       'aorta',
       'breathing',
+      'deep_brain',
+      'defence',
       'digestion',
+      'gait',
+      'gut_blood',
       'hand',
+      'head',
       'heartbeat',
+      'inside_the_brain',
+      'leg',
+      'leg_blood',
+      'lobes',
       'nerve',
+      'prostate_zones',
+      'pulse',
       'reach',
       'ribcage',
+      'shoulder',
+      'skull_bones',
       'spine',
       'standing',
+      'to_the_brain',
       'urine',
       'vision',
       'voice',
@@ -114,8 +130,9 @@ describe('奥秘内容契约', () => {
     expect(wondersForStructure('liver').map((w) => w.id)).toContain('digestion');
     // 二尖瓣自己没被 heartbeat 声明时，应回退到父结构 heart 的内容
     expect(wondersForStructure('heart_tricuspid_valve', 'heart').length).toBeGreaterThan(0);
-    // 没人讲到的结构就是空，不许瞎推荐
-    expect(wondersForStructure('patella_left')).toEqual([]);
+    // 没人讲到的结构就是空，不许瞎推荐。用一个不存在的 slug 而不是某个真实结构，
+    // 是因为覆盖率还在往上走，真实结构随时可能被新奥秘讲到，那时这条会误报。
+    expect(wondersForStructure('no_such_structure')).toEqual([]);
   });
 
   it('步骤字段合法且引用的结构真实存在', () => {

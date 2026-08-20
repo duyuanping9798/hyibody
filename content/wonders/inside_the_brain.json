@@ -1,0 +1,213 @@
+{
+  "schema": 1,
+  "id": "inside_the_brain",
+  "title": {
+    "zh": "一颗脑，掰成几块",
+    "en": "One Brain, Taken Apart"
+  },
+  "system": "nerves",
+  "structures": [
+    "brain",
+    "cerebrum",
+    "cerebellum",
+    "brainstem",
+    "thalamus",
+    "hypothalamus",
+    "corpus_callosum",
+    "brain_ventricles",
+    "hippocampus"
+  ],
+  "steps": [
+    {
+      "text": {
+        "zh": "脑重约 1.4 公斤，只占体重的百分之二，却分走全身五分之一的血。把颅骨挪开看一眼，它并不是一整块。",
+        "en": "The brain weighs about 1.4 kg — two per cent of your body weight, taking a fifth of your blood. Move the skull aside and you find it is not one solid piece."
+      },
+      "layer": 0.8,
+      "preset": "front",
+      "systems": {
+        "skeleton": 0.12,
+        "organs": false,
+        "vessels": 0.2
+      },
+      "durationMs": 12000
+    },
+    {
+      "text": {
+        "zh": "从侧面看轮廓就分得清：前上方一大坨，后下方一小团，中间还有一段径直往下走，接到脊髓上。",
+        "en": "From the side the outline already separates: a big mass up front, a smaller one low at the back, and between them a stalk running straight down to meet the spinal cord."
+      },
+      "layer": 0.8,
+      "selected": "brain",
+      "from": "left",
+      "systems": {
+        "skeleton": 0.12,
+        "organs": false,
+        "vessels": 0.2
+      },
+      "durationMs": 11500
+    },
+    {
+      "text": {
+        "zh": "前上方这一大坨占了整个脑体积的八成。表面那些深沟不是装饰——正是靠反复折叠，才把这么大一张皮塞进颅骨。",
+        "en": "The big mass up front takes up about four fifths of the brain by volume. Those deep grooves are not decoration: folding is the only way to fit a sheet that large inside a skull."
+      },
+      "layer": 0.8,
+      "selected": "cerebrum",
+      "expand": "brain",
+      "from": "left",
+      "systems": {
+        "skeleton": 0.12,
+        "organs": false,
+        "vessels": 0.2
+      },
+      "durationMs": 12500
+    },
+    {
+      "text": {
+        "zh": "后下方这一小团表面是一道道细密的横纹。把它纵切开，白质的分支像一株植物——解剖学上真的把这个断面叫作\"活树\"。",
+        "en": "The smaller mass at the back is ruled with fine parallel ridges. Slice it lengthwise and the white matter branches like a plant — anatomists really do call that cut surface the tree of life."
+      },
+      "layer": 0.8,
+      "selected": "cerebellum",
+      "expand": "brain",
+      "from": "back",
+      "systems": {
+        "skeleton": 0.12,
+        "organs": false,
+        "vessels": 0.2
+      },
+      "durationMs": 11500
+    },
+    {
+      "text": {
+        "zh": "中间这一段拇指粗细，却是上下唯一的通道。手指的每一次触觉、每一个动作指令，都要挤过这里。",
+        "en": "The stalk in between is about as thick as a thumb, and it is the only way through. Every touch your fingers report and every command they receive has to squeeze along it."
+      },
+      "layer": 0.8,
+      "selected": "brainstem",
+      "expand": "brain",
+      "from": "left",
+      "systems": {
+        "skeleton": 0.12,
+        "organs": false,
+        "vessels": 0.2
+      },
+      "durationMs": 10000
+    },
+    {
+      "text": {
+        "zh": "沿正中切开。第一眼看到的是横在中间的这条白色宽带，它把左右两半缝在一起，两边才不是各干各的。",
+        "en": "Now cut down the midline. The first thing you meet is this broad white band lying across the middle: it stitches the two halves together, which is why they do not work as separate brains."
+      },
+      "layer": 0.8,
+      "selected": "corpus_callosum",
+      "expand": "brain",
+      "from": "left",
+      "systems": {
+        "skeleton": 0.12,
+        "organs": false,
+        "vessels": 0.2
+      },
+      "clip": {
+        "axis": "x",
+        "pos": 0.0
+      },
+      "durationMs": 12000
+    },
+    {
+      "text": {
+        "zh": "切面上还露出几个空腔。脑不是实心的，中间这几个腔里装着液体，整颗脑就浮在上面——不然它自己的重量会压坏底部。",
+        "en": "The cut also opens onto several hollows. The brain is not solid; these connected spaces hold fluid, and the whole organ floats on it — otherwise its own weight would crush its underside."
+      },
+      "layer": 0.8,
+      "selected": "brain_ventricles",
+      "expand": "brain",
+      "from": "left",
+      "systems": {
+        "skeleton": 0.12,
+        "organs": false,
+        "vessels": 0.2
+      },
+      "clip": {
+        "axis": "x",
+        "pos": 0.0
+      },
+      "durationMs": 11500
+    },
+    {
+      "text": {
+        "zh": "腔的两侧各嵌着一块卵形灰质。凡是要送到皮质去的感觉信号，几乎都得先在这里停一下再上路。",
+        "en": "An egg-shaped block of grey sits embedded on each side of those hollows. Almost every sensory signal bound for the cortex has to stop here before it may continue."
+      },
+      "layer": 0.8,
+      "selected": "thalamus",
+      "expand": "brain",
+      "from": "left",
+      "systems": {
+        "skeleton": 0.12,
+        "organs": false,
+        "vessels": 0.2
+      },
+      "clip": {
+        "axis": "x",
+        "pos": 0.0
+      },
+      "durationMs": 10000
+    },
+    {
+      "text": {
+        "zh": "紧挨着它下面还有一小块，只有杏仁大。你觉得冷、觉得饿、觉得困，都是它在报数。",
+        "en": "Just below it sits a piece no bigger than an almond. Feeling cold, feeling hungry, feeling sleepy — those readings all come from here."
+      },
+      "layer": 0.8,
+      "selected": "hypothalamus",
+      "expand": "brain",
+      "from": "left",
+      "systems": {
+        "skeleton": 0.12,
+        "organs": false,
+        "vessels": 0.2
+      },
+      "clip": {
+        "axis": "x",
+        "pos": 0.0
+      },
+      "durationMs": 9500
+    },
+    {
+      "text": {
+        "zh": "最后是颞叶内侧这一对弯钩。今天发生的事要变成明天还想得起来的事，必须先从这里过一遍。",
+        "en": "Last, this pair of curved hooks on the inner side of the temporal lobes. For something that happened today to be something you can call up tomorrow, it has to pass through here first."
+      },
+      "layer": 0.8,
+      "selected": "hippocampus",
+      "expand": "brain",
+      "from": "left",
+      "systems": {
+        "skeleton": 0.12,
+        "organs": false,
+        "vessels": 0.2
+      },
+      "clip": {
+        "axis": "x",
+        "pos": 0.0
+      },
+      "durationMs": 10000
+    },
+    {
+      "text": {
+        "zh": "掰开来看，脑是几块分工明确的结构叠在一起，中间还留着几个装液体的空腔——而不是一团均质的东西。",
+        "en": "Taken apart, the brain turns out to be several structures with distinct jobs, stacked together around a few fluid-filled spaces — not one uniform mass at all."
+      },
+      "layer": 0.8,
+      "preset": "hero",
+      "systems": {
+        "skeleton": 0.12,
+        "organs": false,
+        "vessels": 0.2
+      },
+      "durationMs": 12000
+    }
+  ]
+}

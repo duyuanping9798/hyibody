@@ -1,0 +1,128 @@
+{
+  "schema": 1,
+  "id": "leg_blood",
+  "title": {
+    "zh": "离心脏最远的那一段路",
+    "en": "The Longest Way Back to the Heart"
+  },
+  "system": "vessels",
+  "structures": [
+    "femoral_arteries",
+    "popliteal_arteries",
+    "tibial_arteries",
+    "femoral_veins",
+    "great_saphenous_veins",
+    "small_saphenous_veins",
+    "popliteal_veins",
+    "tibial_veins"
+  ],
+  "steps": [
+    {
+      "text": {
+        "zh": "站着的时候，脚底离心脏有一米多，而且全程在心脏下方。血下去容易，问题在怎么回来。",
+        "en": "When you stand, the soles of your feet are more than a metre from your heart, and every centimetre of that is below it. Getting blood down is easy; the problem is getting it back."
+      },
+      "layer": 0.7,
+      "preset": "front",
+      "durationMs": 11000
+    },
+    {
+      "text": {
+        "zh": "下行的主干在大腿根部露出来，起初走在前内侧，越往下越往深处钻，到膝盖时已经绕到了腿的背面。",
+        "en": "The main line down surfaces at the top of the thigh, running along the front and inner side at first, then burrowing deeper with every centimetre, until by the knee it has swung round to the back of the leg."
+      },
+      "layer": 0.8,
+      "selected": "femoral_arteries",
+      "from": "front",
+      "durationMs": 12000
+    },
+    {
+      "text": {
+        "zh": "膝后这个窝是它藏得最深的一段。人体大动脉里最难摸到搏动的，就是这里——正因为它躲在关节背面。",
+        "en": "The hollow behind the knee is where it lies deepest. Of all the major arteries this is the hardest place to feel a pulse, precisely because it has tucked itself behind the joint."
+      },
+      "layer": 0.8,
+      "selected": "popliteal_arteries",
+      "from": "back",
+      "durationMs": 10500
+    },
+    {
+      "text": {
+        "zh": "过了膝盖它分成两条，一条走小腿前面、一条走后面，各自沿着骨头两侧下到脚。脚背上那处搏动，就是前面这条的末端。",
+        "en": "Past the knee it splits in two, one down the front of the calf and one down the back, each following its own side of the bone to the foot. The beat you can find on top of the foot is the end of the front one."
+      },
+      "layer": 0.8,
+      "selected": "tibial_arteries",
+      "from": "front",
+      "durationMs": 11500
+    },
+    {
+      "text": {
+        "zh": "回程从脚开始。深层这几条紧贴着同名动脉往上走，一条动脉两边常常各夹一条静脉。",
+        "en": "The way back starts at the foot. These deep ones hug the arteries of the same name as they climb, an artery commonly flanked by a vein on either side."
+      },
+      "layer": 0.8,
+      "selected": "tibial_veins",
+      "from": "front",
+      "durationMs": 9500
+    },
+    {
+      "text": {
+        "zh": "回程走的是紧贴动脉的这一条。两根管子被同一层筋膜箍住，上行那根每搏一次就把它挤扁一点——泵就在旁边，白蹭一份力。",
+        "en": "The return runs in the vessel hugging the artery. One layer of fascia binds the two tubes together, so each beat of the upward one flattens the other a little — a free push from the pump next door."
+      },
+      "layer": 0.8,
+      "selected": "femoral_veins",
+      "from": "front",
+      "durationMs": 12000
+    },
+    {
+      "text": {
+        "zh": "到膝后它们并成一条。这个窝里的排列顺序从不改变：静脉贴着表面，动脉压在它下面，神经再往外一点。",
+        "en": "Behind the knee they merge into one. The order inside that hollow never varies: the vein nearest the surface, the artery pressed beneath it, and the nerve a little further out."
+      },
+      "layer": 0.8,
+      "selected": "popliteal_veins",
+      "from": "back",
+      "durationMs": 10500
+    },
+    {
+      "text": {
+        "zh": "皮下还另有一条，从脚内侧一路爬到腹股沟，全身没有比它更长的静脉。它靠的是另一套办法：管腔里每隔一段就有一对小瓣，血过去了就关上，不许倒流。",
+        "en": "A second route runs just under the skin, climbing from the inner side of the foot all the way to the groin — no vein in the body is longer. It relies on a different trick: pairs of small flaps set along the tube, closing behind the blood so none of it slides back."
+      },
+      "layer": 0.8,
+      "selected": "great_saphenous_veins",
+      "from": "front",
+      "durationMs": 13500
+    },
+    {
+      "text": {
+        "zh": "走路时小腿肌肉每收缩一次，就把夹在中间的静脉挤瘪一次，血只能往上跑。所以久站比走路更累人——泵停了，柱子还立着。",
+        "en": "Every time the calf muscles contract as you walk, they flatten the veins caught between them and the blood has nowhere to go but up. Which is why standing still tires you more than walking: the pump has stopped, but the column has not."
+      },
+      "layer": 0.8,
+      "preset": "left",
+      "durationMs": 13500
+    },
+    {
+      "text": {
+        "zh": "下肢的静脉从来不是靠心脏抽上来的。是动脉的搏动、小腿的肌肉和一排单向的小瓣，一段一段把血接力送回去。",
+        "en": "The veins of the leg are never sucked upwards by the heart. It is the pulse of the artery, the squeeze of the calf and a row of one-way flaps that pass the blood back up, stage by stage."
+      },
+      "layer": 0.75,
+      "preset": "hero",
+      "durationMs": 12500
+    },
+    {
+      "text": {
+        "zh": "浅层其实是两条分工。刚才那条包了内侧，这一条从足外侧起步，顺着腓肠肌正中往上。",
+        "en": "The superficial layer is really a job split between two. The one we just saw takes the inner side; this one starts on the outer edge of the foot and runs up the middle of the calf muscle."
+      },
+      "layer": 0.8,
+      "selected": "small_saphenous_veins",
+      "from": "back",
+      "durationMs": 9500
+    }
+  ]
+}

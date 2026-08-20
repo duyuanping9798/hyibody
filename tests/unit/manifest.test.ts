@@ -98,10 +98,27 @@ describe('manifest: 内部件层级（parent）', () => {
     }
   });
 
-  it('层级只有一层（父结构自己不能再有 parent）', () => {
+  /**
+   * 层级最多三层：脑 → 大脑 → 额叶。
+   *
+   * 原来卡死在一层。2026-08-20 补颅骨分块与脑叶时放宽到三层，配套改了两处：
+   * `HyiViewer.coversExpanded` 让展开项的**所有祖先**一起让位（只让一级的话，
+   * 钻进「大脑」时外面那层「脑」会重新罩上来），`store.collapseParts` 收起时
+   * 退一级而不是直接回全身。再深就没人跟得住了，所以上限留在三层。
+   */
+  it('层级最多三层，且不成环', () => {
     for (const [slug, info] of Object.entries(structures)) {
       if (!info.parent) continue;
-      expect(structures[info.parent]?.parent, `${slug} 的层级超过一层`).toBeUndefined();
+      const chain: string[] = [];
+      let cursor: string | undefined = info.parent;
+      while (cursor) {
+        expect(chain, `${slug} 的父结构链成环`).not.toContain(cursor);
+        chain.push(cursor);
+        expect(chain.length, `${slug} 的父结构链超过三层：${chain.join(' → ')}`).toBeLessThanOrEqual(
+          2,
+        );
+        cursor = structures[cursor]?.parent;
+      }
     }
   });
 

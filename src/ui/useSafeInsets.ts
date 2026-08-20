@@ -2,7 +2,9 @@ import { useEffect } from 'react';
 import { getViewer, useUiStore } from './store';
 
 /** 会遮住三维画面的常驻元素：上面一组、下面一组。 */
-const TOP = ['.hyi-header', '.hyi-topbar'];
+// 搜索框在手机上是顶栏下面通栏的一条，会盖住人体头顶；桌面端它在左上角，
+// 横向压不到画布中线，下面的 edges() 会自动把它排除掉
+const TOP = ['.hyi-header', '.hyi-topbar', '.hyi-search'];
 // 信息卡在小屏上是底部抽屉，一弹出就吃掉半屏——它必须算进来，
 // 否则点选一个结构后相机把它居中到画布中心，正好藏在卡片后面（用户实拍复现）
 const BOTTOM = ['.hyi-layer-slider', '.hyi-wonder', '.hyi-dock', '.hyi-info'];
@@ -58,9 +60,16 @@ export function useSafeInsets(): void {
       // 信息卡的真实高度写进 CSS 变量，让分层滑块精确地贴在它上面。
       // 原来 CSS 里写死 46vh 来让位，可卡片算上 padding 与安全区实际有 326 px
       // 而 46vh 只有 294 px——滑块下沿有 22 px 一直压在卡片底下（实测）。
+      //
+      // 但这个值要封顶。402×640 上展开的卡片能长到 421 px，滑块和抽屉被它一路
+      // 顶上去，底部这一摞（卡片 + 滑块 + 抽屉）加起来 570 px，三维只剩 24 px。
+      // 展开的卡片本来就是一张盖上来的底部抽屉——盖住滑块是它应有的样子，
+      // 把滑块推出屏幕才不是。封顶之后收起态照旧精确贴合，展开态改为覆盖。
+      // 这与「界面元素不许无解释地消失」不矛盾：是用户自己点开的，收起的箭头就在卡片上。
       const card = document.querySelector('.hyi-info');
       const cardH = card ? Math.round(card.getBoundingClientRect().height) : 0;
-      document.documentElement.style.setProperty('--hyi-info-h', `${cardH}px`);
+      const cap = Math.round(rect.height * 0.4);
+      document.documentElement.style.setProperty('--hyi-info-h', `${Math.min(cardH, cap)}px`);
     };
     const schedule = () => {
       cancelAnimationFrame(frame);

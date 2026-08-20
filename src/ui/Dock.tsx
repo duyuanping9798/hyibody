@@ -44,7 +44,7 @@ export function Dock() {
   const isolated = useUiStore((s) => s.isolated);
   const expanded = useUiStore((s) => s.expanded);
   const backToBody = useUiStore((s) => s.backToBody);
-  const expand = useUiStore((s) => s.expand);
+  const collapseParts = useUiStore((s) => s.collapseParts);
   const dirty = hiddenCount > 0 || isolated !== null || expanded !== null || clip !== null;
 
   return (
@@ -61,7 +61,7 @@ export function Dock() {
       {/* 展开内部之后 store 会清掉选中，信息卡跟着消失——"收起内部"必须挂在
           抽屉外面常驻，否则钻进心脏里就只剩"返回全身"这一条退路了 */}
       {expanded !== null && (
-        <button className="hyi-btn hyi-collapse-parts" onClick={() => expand(null)}>
+        <button className="hyi-btn hyi-collapse-parts" onClick={collapseParts}>
           {t.collapseParts}
         </button>
       )}

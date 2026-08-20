@@ -1,0 +1,151 @@
+{
+  "schema": 1,
+  "id": "gait",
+  "title": {
+    "zh": "走一步，先要单脚站住",
+    "en": "To Take a Step, First Stand on One Foot"
+  },
+  "system": "muscles",
+  "structures": [
+    "gluteus_medius",
+    "tensor_fasciae_latae",
+    "psoas_major",
+    "iliacus",
+    "rectus_femoris",
+    "vastus_muscles",
+    "sartorius",
+    "adductor_muscles",
+    "external_oblique",
+    "iliotibial_tract"
+  ],
+  "steps": [
+    {
+      "text": {
+        "zh": "走路听着简单，其实每走一步都有一大半时间是单脚着地的。另一只脚离地的那一刻，整个人开始往那一侧倒。",
+        "en": "Walking sounds simple, yet for more than half of every step only one foot is on the ground. The moment the other lifts, your whole body starts to topple towards that side."
+      },
+      "layer": 0.05,
+      "preset": "front",
+      "durationMs": 12500
+    },
+    {
+      "text": {
+        "zh": "第一件事是不许倒。支撑侧臀部外上方这块肌肉立刻绷紧，把骨盆另一半吊住——它拉的是站着的这条腿，稳的却是抬起来的那一侧。",
+        "en": "Job one is not to fall. On the standing side, this muscle high on the outside of the hip tightens at once and holds the other half of the pelvis up — it pulls on the leg you are standing on, but what it steadies is the side in the air."
+      },
+      "layer": 0.2,
+      "selected": "gluteus_medius",
+      "from": "right",
+      "durationMs": 13500
+    },
+    {
+      "text": {
+        "zh": "它前面还有一条帮手，往下接到一条贯穿整个大腿外侧的厚筋膜带。两者一起绷紧，骨盆就被吊在了大腿外侧这根拉索上。",
+        "en": "Just in front of it sits a helper that feeds into a thick band of fascia running the length of the outer thigh. Together they pull taut, and the pelvis ends up slung from that cable down the side of the leg."
+      },
+      "layer": 0.2,
+      "selected": "tensor_fasciae_latae",
+      "from": "right",
+      "durationMs": 11500
+    },
+    {
+      "text": {
+        "zh": "那条厚筋膜带值得单独看一眼。它自己没有肌纤维，绷紧全靠上端那两块——它是被拉住的绳，不是拉人的手。",
+        "en": "That thick band of fascia deserves a look of its own. It has no muscle fibres at all; everything that tightens it comes from the two above — it is the rope being pulled, not the hand pulling."
+      },
+      "layer": 0.2,
+      "selected": "iliotibial_tract",
+      "from": "right",
+      "durationMs": 11000
+    },
+    {
+      "text": {
+        "zh": "站稳之后才轮到迈步。从腰椎伸出来的这条深肌开始收缩，把大腿往前带——迈腿的起点其实在腰上，不在腿上。",
+        "en": "Only once you are steady does the swing begin. This deep muscle reaching down from the lumbar spine contracts and carries the thigh forwards — the step actually starts at your waist, not in your leg."
+      },
+      "layer": 0.2,
+      "selected": "psoas_major",
+      "from": "front",
+      "clip": {
+        "axis": "y",
+        "pos": -0.0684,
+        "flip": true
+      },
+      "durationMs": 12500
+    },
+    {
+      "text": {
+        "zh": "铺在髂骨内面的这一片和它并成同一条腱，一起往前拉。两块肌肉、一个止点，力量在到达股骨之前就已经合过一次。",
+        "en": "The sheet lining the inner surface of the hip bone merges with it into a single tendon and pulls alongside. Two muscles, one insertion — the forces are pooled before they ever reach the thigh bone."
+      },
+      "layer": 0.2,
+      "selected": "iliacus",
+      "from": "front",
+      "clip": {
+        "axis": "y",
+        "pos": -0.0684,
+        "flip": true
+      },
+      "durationMs": 11500
+    },
+    {
+      "text": {
+        "zh": "大腿前面最外露的这一条跨了两个关节，所以它一收缩，髋往前抬的同时膝盖也在伸直。一块肌肉，管了迈步的两个环节。",
+        "en": "The most exposed strap on the front of the thigh crosses two joints, so a single contraction lifts the hip forwards and straightens the knee at the same time. One muscle, two links of the same step."
+      },
+      "layer": 0.2,
+      "selected": "rectus_femoris",
+      "from": "front",
+      "durationMs": 13000
+    },
+    {
+      "text": {
+        "zh": "它两侧还各有一大块，只跨膝关节。落地那一下靠它们顶住，膝盖才不会一软跪下去。",
+        "en": "Flanking it on either side sit two larger masses that cross the knee alone. They are what brace against the landing, so the knee does not simply fold under you."
+      },
+      "layer": 0.2,
+      "selected": "vastus_muscles",
+      "from": "front",
+      "durationMs": 9500
+    },
+    {
+      "text": {
+        "zh": "再看这条细长的带子，从髋部外上方斜着穿过整个大腿前面，一直到膝内侧。全身没有比它更长的肌肉。",
+        "en": "Now look at this long slender strap, crossing the entire front of the thigh at a slant from the outer hip to the inner side of the knee. No muscle in the body is longer."
+      },
+      "layer": 0.2,
+      "selected": "sartorius",
+      "from": "front",
+      "durationMs": 10500
+    },
+    {
+      "text": {
+        "zh": "内侧这一群做的是相反的事：把腿往中线拉回来。走路时它们和外侧那组一推一拉，脚才落在身体正下方，而不是甩到一边。",
+        "en": "The group on the inside does the opposite: it hauls the leg back towards the midline. As you walk, this set and the outer set push and pull against each other so the foot lands under your body instead of swinging wide."
+      },
+      "layer": 0.2,
+      "selected": "adductor_muscles",
+      "from": "front",
+      "durationMs": 11500
+    },
+    {
+      "text": {
+        "zh": "最后别忘了上半身。腹壁最外层这片斜肌让躯干随着步子轻轻反向扭一下——手臂摆动其实是这个扭转的延伸。",
+        "en": "Do not forget what is happening above. This slanting sheet on the outer wall of the abdomen lets the trunk counter-rotate a little with each stride — the swing of your arms is really an extension of that twist."
+      },
+      "layer": 0.2,
+      "selected": "external_oblique",
+      "from": "left",
+      "durationMs": 11000
+    },
+    {
+      "text": {
+        "zh": "一步迈出去，至少有三组肌肉在同时干不同的活：一组防止你倒、一组把腿送出去、一组让它落回正下方。",
+        "en": "A single stride has at least three sets of muscles doing three different jobs at once: one keeping you upright, one sending the leg out, and one bringing it back down underneath you."
+      },
+      "layer": 0.2,
+      "preset": "hero",
+      "durationMs": 12000
+    }
+  ]
+}

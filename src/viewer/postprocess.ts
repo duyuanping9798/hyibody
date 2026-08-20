@@ -78,8 +78,12 @@ export function createRenderPipeline(
 
   if (caps.bloom) {
     // 轻 bloom：阈值卡在 1.0 以上——只有真正过曝的像素才发光，
-    // 阈值低了整具骨架都会罩一层白雾（实测 0.92 就糊）
-    const bloom = new UnrealBloomPass(new Vector2(1, 1), 0.17, 0.6, 1.05);
+    // 阈值低了整具骨架都会罩一层白雾（实测 0.92 就糊）。
+    //
+    // radius 0.6 → 0.25：0.6 会把过曝像素铺到屏幕很大一片，人体越亮铺得越开，
+    // 最后在深色背景上糊出一个圆盘——用户看到直接问"那个圆圈是什么背景"。
+    // 它根本不是背景，是 bloom 的最大那几级 mip。收紧之后只在真正过曝处发光。
+    const bloom = new UnrealBloomPass(new Vector2(1, 1), 0.14, 0.25, 1.15);
     composer.addPass(bloom);
   }
 

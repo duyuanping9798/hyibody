@@ -30,8 +30,10 @@
 /* HyiBody UI：深色舞台 + 玻璃拟态面板 + 青色强调（原型视觉基调，KICKOFF 第 6 节） */
 
 :root {
-  --hyi-bg: #0b1020;
-  --hyi-panel: rgba(16, 24, 44, 0.78);
+  /* 整体压暗（2026-08-20）：底色从 #0b1020 降到 #05080f，面板跟着降一档，
+     否则面板反而比背景亮，浮在画面上像贴纸。 */
+  --hyi-bg: #05080f;
+  --hyi-panel: rgba(10, 17, 33, 0.82);
   --hyi-panel-border: rgba(79, 227, 224, 0.18);
   --hyi-text: #e8ecf4;
   --hyi-text-dim: rgba(232, 236, 244, 0.62);
@@ -87,7 +89,7 @@
   height: 16px;
   border-radius: 50%;
   background: var(--hyi-accent);
-  border: 2px solid #0b1020;
+  border: 2px solid #05080f;
   cursor: pointer;
 }
 .hyi-range::-moz-range-thumb {
@@ -95,7 +97,7 @@
   height: 14px;
   border-radius: 50%;
   background: var(--hyi-accent);
-  border: 2px solid #0b1020;
+  border: 2px solid #05080f;
   cursor: pointer;
 }
 .hyi-range:focus-visible {
@@ -106,33 +108,45 @@
 .hyi-layer-slider {
   position: absolute;
   left: 50%;
-  bottom: 18px;
+  bottom: 14px;
   transform: translateX(-50%);
-  width: min(520px, calc(100% - 32px));
-  padding: 10px 16px 8px;
+  /* 再收一轮：560 → 460 宽、整块从约 70 px 压到约 52 px。
+     刻度绝对定位之后标签行高是固定的，剩下的全在 padding 上省。 */
+  width: min(460px, calc(100% - 24px));
+  padding: 5px 14px 1px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 0;
 }
+/* 刻度按真实值绝对定位（见 LayerSlider.tsx 的注释），所以这里不能再用 flex 等距排 */
 .hyi-layer-labels {
-  display: flex;
-  justify-content: space-between;
-  font-size: 11px;
+  position: relative;
+  height: 23px;
+  font-size: 10.5px;
   color: var(--hyi-text-dim);
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
 }
 
 /* 工具抽屉（界面减负）：右上角三条标题栏，一次只展开一格，默认全收起。
    原来这里是两块常驻大面板，六行滑块 + 十个按钮 + 一段画质说明常年挂在画面上。 */
+/* 抽屉和信息卡同在右边一列（2026-08-20 按用户要求）。
+   历史上这两个正是因为会互相压住才被拆到左右两边的——「沿此结构半剖」点不到。
+   同列的解法不是靠运气，是把右侧竖着切开：抽屉占上 45%、信息卡占下 45%，
+   中间那 10% 是谁也不许进的缓冲区，两边各自 overflow-y: auto。 */
 .hyi-dock {
   position: absolute;
   top: 58px;
   right: 12px;
-  width: 216px;
+  /* 216 → 240：剖切那一格是四个轴向按钮并排，216 px 下「关闭」「前后」会折成两行 */
+  width: 240px;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  max-height: calc(100% - 150px);
+  /* 40 / 56 而不是对半分：抽屉是手风琴，一次只展开一格，最高也就两百出头；
+     信息卡要装标签、科普、小知识、来源、相关奥秘和一排操作，长得多。 */
+  max-height: calc(40% - 58px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
   z-index: 4;
 }
 .hyi-drawer {
@@ -223,22 +237,41 @@
   margin-bottom: 8px;
 }
 
+/* 搜索框常驻左上角（2026-08-20 按用户要求改回原位）。
+   放大镜图标留在框里做提示——手机上尤其重要，图标按钮看不出是搜索。 */
 .hyi-search {
   position: absolute;
-  top: 58px;
-  right: 12px;
-  width: min(300px, calc(100% - 24px));
+  top: 64px;
+  left: 12px;
+  width: min(280px, calc(100% - 24px));
   z-index: 8;
+}
+.hyi-search-icon {
+  position: absolute;
+  left: 11px;
+  top: 10px;
+  width: 16px;
+  height: 16px;
+  color: var(--hyi-text-dim);
+  pointer-events: none;
+}
+.hyi-search-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 .hyi-search input {
   width: 100%;
   box-sizing: border-box;
-  padding: 9px 12px;
+  padding: 9px 12px 9px 34px;
   font-size: 13px;
   color: var(--hyi-text);
   background: transparent;
   border: none;
   outline: none;
+}
+.hyi-search:focus-within {
+  border-color: var(--hyi-accent-dim);
 }
 .hyi-search input::placeholder {
   color: var(--hyi-text-dim);
@@ -281,15 +314,15 @@
   color: var(--hyi-text-dim);
 }
 
-/* 桌面端信息卡放左下：右侧是系统/视角面板，卡片压在上面会挡住剖切那几个按钮
-   （实测"沿此结构半剖"点不到），左侧本来就是空的 */
+/* 桌面端信息卡放右下，和抽屉同列（见 .hyi-dock 上面那段）。
+   高度卡在 45%，与抽屉的 45% 之间留出 10% 缓冲——两个面板都能长，但永远碰不到。 */
 .hyi-info {
   position: absolute;
-  left: 12px;
-  bottom: 96px;
+  right: 12px;
+  bottom: 84px;
   width: min(320px, calc(100% - 24px));
   padding: 14px 16px;
-  max-height: calc(100% - 220px);
+  max-height: calc(56% - 84px);
   overflow-y: auto;
 }
 .hyi-info h2 {
@@ -307,15 +340,43 @@
   line-height: 1.55;
   margin: 0 0 10px;
 }
+/*
+ * 免责声明常驻在 .hyi-info-details 之外——手机上卡片收起时也看得见。
+ * 放进 details 就等于「只有点开详情的人才被告知」，那不叫常驻。
+ */
+.hyi-info-disclaimer {
+  font-size: 11px;
+  line-height: 1.3;
+  color: var(--hyi-text-dim);
+  margin: -6px 0 8px;
+  opacity: 0.75;
+}
 .hyi-info .meta {
   font-size: 11px;
   color: var(--hyi-text-dim);
   margin-bottom: 10px;
 }
+/* 「AI 交叉审校，未经医师签字」原来会在"医师"和"签字"之间折行。
+   整段当一个词处理，宽度不够时整段换到下一行。 */
+.hyi-info .meta .hyi-review-tag,
+.hyi-info .meta .hyi-source-tag {
+  white-space: nowrap;
+}
+/* 操作按钮吸在卡片底部：卡片内容超出高度时会滚动，而「聚焦」「隔离」「关闭」
+   是这张卡片的主要用途——被挤到折叠线以下等于没有。上方压一层渐变，
+   滚动的内容从底下穿过时不会糊在按钮上。 */
 .hyi-info .actions {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+  position: sticky;
+  bottom: -14px;
+  margin: 0 -16px -14px;
+  padding: 8px 16px 14px;
+  /* 遮罩要够实：用半透明的 --hyi-panel 时，底下滚动的「相关奥秘」会从按钮
+     缝里透出来（实拍可见）。面板本身就是半透明的，这里加一条更实的带子
+     只会显得底部略深一档，比透字干净得多。 */
+  background: linear-gradient(180deg, rgba(8, 14, 28, 0) 0%, rgba(8, 14, 28, 0.96) 50%);
 }
 
 .hyi-attribution-backdrop {
@@ -347,6 +408,20 @@
   right: 12px;
   display: flex;
   gap: 6px;
+  /* 顶栏浮在三维之上，人体亮的时候（皮肤层、剖面）这几个图标按钮几乎认不出来。
+     给按钮本身垫一层不透明的深底，比给整条顶栏加渐变遮罩更省，也不挡画面。 */
+  --hyi-btn-scrim: rgba(9, 14, 26, 0.62);
+}
+.hyi-topbar .hyi-btn {
+  background: var(--hyi-btn-scrim);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.hyi-topbar .hyi-btn:hover {
+  background: rgba(79, 227, 224, 0.28);
+}
+.hyi-topbar .hyi-btn-warm {
+  background: rgba(120, 74, 24, 0.72);
 }
 
 .hyi-btn-warm {
@@ -367,7 +442,12 @@
   min-width: 190px;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  /* 25 则奥秘 × 40 px 加六个分组标题已经有一千多像素，原来这里只有
+     overflow: hidden，列表直接从屏幕底下伸出去，后面几个系统点不到。 */
+  max-height: min(70vh, calc(100dvh - 120px));
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   z-index: 15;
 }
 .hyi-wonder-list button {
@@ -562,8 +642,10 @@ body.hyi-kiosk .hyi-info .blurb {
     width: auto;
     z-index: 6;
   }
+  /* 手机上搜索框占顶栏下面一整条：图标按钮看不出是搜索，实测没人点。
+     顶栏按钮在触屏上是 44 px 高（top:14 → 58），所以这里从 62 起，别压上去。 */
   .hyi-search {
-    top: 52px;
+    top: 62px;
     left: 8px;
     right: 8px;
     width: auto;
@@ -683,7 +765,7 @@ body.hyi-kiosk .hyi-info .blurb {
   inset: 0;
   display: grid;
   place-items: center;
-  background: radial-gradient(60% 60% at 50% 45%, #0e1730f2, #070b16fa);
+  background: radial-gradient(60% 60% at 50% 45%, #0a1120f2, #03050bfa);
   z-index: 6;
 }
 .hyi-loading-inner {
@@ -734,41 +816,93 @@ body.hyi-kiosk .hyi-info .blurb {
 /* 彩色分层滑块 */
 .hyi-layer-track {
   position: relative;
-  padding: 2px 0 6px;
+  padding: 1px 0 3px;
 }
-.hyi-range-layer {
-  --hyi-track-image: var(--hyi-layer-track);
+/*
+ * range 是行内替换元素：默认排在文字基线上，父块的行盒会连带算上下沿的空隙。
+ * 实测这一块 28 px，而输入框本身只有 4 px、padding 只有 4 px——多出来的 20 px
+ * 全是行盒和 UA 默认外边距。改成块级并清掉外边距，滑块面板从 59 px 降到 40 上下。
+ */
+.hyi-layer-track .hyi-range {
+  display: block;
+  margin: 0;
 }
+/*
+ * 轨道：暗槽 + 一段发光的进度，而不是一条五色渐变。
+ *
+ * 原来轨道直接按系统色铺成彩虹（肤色 → 肌红 → 骨白 → 器官橙 → 血管红）。
+ * 皮肤换成真肤色之后起点是一段米黄，整条看着发脏，也不像仪器像玩具。
+ * 现在：槽是暗的，走过的一段亮起来（青 → 蓝紫），刻度点仍用系统色——
+ * 语义留在点上，轨道只负责"走到哪儿了"。进度位置由 --hyi-layer-pos 给。
+ */
 .hyi-range-layer::-webkit-slider-runnable-track {
-  background: var(--hyi-layer-track);
-  opacity: 0.85;
-  height: 6px;
+  background:
+    linear-gradient(
+      90deg,
+      #2de0ff 0%,
+      #59a8ff calc(var(--hyi-layer-pos, 0%) * 0.6),
+      #9a7bff var(--hyi-layer-pos, 0%),
+      rgba(150, 170, 210, 0.16) var(--hyi-layer-pos, 0%),
+      rgba(150, 170, 210, 0.16) 100%
+    );
+  height: 5px;
   border-radius: 999px;
+  box-shadow: inset 0 0 0 1px rgba(140, 190, 255, 0.14);
 }
 .hyi-range-layer::-moz-range-track {
-  background: var(--hyi-layer-track);
-  opacity: 0.85;
-  height: 6px;
+  background:
+    linear-gradient(
+      90deg,
+      #2de0ff 0%,
+      #59a8ff calc(var(--hyi-layer-pos, 0%) * 0.6),
+      #9a7bff var(--hyi-layer-pos, 0%),
+      rgba(150, 170, 210, 0.16) var(--hyi-layer-pos, 0%),
+      rgba(150, 170, 210, 0.16) 100%
+    );
+  height: 5px;
   border-radius: 999px;
 }
+.hyi-range-layer::-webkit-slider-thumb {
+  width: 13px;
+  height: 13px;
+  margin-top: -4px;
+  background: #d8f6ff;
+  border: 2px solid #10203a;
+  box-shadow: 0 0 8px rgba(45, 224, 255, 0.75);
+}
+.hyi-range-layer::-moz-range-thumb {
+  width: 13px;
+  height: 13px;
+  background: #d8f6ff;
+  border: 2px solid #10203a;
+  box-shadow: 0 0 8px rgba(45, 224, 255, 0.75);
+}
+/* 这里本来想加一排等距刻线。没加：五个主场在 0/20/45/62/85%，等距刻线
+   又会画在错的地方——正是刚修掉的那个毛病。刻度由下面的圆点负责，槽保持干净。 */
 .hyi-layer-stop {
   appearance: none;
   border: 0;
   background: none;
-  padding: 4px 2px;
+  padding: 10px 3px 1px;
   font: inherit;
-  font-size: 11.5px;
+  font-size: 10.5px;
   color: var(--hyi-text-dim);
   cursor: pointer;
-  position: relative;
+  position: absolute;
+  top: 0;
+  white-space: nowrap;
   transition: color 0.15s;
 }
+/* 圆点绝对定位在**真实刻度**上：两端的文字为了不伸出轨道要偏移，
+   圆点不能跟着偏，否则又回到"点画在这儿、值在那儿"。 */
 .hyi-layer-stop::before {
   content: '';
-  display: block;
+  position: absolute;
+  top: 0;
+  left: var(--hyi-stop-dot, 50%);
+  transform: translateX(-50%);
   width: 6px;
   height: 6px;
-  margin: 0 auto 4px;
   border-radius: 50%;
   background: var(--hyi-stop-color);
   opacity: 0.55;
@@ -781,7 +915,9 @@ body.hyi-kiosk .hyi-info .blurb {
 }
 .hyi-layer-stop.active::before {
   opacity: 1;
-  transform: scale(1.5);
+  /* 必须带上 translateX(-50%)：只写 scale 会把上面的居中位移覆盖掉，
+     选中的那个点会往右跳半个身位 */
+  transform: translateX(-50%) scale(1.5);
 }
 .hyi-layer-stop:focus-visible {
   outline: 2px solid var(--hyi-accent);
@@ -1187,4 +1323,84 @@ body.hyi-kiosk .hyi-info .blurb {
   color: var(--hyi-text-dim);
   font-size: 11px;
   font-variant-numeric: tabular-nums;
+}
+
+/* ---------- 信息卡两段式抽屉（2026-08-20） ----------
+   手机上这张卡固定 326 px，占屏 51%，是三维可见面积上不去的唯一大头。
+   默认只露「名字 + 一句话 + 三个按钮」，点标题条展开全文。
+   桌面端左下角空间充裕，下面这些规则全部只在小屏生效。 */
+
+.hyi-info-toggle {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  /* 桌面端它只是个普通标题，不该有可点的样子 */
+  cursor: default;
+}
+.hyi-info-name {
+  flex: 1;
+  min-width: 0;
+}
+.hyi-info-chevron {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  .hyi-info-toggle {
+    cursor: pointer;
+    /* 触屏点击目标 */
+    min-height: 44px;
+    align-items: center;
+  }
+  .hyi-info-chevron {
+    display: block;
+    flex: none;
+    width: 32px;
+    text-align: center;
+    font-size: 18px;
+    line-height: 1;
+    color: var(--hyi-text-dim);
+    transform: rotate(180deg);
+    transition: transform 0.18s;
+  }
+  .hyi-info.expanded .hyi-info-chevron {
+    transform: rotate(0deg);
+  }
+  /* 收起时：详情区与次要操作让位，只留一句话科普和三个主操作 */
+  .hyi-info:not(.expanded) .hyi-info-details,
+  .hyi-info:not(.expanded) .hyi-info-detail-action {
+    display: none;
+  }
+  .hyi-info:not(.expanded) .blurb {
+    /* 两行封顶，长的科普句不至于把窄条撑高 */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+  .hyi-info:not(.expanded) {
+    max-height: none;
+    overflow: visible;
+  }
+  /* 展开态的上限：72vh 只在高屏上够用。矮屏（402×640）实测卡片能长到 421 px，
+     三维只剩 39 px——所以再加一条绝对下限，无论屏幕多矮都给人体留出 250 px。 */
+  .hyi-info.expanded {
+    max-height: min(72vh, calc(100vh - 250px));
+  }
+}
+
+@supports (height: 100dvh) {
+  @media (max-width: 720px) {
+    .hyi-info.expanded {
+      max-height: min(72dvh, calc(100dvh - 250px));
+    }
+  }
 }

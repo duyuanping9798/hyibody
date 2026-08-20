@@ -1,0 +1,113 @@
+{
+  "schema": 1,
+  "id": "leg",
+  "title": {
+    "zh": "一条腿，从髋到脚",
+    "en": "One Leg, Hip to Floor"
+  },
+  "system": "skeleton",
+  "structures": [
+    "hip_bone_right",
+    "hip_bone_left",
+    "femur_right",
+    "femur_left",
+    "patella_right",
+    "patella_left",
+    "tibia_right",
+    "tibia_left",
+    "fibula_right",
+    "fibula_left",
+    "tarsal_bones",
+    "foot_bones"
+  ],
+  "steps": [
+    {
+      "text": {
+        "zh": "站着的时候，上半身的分量要一路传到地面。这条路上有四段骨头、三个关节，每一处都改变了力的方向。",
+        "en": "While you stand, the weight of everything above has to travel all the way to the floor. Four lengths of bone and three joints lie on that road, and each of them bends the direction the force takes."
+      },
+      "layer": 0.08,
+      "preset": "front",
+      "durationMs": 12000
+    },
+    {
+      "text": {
+        "zh": "第一站是骨盆侧壁上一个深窝。和肩膀那只浅碟正相反，这个窝深得能把球包住大半——稳，但也就转不了那么多。",
+        "en": "The first stop is a deep cup in the side wall of the pelvis. Unlike the shallow saucer at the shoulder, this cup swallows more than half the ball: steady, and correspondingly short on range."
+      },
+      "layer": 0.5,
+      "selected": "hip_bone_right",
+      "from": "front",
+      "durationMs": 12500
+    },
+    {
+      "text": {
+        "zh": "球下面这根骨头并不是直上直下的。它从髋窝斜着往内收，到膝盖时两侧已经靠得很近——重心因此落在两脚之间，而不是各自脚下。",
+        "en": "The bone below that ball does not run straight down. It slants inwards from the hip socket, so that by the knee the two sides have drawn close together — which is why your weight lands between your feet rather than under each of them."
+      },
+      "layer": 0.5,
+      "selected": "femur_right",
+      "from": "front",
+      "durationMs": 12000
+    },
+    {
+      "text": {
+        "zh": "膝盖前面这块小骨没有和上下任何一根骨头接榫，它长在肌腱正中间，把绳子从关节上垫开了一截。垫开的那点距离，就是省下来的力气。",
+        "en": "The small bone at the front of the knee joins nothing above or below. It sits in the middle of a tendon, holding that rope a short way clear of the joint — and that small distance is the effort you save."
+      },
+      "layer": 0.5,
+      "selected": "patella_right",
+      "from": "front",
+      "durationMs": 12500
+    },
+    {
+      "text": {
+        "zh": "小腿这一段由两根骨头并排走，但担子几乎全压在内侧这根粗的上。它的上端是一个几乎平的台面，膝关节就架在上面。",
+        "en": "The lower leg runs on two bones side by side, yet almost the whole load presses on the thick one to the inside. Its upper end is a nearly flat table, and the knee joint rests on top of it."
+      },
+      "layer": 0.5,
+      "selected": "tibia_right",
+      "from": "front",
+      "durationMs": 11500
+    },
+    {
+      "text": {
+        "zh": "外侧这根细的几乎不接力。它的用处在两头：上端给肌肉一个着力点，下端拐出去扣住脚踝的外侧。",
+        "en": "The slim one on the outside carries next to nothing. Its usefulness lies at the two ends: the top gives muscles somewhere to pull from, and the bottom juts out to clasp the outer side of the ankle."
+      },
+      "layer": 0.5,
+      "selected": "fibula_right",
+      "from": "right",
+      "durationMs": 10000
+    },
+    {
+      "text": {
+        "zh": "力传到这里要拐一个直角——从竖着的小腿转成横着的脚。担这个弯的是一堆短粗的骨头，最大的那块正对着地面。",
+        "en": "Here the force has to turn a right angle, from a vertical shin into a horizontal foot. A cluster of short, stout bones takes that corner, and the biggest of them faces straight down at the ground."
+      },
+      "layer": 0.5,
+      "selected": "tarsal_bones",
+      "from": "right",
+      "durationMs": 11000
+    },
+    {
+      "text": {
+        "zh": "前面这一片长骨排成一道拱。落地时拱被压扁一点，蹬地时它弹回去——一只脚就是一副会回弹的弹簧板。",
+        "en": "Ahead of them a row of long bones is arranged into an arch. Landing flattens it a little, pushing off lets it spring back — each foot is a board that stores and returns energy."
+      },
+      "layer": 0.5,
+      "selected": "foot_bones",
+      "from": "right",
+      "durationMs": 10500
+    },
+    {
+      "text": {
+        "zh": "从侧面看这条路很清楚：股骨往内斜，胫骨竖直落下，到脚又折向前。三次转折之后，上半身的重量才终于摊在地上。",
+        "en": "Seen from the side the route is plain: the thigh bone slants inwards, the shin drops vertically, and at the foot everything folds forwards. Only after three changes of direction does the weight above finally spread out on the floor."
+      },
+      "layer": 0.45,
+      "preset": "left",
+      "durationMs": 13000
+    }
+  ]
+}

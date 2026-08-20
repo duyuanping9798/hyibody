@@ -34,8 +34,8 @@ interface UiState {
   attributionOpen: boolean;
   /** 工具抽屉：当前展开的那一格，null = 全收起（桌面与小屏同一套，见 Dock.tsx） */
   activePanel: PanelId | null;
-  /** 搜索框是否展开（默认收起成一个图标，见 App.tsx 的界面减负说明） */
-  searchOpen: boolean;
+  /** 信息卡是否展开全文。小屏上默认收起成「名字 + 一句话 + 操作」的窄条 */
+  infoExpanded: boolean;
   /** 界面语言（M2-5，默认中文） */
   lang: Locale;
   /** 资产加载进度（loaded/total 个系统 glb） */
@@ -59,6 +59,8 @@ interface UiState {
   select(slug: string | null): void;
   isolate(slug: string | null): void;
   expand(slug: string | null): void;
+  /** 收起内部：退回上一级而不是一路回到全身（脑 → 大脑 → 额叶 是三层） */
+  collapseParts(): void;
   hide(slug: string): void;
   resetVisibility(): void;
   /** 一键回到全身：清掉隔离/展开/剖切/隐藏，并把相机拉回默认取景 */
@@ -69,7 +71,7 @@ interface UiState {
   focus(slug: string, from?: ViewPresetId): void;
   setAttributionOpen(open: boolean): void;
   togglePanel(panel: PanelId): void;
-  setSearchOpen(open: boolean): void;
+  setInfoExpanded(open: boolean): void;
   startWonder(wonder: Wonder): void;
   exitWonder(): void;
   wonderNext(): void;
@@ -168,7 +170,7 @@ export function bindViewer(v: HyiViewer | null): void {
     const slug = (e as CustomEvent<{ slug: string | null }>).detail.slug;
     // 抽屉不再自动收起：信息卡与抽屉在两边（小屏上 CSS 会把抽屉抬到卡片之上），
     // 原来"点一下结构面板就关了"在桌面端很别扭——刚调完不透明度就得重开
-    useUiStore.setState({ selected: slug });
+    useUiStore.setState({ selected: slug, infoExpanded: false });
   });
   useUiStore.setState({ quality: v.getQuality(), qualityToggleable: v.canToggleQuality() });
   v.addEventListener('progress', (e) => {
@@ -217,7 +219,7 @@ export const useUiStore = create<UiState>((set, get) => ({
   clip: null,
   attributionOpen: false,
   activePanel: null,
-  searchOpen: false,
+  infoExpanded: false,
   wonder: null,
   wonderIndex: 0,
   wonderPlaying: false,
@@ -271,6 +273,13 @@ export const useUiStore = create<UiState>((set, get) => ({
       selected: state?.selected ?? null,
     });
   },
+  collapseParts: () => {
+    const { expanded, manifest } = get();
+    // 三层层级下「收起内部」应该退一级：从额叶收回大脑，而不是直接回整具人体
+    const parent = expanded ? (manifest?.structures[expanded]?.parent ?? null) : null;
+    get().expand(parent);
+    if (parent) get().select(parent);
+  },
   hide: (slug) => {
     viewer?.hide(slug);
     set({ hiddenCount: viewer?.hiddenCount() ?? 0 });
@@ -306,11 +315,24 @@ export const useUiStore = create<UiState>((set, get) => ({
     viewer?.focus(slug, from);
   },
   setAttributionOpen: (attributionOpen) => set({ attributionOpen }),
-  setSearchOpen: (searchOpen) => set({ searchOpen }),
+
+  setInfoExpanded: (infoExpanded) => {
+    set({ infoExpanded });
+    // 卡片一收一放，安全区跟着变，选中的结构可能被挡住或空出一大块。
+    // 这是用户主动的操作，重新对准是预期行为而不是打扰。
+    // 等两帧：一帧让 React 改完 DOM，一帧让 useSafeInsets 量到新高度。
+    const slug = useUiStore.getState().selected;
+    if (!slug || typeof requestAnimationFrame !== 'function') return;
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => {
+        if (useUiStore.getState().selected === slug) viewer?.focus(slug);
+      }),
+    );
+  },
   togglePanel: (panel) => set((s) => ({ activePanel: s.activePanel === panel ? null : panel })),
 
   startWonder: (wonder) => {
-    set({ wonder, wonderIndex: 0, wonderPlaying: true, activePanel: null, searchOpen: false });
+    set({ wonder, wonderIndex: 0, wonderPlaying: true, activePanel: null });
     wonderEngine.start(wonder);
   },
   exitWonder: () => wonderEngine.stop(),

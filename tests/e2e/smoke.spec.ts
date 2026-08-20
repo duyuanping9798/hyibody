@@ -301,6 +301,8 @@ test('info card shows blurb and fact, selection gets a 3D label', async ({ page 
  * 封盖是模板缓冲效果（截图人工比对），这里只锁住交互链路与状态。
  */
 test('half-section cuts through the selected structure', async ({ page }) => {
+  // 和下面那条一样要先把心脏解出来再重算取景，软件渲染下 120 秒不够用
+  test.setTimeout(240_000);
   const state = encodeUrlState({ layer: 0.55, selected: 'heart' });
   await page.goto(`/?v=${state}`);
   await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
@@ -392,8 +394,9 @@ test('keyboard shortcuts drive search, help and escape', async ({ page }) => {
   await page.keyboard.press('Escape');
   await expect(page.getByTestId('shortcut-help')).toHaveCount(0);
 
-  // / 展开并聚焦搜索框（默认收起成顶栏图标），打字 → ↓ 走一格 → 回车选中
-  await expect(page.locator('.hyi-search input')).toHaveCount(0);
+  // 搜索框常驻（2026-08-20 改回左上角），/ 只负责把焦点送过去
+  await expect(page.locator('.hyi-search input')).toBeVisible();
+  await expect(page.locator('.hyi-search input')).not.toBeFocused();
   await page.keyboard.press('/');
   await expect(page.locator('.hyi-search input')).toBeFocused();
   await page.keyboard.type('骨');
