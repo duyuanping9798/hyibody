@@ -815,6 +815,15 @@ body.hyi-kiosk .hyi-info .blurb {
   padding: 1px 0 3px;
 }
 /*
+ * range 是行内替换元素：默认排在文字基线上，父块的行盒会连带算上下沿的空隙。
+ * 实测这一块 28 px，而输入框本身只有 4 px、padding 只有 4 px——多出来的 20 px
+ * 全是行盒和 UA 默认外边距。改成块级并清掉外边距，滑块面板从 59 px 降到 40 上下。
+ */
+.hyi-layer-track .hyi-range {
+  display: block;
+  margin: 0;
+}
+/*
  * 轨道：暗槽 + 一段发光的进度，而不是一条五色渐变。
  *
  * 原来轨道直接按系统色铺成彩虹（肤色 → 肌红 → 骨白 → 器官橙 → 血管红）。
