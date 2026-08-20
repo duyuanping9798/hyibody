@@ -3,12 +3,16 @@ import type { Locale } from './i18n';
 import { SYSTEM_IDS, type Manifest, type SystemId } from '../data/types';
 import type { ViewerUrlState } from '../data/urlState';
 import { WonderEngine, type Wonder, type WonderStep } from '../wonders/engine';
+import { computeSystemOpacity } from '../viewer/layers';
 import type { ClipAxis } from '../viewer/clipping';
 import type { ViewPresetId } from '../viewer/camera';
 import type { HyiViewer } from '../viewer/HyiViewer';
 import type { QualityTier } from '../viewer/quality';
 
 export type LoadState = 'loading' | 'ready' | 'error' | 'unsupported';
+
+/** 低于这个不透明度就认为「看不清」，聚焦时会把分层挪到该系统的主场。 */
+const REVEAL_MIN_OPACITY = 0.6;
 
 /** 工具抽屉里的三格。 */
 export type PanelId = 'systems' | 'views' | 'clip';
@@ -120,6 +124,36 @@ wonderEngine.addEventListener('end', () => {
   }
   useUiStore.setState({ wonder: null, wonderIndex: 0, wonderPlaying: false });
 });
+
+/** 各系统的"主场"分层：在这个值上它最清楚，前后几层是它的淡入淡出区间。 */
+const HOME_LAYER: Record<SystemId, number> = {
+  skin: 0,
+  muscles: 0.24,
+  skeleton: 0.5,
+  organs: 0.6,
+  vessels: 0.8,
+  nerves: 0.8,
+};
+
+/**
+ * 聚焦一个结构前，先把分层滑块挪到它看得清的位置。
+ *
+ * 不然会这样：搜索选中「左髋骨」→ 相机飞进身体里 → 可分层还停在"皮肤"，
+ * 骨骼只有 0.22 的不透明度，满屏是半透明组织糊成一团，选中的骨头几乎认不出来
+ * （用户实拍复现）。手动去拖滑块本来就是下一步要做的事，替他做了。
+ *
+ * 只在当前分层下该系统"看不清"时才动，用户自己调到的位置尽量不打扰。
+ */
+function revealLayerFor(slug: string): void {
+  const st = useUiStore.getState();
+  const system = st.manifest?.structures[slug]?.system as SystemId | undefined;
+  if (!system) return;
+  const home = HOME_LAYER[system];
+  if (home === undefined) return;
+  // 该系统在当前分层下已经够清楚就别动
+  if (computeSystemOpacity(system, st.layer) >= REVEAL_MIN_OPACITY) return;
+  st.setLayer(home);
+}
 
 /** App 挂载 viewer 后调用；canvas 侧的选中事件也在这里回写 store。 */
 export function bindViewer(v: HyiViewer | null): void {
@@ -263,6 +297,7 @@ export const useUiStore = create<UiState>((set, get) => ({
     viewer?.applyPreset(id);
   },
   focus: (slug, from) => {
+    revealLayerFor(slug);
     viewer?.focus(slug, from);
   },
   setAttributionOpen: (attributionOpen) => set({ attributionOpen }),

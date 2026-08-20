@@ -110,14 +110,22 @@ export const FRAME_MARGIN = 1.05;
  * 安全区占画布的比例，以及安全区中心相对画布中心的像素偏移。
  * 两处取景（整体 poseForBox、单结构 poseForFocus）共用同一套换算。
  */
+/** 安全区再窄，相机也不该无限往后退——占比低于这个值就按这个值算距离。 */
+const MIN_USABLE_FRACTION = 0.3;
+
 function safeFraction(safe?: SafeInsets): { usable: number; pxOffset: number } | null {
   if (!safe || safe.height <= 0) return null;
   const top = Math.max(0, safe.top);
   const bottom = safe.height - Math.max(0, safe.bottom);
-  const usable = bottom - top;
-  // 安全区被挤没了（超小窗口、卡片几乎占满）就退回按整块画布取景
-  if (usable <= safe.height * 0.3) return null;
-  return { usable: usable / safe.height, pxOffset: (top + bottom) / 2 - safe.height / 2 };
+  const usable = (bottom - top) / safe.height;
+  if (usable <= 0) return null;
+  // 关键：安全区窄的时候**照样要平移**，只是距离不再按比例拉远。
+  // 原来这里是「不足 30% 就整个放弃」，而手机上信息卡打开时正好是 27.8%——
+  // 最需要把结构挪出卡片的那一刻，它撂挑子了（实测复现）。
+  return {
+    usable: Math.max(usable, MIN_USABLE_FRACTION),
+    pxOffset: (top + bottom) / 2 - safe.height / 2,
+  };
 }
 
 /** 屏幕"上"方向在世界坐标里是哪一根轴（俯视时不是 +Z，所以要按观察方向现算）。 */
