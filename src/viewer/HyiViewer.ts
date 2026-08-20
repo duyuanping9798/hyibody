@@ -32,6 +32,15 @@ import {
   type SafeInsets,
   type ViewPresetId,
 } from './camera';
+import {
+  applyDrift,
+  CINEMATIC_FLIGHT,
+  DIRECT_FLIGHT,
+  EASINGS,
+  type EaseId,
+  type FlightOptions,
+  type MotionId,
+} from './cinematic';
 import { CAP_MIN_OPACITY, ClipCaps } from './clipCaps';
 import { clipPlaneFor, clipPosForCoordinate, type ClipAxis } from './clipping';
 import { applyHighlight } from './highlight';
@@ -182,8 +191,24 @@ export class HyiViewer extends EventTarget {
     fromTarget: Vector3;
     toPos: Vector3;
     toTarget: Vector3;
+    /** 中途抬升方向 × 距离；直线插值会穿过人体，抬一点就绕开了 */
+    lift: Vector3;
     t: number;
+    durationS: number;
+    ease: EaseId;
   } | null = null;
+  /**
+   * 奥秘播放时的运镜。`null` = 普通交互（飞行短促、停下就真的停住）；
+   * 给了值就用"电影感"的飞行手感，并在飞到位之后继续做那个微动作。
+   */
+  private cinematic: { motion: MotionId; speed: number; flight: Required<FlightOptions> } | null =
+    null;
+  /**
+   * 用户上手拖了，就把这一步剩下的微动作停掉。
+   * 否则手一松相机还在自己滑，像"甩不掉"——奥秘播放时观众随时可以自己转一转，
+   * 那一刻镜头必须完全交给他。下一步开始（下一次 flyTo）自动恢复。
+   */
+  private driftSuspended = false;
   private pointerDownAt: { x: number; y: number } | null = null;
   private lastTap: { x: number; y: number; at: number } | null = null;
   /** 分层滑块缓动：大跳（奥秘、预设）平滑过渡，小步（拖滑块）立即跟手 */
@@ -232,6 +257,7 @@ export class HyiViewer extends EventTarget {
     dom.addEventListener('pointerup', this.onPointerUp);
     dom.addEventListener('pointermove', this.onPointerMove);
     dom.addEventListener('pointerleave', this.onPointerLeave);
+    dom.addEventListener('wheel', this.onWheel, { passive: true });
     dom.addEventListener('webglcontextlost', this.onContextLost);
     dom.addEventListener('webglcontextrestored', this.onContextRestored);
 
@@ -659,15 +685,56 @@ export class HyiViewer extends EventTarget {
     this.rig.controls.autoRotateSpeed = speed;
   }
 
+  /**
+   * 奥秘播放的运镜。传 `null` 退回普通交互手感。
+   *
+   * 之所以是"设一次、之后每次飞行都用"而不是"每次飞行带参数"：一步奥秘里
+   * 可能连着触发 preset + focus 两次飞行（见 store 的 applyWonderStep），
+   * 参数挂在调用点上就得两处都记得传，漏一处画面手感就跳。
+   */
+  setCinematic(motion: MotionId | null, opts?: { speed?: number; flight?: FlightOptions }): void {
+    if (motion === null) {
+      this.cinematic = null;
+      return;
+    }
+    this.cinematic = {
+      motion,
+      speed: opts?.speed ?? 1,
+      flight: { ...CINEMATIC_FLIGHT, ...opts?.flight },
+    };
+  }
+
   private flyTo(pos: Vector3, target: Vector3): void {
     this.autoFramed = false;
     this.rig.controls.autoRotate = false;
+    const style = this.cinematic?.flight ?? DIRECT_FLIGHT;
+    const fromPos = this.rig.camera.position.clone();
+    const fromTarget = this.rig.controls.target.clone();
+    // 抬升方向取"屏幕上方"的世界近似：飞行两端连线与世界 Z 的叉积再叉回来。
+    // 正上方飞正下方时叉积退化，退回 +Z。
+    const travel = pos.clone().sub(fromPos);
+    const span = travel.length();
+    let lift = new Vector3(0, 0, 1);
+    if (style.arc > 0 && span > 1e-3) {
+      const right = new Vector3().crossVectors(travel, new Vector3(0, 0, 1));
+      if (right.lengthSq() > 1e-8) {
+        lift = new Vector3().crossVectors(right, travel).normalize();
+        if (lift.z < 0) lift.negate();
+      }
+      lift.multiplyScalar(span * style.arc);
+    } else {
+      lift.set(0, 0, 0);
+    }
+    this.driftSuspended = false;
     this.flight = {
-      fromPos: this.rig.camera.position.clone(),
-      fromTarget: this.rig.controls.target.clone(),
+      fromPos,
+      fromTarget,
       toPos: pos.clone(),
       toTarget: target.clone(),
+      lift,
       t: 0,
+      durationS: style.durationS,
+      ease: style.ease,
     };
   }
 
@@ -688,8 +755,15 @@ export class HyiViewer extends EventTarget {
     return null;
   }
 
+  /** 滚轮缩放也算"观众上手了"：推近的微动作不该跟用户的滚轮抢方向。 */
+  private readonly onWheel = (): void => {
+    this.driftSuspended = true;
+  };
+
   private readonly onPointerDown = (e: PointerEvent): void => {
     this.pointerDownAt = { x: e.clientX, y: e.clientY };
+    // 观众上手了，这一步剩下的运镜就此打住（下一步开始自动恢复）
+    this.driftSuspended = true;
   };
 
   private readonly onPointerUp = (e: PointerEvent): void => {
@@ -995,11 +1069,25 @@ export class HyiViewer extends EventTarget {
     this.tickLayer(dt);
     this.animateOrgans(this.clock.elapsedTime);
     if (this.flight) {
-      this.flight.t = Math.min(1, this.flight.t + dt / 0.6);
-      const k = 1 - Math.pow(1 - this.flight.t, 3); // easeOutCubic
-      this.rig.camera.position.lerpVectors(this.flight.fromPos, this.flight.toPos, k);
-      this.rig.controls.target.lerpVectors(this.flight.fromTarget, this.flight.toTarget, k);
-      if (this.flight.t >= 1) this.flight = null;
+      const f = this.flight;
+      f.t = Math.min(1, f.t + dt / f.durationS);
+      const k = EASINGS[f.ease](f.t);
+      this.rig.camera.position.lerpVectors(f.fromPos, f.toPos, k);
+      this.rig.controls.target.lerpVectors(f.fromTarget, f.toTarget, k);
+      // 中间鼓、两头零的抛物线：sin(πk) 在 k=0/1 处正好归零，落点不受影响
+      if (f.lift.lengthSq() > 0) {
+        this.rig.camera.position.addScaledVector(f.lift, Math.sin(Math.PI * k));
+      }
+      if (f.t >= 1) this.flight = null;
+    } else if (this.cinematic && this.cinematic.motion !== 'still' && !this.driftSuspended) {
+      applyDrift(
+        this.rig.camera,
+        this.rig.controls.target,
+        this.cinematic.motion,
+        dt,
+        { minDistance: this.rig.controls.minDistance, maxDistance: this.rig.controls.maxDistance },
+        this.cinematic.speed,
+      );
     }
     this.rig.controls.update();
     this.syncClipPlanes();
@@ -1016,6 +1104,7 @@ export class HyiViewer extends EventTarget {
     dom.removeEventListener('pointerup', this.onPointerUp);
     dom.removeEventListener('pointermove', this.onPointerMove);
     dom.removeEventListener('pointerleave', this.onPointerLeave);
+    dom.removeEventListener('wheel', this.onWheel);
     dom.removeEventListener('webglcontextlost', this.onContextLost);
     dom.removeEventListener('webglcontextrestored', this.onContextRestored);
     this.pipeline?.dispose();

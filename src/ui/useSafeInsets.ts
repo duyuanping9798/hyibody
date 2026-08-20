@@ -7,7 +7,14 @@ import { getViewer, useUiStore } from './store';
 const TOP = ['.hyi-header', '.hyi-topbar', '.hyi-search'];
 // 信息卡在小屏上是底部抽屉，一弹出就吃掉半屏——它必须算进来，
 // 否则点选一个结构后相机把它居中到画布中心，正好藏在卡片后面（用户实拍复现）
-const BOTTOM = ['.hyi-layer-slider', '.hyi-wonder', '.hyi-dock', '.hyi-info'];
+// 奥秘字幕带比控制条更高，取景要按它的上沿让位，不然人体的脚会压在字幕下面
+const BOTTOM = [
+  '.hyi-layer-slider',
+  '.hyi-wonder',
+  '.hyi-cinema-caption',
+  '.hyi-dock',
+  '.hyi-info',
+];
 
 /**
  * 元素在画布坐标系里的上下边（不可见、或者根本没压在人体那一列上，就当没有）。

@@ -7,23 +7,48 @@
   "required": ["id", "title", "steps"],
   "additionalProperties": false,
   "properties": {
-    "schema": { "type": "integer", "const": 1, "description": "数据格式版本" },
+    "schema": {
+      "type": "integer",
+      "const": 1,
+      "description": "数据格式版本"
+    },
     "id": {
       "type": "string",
       "pattern": "^[a-z0-9_]+$",
       "description": "稳定标识：进 ?wonder= 深链与分享链接，定了就不要改"
     },
-    "title": { "$ref": "#/$defs/text" },
+    "title": {
+      "$ref": "#/$defs/text"
+    },
     "system": {
       "enum": ["skin", "muscles", "skeleton", "organs", "vessels", "nerves"],
       "description": "主系统，菜单分组用"
     },
     "structures": {
       "type": "array",
-      "items": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9_]+$"
+      },
       "description": "讲到哪些结构，用来建反向索引。每一步点名的主角都必须在这里"
     },
-    "steps": { "type": "array", "minItems": 4, "items": { "$ref": "#/$defs/step" } }
+    "steps": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "$ref": "#/$defs/step"
+      }
+    },
+    "subtitle": {
+      "$ref": "#/$defs/text",
+      "description": "片头卡副标题：一句话说清这条奥秘带你看什么"
+    },
+    "author": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 40,
+      "description": "作者署名，UGC 投稿必填"
+    }
   },
   "$defs": {
     "text": {
@@ -31,30 +56,67 @@
       "required": ["zh", "en"],
       "additionalProperties": false,
       "properties": {
-        "zh": { "type": "string", "minLength": 1 },
-        "en": { "type": "string", "minLength": 1 }
+        "zh": {
+          "type": "string",
+          "minLength": 1
+        },
+        "en": {
+          "type": "string",
+          "minLength": 1
+        }
       }
     },
-    "preset": { "enum": ["front", "back", "left", "right", "top", "hero"] },
+    "preset": {
+      "enum": ["front", "back", "left", "right", "top", "hero"]
+    },
     "step": {
       "type": "object",
       "required": ["text", "layer", "durationMs"],
       "additionalProperties": false,
       "properties": {
-        "text": { "$ref": "#/$defs/text" },
-        "layer": { "type": "number", "minimum": 0, "maximum": 1 },
-        "selected": { "type": "string", "pattern": "^[a-z0-9_]+$" },
-        "focus": { "type": "boolean" },
-        "preset": { "$ref": "#/$defs/preset", "description": "整具人体宽景" },
-        "from": { "$ref": "#/$defs/preset", "description": "只定观察方向，距离由 focus 算" },
-        "expand": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+        "text": {
+          "$ref": "#/$defs/text"
+        },
+        "layer": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "selected": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+$"
+        },
+        "focus": {
+          "type": "boolean"
+        },
+        "preset": {
+          "$ref": "#/$defs/preset",
+          "description": "整具人体宽景"
+        },
+        "from": {
+          "$ref": "#/$defs/preset",
+          "description": "只定观察方向，距离由 focus 算"
+        },
+        "expand": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+$"
+        },
         "systems": {
           "type": "object",
           "additionalProperties": false,
           "description": "false 关掉、数字 0–1 压暗、缺省完全可见",
           "patternProperties": {
             "^(skin|muscles|skeleton|organs|vessels|nerves)$": {
-              "oneOf": [{ "type": "boolean" }, { "type": "number", "minimum": 0, "maximum": 1 }]
+              "oneOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              ]
             }
           }
         },
@@ -63,17 +125,35 @@
           "required": ["axis", "pos"],
           "additionalProperties": false,
           "properties": {
-            "axis": { "enum": ["x", "y", "z"] },
+            "axis": {
+              "enum": ["x", "y", "z"]
+            },
             "pos": {
               "type": "number",
               "minimum": -1,
               "maximum": 1,
               "description": "映射的是整具人体的包围盒，不是结构自己的——用 clipPosForCoordinate 反算，别手写"
             },
-            "flip": { "type": "boolean" }
+            "flip": {
+              "type": "boolean"
+            }
           }
         },
-        "durationMs": { "type": "integer", "minimum": 3000, "maximum": 20000 }
+        "durationMs": {
+          "type": "integer",
+          "minimum": 3000,
+          "maximum": 20000
+        },
+        "motion": {
+          "enum": ["still", "push", "pull", "orbit", "orbitBack", "rise", "sink"],
+          "description": "停住之后相机继续做的微动作，缺省 push（慢慢推近）"
+        },
+        "transitionMs": {
+          "type": "integer",
+          "minimum": 300,
+          "maximum": 4000,
+          "description": "飞到本步位姿用多久，缺省 1500"
+        }
       }
     }
   }

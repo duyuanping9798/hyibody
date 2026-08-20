@@ -6,13 +6,7 @@
     "en": "Whole Body, Mobilised in Three Seconds"
   },
   "system": "organs",
-  "structures": [
-    "adrenal_glands",
-    "heart",
-    "main_bronchus",
-    "liver",
-    "skin"
-  ],
+  "structures": ["adrenal_glands", "heart", "main_bronchus", "liver", "skin"],
   "steps": [
     {
       "text": {

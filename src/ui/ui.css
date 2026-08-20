@@ -488,16 +488,214 @@
   color: var(--hyi-text-dim);
   font-variant-numeric: tabular-nums;
 }
-.hyi-wonder p {
-  margin: 0 0 10px;
-  font-size: 14px;
-  line-height: 1.6;
-  min-height: 3.2em;
-}
 .hyi-wonder .controls {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+}
+
+/* ---- 奥秘放映层：黑边、片头、字幕、片尾 ----
+   控制条（.hyi-wonder）是操作，这一层是内容。录像时要把这一层录进去、
+   把控制条挡在外面，所以两者从 DOM 到样式都分开。 */
+.hyi-cinema {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 6;
+}
+/* 上下黑边：不是装饰，是把注意力从满屏收到一条横带上。
+   高度刻意压得很浅（3.2vh），再高就真的吃画面了。 */
+.hyi-cinema .bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 3.2vh;
+  background: linear-gradient(180deg, rgba(2, 4, 9, 0.92), rgba(2, 4, 9, 0));
+  animation: hyi-bar-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.hyi-cinema .bar.top {
+  top: 0;
+}
+.hyi-cinema .bar.bottom {
+  bottom: 0;
+  transform: scaleY(-1);
+}
+@keyframes hyi-bar-in {
+  from {
+    opacity: 0;
+    height: 0;
+  }
+}
+
+/* 片头卡 */
+.hyi-cinema-title {
+  position: absolute;
+  left: 50%;
+  top: 38%;
+  transform: translate(-50%, -50%);
+  width: min(640px, calc(100% - 48px));
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.85);
+  animation: hyi-title-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.hyi-cinema-title .kicker,
+.hyi-cinema-outro .kicker {
+  font-size: 11px;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: #f0a046;
+}
+.hyi-cinema-title h2 {
+  margin: 0;
+  font-size: clamp(26px, 5.2vw, 40px);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.25;
+}
+.hyi-cinema-title p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.7;
+  color: rgba(238, 244, 255, 0.82);
+}
+.hyi-cinema-title .by {
+  font-size: 12px;
+  color: var(--hyi-text-dim);
+}
+@keyframes hyi-title-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 14px));
+    filter: blur(6px);
+  }
+}
+
+/* 字幕带。位置比控制条再高一点，两者不叠。 */
+.hyi-cinema-caption {
+  position: absolute;
+  left: 50%;
+  bottom: 118px;
+  transform: translateX(-50%);
+  width: min(760px, calc(100% - 32px));
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.hyi-cinema-caption p {
+  margin: 0;
+  font-size: clamp(15px, 2.1vw, 19px);
+  line-height: 1.75;
+  font-weight: 500;
+  /* 深色描边而不是半透明底板：底板会切出一个方框，把画面剁成两截 */
+  text-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.95),
+    0 2px 16px rgba(0, 0, 0, 0.8);
+}
+/* 一句一句浮上来。中文没有空格，逐词浮现无从谈起，按标点断句才是对的节奏。 */
+.hyi-cinema-caption p span {
+  display: inline;
+  animation: hyi-clause-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes hyi-clause-in {
+  from {
+    opacity: 0;
+    filter: blur(4px);
+  }
+}
+
+/* 章节进度：一步一格，当前那格自己走完 */
+.hyi-cinema-caption .chapters {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+}
+.hyi-cinema-caption .chapters span {
+  position: relative;
+  flex: 1 1 0;
+  max-width: 42px;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(238, 244, 255, 0.16);
+  overflow: hidden;
+}
+.hyi-cinema-caption .chapters span.done {
+  background: rgba(240, 160, 70, 0.55);
+}
+.hyi-cinema-caption .chapters i {
+  position: absolute;
+  inset: 0;
+  transform-origin: left center;
+  background: #f0a046;
+  animation-name: hyi-chapter-fill;
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+}
+.hyi-cinema-caption .chapters i.hold {
+  animation-play-state: paused;
+}
+@keyframes hyi-chapter-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* 片尾卡：唯一能点的一层，所以单独开 pointer-events */
+.hyi-cinema-outro {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(520px, calc(100% - 48px));
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 26px 28px;
+  border-radius: 18px;
+  background: rgba(6, 11, 22, 0.9);
+  border: 1px solid var(--hyi-line);
+  backdrop-filter: blur(14px);
+  pointer-events: auto;
+  animation: hyi-title-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.hyi-cinema-outro h2 {
+  margin: 0;
+  font-size: clamp(20px, 3.6vw, 27px);
+}
+.hyi-cinema-outro p {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--hyi-text-dim);
+}
+.hyi-cinema-outro .acts {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+/* 有人把系统动效关了就别硬演：黑边、浮现、进度条一律直接到位 */
+@media (prefers-reduced-motion: reduce) {
+  .hyi-cinema .bar,
+  .hyi-cinema-title,
+  .hyi-cinema-outro,
+  .hyi-cinema-caption p span,
+  .hyi-cinema-caption .chapters i {
+    animation: none;
+  }
+  .hyi-cinema-caption .chapters i {
+    transform: scaleX(1);
+  }
 }
 
 /* 分享弹层 */
@@ -836,29 +1034,27 @@ body.hyi-kiosk .hyi-info .blurb {
  * 语义留在点上，轨道只负责"走到哪儿了"。进度位置由 --hyi-layer-pos 给。
  */
 .hyi-range-layer::-webkit-slider-runnable-track {
-  background:
-    linear-gradient(
-      90deg,
-      #2de0ff 0%,
-      #59a8ff calc(var(--hyi-layer-pos, 0%) * 0.6),
-      #9a7bff var(--hyi-layer-pos, 0%),
-      rgba(150, 170, 210, 0.16) var(--hyi-layer-pos, 0%),
-      rgba(150, 170, 210, 0.16) 100%
-    );
+  background: linear-gradient(
+    90deg,
+    #2de0ff 0%,
+    #59a8ff calc(var(--hyi-layer-pos, 0%) * 0.6),
+    #9a7bff var(--hyi-layer-pos, 0%),
+    rgba(150, 170, 210, 0.16) var(--hyi-layer-pos, 0%),
+    rgba(150, 170, 210, 0.16) 100%
+  );
   height: 5px;
   border-radius: 999px;
   box-shadow: inset 0 0 0 1px rgba(140, 190, 255, 0.14);
 }
 .hyi-range-layer::-moz-range-track {
-  background:
-    linear-gradient(
-      90deg,
-      #2de0ff 0%,
-      #59a8ff calc(var(--hyi-layer-pos, 0%) * 0.6),
-      #9a7bff var(--hyi-layer-pos, 0%),
-      rgba(150, 170, 210, 0.16) var(--hyi-layer-pos, 0%),
-      rgba(150, 170, 210, 0.16) 100%
-    );
+  background: linear-gradient(
+    90deg,
+    #2de0ff 0%,
+    #59a8ff calc(var(--hyi-layer-pos, 0%) * 0.6),
+    #9a7bff var(--hyi-layer-pos, 0%),
+    rgba(150, 170, 210, 0.16) var(--hyi-layer-pos, 0%),
+    rgba(150, 170, 210, 0.16) 100%
+  );
   height: 5px;
   border-radius: 999px;
 }

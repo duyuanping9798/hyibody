@@ -20,6 +20,7 @@ import { bindViewer, toUrlState, useUiStore } from './store';
 import { Dock } from './Dock';
 import { InfoIcon, ShareIcon } from './Icon';
 import { WonderMenu, WonderPlayer } from './WonderPlayer';
+import { WonderStage } from './WonderStage';
 import './ui.css';
 
 /** Kiosk 参数：?kiosk=1（或分享状态里带 kiosk）开启；?idle=秒 调闲置阈值。 */
@@ -172,6 +173,8 @@ export function App() {
           <Dock />
           {!wonder && <StructureLabel />}
           {!wonder && <InfoCard />}
+          {/* 放映层在控制条之下渲染、在层级上盖住画面：黑边、片头、字幕、片尾 */}
+          <WonderStage />
           {wonder ? <WonderPlayer /> : <LayerSlider />}
           <Attribution />
           {shareOpen && <ShareDialog onClose={() => setShareOpen(false)} />}

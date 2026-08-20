@@ -47,6 +47,8 @@ interface UiState {
   wonder: Wonder | null;
   wonderIndex: number;
   wonderPlaying: boolean;
+  /** 刚讲完的那一则，用来放片尾卡；点掉或几秒后自动清空 */
+  wonderOutro: Wonder | null;
 
   setLang(lang: Locale): void;
   setQuality(q: QualityTier): void;
@@ -74,6 +76,7 @@ interface UiState {
   setInfoExpanded(open: boolean): void;
   startWonder(wonder: Wonder): void;
   exitWonder(): void;
+  dismissOutro(): void;
   wonderNext(): void;
   wonderPrev(): void;
   wonderToggle(): void;
@@ -86,6 +89,11 @@ const wonderEngine = new WonderEngine();
 /** 把一步奥秘应用到画面：分层、显隐覆盖、选中与对准。 */
 function applyWonderStep(step: WonderStep): void {
   const st = useUiStore.getState();
+  // 运镜先定：本步之后触发的每一次相机飞行都用这个手感（慢、两头软、绕开人体），
+  // 飞到位之后继续做微动作。缺省 push——静止的画面在视频里是死的。
+  viewer?.setCinematic(step.motion ?? 'push', {
+    ...(step.transitionMs !== undefined ? { flight: { durationS: step.transitionMs / 1000 } } : {}),
+  });
   st.setLayer(step.layer);
   for (const id of SYSTEM_IDS) {
     const want = step.systems?.[id] ?? true;
@@ -115,8 +123,10 @@ wonderEngine.addEventListener('step', (e) => {
 });
 wonderEngine.addEventListener('play', () => useUiStore.setState({ wonderPlaying: true }));
 wonderEngine.addEventListener('pause', () => useUiStore.setState({ wonderPlaying: false }));
-wonderEngine.addEventListener('end', () => {
+wonderEngine.addEventListener('end', (e) => {
+  const completed = (e as CustomEvent<{ completed?: boolean }>).detail?.completed === true;
   const st = useUiStore.getState();
+  viewer?.setCinematic(null);
   st.select(null);
   st.resetVisibility();
   for (const id of SYSTEM_IDS) {
@@ -124,7 +134,13 @@ wonderEngine.addEventListener('end', () => {
     // 步骤可能把某个系统压暗过，退出时要还原，否则画面一直是灰的
     if (st.systemOpacity[id] !== 1) st.setSystemOpacity(id, 1);
   }
-  useUiStore.setState({ wonder: null, wonderIndex: 0, wonderPlaying: false });
+  useUiStore.setState({
+    wonder: null,
+    wonderIndex: 0,
+    wonderPlaying: false,
+    // 片尾卡只在"讲完了"时出现；中途退出的人不需要再被拦一下
+    wonderOutro: completed ? st.wonder : null,
+  });
 });
 
 /** 各系统的"主场"分层：在这个值上它最清楚，前后几层是它的淡入淡出区间。 */
@@ -223,6 +239,7 @@ export const useUiStore = create<UiState>((set, get) => ({
   wonder: null,
   wonderIndex: 0,
   wonderPlaying: false,
+  wonderOutro: null,
   lang: 'zh',
   progress: { loaded: 0, total: 0 },
   quality: 'medium',
@@ -332,10 +349,11 @@ export const useUiStore = create<UiState>((set, get) => ({
   togglePanel: (panel) => set((s) => ({ activePanel: s.activePanel === panel ? null : panel })),
 
   startWonder: (wonder) => {
-    set({ wonder, wonderIndex: 0, wonderPlaying: true, activePanel: null });
+    set({ wonder, wonderIndex: 0, wonderPlaying: true, activePanel: null, wonderOutro: null });
     wonderEngine.start(wonder);
   },
   exitWonder: () => wonderEngine.stop(),
+  dismissOutro: () => set({ wonderOutro: null }),
   wonderNext: () => wonderEngine.next(),
   wonderPrev: () => wonderEngine.prev(),
   wonderToggle: () => {

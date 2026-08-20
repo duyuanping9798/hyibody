@@ -13,6 +13,8 @@ export default tseslint.config(
       'playwright-report/**',
       'pipeline/**',
       'prototype/**',
+      // 一次性脚本（截图、量测、批量生成），已 gitignore；不进仓库的东西不该卡 lint
+      'scratch/**',
     ],
   },
   js.configs.recommended,

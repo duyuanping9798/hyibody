@@ -16,7 +16,6 @@ function hex(system: SystemId): string {
   return `#${SYSTEM_COLORS[system].toString(16).padStart(6, '0')}`;
 }
 
-
 /** 分层滑块：0–1 连续值，各系统按 layers.ts 的映射淡入淡出（KICKOFF 第 6 节核心交互）。 */
 export function LayerSlider() {
   const t = STRINGS[useUiStore((s) => s.lang)];

@@ -1,4 +1,5 @@
 import type { ViewPresetId } from '../viewer/camera';
+import type { MotionId } from '../viewer/cinematic';
 import type { SystemId } from '../data/types';
 
 /**
@@ -32,6 +33,13 @@ export interface WonderStep {
   expand?: string;
   /** 剖切面；不给则关闭剖切 */
   clip?: { axis: 'x' | 'y' | 'z'; pos: number; flip?: boolean };
+  /**
+   * 停住之后相机继续做的微动作（缺省 `push`，慢慢推近）。
+   * 完全静止的画面在视频里是死的——纪录片几乎没有一个真正不动的镜头。
+   */
+  motion?: MotionId;
+  /** 飞到本步位姿用多久（毫秒，缺省 1500）。远距离转场可以给长一点。 */
+  transitionMs?: number;
   /** 自动播放时本步停留时长 */
   durationMs: number;
 }
@@ -41,6 +49,10 @@ export interface Wonder {
   schema?: number;
   id: string;
   title: { zh: string; en: string };
+  /** 片头卡的副标题（一句话说清这条奥秘要带你看什么）。 */
+  subtitle?: { zh: string; en: string };
+  /** 作者署名。内置内容不写；UGC 投稿必填（docs/CONTENT-GUIDE.md）。 */
+  author?: string;
   /** 主系统：菜单按系统分组用，上百条时平铺列表不可用 */
   system?: SystemId;
   /**
@@ -86,12 +98,16 @@ export class WonderEngine extends EventTarget {
     this.emitStep();
   }
 
-  stop(): void {
+  /**
+   * 结束播放。`completed` 区分"讲完了"和"中途退出"——只有讲完了才该放片尾卡，
+   * 用户自己点退出时再弹一张卡是添堵。
+   */
+  stop(completed = false): void {
     this.stopTimer();
     this.wonder = null;
     this.index = 0;
     this.playing = false;
-    this.dispatchEvent(new CustomEvent('end'));
+    this.dispatchEvent(new CustomEvent('end', { detail: { completed } }));
   }
 
   get currentWonder(): Wonder | null {
@@ -127,7 +143,7 @@ export class WonderEngine extends EventTarget {
   next(): void {
     if (!this.wonder) return;
     if (this.index + 1 >= this.wonder.steps.length) {
-      this.stop();
+      this.stop(true);
       return;
     }
     this.index += 1;

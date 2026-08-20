@@ -81,7 +81,6 @@ export function WonderPlayer() {
   const wonderToggle = useUiStore((s) => s.wonderToggle);
 
   if (!wonder) return null;
-  const step = wonder.steps[index];
   return (
     <div className="hyi-panel hyi-wonder" data-testid="wonder-player">
       <header>
@@ -90,7 +89,6 @@ export function WonderPlayer() {
           {index + 1} / {wonder.steps.length}
         </span>
       </header>
-      <p>{step?.text[lang]}</p>
       <div className="controls">
         <button className="hyi-btn" onClick={wonderPrev} disabled={index === 0}>
           {t.wonderPrev}
