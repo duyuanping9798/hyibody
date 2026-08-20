@@ -27,35 +27,35 @@
     },
     {
       "text": {
-        "zh": "手掌和手指占了 19 块。它们排成五列，每一列都能单独弯，所以你才能捏、勾、握、弹。",
-        "en": "Palm and fingers account for nineteen. They line up in five columns, each able to bend on its own, which is why you can pinch, hook, grip and flick."
+        "zh": "手掌和手指占了 19 块，排成 5 列。除拇指外每一列都能单独弯，拇指则能横过掌心去够其余 4 指——这才有了捏、勾、握、弹。",
+        "en": "Palm and fingers account for nineteen, in five columns. Every column but the thumb bends on its own, while the thumb swings across the palm to meet the other four — hence pinching, hooking, gripping, flicking."
       },
       "layer": 0.5,
       "selected": "hand_bones",
+      "durationMs": 13500
+    },
+    {
+      "text": {
+        "zh": "剩下 8 块全挤在手腕，个个只有骰子大小。手腕转得动，靠的不是某一个关节，而是这 8 块彼此让出的那点缝。",
+        "en": "The remaining eight crowd into the wrist, each no bigger than a dice. The wrist turns not on any single joint but on the slivers of space these eight give one another."
+      },
+      "layer": 0.5,
+      "selected": "carpal_bones",
       "durationMs": 11000
     },
     {
       "text": {
-        "zh": "剩下 8 块挤在腕部，分两排堆在一起。手腕能绕这么多方向，靠的是这一小堆骨头彼此错动。",
-        "en": "The remaining eight crowd into the wrist, stacked in two rows. The wrist turns in so many directions because this little heap of bones slides against itself."
+        "zh": "往上接着的是桡骨。你现在把手掌翻过来试试——手腕一点没转，是这根骨头在前臂里画了半个圈。",
+        "en": "Above it comes the radius. Turn your palm over right now — the wrist never rotated at all; this one bone just swept half a circle inside your forearm."
       },
       "layer": 0.5,
-      "selected": "carpal_bones",
+      "selected": "radius_left",
       "durationMs": 10000
     },
     {
       "text": {
-        "zh": "往上是桡骨，在拇指这一侧。翻手掌时不是手腕在转，而是桡骨绕着尺骨转了半圈。",
-        "en": "Above lies the radius, on the thumb side. When you turn your palm over, the wrist does not rotate — the radius swings half a turn around the ulna."
-      },
-      "layer": 0.5,
-      "selected": "radius_left",
-      "durationMs": 9500
-    },
-    {
-      "text": {
-        "zh": "尺骨在小指这一侧，几乎不动，充当那根被绕着转的轴。两根骨头一动一静，才有了这个动作。",
-        "en": "The ulna sits on the little-finger side and barely moves, serving as the axle the radius swings around. One bone turns, one holds still — that is the trick."
+        "zh": "它绕的那根轴就是尺骨。尺骨上端牢牢卡进肘关节，几乎纹丝不动，一动一静，掌心才翻得过来。",
+        "en": "The axle it swings around is the ulna, whose upper end is locked so firmly into the elbow that it barely shifts. One bone turning, one holding still — that is how the palm flips over."
       },
       "layer": 0.5,
       "selected": "ulna_left",
@@ -91,12 +91,12 @@
     },
     {
       "text": {
-        "zh": "27 块骨头、几十条从远处拉过来的肌腱，凑成了这只能穿针也能提箱子的手。",
-        "en": "Twenty-seven bones and dozens of tendons pulled in from a distance add up to a hand that can thread a needle and carry a suitcase."
+        "zh": "27 块骨头、几十条从远处拉过来的肌腱，凑成一只既能穿针、又能提起箱子的手。",
+        "en": "Twenty-seven bones and dozens of tendons pulled in from a distance make a hand that can thread a needle and also lift a suitcase."
       },
       "layer": 0.4,
       "preset": "hero",
-      "durationMs": 10500
+      "durationMs": 11000
     }
   ]
 }

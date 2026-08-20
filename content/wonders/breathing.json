@@ -27,8 +27,8 @@
     },
     {
       "text": {
-        "zh": "第一道门是喉。呼吸时会厌像一片叶子立在门口给空气让路，吞咽时它才立刻倒下盖住。",
-        "en": "The first gate is the larynx. While you breathe, the epiglottis stands upright like a leaf, out of the air's way — and folds down the instant you swallow."
+        "zh": "第一道门是喉。整口气都得从这里挤过去，而这处通道最窄的地方，也就一根手指粗。",
+        "en": "The first gate is the larynx. The entire breath has to squeeze through here, and at its narrowest the passage is no wider than a finger."
       },
       "layer": 0.6,
       "selected": "larynx_cartilages",
@@ -54,37 +54,37 @@
     },
     {
       "text": {
-        "zh": "右肺三叶，是这口气的主要去处。空气走到最细的末梢，一层薄膜之隔就是血。",
-        "en": "The right lung, with its three lobes, takes most of this breath. At the finest twigs, only one thin membrane separates air from blood."
+        "zh": "这口气有一多半分给了右肺。走到最细的末梢时，空气和血之间只剩一层膜——薄到氧气自己就能渗过去。",
+        "en": "More than half of this breath goes to the right lung. At the finest twigs, only one membrane separates air from blood — thin enough for oxygen to drift across on its own."
       },
       "layer": 0.6,
       "selected": "lung_right",
-      "durationMs": 9000
+      "durationMs": 10500
     },
     {
       "text": {
-        "zh": "但肺自己动不了。真正把这口气吸进来的，是下面这块穹顶形的膈肌——它一压平，胸腔就变大。",
-        "en": "Yet the lungs cannot move themselves. The real work is done below, by the dome-shaped diaphragm: it flattens, and the chest cavity grows."
+        "zh": "但肺自己不会动。真正把这口气拽进来的在下面：膈肌一压平，胸腔就多出一截空间，空气是被这股负压吸进去的。",
+        "en": "Yet the lungs cannot move themselves. The pull comes from below: the diaphragm flattens, the chest gains a slice of space, and air is drawn in by the drop in pressure."
       },
       "layer": 0.32,
       "selected": "diaphragm",
-      "durationMs": 10000
+      "durationMs": 11000
     },
     {
       "text": {
-        "zh": "肋间肌同时把肋骨一根根提起来，胸廓像手风琴一样张开。深呼吸时，你摸得到它们在动。",
-        "en": "At the same time the intercostal muscles lift the ribs one by one, opening the chest like an accordion. Breathe deeply and you can feel them working."
+        "zh": "肋间肌同时把肋骨一根根撬起来，胸廓像手风琴一样张开。深呼吸时把手放在肋骨上，你摸到的正是这一下。",
+        "en": "At the same time the intercostal muscles lever the ribs up one by one, opening the chest like an accordion. Rest a hand on your ribs and breathe deeply — that is what you feel."
       },
       "layer": 0.28,
       "selected": "intercostal_muscles",
-      "durationMs": 9500
+      "durationMs": 10500
     },
     {
       "text": {
-        "zh": "然后膈肌一松，一切反向来一遍，这口气就还回去了。一天大约两万次，你几乎从不留意。",
-        "en": "Then the diaphragm relaxes, the whole sequence runs backwards, and the breath is given back — about twenty thousand times a day, almost never noticed."
+        "zh": "然后膈肌一松，一切反着来一遍，这口气就还回去了。你从没下过命令，它也一次没漏。",
+        "en": "Then the diaphragm relaxes, the whole sequence runs backwards, and the breath is handed back. You never gave an order, and it has never missed one."
       },
-      "layer": 0.5,
+      "layer": 0.32,
       "preset": "hero",
       "durationMs": 11000
     }

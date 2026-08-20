@@ -27,26 +27,26 @@
     },
     {
       "text": {
-        "zh": "起点是肩胛骨。它没有牢牢长在躯干上，而是靠肌肉吊在背上，所以能跟着手臂一起转。",
-        "en": "It begins at the shoulder blade. Rather than being fixed to the trunk, it is slung across the back by muscle alone — which is why it can rotate along with the arm."
+        "zh": "起点是肩胛骨。它跟躯干只有锁骨那一个小接头，其余全是浮着的——所以举手的时候，它自己也在背上转。",
+        "en": "It begins at the shoulder blade. Its only bony link to the trunk is one small joint at the collarbone; everything else floats — so when you raise an arm, the blade itself turns on your back."
       },
       "layer": 0.5,
       "selected": "scapula_left",
       "from": "back",
-      "durationMs": 11000
+      "durationMs": 12000
     },
     {
       "text": {
-        "zh": "肩胛骨外侧那个浅浅的窝，接住的是肱骨的球形头。窝浅，所以肩关节的活动范围全身第一。",
-        "en": "The shallow socket on the outer edge of the blade receives the ball-shaped head of the humerus. Shallow socket, widest range of motion in the body."
+        "zh": "接进那个窝里的是肱骨，上端是个滑溜溜的球。球比窝大得多，只有三分之一泡在里面——肩膀能甩出这么大的圈，代价就是它比任何关节都容易脱位。",
+        "en": "What sits in that socket is the humerus, its upper end a smooth ball far larger than the socket itself — only a third of it ever rests inside. The shoulder swings so wide, and dislocates more easily than any other joint."
       },
       "layer": 0.5,
       "selected": "humerus_left",
-      "durationMs": 10000
+      "durationMs": 13000
     },
     {
       "text": {
-        "zh": "抬臂的第一棒交给冈上肌。它藏在肩胛骨上缘，负责把手臂从贴身位置「掰离」躯干。",
+        "zh": "抬臂的第一棒交给冈上肌。它藏在肩胛骨上缘，负责把手臂从贴身位置“掰离”躯干。",
         "en": "The first leg of the relay goes to the supraspinatus. Tucked above the shoulder blade, its job is to prise the arm away from the body."
       },
       "layer": 0.3,
@@ -65,40 +65,40 @@
     },
     {
       "text": {
-        "zh": "如果你顺手把肘弯起来，出力最大的其实是肱肌，它藏在更显眼的那块下面。",
-        "en": "If you happen to bend the elbow as well, the muscle pulling hardest is the brachialis — hidden beneath the more famous one."
+        "zh": "顺手把肘弯起来看看。掌心朝上朝下都不影响力气的那一块，是藏在深处的肱肌——它不挑姿势。",
+        "en": "Bend your elbow for a moment. The muscle whose pull is the same whether your palm faces up or down is the brachialis, buried deeper in — it is the one that never minds the angle."
       },
       "layer": 0.3,
       "selected": "brachialis",
-      "durationMs": 9000
+      "durationMs": 10000
     },
     {
       "text": {
-        "zh": "更显眼的那块是肱二头肌。它鼓起来最好看，但除了屈肘，它还负责把掌心翻向上。",
-        "en": "That famous one is the biceps brachii, the muscle everybody flexes. Besides bending the elbow, it is also what turns your palm face-up."
+        "zh": "盖在它外面的是肱二头肌。它上端有两根腱分别绕过肩关节，所以你举手的时候，它其实也在帮忙。",
+        "en": "Covering it is the biceps brachii. Its two upper tendons each hook around the shoulder joint, which means it lends a hand when you raise the arm as well."
       },
       "layer": 0.3,
       "selected": "biceps_brachii",
-      "durationMs": 9500
+      "durationMs": 10000
     },
     {
       "text": {
-        "zh": "手臂后面的肱三头肌做完全相反的事——把肘伸直。任何一个动作，都得有人踩刹车。",
-        "en": "On the back of the arm, the triceps brachii does exactly the opposite: it straightens the elbow. Every movement needs someone on the brakes."
+        "zh": "手臂后面是肱三头肌，它干的正好是反的事：把肘推直。屈和伸各有各的肌肉，一块用力时另一块必须放开——这才叫一个动作。",
+        "en": "Behind the arm sits the triceps brachii, doing the exact opposite: pushing the elbow straight. Bending and straightening have separate muscles, and one must let go as the other pulls — that is what a movement is."
       },
       "layer": 0.3,
       "selected": "triceps_brachii",
       "from": "back",
-      "durationMs": 9500
+      "durationMs": 12000
     },
     {
       "text": {
-        "zh": "一次举手，肩胛骨转、肱骨滚、四五块肌肉按先后顺序接力。你只觉得「抬了一下」。",
-        "en": "One raised arm: the shoulder blade rotates, the humerus rolls, four or five muscles hand off in strict order. All you feel is a lift."
+        "zh": "从想举手到手举起来，中间隔了多少个环节？肩胛骨转、肱骨滚、4 到 5 块肌肉按先后接力，你只觉得抬了一下。",
+        "en": "How many steps sit between deciding to raise a hand and the hand going up? The blade rotates, the humerus rolls, four or five muscles hand off in order — and all you feel is a lift."
       },
       "layer": 0.25,
       "preset": "hero",
-      "durationMs": 11000
+      "durationMs": 12500
     }
   ]
 }

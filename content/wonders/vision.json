@@ -18,7 +18,7 @@
   "steps": [
     {
       "text": {
-        "zh": "你正在用眼睛读这行字。光从屏幕出发到你「看见」，中间只隔了两三厘米和十分之一秒。",
+        "zh": "你正在用眼睛读这行字。光从屏幕出发到你“看见”，中间只隔了两三厘米和十分之一秒。",
         "en": "You are reading this line with your eyes. Between the screen and the moment you see it lie only a couple of centimetres and a tenth of a second."
       },
       "layer": 0.08,
@@ -27,31 +27,31 @@
     },
     {
       "text": {
-        "zh": "眼球是一对直径约 24 毫米的球体，大半个身子埋在颅骨的眼眶里，露出来的只是前面一小块。",
-        "en": "The eyeballs are a pair of spheres about 24 millimetres across, most of each buried in its bony socket — only a small front patch is ever exposed."
+        "zh": "眼球其实只露出前面一小块，剩下大半个埋在眼眶里，被一圈骨头兜着。真正被光穿过的，就是露出来的这一小片。",
+        "en": "Only a small patch at the front of the eyeball is ever exposed; the rest is buried in its bony socket. That little patch is the part light actually passes through."
       },
       "layer": 0.6,
       "selected": "eyes",
-      "durationMs": 11500
+      "durationMs": 12500
     },
     {
       "text": {
-        "zh": "光先撞上角膜。这层透明的鼓包完成了聚焦的大部分工作，比后面那块「镜头」还卖力。",
-        "en": "Light strikes the cornea first. This clear bulge does most of the focusing — more of it, in fact, than the lens waiting behind."
+        "zh": "光先撞上角膜。真正把光掰弯的不是里面那块透镜，而是这层最外面的透明弧面——三分之二的活儿都是它干的。",
+        "en": "Light strikes the cornea first. What really bends it is not the lens deeper in but this outermost transparent curve — two-thirds of the work is done right here."
       },
       "layer": 0.6,
       "expand": "eyes",
       "selected": "eye_cornea",
-      "durationMs": 11000
+      "durationMs": 12500
     },
     {
       "text": {
-        "zh": "接着经过虹膜。它中间的洞就是瞳孔，亮处收小、暗处放大，是一个全自动的光圈。",
-        "en": "Next comes the iris. The hole at its centre is the pupil, shrinking in bright light and widening in dim — a fully automatic aperture."
+        "zh": "接着经过虹膜。你此刻看不出它在动，但屋里的灯一暗，它中间那个洞就会在一两秒内张大好几倍，你从来不用下这个命令。",
+        "en": "Next comes the iris. You cannot see it move, but dim the lights and the hole at its centre widens several times over within a second or two — and you never gave the order."
       },
       "layer": 0.6,
       "selected": "eye_iris",
-      "durationMs": 11000
+      "durationMs": 13000
     },
     {
       "text": {
@@ -75,16 +75,16 @@
     },
     {
       "text": {
-        "zh": "视神经把信号带出眼球。两侧视神经在颅底交叉一半，所以左边的视野最终交给右脑处理。",
+        "zh": "视神经把信号带出眼球。两条视神经在颅底碰头，各交换出去一半纤维——所以左边看到的东西，最后是由右脑来认的。",
         "en": "The optic nerves carry the signal out of the eye. Half the fibres cross at the base of the skull, so the left half of what you see is handled by the right side of the brain."
       },
       "layer": 0.8,
       "selected": "optic_nerves",
-      "durationMs": 11000
+      "durationMs": 13000
     },
     {
       "text": {
-        "zh": "终点在大脑最后方。信号跑到离眼睛最远的那一端，才终于变成「看见」。",
+        "zh": "终点在大脑最后方。信号跑到离眼睛最远的那一端，才终于变成“看见”。",
         "en": "The destination lies at the very back of the brain. Only after travelling to the point furthest from the eyes does the signal become sight."
       },
       "layer": 0.8,
@@ -93,12 +93,12 @@
     },
     {
       "text": {
-        "zh": "所以看东西不是眼睛的事，是眼睛负责收、大脑负责认。两者缺一，世界都不成形。",
-        "en": "So seeing is not the eye's doing alone: the eye collects, the brain recognises. Take away either, and the world never comes together."
+        "zh": "所以“看见”从来不只发生在眼睛里。眼睛收下的只是一片光斑，认出它是字、是脸、是谁，是在后脑那一端完成的。",
+        "en": "So seeing never happens in the eye alone. What the eye takes in is only a patch of light; recognising it as a word, a face, a person is finished at the far back of the brain."
       },
       "layer": 0.7,
       "preset": "hero",
-      "durationMs": 11000
+      "durationMs": 13000
     }
   ]
 }

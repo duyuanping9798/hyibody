@@ -37,12 +37,12 @@
     },
     {
       "text": {
-        "zh": "臀大肌是人体最有力的肌肉之一。它一收缩就把髋伸直，人才不会一直折在腰上。",
-        "en": "The gluteus maximus is among the most powerful muscles you have. Each contraction straightens the hip, keeping you from folding at the waist."
+        "zh": "臀大肌真正的用武之地不是站着，而是从站变成走：爬坡、起身、蹬地，都是它把折着的髋一把推直。",
+        "en": "The gluteus maximus earns its keep not in standing but in setting off: climbing, rising from a chair, pushing off the ground — each time it drives the bent hip straight again."
       },
       "layer": 0.3,
       "selected": "gluteus_maximus",
-      "durationMs": 9000
+      "durationMs": 10500
     },
     {
       "text": {
@@ -55,21 +55,21 @@
     },
     {
       "text": {
-        "zh": "小腿深处的比目鱼肌最不起眼却最要紧：站着时它一收一放，像挤海绵一样把血往上推。",
-        "en": "Deep in the calf, the soleus is the least conspicuous and the most essential: as you stand it tightens and lets go, squeezing blood back up the leg the way a hand squeezes a sponge."
+        "zh": "小腿深处还埋着一块比目鱼肌。它不负责让你动，只负责让你不倒：站着的每一秒，它都在替你压住脚踝这个支点。",
+        "en": "Deeper in the calf lies the soleus. Its job is not to move you but to keep you from toppling: every second you stand, it is holding the ankle steady beneath you."
       },
       "layer": 0.3,
       "selected": "soleus",
-      "durationMs": 9500
+      "durationMs": 11000
     },
     {
       "text": {
-        "zh": "它外面覆着腓肠肌，就是小腿肚的那道隆起。踮脚、蹬地、跳起来，爆发力主要来自它。",
-        "en": "Over it lies the gastrocnemius, the bulge you can see in the calf. Rising on your toes, pushing off, jumping — the explosive power comes mostly from here."
+        "zh": "盖在它外面的是腓肠肌。它跨过膝盖直接连到大腿骨上——所以你把膝盖伸直再踮脚，会明显更吃力。",
+        "en": "Over it lies the gastrocnemius, which reaches past the knee to the thigh bone itself — which is why rising on your toes with the knee locked straight feels so much harder."
       },
       "layer": 0.3,
       "selected": "gastrocnemius",
-      "durationMs": 9500
+      "durationMs": 10500
     },
     {
       "text": {
@@ -82,21 +82,21 @@
     },
     {
       "text": {
-        "zh": "小腿前面还有胫骨前肌在反向工作，把脚背勾起来——没有它，走路时脚尖会拖地。",
-        "en": "At the front of the shin, the tibialis anterior works the other way, lifting the top of the foot — without it, your toes would scuff the ground."
+        "zh": "小腿前面这一条是胫骨前肌。落地那一瞬它并不是在勾脚，而是在把脚掌慢慢放下去——不然每走一步，脚都会啪地拍在地上。",
+        "en": "At the front of the shin runs the tibialis anterior. As the heel lands it is not lifting the foot but lowering it slowly — without that, every step would slap flat onto the ground."
       },
       "layer": 0.3,
       "selected": "tibialis_anterior",
-      "durationMs": 9500
+      "durationMs": 12000
     },
     {
       "text": {
-        "zh": "所以「站着不动」根本不是静止，而是一整套肌肉不停地微调。累，是有道理的。",
-        "en": "So standing still is not stillness at all, but a whole set of muscles endlessly making small corrections. No wonder it tires you out."
+        "zh": "现在换个姿势试试。刚才那一下，上面这些肌肉全部重新分了一次工——而你只是动了动腿。",
+        "en": "Now shift your position. In that one small movement every muscle you just met redivided the work between them — and all you did was move a leg."
       },
       "layer": 0.22,
       "preset": "hero",
-      "durationMs": 10500
+      "durationMs": 11500
     }
   ]
 }

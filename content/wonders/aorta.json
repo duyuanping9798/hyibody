@@ -36,35 +36,35 @@
     },
     {
       "text": {
-        "zh": "弓顶上的第一个岔口是头臂干，一根粗短的主干。它一出来立刻又分成两支，同时管右臂和右侧头颈。",
-        "en": "The first turning at the top of the arch is the brachiocephalic trunk, short and stout. It splits again at once, serving the right arm and the right side of the head and neck."
+        "zh": "弓顶上第一个岔口叫头臂干，粗短得像个转接头。这个岔口只有右边有——左边的两根血管，是各自单独从弓上开的口。",
+        "en": "The first turning at the top of the arch is the brachiocephalic trunk, short and stout as an adaptor. Only the right side has it: on the left, the two vessels each open straight off the arch."
       },
       "layer": 0.8,
       "selected": "brachiocephalic_trunk",
-      "durationMs": 10500
+      "durationMs": 11500
     },
     {
       "text": {
-        "zh": "颈总动脉沿着气管两侧笔直上行。把手指放在喉结外侧摸到的那阵强劲搏动，就是它。",
-        "en": "The common carotid arteries run straight up either side of the windpipe. That strong pulse you can find beside the Adam's apple is this vessel."
+        "zh": "颈总动脉贴着气管两侧笔直上行。指腹搭在喉结外侧那道沟里，就能感到它一下下顶着皮肤。",
+        "en": "The common carotid arteries run straight up either side of the windpipe. Lay a fingertip in the groove beside the Adam's apple and you will feel it nudging the skin, beat after beat."
       },
       "layer": 0.8,
       "selected": "common_carotid_arteries",
-      "durationMs": 9500
+      "durationMs": 10000
     },
     {
       "text": {
-        "zh": "过了膈肌，第一个岔口是腹腔干。它只有一两厘米长，却要同时供应肝、胃和脾。",
-        "en": "Past the diaphragm, the first turning is the coeliac trunk. Barely a centimetre or two long, it still has to supply the liver, the stomach and the spleen."
+        "zh": "腹腔干短到几乎看不出是一段血管，更像主动脉侧壁上直接开的一个口。就这么一小截，供着肝、胃和脾三家。",
+        "en": "The coeliac trunk is so short it hardly reads as a length of vessel at all — more like a hole opened straight in the aortic wall. That stub alone supplies liver, stomach and spleen."
       },
       "layer": 0.8,
       "selected": "celiac_trunk",
-      "durationMs": 9000
+      "durationMs": 11000
     },
     {
       "text": {
-        "zh": "紧接着是左右肾动脉，几乎垂直地横插出去。两个肾拿走的血量，占心脏每次输出的五分之一左右。",
-        "en": "Next come the renal arteries, branching off almost at right angles. The two kidneys claim roughly a fifth of everything the heart pumps out."
+        "zh": "紧接着是左右肾动脉，几乎成直角横插出去，短得像两根接头——肾就挂在主动脉的正两侧。",
+        "en": "Next come the renal arteries, striking off almost at right angles and short as a pair of couplings — the kidneys hang directly off either flank of the aorta."
       },
       "layer": 0.8,
       "selected": "renal_arteries",
@@ -72,7 +72,7 @@
     },
     {
       "text": {
-        "zh": "走到肚脐这个高度，主动脉就此终止，一分为二成髂动脉。这里是整条干线的终点，也是双腿的起点。",
+        "zh": "走到肚脐这个高度，主动脉就此终止，分成左右两条髂动脉。这里是整条干线的终点，也是双腿的起点。",
         "en": "At about the level of the navel the aorta ends, splitting in two as the iliac arteries. This is where the main line stops and both legs begin."
       },
       "layer": 0.8,

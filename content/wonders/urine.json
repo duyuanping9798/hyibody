@@ -18,21 +18,21 @@
   "steps": [
     {
       "text": {
-        "zh": "从背后看，腰的上方藏着两个拳头大的器官。它们每天要把你全身的血反复过滤几十遍。",
-        "en": "Seen from behind, two fist-sized organs sit just above the waist. Every day they put the whole of your blood through the filter, dozens of times over."
+        "zh": "转到身后。腰的上方藏着两个巴掌心那么大的器官，它们每天要把你全身的血反复过滤几十遍。",
+        "en": "Turn to the back. Just above the waist sit two organs about the size of your palm, and every day they put the whole of your blood through the filter, dozens of times over."
       },
       "layer": 0.08,
       "preset": "back",
-      "durationMs": 11000
+      "durationMs": 11500
     },
     {
       "text": {
-        "zh": "这就是肾。它们不在腰眼上，而是更靠上、贴着后腹壁，被最后两根肋骨护着。",
-        "en": "These are the kidneys. They sit higher than most people think, pressed against the back wall of the abdomen and shielded by the last two ribs."
+        "zh": "肾比大多数人以为的位置要高。它们贴着后腹壁，被最后两对肋骨压在下面——你按腰眼的时候，其实按的是它们下面那一截。",
+        "en": "The kidneys sit higher than most people assume. Pressed against the back wall of the abdomen, they tuck under the last two pairs of ribs — press the small of your back and you are below them, not on them."
       },
       "layer": 0.6,
       "selected": "kidneys",
-      "durationMs": 10500
+      "durationMs": 13500
     },
     {
       "text": {
@@ -65,13 +65,13 @@
     },
     {
       "text": {
-        "zh": "所有锥体的出口汇进肾盂，像漏斗一样收成一股，交给下一段管道。",
-        "en": "The outlets of every pyramid drain into the renal pelvis, which gathers them into a single stream like a funnel and hands it on."
+        "zh": "每个锥体的尖上都在渗尿，一滴一滴落进小杯子里；几个杯子并成一个大的，最后全汇到肾盂这一处出口。",
+        "en": "Urine seeps from the tip of every pyramid, drop by drop, into small cups; the cups merge into larger ones, and everything finally gathers at the renal pelvis."
       },
       "layer": 0.6,
       "expand": "ureters",
       "selected": "renal_pelvis",
-      "durationMs": 10000
+      "durationMs": 12000
     },
     {
       "text": {
@@ -93,7 +93,7 @@
     },
     {
       "text": {
-        "zh": "所以尿不是「废水」，而是筛剩下的那一点。真正的工作，是把该留的都留了下来。",
+        "zh": "所以尿不是“废水”，而是筛剩下的那一点。真正的工作，是把该留的都留了下来。",
         "en": "So urine is not simply waste water but the small remainder after sifting. The real work lay in keeping everything worth keeping."
       },
       "layer": 0.55,

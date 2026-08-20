@@ -204,6 +204,58 @@ describe('奥秘内容契约', () => {
     }
   });
 
+  /**
+   * 脚本不许复述信息卡。
+   *
+   * 信息卡负责"它是什么"，脚本负责"它正在做什么"——观众点开一个结构会先后看到
+   * 两处，重复很刺眼。这条以前只是 CONTENT-GUIDE 上的一句话，靠人自觉；2026-08-19
+   * 专家审核在十则新奥秘里查出 21 处复述，最严重的逐字重合达 14 个汉字，说明
+   * 光靠自觉不行。
+   *
+   * 判据：某步展词与它 `selected` 结构的 blurb + fact 之间，去掉非汉字后的
+   * **最长公共子串**不得超过 7 个汉字。留到 7 是因为数字必须与信息卡逐字一致
+   * （"每天跳动约 10 万次"），这类重合是规范要求的，不该被这条测试判死。
+   */
+  it('展词不许复述信息卡', () => {
+    const zh = JSON.parse(
+      readFileSync(resolve(__dirname, '../../content/definitions/zh.json'), 'utf8'),
+    ) as Record<string, { blurb?: string; fact?: string }>;
+    const hanzi = (s: string) => s.replace(/[^\u4e00-\u9fff]/g, '');
+    /** 最长公共子串长度，滚动一维数组。 */
+    const longestCommon = (a: string, b: string): { len: number; text: string } => {
+      let best = 0;
+      let end = 0;
+      const row = new Array<number>(b.length + 1).fill(0);
+      for (let i = 1; i <= a.length; i += 1) {
+        let prev = 0;
+        for (let j = 1; j <= b.length; j += 1) {
+          const cur = row[j]!;
+          row[j] = a[i - 1] === b[j - 1] ? prev + 1 : 0;
+          if (row[j]! > best) {
+            best = row[j]!;
+            end = i;
+          }
+          prev = cur;
+        }
+      }
+      return { len: best, text: a.slice(end - best, end) };
+    };
+
+    for (const wonder of WONDERS) {
+      for (const [i, step] of wonder.steps.entries()) {
+        const card = step.selected ? zh[step.selected] : undefined;
+        if (!card) continue;
+        const ref = hanzi(`${card.blurb ?? ''}${card.fact ?? ''}`);
+        const { len, text } = longestCommon(hanzi(step.text.zh), ref);
+        expect(
+          len,
+          `${wonder.id}[${i}] 与 ${step.selected} 的信息卡逐字重合 ${len} 字（"${text}"）——` +
+            `脚本该讲"它正在做什么"，别把信息卡换句话说一遍`,
+        ).toBeLessThanOrEqual(7);
+      }
+    }
+  });
+
   /** 展词是给观众看的，不该出现开发排期与占位说明。 */
   it('展词里没有生产备注', () => {
     const leak = /(后续版本|待补充|尚未补齐|暂缺|TODO|待定|placeholder)/i;
