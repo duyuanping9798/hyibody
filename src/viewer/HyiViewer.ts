@@ -223,6 +223,8 @@ export class HyiViewer extends EventTarget {
   private driftSuspended = false;
   /** 本步已经做了多久微动作。到 MAX_DRIFT_S 就停，免得一路推到贴脸。 */
   private driftElapsed = 0;
+  private readonly statsEnabled =
+    typeof location !== 'undefined' && new URLSearchParams(location.search).get('stats') === '1';
   /**
    * 每帧画完之后同步调一次，参数是 WebGL 画布本身。录像用。
    *
@@ -731,6 +733,27 @@ export class HyiViewer extends EventTarget {
     };
   }
 
+  /**
+   * `?stats=1` 时把每帧的绘制统计挂到 `window.__hyiStats`。
+   *
+   * 加这个开关是因为"同屏 draw call ≤ 600"这条预算一直没人量过——
+   * 云端没有 GPU，帧率测不了，但**绘制调用数是 CPU 侧的账，软件渲染下照样准**。
+   * 合批改造这种事，改之前必须先有一个能对比的数。
+   */
+  private publishStats(): void {
+    if (!this.statsEnabled) return;
+    this.renderer.info.autoReset = false;
+    const info = this.renderer.info;
+    (window as unknown as { __hyiStats?: unknown }).__hyiStats = {
+      calls: info.render.calls,
+      triangles: info.render.triangles,
+      geometries: info.memory.geometries,
+      textures: info.memory.textures,
+      programs: info.programs?.length ?? 0,
+      structures: this.structures.size,
+    };
+  }
+
   /** WebGL 画布本体。录像要按它的尺寸开合成画布。 */
   getCanvas(): HTMLCanvasElement {
     return this.renderer.domElement;
@@ -1179,8 +1202,12 @@ export class HyiViewer extends EventTarget {
     this.rig.controls.update();
     this.syncClipPlanes();
     this.clipCaps.syncToPlane();
+    // 统计要把**整帧**（含后处理各趟）算进来：renderer.info 默认每次 render()
+    // 清零一次，不关掉自动清零就只能量到最后那个全屏四边形（实测 calls:1）
+    if (this.statsEnabled) this.renderer.info.reset();
     if (this.pipeline) this.pipeline.render();
     else this.renderer.render(this.scene, this.rig.camera);
+    this.publishStats();
     // 抄帧必须紧跟在 render 后面，见 frameTap 的注释
     if (this.frameTap) this.frameTap(this.renderer.domElement);
   }
