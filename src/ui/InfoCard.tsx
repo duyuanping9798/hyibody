@@ -33,6 +33,8 @@ export function InfoCard() {
   const expanded = useUiStore((s) => s.expanded);
   const expand = useUiStore((s) => s.expand);
   const startWonder = useUiStore((s) => s.startWonder);
+  const infoExpanded = useUiStore((s) => s.infoExpanded);
+  const setInfoExpanded = useUiStore((s) => s.setInfoExpanded);
 
   if (!selected || !manifest) return null;
   const info = manifest.structures[selected];
@@ -47,54 +49,70 @@ export function InfoCard() {
   const related = wondersForStructure(selected, insideParent);
 
   return (
-    <div className="hyi-panel hyi-info" data-testid="info-card">
-      <header className="hyi-info-head">
+    <div className={`hyi-panel hyi-info${infoExpanded ? ' expanded' : ''}`} data-testid="info-card">
+      {/* 小屏上整张卡默认只露到「一句话科普」，点这一条展开全文。
+          桌面端左下角空间充裕，CSS 里让这个按钮隐身、内容始终全展开。 */}
+      <button
+        className="hyi-info-toggle"
+        aria-expanded={infoExpanded}
+        onClick={() => setInfoExpanded(!infoExpanded)}
+      >
         <span className="hyi-info-dot" style={{ background: systemDot(system) }} aria-hidden />
-        <div>
+        <span className="hyi-info-name">
           <h2>{lang === 'zh' ? info.zh : info.en}</h2>
-          <p className="en">
+          <span className="en">
             {lang === 'zh' ? info.en : info.zh}
             {/* 本体 id：优先 FMA，BP3D 没有该概念时退到 HRA 给的 UBERON */}
             {(info.fma[0] ?? info.uberon) && <span> · {info.fma[0] ?? info.uberon}</span>}
-          </p>
-        </div>
-      </header>
+          </span>
+        </span>
+        <span className="hyi-info-chevron" aria-hidden>
+          ⌃
+        </span>
+        <span className="hyi-sr-only">{infoExpanded ? t.infoLess : t.infoMore}</span>
+      </button>
 
-      <ul className="hyi-tags">
-        <li>{t.systems[system]}</li>
-        <li>{t.regions[info.region]}</li>
-        {info.side !== 'none' && <li>{t.sides[info.side]}</li>}
-      </ul>
+      <div className="hyi-info-details">
+        <ul className="hyi-tags">
+          <li>{t.systems[system]}</li>
+          <li>{t.regions[info.region]}</li>
+          {info.side !== 'none' && <li>{t.sides[info.side]}</li>}
+        </ul>
+      </div>
 
       <p className="blurb">{definition?.blurb ?? t.infoBlurbPending}</p>
 
-      {definition?.fact && (
-        <aside className="hyi-fact">
-          <span className="hyi-fact-title">{t.infoFactTitle}</span>
-          <p>{definition.fact}</p>
-        </aside>
-      )}
+      <div className="hyi-info-details">
+        {definition?.fact && (
+          <aside className="hyi-fact">
+            <span className="hyi-fact-title">{t.infoFactTitle}</span>
+            <p>{definition.fact}</p>
+          </aside>
+        )}
 
-      <p className="meta">
-        {t.sourceLabel}: {sourceLabel(info.source, t)}
-        {definition && !definitionsReviewedFor(lang) ? ` · ${t.infoUnreviewed}` : ''}
-      </p>
+        <p className="meta">
+          {t.sourceLabel}: {sourceLabel(info.source, t)}
+          {definition
+            ? ` · ${definitionsReviewedFor(lang) ? t.infoAiReviewed : t.infoUnreviewed}`
+            : ''}
+        </p>
 
-      {related.length > 0 && (
-        <section className="hyi-related">
-          <h3>{t.relatedWonders.replace('{n}', String(related.length))}</h3>
-          {related.map((wonder) => (
-            <button
-              key={wonder.id}
-              className="hyi-related-item"
-              onClick={() => startWonder(wonder)}
-            >
-              <span>{wonder.title[lang]}</span>
-              <span className="dur">{estimatedSeconds(wonder)}s</span>
-            </button>
-          ))}
-        </section>
-      )}
+        {related.length > 0 && (
+          <section className="hyi-related">
+            <h3>{t.relatedWonders.replace('{n}', String(related.length))}</h3>
+            {related.map((wonder) => (
+              <button
+                key={wonder.id}
+                className="hyi-related-item"
+                onClick={() => startWonder(wonder)}
+              >
+                <span>{wonder.title[lang]}</span>
+                <span className="dur">{estimatedSeconds(wonder)}s</span>
+              </button>
+            ))}
+          </section>
+        )}
+      </div>
 
       <div className="actions">
         {children.length > 0 && expanded !== selected && (
@@ -107,10 +125,13 @@ export function InfoCard() {
             {t.collapseParts}
           </button>
         )}
-        <button className="hyi-btn" onClick={() => isolate(isIsolated ? null : selected)}>
+        <button
+          className="hyi-btn hyi-info-detail-action"
+          onClick={() => isolate(isIsolated ? null : selected)}
+        >
           {isIsolated ? t.actionUnisolate : t.actionIsolate}
         </button>
-        <button className="hyi-btn" onClick={() => hide(selected)}>
+        <button className="hyi-btn hyi-info-detail-action" onClick={() => hide(selected)}>
           {t.actionHide}
         </button>
         <button className="hyi-btn" onClick={() => focus(selected)}>
