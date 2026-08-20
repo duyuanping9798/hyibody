@@ -113,7 +113,7 @@
   /* 再收一轮：560 → 460 宽、整块从约 70 px 压到约 52 px。
      刻度绝对定位之后标签行高是固定的，剩下的全在 padding 上省。 */
   width: min(460px, calc(100% - 24px));
-  padding: 7px 16px 2px;
+  padding: 5px 14px 1px;
   display: flex;
   flex-direction: column;
   gap: 0;
@@ -121,7 +121,7 @@
 /* 刻度按真实值绝对定位（见 LayerSlider.tsx 的注释），所以这里不能再用 flex 等距排 */
 .hyi-layer-labels {
   position: relative;
-  height: 27px;
+  height: 23px;
   font-size: 10.5px;
   color: var(--hyi-text-dim);
   letter-spacing: 0.06em;
@@ -142,7 +142,9 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  max-height: calc(45% - 58px);
+  /* 40 / 56 而不是对半分：抽屉是手风琴，一次只展开一格，最高也就两百出头；
+     信息卡要装标签、科普、小知识、来源、相关奥秘和一排操作，长得多。 */
+  max-height: calc(40% - 58px);
   overflow-y: auto;
   overscroll-behavior: contain;
   z-index: 4;
@@ -320,7 +322,7 @@
   bottom: 84px;
   width: min(320px, calc(100% - 24px));
   padding: 14px 16px;
-  max-height: calc(45% - 84px);
+  max-height: calc(56% - 84px);
   overflow-y: auto;
 }
 .hyi-info h2 {
@@ -359,10 +361,18 @@
 .hyi-info .meta .hyi-review-tag {
   white-space: nowrap;
 }
+/* 操作按钮吸在卡片底部：卡片内容超出高度时会滚动，而「聚焦」「隔离」「关闭」
+   是这张卡片的主要用途——被挤到折叠线以下等于没有。上方压一层渐变，
+   滚动的内容从底下穿过时不会糊在按钮上。 */
 .hyi-info .actions {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+  position: sticky;
+  bottom: -14px;
+  margin: 0 -16px -14px;
+  padding: 8px 16px 14px;
+  background: linear-gradient(180deg, transparent, var(--hyi-panel) 40%);
 }
 
 .hyi-attribution-backdrop {
@@ -802,7 +812,7 @@ body.hyi-kiosk .hyi-info .blurb {
 /* 彩色分层滑块 */
 .hyi-layer-track {
   position: relative;
-  padding: 2px 0 6px;
+  padding: 1px 0 3px;
 }
 /*
  * 轨道：暗槽 + 一段发光的进度，而不是一条五色渐变。
@@ -860,7 +870,7 @@ body.hyi-kiosk .hyi-info .blurb {
   appearance: none;
   border: 0;
   background: none;
-  padding: 11px 3px 2px;
+  padding: 10px 3px 1px;
   font: inherit;
   font-size: 10.5px;
   color: var(--hyi-text-dim);
