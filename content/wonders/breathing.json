@@ -1,0 +1,92 @@
+{
+  "schema": 1,
+  "id": "breathing",
+  "title": {
+    "zh": "一次呼吸走过的路",
+    "en": "The Path of a Single Breath"
+  },
+  "system": "organs",
+  "structures": [
+    "larynx_cartilages",
+    "trachea",
+    "bronchial_tree",
+    "lung_right",
+    "lung_left",
+    "diaphragm",
+    "intercostal_muscles"
+  ],
+  "steps": [
+    {
+      "text": {
+        "zh": "此刻你正在吸气。这口空气从鼻孔到血液，全程不到一秒，沿途要过好几道门。",
+        "en": "You are breathing in right now. This mouthful of air reaches your blood in under a second, passing through several gates on the way."
+      },
+      "layer": 0.05,
+      "preset": "hero",
+      "durationMs": 10500
+    },
+    {
+      "text": {
+        "zh": "第一道门是喉。空气从这里进去时，会厌像盖子一样翻开；吞咽时它又立刻盖住。",
+        "en": "The first gate is the larynx. As air passes through, the epiglottis flips open like a lid — and snaps shut the moment you swallow."
+      },
+      "layer": 0.6,
+      "selected": "larynx_cartilages",
+      "durationMs": 10500
+    },
+    {
+      "text": {
+        "zh": "往下是气管，一根被软骨环撑着的硬管子。躺着、低头、被人掐住，它都不会塌。",
+        "en": "Below runs the trachea, a tube held open by cartilage rings. Lie down, bow your head, take a chokehold — it will not collapse."
+      },
+      "layer": 0.6,
+      "selected": "trachea",
+      "durationMs": 9000
+    },
+    {
+      "text": {
+        "zh": "到胸腔正中，气管一分为二，然后不停地分。这棵倒着长的树，每一级都比上一级细一点、多一倍。",
+        "en": "In mid-chest the airway forks in two, then keeps forking. This upside-down tree halves its width and doubles its count at every level."
+      },
+      "layer": 0.6,
+      "selected": "bronchial_tree",
+      "durationMs": 10000
+    },
+    {
+      "text": {
+        "zh": "右肺三叶，是这口气的主要去处。空气走到最细的末梢，一层薄膜之隔就是血。",
+        "en": "The right lung, with its three lobes, takes most of this breath. At the finest twigs, only one thin membrane separates air from blood."
+      },
+      "layer": 0.6,
+      "selected": "lung_right",
+      "durationMs": 9000
+    },
+    {
+      "text": {
+        "zh": "但肺自己动不了。真正把这口气吸进来的，是下面这块穹顶形的膈肌——它一压平，胸腔就变大。",
+        "en": "Yet the lungs cannot move themselves. The real work is done below, by the dome-shaped diaphragm: it flattens, and the chest cavity grows."
+      },
+      "layer": 0.32,
+      "selected": "diaphragm",
+      "durationMs": 10000
+    },
+    {
+      "text": {
+        "zh": "肋间肌同时把肋骨一根根提起来，胸廓像手风琴一样张开。深呼吸时，你摸得到它们在动。",
+        "en": "At the same time the intercostals lift the ribs one by one, opening the chest like an accordion. Breathe deeply and you can feel them working."
+      },
+      "layer": 0.28,
+      "selected": "intercostal_muscles",
+      "durationMs": 9500
+    },
+    {
+      "text": {
+        "zh": "然后膈肌一松，一切反向来一遍，这口气就还回去了。一天大约两万次，你几乎从不留意。",
+        "en": "Then the diaphragm relaxes, the whole sequence runs backwards, and the breath is given back — about twenty thousand times a day, almost never noticed."
+      },
+      "layer": 0.5,
+      "preset": "hero",
+      "durationMs": 11000
+    }
+  ]
+}

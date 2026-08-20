@@ -1,0 +1,104 @@
+{
+  "schema": 1,
+  "id": "vision",
+  "title": {
+    "zh": "光走进眼睛之后",
+    "en": "After the Light Gets In"
+  },
+  "system": "organs",
+  "structures": [
+    "eyes",
+    "eye_cornea",
+    "eye_iris",
+    "eye_lens",
+    "eye_retina",
+    "optic_nerves",
+    "brain"
+  ],
+  "steps": [
+    {
+      "text": {
+        "zh": "你正在用眼睛读这行字。光从屏幕出发到你「看见」，中间只隔了几个毫米和几毫秒。",
+        "en": "You are reading this line with your eyes. Between the screen and the moment you see it lie only a few millimetres and a few milliseconds."
+      },
+      "layer": 0.08,
+      "preset": "front",
+      "durationMs": 11000
+    },
+    {
+      "text": {
+        "zh": "眼球是一对直径约 24 毫米的球体，大半个身子埋在颅骨的眼眶里，露出来的只是前面一小块。",
+        "en": "The eyeballs are a pair of spheres about 24 millimetres across, most of each buried in its bony socket — only a small front patch is ever exposed."
+      },
+      "layer": 0.6,
+      "selected": "eyes",
+      "durationMs": 11500
+    },
+    {
+      "text": {
+        "zh": "光先撞上角膜。这层透明的鼓包完成了聚焦的大部分工作，比后面那块「镜头」还卖力。",
+        "en": "Light strikes the cornea first. This clear bulge does most of the focusing — more of it, in fact, than the lens waiting behind."
+      },
+      "layer": 0.6,
+      "expand": "eyes",
+      "selected": "eye_cornea",
+      "durationMs": 11000
+    },
+    {
+      "text": {
+        "zh": "接着经过虹膜。它中间的洞就是瞳孔，亮处收小、暗处放大，是一个全自动的光圈。",
+        "en": "Next comes the iris. The hole at its centre is the pupil, shrinking in bright light and widening in dim — a fully automatic aperture."
+      },
+      "layer": 0.6,
+      "selected": "eye_iris",
+      "durationMs": 11000
+    },
+    {
+      "text": {
+        "zh": "晶状体负责微调。看远看近不是靠它前后移动，而是靠周围的肌肉把它拉扁或放松。",
+        "en": "The lens handles fine tuning. Switching between far and near is not done by sliding it back and forth, but by muscles flattening it or letting it round up."
+      },
+      "layer": 0.6,
+      "expand": "eyes",
+      "selected": "eye_lens",
+      "durationMs": 11000
+    },
+    {
+      "text": {
+        "zh": "光最后落在视网膜上，而且是倒着的。整个世界在这里先被翻转一次，再由大脑翻回来。",
+        "en": "Light finally lands on the retina — upside down. The whole world is flipped here first, and the brain quietly flips it back."
+      },
+      "layer": 0.6,
+      "expand": "eyes",
+      "selected": "eye_retina",
+      "durationMs": 9500
+    },
+    {
+      "text": {
+        "zh": "视神经把信号带出眼球。两侧视神经在颅底交叉一半，所以左边的视野最终交给右脑处理。",
+        "en": "The optic nerves carry the signal out. Half the fibres cross over at the base of the skull, so what you see on the left ends up handled on the right."
+      },
+      "layer": 0.8,
+      "selected": "optic_nerves",
+      "durationMs": 11000
+    },
+    {
+      "text": {
+        "zh": "终点在大脑最后方。信号跑到离眼睛最远的那一端，才终于变成「看见」。",
+        "en": "The destination lies at the very back of the brain. Only after travelling to the point furthest from the eyes does the signal become sight."
+      },
+      "layer": 0.8,
+      "selected": "brain",
+      "durationMs": 9000
+    },
+    {
+      "text": {
+        "zh": "所以看东西不是眼睛的事，是眼睛负责收、大脑负责认。两者缺一，世界都不成形。",
+        "en": "So seeing is not the eye's doing alone: the eye collects, the brain recognises. Take away either, and the world never comes together."
+      },
+      "layer": 0.7,
+      "preset": "hero",
+      "durationMs": 11000
+    }
+  ]
+}

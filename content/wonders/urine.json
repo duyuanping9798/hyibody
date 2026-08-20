@@ -1,0 +1,104 @@
+{
+  "schema": 1,
+  "id": "urine",
+  "title": {
+    "zh": "肾脏每天筛掉什么",
+    "en": "What Your Kidneys Sift Out Each Day"
+  },
+  "system": "organs",
+  "structures": [
+    "kidneys",
+    "renal_arteries",
+    "kidney_cortex",
+    "kidney_pyramids",
+    "renal_pelvis",
+    "ureters",
+    "urinary_bladder"
+  ],
+  "steps": [
+    {
+      "text": {
+        "zh": "从背后看，腰的上方藏着两个拳头大的器官。它们每天要把你全身的血反复过滤几十遍。",
+        "en": "Seen from behind, two fist-sized organs sit just above the waist. Every day they filter the whole of your blood over and over."
+      },
+      "layer": 0.08,
+      "preset": "back",
+      "durationMs": 11000
+    },
+    {
+      "text": {
+        "zh": "这就是肾。它们不在腰眼上，而是更靠上、贴着后腹壁，被最后两根肋骨护着。",
+        "en": "These are the kidneys. They sit higher than most people think, pressed against the back wall of the abdomen and shielded by the last two ribs."
+      },
+      "layer": 0.6,
+      "selected": "kidneys",
+      "durationMs": 10500
+    },
+    {
+      "text": {
+        "zh": "血从肾动脉直接进来。这两根动脉很短很粗，直接从主动脉分出——原料必须又快又足。",
+        "en": "Blood arrives through the renal arteries, short and thick and branching straight off the aorta: the supply must be both fast and generous."
+      },
+      "layer": 0.78,
+      "selected": "renal_arteries",
+      "durationMs": 9500
+    },
+    {
+      "text": {
+        "zh": "过滤发生在外圈的肾皮质。血浆在这里被整批挤出血管，好东西随后再一点点收回去。",
+        "en": "Filtering happens in the outer shell, the renal cortex. Plasma is squeezed wholesale out of the vessels here, and the useful parts are reclaimed afterwards."
+      },
+      "layer": 0.6,
+      "expand": "kidneys",
+      "selected": "kidney_cortex",
+      "durationMs": 11000
+    },
+    {
+      "text": {
+        "zh": "再往里是一个个尖端朝内的肾锥体。液体穿过它们时被反复浓缩，越走越少、越走越浓。",
+        "en": "Deeper in stand the renal pyramids, their tips pointing inward. Fluid passing through them is concentrated again and again — less in volume, stronger in content."
+      },
+      "layer": 0.6,
+      "expand": "kidneys",
+      "selected": "kidney_pyramids",
+      "durationMs": 9500
+    },
+    {
+      "text": {
+        "zh": "所有锥体的出口汇进肾盂，像漏斗一样收成一股，交给下一段管道。",
+        "en": "The outlets of every pyramid drain into the renal pelvis, which gathers them into a single stream like a funnel and hands it on."
+      },
+      "layer": 0.6,
+      "expand": "ureters",
+      "selected": "renal_pelvis",
+      "durationMs": 10000
+    },
+    {
+      "text": {
+        "zh": "输尿管把液体一路送到骨盆。它不是靠重力，而是靠管壁一波波蠕动往下挤——躺着也照样走。",
+        "en": "The ureters carry the fluid down to the pelvis. Not by gravity but by waves of muscular squeezing along the wall — so it keeps moving even lying down."
+      },
+      "layer": 0.6,
+      "selected": "ureters",
+      "durationMs": 11500
+    },
+    {
+      "text": {
+        "zh": "终点是膀胱。它空着时壁很厚、皱成一团，装满时能撑得又薄又大，像个可折叠的口袋。",
+        "en": "The journey ends at the bladder. Empty, its wall is thick and crumpled; full, it stretches thin and wide — a pocket that folds away when unused."
+      },
+      "layer": 0.6,
+      "selected": "urinary_bladder",
+      "durationMs": 9500
+    },
+    {
+      "text": {
+        "zh": "所以尿不是「废水」，而是筛剩下的那一点。真正的工作，是把该留的都留了下来。",
+        "en": "So urine is not simply waste water but the small remainder after sifting. The real work was keeping everything worth keeping."
+      },
+      "layer": 0.55,
+      "preset": "hero",
+      "durationMs": 11000
+    }
+  ]
+}

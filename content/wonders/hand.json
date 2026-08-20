@@ -1,0 +1,102 @@
+{
+  "schema": 1,
+  "id": "hand",
+  "title": {
+    "zh": "一只手，27 块骨头",
+    "en": "One Hand, Twenty-Seven Bones"
+  },
+  "system": "skeleton",
+  "structures": [
+    "hand_bones",
+    "carpal_bones",
+    "radius_left",
+    "ulna_left",
+    "flexor_digitorum_superficialis",
+    "extensor_digitorum",
+    "humerus_left"
+  ],
+  "steps": [
+    {
+      "text": {
+        "zh": "摊开手掌看一眼。这只手上有 27 块骨头，占全身骨头总数的四分之一还多——两只手加起来一半有余。",
+        "en": "Open your palm and look. There are 27 bones in this one hand, more than a quarter of all the bones you own — both hands together, over half."
+      },
+      "layer": 0.08,
+      "preset": "front",
+      "durationMs": 12000
+    },
+    {
+      "text": {
+        "zh": "手掌和手指占了 19 块。它们排成五列，每一列都能单独弯，所以你才能捏、勾、握、弹。",
+        "en": "Palm and fingers account for nineteen. They line up in five columns, each able to bend on its own, which is why you can pinch, hook, grip and flick."
+      },
+      "layer": 0.5,
+      "selected": "hand_bones",
+      "durationMs": 11000
+    },
+    {
+      "text": {
+        "zh": "剩下 8 块挤在腕部，分两排堆在一起。手腕能绕这么多方向，靠的是这一小堆骨头彼此错动。",
+        "en": "The remaining eight crowd into the wrist, stacked in two rows. The wrist turns in so many directions because this little heap of bones slides against itself."
+      },
+      "layer": 0.5,
+      "selected": "carpal_bones",
+      "durationMs": 10000
+    },
+    {
+      "text": {
+        "zh": "往上是桡骨，在拇指这一侧。翻手掌时不是手腕在转，而是桡骨绕着尺骨转了半圈。",
+        "en": "Above lies the radius, on the thumb side. When you turn your palm over, the wrist does not rotate — the radius swings half a turn around the ulna."
+      },
+      "layer": 0.5,
+      "selected": "radius_left",
+      "durationMs": 9500
+    },
+    {
+      "text": {
+        "zh": "尺骨在小指这一侧，几乎不动，充当那根被绕着转的轴。两根骨头一动一静，才有了这个动作。",
+        "en": "The ulna sits on the little-finger side and barely moves, serving as the axle to be swung around. One bone turns, one holds still — that is the trick."
+      },
+      "layer": 0.5,
+      "selected": "ulna_left",
+      "durationMs": 10000
+    },
+    {
+      "text": {
+        "zh": "手指本身几乎没有肌肉。握拳的力气来自前臂的指浅屈肌，靠长长的肌腱远程拉动手指。",
+        "en": "The fingers themselves carry almost no muscle. The strength of a fist comes from the forearm, where flexor muscles pull the fingers by long remote tendons."
+      },
+      "layer": 0.3,
+      "selected": "flexor_digitorum_superficialis",
+      "durationMs": 9500
+    },
+    {
+      "text": {
+        "zh": "前臂背面的指伸肌负责把手指拉直。手指之所以细，正因为发动机全都装在了远处。",
+        "en": "On the back of the forearm, the extensor muscles straighten the fingers again. Fingers stay slim precisely because their engines were all installed elsewhere."
+      },
+      "layer": 0.3,
+      "selected": "extensor_digitorum",
+      "from": "back",
+      "durationMs": 9500
+    },
+    {
+      "text": {
+        "zh": "再往上只剩肱骨一根。越靠近身体骨头越少越粗，越靠近指尖越多越细——手就是这样一路分岔出来的。",
+        "en": "Higher up, only the humerus remains. Bones grow fewer and thicker towards the body, more and finer towards the fingertips — the hand branches out along the way."
+      },
+      "layer": 0.5,
+      "selected": "humerus_left",
+      "durationMs": 10500
+    },
+    {
+      "text": {
+        "zh": "27 块骨头、几十条从远处拉过来的肌腱，凑成了这只能穿针也能提箱子的手。",
+        "en": "Twenty-seven bones and dozens of tendons pulled in from a distance add up to a hand that can thread a needle and carry a suitcase."
+      },
+      "layer": 0.4,
+      "preset": "hero",
+      "durationMs": 10500
+    }
+  ]
+}

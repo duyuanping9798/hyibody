@@ -1,0 +1,104 @@
+{
+  "schema": 1,
+  "id": "reach",
+  "title": {
+    "zh": "把手举起来的那一瞬",
+    "en": "The Instant You Raise an Arm"
+  },
+  "system": "muscles",
+  "structures": [
+    "scapula_left",
+    "humerus_left",
+    "supraspinatus",
+    "deltoid",
+    "brachialis",
+    "biceps_brachii",
+    "triceps_brachii"
+  ],
+  "steps": [
+    {
+      "text": {
+        "zh": "举手是个再普通不过的动作。可要让手臂抬到头顶，肩膀里得先有一整套接力。",
+        "en": "Raising a hand could hardly be more ordinary. Yet to lift the arm overhead, the shoulder must first run a whole relay."
+      },
+      "layer": 0.08,
+      "preset": "front",
+      "durationMs": 10500
+    },
+    {
+      "text": {
+        "zh": "起点是肩胛骨。它没有牢牢长在躯干上，而是靠肌肉吊在背上，所以能跟着手臂一起转。",
+        "en": "It begins at the shoulder blade. Rather than being fixed to the trunk, it hangs on the back by muscle alone — which is why it can rotate along with the arm."
+      },
+      "layer": 0.5,
+      "selected": "scapula_left",
+      "from": "back",
+      "durationMs": 11000
+    },
+    {
+      "text": {
+        "zh": "肩胛骨外侧那个浅浅的窝，接住的是肱骨的球形头。窝浅，所以肩关节的活动范围全身第一。",
+        "en": "The shallow socket on the outer edge of the blade receives the ball-shaped head of the humerus. Shallow socket, widest range of motion in the body."
+      },
+      "layer": 0.5,
+      "selected": "humerus_left",
+      "durationMs": 10000
+    },
+    {
+      "text": {
+        "zh": "抬臂的第一棒交给冈上肌。它藏在肩胛骨上缘，负责把手臂从贴身位置「掰离」躯干。",
+        "en": "The first leg of the relay goes to the supraspinatus. Tucked above the shoulder blade, its job is to prise the arm away from the body."
+      },
+      "layer": 0.3,
+      "selected": "supraspinatus",
+      "from": "back",
+      "durationMs": 9500
+    },
+    {
+      "text": {
+        "zh": "接棒的是三角肌，包住整个肩头的那块。它一发力，手臂就一路举过肩膀。",
+        "en": "The deltoid takes over — the muscle wrapping the entire shoulder cap. Once it fires, the arm swings all the way past shoulder height."
+      },
+      "layer": 0.3,
+      "selected": "deltoid",
+      "durationMs": 9000
+    },
+    {
+      "text": {
+        "zh": "如果你顺手把肘弯起来，出力最大的其实是肱肌，它藏在更显眼的那块下面。",
+        "en": "If you happen to bend the elbow as well, the muscle pulling hardest is the brachialis — hidden beneath the more famous one."
+      },
+      "layer": 0.3,
+      "selected": "brachialis",
+      "durationMs": 9000
+    },
+    {
+      "text": {
+        "zh": "更显眼的那块是肱二头肌。它鼓起来最好看，但除了屈肘，它还负责把掌心翻向上。",
+        "en": "That famous one is the biceps brachii. It looks the best when it bulges, yet besides bending the elbow it also turns the palm face-up."
+      },
+      "layer": 0.3,
+      "selected": "biceps_brachii",
+      "durationMs": 9500
+    },
+    {
+      "text": {
+        "zh": "手臂后面的肱三头肌做完全相反的事——把肘伸直。任何一个动作，都得有人踩刹车。",
+        "en": "On the back of the arm, the triceps brachii does exactly the opposite: it straightens the elbow. Every movement needs someone on the brakes."
+      },
+      "layer": 0.3,
+      "selected": "triceps_brachii",
+      "from": "back",
+      "durationMs": 9500
+    },
+    {
+      "text": {
+        "zh": "一次举手，肩胛骨转、肱骨滚、四五块肌肉按先后顺序接力。你只觉得「抬了一下」。",
+        "en": "One raised arm: the blade rotates, the humerus rolls, and four or five muscles hand off in strict order. All you felt was a lift."
+      },
+      "layer": 0.25,
+      "preset": "hero",
+      "durationMs": 11000
+    }
+  ]
+}

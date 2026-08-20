@@ -1,0 +1,102 @@
+{
+  "schema": 1,
+  "id": "standing",
+  "title": {
+    "zh": "站着不动，其实很忙",
+    "en": "Standing Still Is Hard Work"
+  },
+  "system": "muscles",
+  "structures": [
+    "erector_spinae",
+    "gluteus_maximus",
+    "hamstrings",
+    "soleus",
+    "gastrocnemius",
+    "calcaneal_tendon",
+    "tibialis_anterior"
+  ],
+  "steps": [
+    {
+      "text": {
+        "zh": "你现在可能正站着或坐着，觉得自己没在用力。接下来看看有多少块肌肉正在替你顶着。",
+        "en": "Right now you are probably standing or sitting, feeling like you are doing nothing at all. Let us count the muscles holding you up anyway."
+      },
+      "layer": 0.05,
+      "preset": "hero",
+      "durationMs": 11000
+    },
+    {
+      "text": {
+        "zh": "先看背后。竖脊肌沿脊柱两侧从骨盆一直排到后脑，只要你没趴下，它就没停过。",
+        "en": "Start at the back. The erector spinae run alongside the spine from pelvis to skull, and unless you are lying face down, they never stop."
+      },
+      "layer": 0.3,
+      "selected": "erector_spinae",
+      "from": "back",
+      "durationMs": 10500
+    },
+    {
+      "text": {
+        "zh": "臀大肌是人体最有力的肌肉之一。它一收缩就把髋伸直，人才不会一直折在腰上。",
+        "en": "The gluteus maximus is among the most powerful muscles you have. Each contraction straightens the hip, keeping you from folding at the waist."
+      },
+      "layer": 0.3,
+      "selected": "gluteus_maximus",
+      "durationMs": 9000
+    },
+    {
+      "text": {
+        "zh": "大腿后面的腘绳肌跨过髋和膝两个关节，一头拉住骨盆，一头拉住小腿，两边同时管。",
+        "en": "Behind the thigh, the hamstrings span two joints at once — anchoring the pelvis at one end and the lower leg at the other, minding both."
+      },
+      "layer": 0.3,
+      "selected": "hamstrings",
+      "durationMs": 9500
+    },
+    {
+      "text": {
+        "zh": "小腿深处的比目鱼肌最不起眼却最要紧：站着时它一收一放，像挤海绵一样把血往上推。",
+        "en": "Deep in the calf, the soleus is the least conspicuous and the most essential: standing, it squeezes and releases, pushing blood upward like a sponge."
+      },
+      "layer": 0.3,
+      "selected": "soleus",
+      "durationMs": 9500
+    },
+    {
+      "text": {
+        "zh": "它外面覆着腓肠肌，就是小腿肚的那道隆起。踮脚、蹬地、跳起来，爆发力主要来自它。",
+        "en": "Over it lies the gastrocnemius, the bulge you can see in the calf. Rising on your toes, pushing off, jumping — the explosive power comes mostly from here."
+      },
+      "layer": 0.3,
+      "selected": "gastrocnemius",
+      "durationMs": 9500
+    },
+    {
+      "text": {
+        "zh": "两块肌肉的力都汇进跟腱，全身最粗的一根。每走一步，它都在把身体弹向前方。",
+        "en": "The force of both muscles funnels into the calcaneal tendon, the thickest in the body. With every step it springs you forward again."
+      },
+      "layer": 0.3,
+      "selected": "calcaneal_tendon",
+      "durationMs": 9000
+    },
+    {
+      "text": {
+        "zh": "小腿前面还有胫骨前肌在反向工作，把脚背勾起来——没有它，走路时脚尖会拖地。",
+        "en": "At the front of the shin, the tibialis anterior works the other way, lifting the top of the foot — without it, your toes would scuff the ground."
+      },
+      "layer": 0.3,
+      "selected": "tibialis_anterior",
+      "durationMs": 9500
+    },
+    {
+      "text": {
+        "zh": "所以「站着不动」根本不是静止，而是一整套肌肉不停地微调。累，是有道理的。",
+        "en": "So standing still is not stillness at all, but a whole set of muscles endlessly making small corrections. No wonder it tires you out."
+      },
+      "layer": 0.22,
+      "preset": "hero",
+      "durationMs": 10500
+    }
+  ]
+}

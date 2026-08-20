@@ -1,0 +1,101 @@
+{
+  "schema": 1,
+  "id": "spine",
+  "title": {
+    "zh": "脊柱：一根会弯的塔",
+    "en": "The Spine: A Tower That Bends"
+  },
+  "system": "skeleton",
+  "structures": [
+    "cervical_vertebrae",
+    "thoracic_vertebrae",
+    "lumbar_vertebrae",
+    "sacrum",
+    "intervertebral_disks",
+    "spinal_cord",
+    "erector_spinae"
+  ],
+  "steps": [
+    {
+      "text": {
+        "zh": "从背后看，脊柱不是一根直棍，而是一条侧看呈两道弯的曲线。这两道弯是它能扛住你的关键。",
+        "en": "Seen from behind, the spine is no straight rod. From the side it draws two opposing curves — and those curves are why it can carry you."
+      },
+      "layer": 0.08,
+      "preset": "back",
+      "durationMs": 11500
+    },
+    {
+      "text": {
+        "zh": "最上面 7 块是颈椎，最轻也最灵活。你此刻点头、摇头、转头，动的都是它们。",
+        "en": "The top seven are the cervical vertebrae — the lightest and most mobile. Every nod, shake and turn of your head happens here."
+      },
+      "layer": 0.5,
+      "selected": "cervical_vertebrae",
+      "durationMs": 10500
+    },
+    {
+      "text": {
+        "zh": "往下 12 块胸椎，每一块都被一对肋骨拴住。稳固是代价，它是整条脊柱里最不能扭的一段。",
+        "en": "Next come twelve thoracic vertebrae, each tethered to a pair of ribs. Stability has a price: this is the least twistable stretch of the whole spine."
+      },
+      "layer": 0.5,
+      "selected": "thoracic_vertebrae",
+      "durationMs": 10000
+    },
+    {
+      "text": {
+        "zh": "再往下只剩 5 块腰椎，却要接住上半身的全部重量，所以它们长得又厚又宽。",
+        "en": "Only five lumbar vertebrae remain below, yet they must catch the entire weight of the upper body — which is why they are built so thick and broad."
+      },
+      "layer": 0.5,
+      "selected": "lumbar_vertebrae",
+      "durationMs": 9000
+    },
+    {
+      "text": {
+        "zh": "重量最后交给骶骨，这块三角形的骨头嵌在两侧髋骨之间，把力分给骨盆和双腿。",
+        "en": "The load finally passes to the sacrum, a wedge of bone locked between the hip bones that splits the force out to the pelvis and both legs."
+      },
+      "layer": 0.5,
+      "selected": "sacrum",
+      "durationMs": 9000
+    },
+    {
+      "text": {
+        "zh": "每两块椎骨之间都垫着一片椎间盘。它们加起来约占脊柱长度的四分之一，弯腰的角度全靠它们让出来。",
+        "en": "Between every two vertebrae sits a disc. Together they make up roughly a quarter of the spine's length, and every degree of bending is borrowed from them."
+      },
+      "layer": 0.5,
+      "selected": "intervertebral_disks",
+      "durationMs": 10500
+    },
+    {
+      "text": {
+        "zh": "这座塔是空心的。椎孔连成一条管道，脊髓就住在里面——脊柱的形状，本来就是为了护住它。",
+        "en": "The tower is hollow. The vertebral openings line up into a canal, and the spinal cord lives inside it — the spine is shaped the way it is to guard this."
+      },
+      "layer": 0.75,
+      "selected": "spinal_cord",
+      "durationMs": 10000
+    },
+    {
+      "text": {
+        "zh": "光靠骨头它立不住。两侧的竖脊肌像帆船上的缆绳，一直在收着——久站腰酸，就是它们喊累。",
+        "en": "Bone alone cannot hold it upright. The erector spinae run down both sides like a sailboat's rigging, always pulling — and stand too long, and they will complain."
+      },
+      "layer": 0.3,
+      "selected": "erector_spinae",
+      "durationMs": 10000
+    },
+    {
+      "text": {
+        "zh": "骨头、软垫、缆绳，三样东西合起来才是脊柱：既撑得住体重，又弯得下腰。",
+        "en": "Bone, cushion and rigging — only all three together make a spine: strong enough to hold your weight, supple enough to let you bend."
+      },
+      "layer": 0.45,
+      "preset": "hero",
+      "durationMs": 10500
+    }
+  ]
+}

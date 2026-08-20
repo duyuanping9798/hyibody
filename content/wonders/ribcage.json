@@ -1,0 +1,102 @@
+{
+  "schema": 1,
+  "id": "ribcage",
+  "title": {
+    "zh": "胸廓：一只会呼吸的笼子",
+    "en": "The Ribcage: A Cage That Breathes"
+  },
+  "system": "skeleton",
+  "structures": [
+    "ribs",
+    "sternum",
+    "costal_cartilages",
+    "thoracic_vertebrae",
+    "intercostal_muscles",
+    "heart",
+    "lung_left"
+  ],
+  "steps": [
+    {
+      "text": {
+        "zh": "胸口这一圈骨头有个难题：既要硬到能挡住撞击，又要软到每分钟能张开十几次。",
+        "en": "The ring of bone around your chest faces a contradiction: hard enough to take a blow, yet supple enough to open a dozen times a minute."
+      },
+      "layer": 0.08,
+      "preset": "front",
+      "durationMs": 10500
+    },
+    {
+      "text": {
+        "zh": "12 对肋骨从脊柱向前包过来，一根根斜着向下。吸气时它们被提起，整圈就往外扩了一圈。",
+        "en": "Twelve pairs of ribs sweep forward from the spine, each slanting downward. Lift them as you breathe in, and the whole ring widens."
+      },
+      "layer": 0.5,
+      "selected": "ribs",
+      "durationMs": 11500
+    },
+    {
+      "text": {
+        "zh": "正前方是胸骨，一块扁平的长骨。心肺复苏按压的位置，就在它下半段。",
+        "en": "Straight in front lies the sternum, a flat blade of bone. The spot pressed during CPR is on its lower half."
+      },
+      "layer": 0.5,
+      "selected": "sternum",
+      "durationMs": 8500
+    },
+    {
+      "text": {
+        "zh": "肋骨并没有直接长到胸骨上，中间隔着一段肋软骨。这段软的，正是胸廓能张开的原因。",
+        "en": "The ribs never reach the sternum directly; a length of costal cartilage bridges the gap. That soft segment is exactly why the cage can open at all."
+      },
+      "layer": 0.5,
+      "selected": "costal_cartilages",
+      "durationMs": 9500
+    },
+    {
+      "text": {
+        "zh": "后方每一根肋骨都挂在一块胸椎上。12 对肋骨、12 块胸椎，一一对应，一个不多一个不少。",
+        "en": "At the back, every rib hangs from a thoracic vertebra. Twelve pairs of ribs, twelve vertebrae — matched one to one, with none left over."
+      },
+      "layer": 0.5,
+      "selected": "thoracic_vertebrae",
+      "from": "back",
+      "durationMs": 10000
+    },
+    {
+      "text": {
+        "zh": "肋骨之间填着肋间肌，它们才是拉动这只笼子的绳索。骨头负责形状，肌肉负责动。",
+        "en": "Between the ribs sit the intercostal muscles, the ropes that actually work this cage. Bone supplies the shape; muscle supplies the movement."
+      },
+      "layer": 0.28,
+      "selected": "intercostal_muscles",
+      "durationMs": 9500
+    },
+    {
+      "text": {
+        "zh": "笼子里装的是心脏。它偏在正中略左的位置，前面正好有胸骨和肋软骨挡着。",
+        "en": "Inside the cage sits the heart, set just left of centre, with the sternum and costal cartilages standing guard directly in front of it."
+      },
+      "layer": 0.6,
+      "selected": "heart",
+      "durationMs": 9000
+    },
+    {
+      "text": {
+        "zh": "左肺只有两叶，就是为了给心脏让位。同一个空间里，两个器官各自迁就了对方的形状。",
+        "en": "The left lung has only two lobes, precisely to make room for the heart. Sharing one space, each organ has given way to the other's shape."
+      },
+      "layer": 0.6,
+      "selected": "lung_left",
+      "durationMs": 9500
+    },
+    {
+      "text": {
+        "zh": "所以胸廓不是一副静止的盔甲，而是一只每天开合两万次、还要顺便护着心肺的笼子。",
+        "en": "So the ribcage is no static suit of armour, but a cage that opens and closes twenty thousand times a day while guarding the heart and lungs besides."
+      },
+      "layer": 0.5,
+      "preset": "hero",
+      "durationMs": 11000
+    }
+  ]
+}

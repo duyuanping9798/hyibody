@@ -55,8 +55,41 @@ describe('奥秘内容契约', () => {
     }
   });
 
-  it('内置三条奥秘（按文件名自动收录，顺序稳定）', () => {
-    expect(WONDERS.map((t) => t.id)).toEqual(['digestion', 'heartbeat', 'nerve']);
+  it('内置奥秘按文件名自动收录，顺序稳定', () => {
+    expect(WONDERS.map((t) => t.id)).toEqual([
+      'aorta',
+      'breathing',
+      'digestion',
+      'hand',
+      'heartbeat',
+      'nerve',
+      'reach',
+      'ribcage',
+      'spine',
+      'standing',
+      'urine',
+      'vision',
+      'voice',
+    ]);
+  });
+
+  /**
+   * 有父结构的部件，必须在该步 expand 它的父结构，否则它的不透明度直接是 0
+   * （HyiViewer.effectiveOpacity：`parent !== null && expanded !== parent` → 0）。
+   * 「主角在该分层下可见」那条测试只看系统不透明度，漏得掉这一种看不见。
+   */
+  it('选中内部件的步骤必须展开它的父结构', () => {
+    for (const wonder of WONDERS) {
+      for (const [i, step] of wonder.steps.entries()) {
+        const parent = step.selected && manifest.structures[step.selected]?.parent;
+        if (!parent) continue;
+        expect(
+          step.expand,
+          `${wonder.id}[${i}] 选中了内部件 ${step.selected}，但没有 expand 它的父结构 ${parent}，` +
+            `这一步观众什么都看不到`,
+        ).toBe(parent);
+      }
+    }
   });
 
   it('每条奥秘都声明了主系统与涉及的结构，且结构真实存在', () => {

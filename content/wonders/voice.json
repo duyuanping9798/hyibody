@@ -1,0 +1,94 @@
+{
+  "schema": 1,
+  "id": "voice",
+  "title": {
+    "zh": "声音是怎么被造出来的",
+    "en": "How a Voice Gets Made"
+  },
+  "system": "organs",
+  "structures": [
+    "larynx_cartilages",
+    "thyroid_cartilage",
+    "cricoid_cartilage",
+    "epiglottic_cartilage",
+    "trachea",
+    "tongue"
+  ],
+  "steps": [
+    {
+      "text": {
+        "zh": "说话其实是一次被精细控制的呼气。同一股气流，出去时是叹息，稍加改造就成了句子。",
+        "en": "Speaking is really a finely controlled exhalation. The same stream of air leaves as a sigh, and with a little reshaping it becomes a sentence."
+      },
+      "layer": 0.08,
+      "preset": "front",
+      "durationMs": 11000
+    },
+    {
+      "text": {
+        "zh": "改造发生在喉。这里的几块软骨搭成一个能开能合的框架，气流经过时被拨动成声。",
+        "en": "The reshaping happens in the larynx, where a handful of cartilages build a frame that can open and close, setting the passing air vibrating."
+      },
+      "layer": 0.6,
+      "selected": "larynx_cartilages",
+      "durationMs": 11000
+    },
+    {
+      "text": {
+        "zh": "最大的一块是甲状软骨，两片在前方合成一个角。这个角越尖越前突，从外面看就是喉结。",
+        "en": "The largest piece is the thyroid cartilage, two plates meeting at an angle in front. The sharper and more forward that angle, the more visible the Adam's apple."
+      },
+      "layer": 0.6,
+      "expand": "larynx_cartilages",
+      "selected": "thyroid_cartilage",
+      "durationMs": 11000
+    },
+    {
+      "text": {
+        "zh": "下面托着环状软骨，是整条气道里唯一一圈完整闭合的软骨环——别处都留着缺口。",
+        "en": "Beneath it sits the cricoid cartilage, the only complete closed ring of cartilage in the entire airway; everywhere else the ring is left open."
+      },
+      "layer": 0.6,
+      "expand": "larynx_cartilages",
+      "selected": "cricoid_cartilage",
+      "durationMs": 9500
+    },
+    {
+      "text": {
+        "zh": "上方立着会厌软骨。呼吸时它敞着，吞咽时立刻翻下来盖住喉口，把食物挡去食管那边。",
+        "en": "Above stands the epiglottic cartilage. Open while you breathe, it folds down the instant you swallow, steering food across to the oesophagus instead."
+      },
+      "layer": 0.6,
+      "expand": "larynx_cartilages",
+      "selected": "epiglottic_cartilage",
+      "durationMs": 9500
+    },
+    {
+      "text": {
+        "zh": "声音的动力来自下面的气管。你能喊多久、喊多响，取决于这根管子里能推上来多少气。",
+        "en": "The power comes from the trachea below. How long and how loudly you can shout depends on how much air this tube can push upward."
+      },
+      "layer": 0.6,
+      "selected": "trachea",
+      "durationMs": 11000
+    },
+    {
+      "text": {
+        "zh": "喉只造出一个嗡嗡的原声。真正把它切成词的是舌头——同一个音，舌位一变就成了另一个字。",
+        "en": "The larynx only makes a raw buzz. What carves it into words is the tongue: keep the sound, move the tongue, and an entirely different syllable comes out."
+      },
+      "layer": 0.6,
+      "selected": "tongue",
+      "durationMs": 10000
+    },
+    {
+      "text": {
+        "zh": "一股气、几块软骨、一条舌头。你说的每一句话，都是这三样东西每秒配合好几次的结果。",
+        "en": "One stream of air, a few pieces of cartilage, one tongue. Every sentence you speak is these three coordinating several times a second."
+      },
+      "layer": 0.55,
+      "preset": "hero",
+      "durationMs": 11000
+    }
+  ]
+}
