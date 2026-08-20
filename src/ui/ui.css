@@ -358,7 +358,8 @@
 }
 /* 「AI 交叉审校，未经医师签字」原来会在"医师"和"签字"之间折行。
    整段当一个词处理，宽度不够时整段换到下一行。 */
-.hyi-info .meta .hyi-review-tag {
+.hyi-info .meta .hyi-review-tag,
+.hyi-info .meta .hyi-source-tag {
   white-space: nowrap;
 }
 /* 操作按钮吸在卡片底部：卡片内容超出高度时会滚动，而「聚焦」「隔离」「关闭」
@@ -372,7 +373,10 @@
   bottom: -14px;
   margin: 0 -16px -14px;
   padding: 8px 16px 14px;
-  background: linear-gradient(180deg, transparent, var(--hyi-panel) 40%);
+  /* 遮罩要够实：用半透明的 --hyi-panel 时，底下滚动的「相关奥秘」会从按钮
+     缝里透出来（实拍可见）。面板本身就是半透明的，这里加一条更实的带子
+     只会显得底部略深一档，比透字干净得多。 */
+  background: linear-gradient(180deg, rgba(8, 14, 28, 0) 0%, rgba(8, 14, 28, 0.96) 50%);
 }
 
 .hyi-attribution-backdrop {

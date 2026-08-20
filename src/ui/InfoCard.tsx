@@ -105,7 +105,9 @@ export function InfoCard() {
         )}
 
         <p className="meta">
-          {t.sourceLabel}: {sourceLabel(info.source, t)}
+          <span className="hyi-source-tag">
+            {t.sourceLabel}: {sourceLabel(info.source, t)}
+          </span>
           {definition && <span className="hyi-review-tag"> · {reviewLabel(lang, t)}</span>}
         </p>
 
