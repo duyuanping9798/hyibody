@@ -1,0 +1,91 @@
+{
+  "schema": 1,
+  "id": "alarm",
+  "title": {
+    "zh": "三秒钟动员全身",
+    "en": "Whole Body, Mobilised in Three Seconds"
+  },
+  "system": "organs",
+  "structures": [
+    "adrenal_glands",
+    "heart",
+    "main_bronchus",
+    "liver",
+    "skin"
+  ],
+  "steps": [
+    {
+      "text": {
+        "zh": "吓一跳的那一瞬间，全身十几个器官几乎同时改变了工作状态。神经来不及一个个通知——它用的是另一套办法。",
+        "en": "In the instant you get a fright, a dozen organs change what they are doing almost at once. There is no time to notify each one separately, so the body uses another method."
+      },
+      "layer": 0.06,
+      "preset": "front",
+      "durationMs": 12500
+    },
+    {
+      "text": {
+        "zh": "办法就在这两顶扣在肾上的小帽子里。它们不发信号，它们往血里直接倒药——药随血走，几秒钟内到达每一个角落。",
+        "en": "The method lives in these two small caps perched on the kidneys. They send no signal; they tip a drug straight into the blood, and the blood carries it into every corner within seconds."
+      },
+      "layer": 0.6,
+      "selected": "adrenal_glands",
+      "from": "back",
+      "durationMs": 13000
+    },
+    {
+      "text": {
+        "zh": "第一个响应的是泵。跳得更快、每一下也更用力，几秒之内送出去的血量能翻上一倍还多。",
+        "en": "The pump answers first. Faster beats, and harder ones: within seconds it can push out more than twice the blood it was moving a moment ago."
+      },
+      "layer": 0.6,
+      "selected": "heart",
+      "from": "front",
+      "durationMs": 9500
+    },
+    {
+      "text": {
+        "zh": "同时气道也松开了。管壁上的平滑肌一放松，通道变宽，同样一口气能吸进更多——供得上血，也得供得上氧。",
+        "en": "At the same time the airways let go. The smooth muscle in their walls relaxes, the channels widen, and the same breath brings in more air — no use moving blood faster if there is nothing in it."
+      },
+      "layer": 0.6,
+      "selected": "main_bronchus",
+      "from": "front",
+      "clip": {
+        "axis": "y",
+        "pos": 0.2054,
+        "flip": true
+      },
+      "durationMs": 12500
+    },
+    {
+      "text": {
+        "zh": "燃料也得跟上。肝把囤着的糖拆开放进血里，肌肉一伸手就能拿到——这一步决定了你能撑多久。",
+        "en": "Fuel has to keep up too. The liver breaks open its stores of sugar and releases them into the blood, ready for muscle to grab — this is the step that decides how long you can keep going."
+      },
+      "layer": 0.6,
+      "selected": "liver",
+      "from": "front",
+      "durationMs": 11500
+    },
+    {
+      "text": {
+        "zh": "与此同时，最外面这一层的血管收紧，把血让给肌肉。脸色发白、手脚发凉，都是同一道命令的另一面。",
+        "en": "Meanwhile the vessels in the outermost layer clamp down, surrendering their share to muscle. A pale face and cold hands are the other side of the very same order."
+      },
+      "layer": 0.05,
+      "selected": "skin",
+      "from": "front",
+      "durationMs": 10500
+    },
+    {
+      "text": {
+        "zh": "所以\"吓出一身冷汗\"不是比喻。一次化学广播，同时改写了泵、气道、燃料和外壳四件事——而你只感觉到心跳。",
+        "en": "So the cold sweat of a scare is not a figure of speech. One chemical broadcast rewrites the pump, the airways, the fuel supply and the outer shell at once — and all you notice is your heartbeat."
+      },
+      "layer": 0.5,
+      "preset": "hero",
+      "durationMs": 12500
+    }
+  ]
+}

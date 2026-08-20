@@ -1,0 +1,130 @@
+{
+  "schema": 1,
+  "id": "pulse",
+  "title": {
+    "zh": "摸脉搏的那一小块地方",
+    "en": "The Small Patch Where You Take a Pulse"
+  },
+  "system": "vessels",
+  "structures": [
+    "subclavian_arteries",
+    "axillary_brachial_arteries",
+    "forearm_arteries",
+    "subclavian_veins",
+    "radius_right",
+    "ulna_right",
+    "brachioradialis",
+    "flexor_carpi_radialis",
+    "palmaris_longus"
+  ],
+  "steps": [
+    {
+      "text": {
+        "zh": "手腕内侧那一小块能摸到跳动，是因为这里恰好有一条动脉浮到了骨头和皮肤之间。它是怎么走到这儿的？",
+        "en": "You can feel a beat on the inner wrist because an artery happens to surface there, caught between bone and skin. How did it get to that spot?"
+      },
+      "layer": 0.7,
+      "preset": "front",
+      "durationMs": 12000
+    },
+    {
+      "text": {
+        "zh": "起点在锁骨底下，紧贴着第一根肋骨。它常年压在骨面上，把肋骨压出了一道浅槽。",
+        "en": "It starts under the collarbone, pressed hard against the first rib. Year after year of that pressure has worn a shallow groove into the bone."
+      },
+      "layer": 0.8,
+      "selected": "subclavian_arteries",
+      "from": "front",
+      "durationMs": 11000
+    },
+    {
+      "text": {
+        "zh": "穿过腋窝之后它换了名字，顺着上臂内侧往下走。量血压时袖带勒住的正是这一段——把它压扁再慢慢放开，就能听出压力。",
+        "en": "Past the armpit it changes name and runs down the inner side of the upper arm. This is the stretch a blood-pressure cuff squeezes: flatten it, release it slowly, and the pressure announces itself in sound."
+      },
+      "layer": 0.8,
+      "selected": "axillary_brachial_arteries",
+      "from": "front",
+      "durationMs": 11500
+    },
+    {
+      "text": {
+        "zh": "到肘窝一分为二，一条走拇指那侧，一条走小指那侧，两条并行下到手掌，再在掌心连成一个环。",
+        "en": "At the crook of the elbow it splits in two, one running down the thumb side and one down the little-finger side, both reaching the palm and joining there into a loop."
+      },
+      "layer": 0.8,
+      "selected": "forearm_arteries",
+      "from": "front",
+      "durationMs": 10000
+    },
+    {
+      "text": {
+        "zh": "前臂里有两根骨头并排走。拇指侧这根到手腕这一头变得又宽又扁，正好给血管垫出一个平台。",
+        "en": "Two bones run side by side through the forearm. The one on the thumb side broadens and flattens towards the wrist, which happens to give a vessel somewhere firm to lie on."
+      },
+      "layer": 0.5,
+      "selected": "radius_right",
+      "from": "front",
+      "durationMs": 10000
+    },
+    {
+      "text": {
+        "zh": "小指侧那根在手腕这一端反而细下去，让开了位置。翻手掌时，是拇指侧那根绕着它转，它自己基本不动。",
+        "en": "The one on the little-finger side does the opposite, tapering away at the wrist and leaving room. When you turn your palm over, the thumb-side bone pivots around this one, which barely moves at all."
+      },
+      "layer": 0.5,
+      "selected": "ulna_right",
+      "from": "front",
+      "durationMs": 10500
+    },
+    {
+      "text": {
+        "zh": "拇指侧那条最后浮上来的地方，恰好在这条粗肌肉的腱和骨头之间。是这块肌肉的边缘把它顶到了皮下。",
+        "en": "The thumb-side vessel surfaces exactly between the tendon of this thick muscle and the bone. It is the edge of this muscle that pushes the artery up under the skin."
+      },
+      "layer": 0.2,
+      "selected": "brachioradialis",
+      "from": "front",
+      "durationMs": 10500
+    },
+    {
+      "text": {
+        "zh": "它内侧还并着一条腱。你摸脉时手指按下去先碰到的那道硬棱，多半就是它，而不是血管。",
+        "en": "A tendon runs alongside it on the inner side. When you press for a pulse, the firm ridge your fingertip meets first is usually this, not the vessel."
+      },
+      "layer": 0.2,
+      "selected": "flexor_carpi_radialis",
+      "from": "front",
+      "durationMs": 9500
+    },
+    {
+      "text": {
+        "zh": "再往中间还有一条更细的，位置就在腕横纹正中。有意思的是，这一条不是人人都有。",
+        "en": "Further towards the middle lies a thinner one, sitting right at the centre of the wrist crease. The curious thing is that not everyone has it."
+      },
+      "layer": 0.2,
+      "selected": "palmaris_longus",
+      "from": "front",
+      "durationMs": 9500
+    },
+    {
+      "text": {
+        "zh": "手上用过的血从另一套管道回来，在锁骨下方汇进胸腔。全身的淋巴液也在这个夹角处并进血流——两套循环在这里合成一套。",
+        "en": "Blood that has done its work in the hand returns by a separate set of pipes and enters the chest below the collarbone. All the body’s lymph also joins the bloodstream at that same angle — two circulations becoming one."
+      },
+      "layer": 0.8,
+      "selected": "subclavian_veins",
+      "from": "front",
+      "durationMs": 12000
+    },
+    {
+      "text": {
+        "zh": "能摸到脉搏并不是巧合。那一小块地方，是骨头、肌腱和一条恰好没被埋深的动脉挤在一起的结果。",
+        "en": "Finding a pulse there is no accident. That small patch is what happens when bone, tendon and one artery that never got buried deep all crowd into the same place."
+      },
+      "layer": 0.75,
+      "preset": "hero",
+      "durationMs": 11500
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "schema": 1,
+  "id": "to_the_brain",
+  "title": {
+    "zh": "上到脑子的两条路",
+    "en": "Two Roads Up to the Brain"
+  },
+  "system": "vessels",
+  "structures": [
+    "subclavian_arteries",
+    "vertebral_arteries",
+    "internal_carotid_arteries",
+    "internal_jugular_veins",
+    "brachiocephalic_veins"
+  ],
+  "steps": [
+    {
+      "text": {
+        "zh": "大脑只占体重的百分之二，却要分走全身五分之一的血。断供十秒钟人就会失去意识——所以上去的路不止一条。",
+        "en": "The brain is two per cent of your body weight and takes a fifth of the blood. Cut the supply for ten seconds and you lose consciousness — which is why more than one road leads up there."
+      },
+      "layer": 0.7,
+      "preset": "front",
+      "durationMs": 12500
+    },
+    {
+      "text": {
+        "zh": "两条路的岔口在锁骨底下。同一根粗管子在这里分家：一支拐出去进手臂，另一支立刻掉头向上。",
+        "en": "The fork lies beneath the collarbone. One thick vessel splits here: a branch turns outwards into the arm, and another immediately doubles back upwards."
+      },
+      "layer": 0.8,
+      "selected": "subclavian_arteries",
+      "from": "front",
+      "durationMs": 11500
+    },
+    {
+      "text": {
+        "zh": "掉头向上的这条选了一条奇怪的路线：它钻进颈椎两侧的一串小孔，藏在骨头里往上爬。全身再没有第二条动脉这么走。",
+        "en": "The one that turns upwards takes a strange route: it dives into a row of holes in the sides of the neck vertebrae and climbs hidden inside bone. No other artery in the body travels like this."
+      },
+      "layer": 0.8,
+      "selected": "vertebral_arteries",
+      "from": "back",
+      "durationMs": 11500
+    },
+    {
+      "text": {
+        "zh": "另一条路走的是颈前，粗得多，也直得多。可它到颅底反而要连拐几个急弯——血流被这几道弯削掉一点冲劲，再进脑子。",
+        "en": "The other road runs up the front of the neck, much thicker and much straighter. Yet at the base of the skull it suddenly doubles through several tight bends — the flow loses some of its punch there before it enters the brain."
+      },
+      "layer": 0.8,
+      "selected": "internal_carotid_arteries",
+      "from": "front",
+      "durationMs": 11500
+    },
+    {
+      "text": {
+        "zh": "血用完得下来。回程紧贴着上行那条走，两根一动脉一静脉并排装在同一个鞘里，方向却相反。",
+        "en": "The blood has to come back down. The return runs right alongside the way up, artery and vein packed in one sheath side by side, travelling in opposite directions."
+      },
+      "layer": 0.8,
+      "selected": "internal_jugular_veins",
+      "from": "front",
+      "durationMs": 10000
+    },
+    {
+      "text": {
+        "zh": "到了锁骨下方，头颈回来的血和手臂回来的血并成一条，横穿到胸骨柄背后。左右两条粗细不同，走的距离也不一样长。",
+        "en": "Below the collarbone, blood returning from the head and from the arm merge into one and cross behind the top of the breastbone. The left and right versions differ in calibre, and in how far they have to travel."
+      },
+      "layer": 0.8,
+      "selected": "brachiocephalic_veins",
+      "from": "front",
+      "durationMs": 11500
+    },
+    {
+      "text": {
+        "zh": "四条动脉最后在颅底围成一个环：前面两条，后面两条。堵掉其中一条，剩下三条还能从环上绕过来补位。",
+        "en": "Four arteries end up meeting in a ring at the base of the skull: two in front, two behind. Block any one of them and the remaining three can come round the ring to cover for it."
+      },
+      "layer": 0.75,
+      "preset": "hero",
+      "durationMs": 12000
+    }
+  ]
+}

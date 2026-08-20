@@ -1,0 +1,113 @@
+{
+  "schema": 1,
+  "id": "prostate_zones",
+  "title": {
+    "zh": "一颗栗子大的腺体，分成三圈",
+    "en": "A Chestnut-Sized Gland in Three Rings"
+  },
+  "system": "organs",
+  "structures": [
+    "testes",
+    "seminal_vesicles",
+    "prostate",
+    "prostate_peripheral_zone",
+    "prostate_transition_zone",
+    "prostate_central_zone"
+  ],
+  "steps": [
+    {
+      "text": {
+        "zh": "男性生殖道有个特别之处：它和尿路共用最后一段管子。共用就得排队，也就得有个岔口负责切换。",
+        "en": "The male reproductive tract has an unusual feature: it shares its final stretch of pipe with the urinary tract. Sharing means taking turns, and taking turns needs a junction to do the switching."
+      },
+      "layer": 0.6,
+      "preset": "front",
+      "durationMs": 11500
+    },
+    {
+      "text": {
+        "zh": "起点在体腔外面。这不是设计失误——精子的生产线需要比体内低两三度才开得动，所以整条线被搬到了外面。",
+        "en": "The line begins outside the body cavity. That is not a design slip: the production line for sperm only runs a couple of degrees below core temperature, so the whole plant was moved outdoors."
+      },
+      "layer": 0.6,
+      "selected": "testes",
+      "from": "front",
+      "durationMs": 12500
+    },
+    {
+      "text": {
+        "zh": "膀胱后面这对盘曲的囊贡献了精液里绝大部分液体，还往里加糖——精子自己不带干粮，路上的能量全靠这一份。",
+        "en": "This pair of coiled pouches behind the bladder supplies most of the fluid, and stirs sugar into it: sperm carry no rations of their own, and every bit of energy for the journey comes from here."
+      },
+      "layer": 0.6,
+      "selected": "seminal_vesicles",
+      "from": "front",
+      "clip": {
+        "axis": "y",
+        "pos": 0.1712,
+        "flip": true
+      },
+      "durationMs": 12500
+    },
+    {
+      "text": {
+        "zh": "岔口就在这颗栗子大的腺体里。尿道从它正中穿过，射精管从后上方斜插进来，两条路在腺体内部交汇。",
+        "en": "The junction itself sits inside this chestnut-sized gland. The urethra passes straight through the middle of it while the ejaculatory ducts slant in from above and behind, and the two routes meet inside."
+      },
+      "layer": 0.6,
+      "selected": "prostate",
+      "from": "front",
+      "durationMs": 12000
+    },
+    {
+      "text": {
+        "zh": "它不是一块均质的肉，而是三圈叠着的。最外这一圈占了大半体积，背面正贴着直肠——所以医生的手指隔着一层肠壁就能摸到它。",
+        "en": "It is not one uniform lump but three nested rings. The outermost takes up most of the volume, and its back rests against the rectum — which is why a doctor’s finger can reach it through a single wall of bowel."
+      },
+      "layer": 0.6,
+      "selected": "prostate_peripheral_zone",
+      "expand": "prostate",
+      "from": "back",
+      "durationMs": 13500
+    },
+    {
+      "text": {
+        "zh": "切开看内圈。这一小圈紧紧箍着尿道，年轻时不起眼；随着年纪增长它会慢慢变大，而它变大的方向，正好是往管子里挤。",
+        "en": "Cut in to see the inner ring. This small collar clasps the urethra and is barely noticeable in youth; with age it slowly swells, and the direction it swells is straight in on the pipe."
+      },
+      "layer": 0.6,
+      "selected": "prostate_transition_zone",
+      "expand": "prostate",
+      "from": "front",
+      "clip": {
+        "axis": "y",
+        "pos": 0.1232
+      },
+      "durationMs": 13000
+    },
+    {
+      "text": {
+        "zh": "第三圈夹在两者之间，楔形，包着从后上方插进来的那对管子。三圈里它最安分，很少惹事。",
+        "en": "The third ring wedges in between the other two, wrapped around the pair of ducts that enter from above and behind. Of the three it is the quiet one, and rarely causes trouble."
+      },
+      "layer": 0.6,
+      "selected": "prostate_central_zone",
+      "expand": "prostate",
+      "from": "front",
+      "clip": {
+        "axis": "y",
+        "pos": 0.1711
+      },
+      "durationMs": 11500
+    },
+    {
+      "text": {
+        "zh": "同一颗腺体里，三圈组织的命运却完全不同：一圈负责挤压尿道，一圈负责贴着肠壁被摸到，还有一圈几乎从不上新闻。",
+        "en": "Inside one small gland, three rings meet very different fates: one ends up squeezing the urethra, one ends up pressed against the bowel where it can be felt, and one almost never makes the news."
+      },
+      "layer": 0.6,
+      "preset": "hero",
+      "durationMs": 13000
+    }
+  ]
+}

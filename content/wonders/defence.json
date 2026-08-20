@@ -1,0 +1,80 @@
+{
+  "schema": 1,
+  "id": "defence",
+  "title": {
+    "zh": "身体里的几处哨所",
+    "en": "A Few Outposts Inside You"
+  },
+  "system": "organs",
+  "structures": [
+    "palatine_tonsils",
+    "thymus",
+    "spleen",
+    "appendix"
+  ],
+  "steps": [
+    {
+      "text": {
+        "zh": "免疫不是一支到处巡逻的部队，它更像一串设在要道上的哨所——建在哪里，取决于外面的东西最可能从哪里进来。",
+        "en": "Immunity is not a patrol roaming everywhere. It is more like a chain of outposts on the busy roads, and where each one sits depends on where the outside world is most likely to get in."
+      },
+      "layer": 0.06,
+      "preset": "front",
+      "durationMs": 12500
+    },
+    {
+      "text": {
+        "zh": "第一处就在嘴的尽头。空气和食物在这里合流，再分头去气管和食管——两条路的交叉口上，蹲着左右各一团。",
+        "en": "The first sits at the far end of the mouth. Air and food come together here before parting for the windpipe and the gullet, and at that crossroads squats one lump on either side."
+      },
+      "layer": 0.6,
+      "selected": "palatine_tonsils",
+      "from": "front",
+      "durationMs": 12500
+    },
+    {
+      "text": {
+        "zh": "胸骨背后这一块的活儿完全不同：它不拦人，它培训人。免疫细胞在这里学会认得出\"自己\"，认不出的就地淘汰。",
+        "en": "The one behind the breastbone does something else entirely: it does not stop intruders, it trains recruits. Immune cells learn here to recognise \"self\", and those that fail are weeded out on the spot."
+      },
+      "layer": 0.6,
+      "selected": "thymus",
+      "from": "front",
+      "durationMs": 11000
+    },
+    {
+      "text": {
+        "zh": "左上腹这个器官守的不是通道，是血液本身。全身的血一遍遍流经它，被慢慢过一道筛。",
+        "en": "The organ high on the left guards no passage; it guards the blood itself. All of it flows through, over and over, and is quietly sieved on the way."
+      },
+      "layer": 0.6,
+      "selected": "spleen",
+      "from": "left",
+      "durationMs": 9500
+    },
+    {
+      "text": {
+        "zh": "右下腹这条细管子长期被当成没用的残迹。它确实是一团淋巴组织，只是位置尴尬——一头堵死，发起炎来又急又凶。",
+        "en": "The narrow tube low on the right was long written off as a leftover. It really is a knot of lymphoid tissue; its problem is the address — closed at one end, and quick to turn nasty when it flares."
+      },
+      "layer": 0.6,
+      "selected": "appendix",
+      "from": "front",
+      "clip": {
+        "axis": "y",
+        "pos": -0.0343,
+        "flip": true
+      },
+      "durationMs": 13000
+    },
+    {
+      "text": {
+        "zh": "把这几处连起来看就有意思了：口、胸、血、肠，各守一个入口。哪里最容易被闯进来，哪里就设了岗。",
+        "en": "Line them up and a pattern appears: mouth, chest, bloodstream, bowel — one guard for each way in. Wherever the breach is easiest, that is where a post was built."
+      },
+      "layer": 0.55,
+      "preset": "hero",
+      "durationMs": 12000
+    }
+  ]
+}

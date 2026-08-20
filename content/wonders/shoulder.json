@@ -1,0 +1,151 @@
+{
+  "schema": 1,
+  "id": "shoulder",
+  "title": {
+    "zh": "肩膀：一个没有锁死的关节",
+    "en": "The Shoulder: A Joint Nothing Locks"
+  },
+  "system": "skeleton",
+  "structures": [
+    "clavicle_right",
+    "clavicle_left",
+    "scapula_right",
+    "humerus_right",
+    "trapezius",
+    "levator_scapulae",
+    "infraspinatus",
+    "teres_major",
+    "serratus_anterior",
+    "pectoralis_minor",
+    "pectoralis_major"
+  ],
+  "steps": [
+    {
+      "text": {
+        "zh": "把手臂举过头顶，再绕一个整圈——全身找不出第二个能这么干的关节。代价是它几乎没被骨头锁住。",
+        "en": "Raise an arm overhead and sweep it through a full circle — no other joint in the body will do that. The price is that almost nothing bony holds it shut."
+      },
+      "layer": 0.08,
+      "preset": "hero",
+      "durationMs": 12000
+    },
+    {
+      "text": {
+        "zh": "整条手臂与躯干之间，真正的骨头接触只有一处：这根横杆的内侧端顶在胸骨上，接触面还没有一枚硬币大。",
+        "en": "Between the whole arm and the trunk there is exactly one bony contact: the inner tip of this strut butting against the breastbone, over an area smaller than a coin."
+      },
+      "layer": 0.5,
+      "selected": "clavicle_right",
+      "from": "front",
+      "durationMs": 12000
+    },
+    {
+      "text": {
+        "zh": "背面这块三角板没有榫头卡住，它就浮在肋骨背上，被一圈肌肉牵着。抬手时它自己也在跟着转。",
+        "en": "The triangular plate at the back is pegged to nothing. It floats on the rib cage, towed by a ring of muscle, and swings round on its own as the arm goes up."
+      },
+      "layer": 0.5,
+      "selected": "scapula_right",
+      "from": "back",
+      "durationMs": 10000
+    },
+    {
+      "text": {
+        "zh": "上臂骨的顶端是一颗大圆球，而接住它的窝浅得像一只茶碟——转得开，也就掉得出来。",
+        "en": "The top of the upper-arm bone is a large ball, and the socket that receives it is as shallow as a saucer: free to swivel, and just as free to slip out."
+      },
+      "layer": 0.5,
+      "selected": "humerus_right",
+      "from": "front",
+      "durationMs": 9500
+    },
+    {
+      "text": {
+        "zh": "吊住它的第一条肌肉从后脑一路铺到胸椎，再收进肩胛骨。耸肩和把肩往后收，用的是同一片肌肉的不同段。",
+        "en": "The first of the ropes runs from the back of the skull down to the thoracic spine before gathering into the shoulder blade. Shrugging and squaring your shoulders use different bands of the same sheet."
+      },
+      "layer": 0.22,
+      "selected": "trapezius",
+      "from": "back",
+      "durationMs": 10500
+    },
+    {
+      "text": {
+        "zh": "这一条短得多，从颈椎斜插下来，钩住肩胛骨的上角。低头看手机看久了，最先喊疼的往往是它。",
+        "en": "This one is far shorter, dropping at a slant from the neck vertebrae to hook the top corner of the blade. Stare down at a phone long enough and it is usually the first to complain."
+      },
+      "layer": 0.22,
+      "selected": "levator_scapulae",
+      "from": "back",
+      "clip": {
+        "axis": "y",
+        "pos": 0.3424
+      },
+      "durationMs": 11500
+    },
+    {
+      "text": {
+        "zh": "贴在肩胛骨背面的这一片不是用来发力的。它的活是在球脱手之后把胳膊拽住，不然关节会被自己的动作甩开。",
+        "en": "The sheet spread over the back of the blade is not there to throw. Its job is to catch the arm after the ball has left the hand, before the joint is flung apart by its own momentum."
+      },
+      "layer": 0.22,
+      "selected": "infraspinatus",
+      "from": "back",
+      "durationMs": 12500
+    },
+    {
+      "text": {
+        "zh": "再往下这一条落脚的位置很妙——它绕到上臂骨的前方才止住。于是把胳膊收回身侧的同时，顺手给了它一个内旋。",
+        "en": "The next one down finishes somewhere unexpected: it wraps round to the front of the upper-arm bone before anchoring. So bringing the arm back to your side comes with a twist inwards thrown in."
+      },
+      "layer": 0.22,
+      "selected": "teres_major",
+      "from": "back",
+      "durationMs": 11000
+    },
+    {
+      "text": {
+        "zh": "侧面这一排手指状的肌束从肋骨伸出来，绕到肩胛骨底下。出拳的一瞬间，把整块板子往前送的就是它们。",
+        "en": "On the flank, this row of finger-like bands reaches out from the ribs and slides underneath the blade. At the instant you throw a punch, they are what shoves the whole plate forwards."
+      },
+      "layer": 0.22,
+      "selected": "serratus_anterior",
+      "from": "left",
+      "durationMs": 10500
+    },
+    {
+      "text": {
+        "zh": "胸前深处还压着一条短肌，把肩胛骨往前下方按。举高手臂会发麻的人，问题常常出在它底下那道窄缝里。",
+        "en": "Deeper in the chest lies a short muscle that presses the blade down and forwards. For people whose hand tingles when they raise it, the trouble often sits in the narrow gap beneath it."
+      },
+      "layer": 0.22,
+      "selected": "pectoralis_minor",
+      "from": "front",
+      "clip": {
+        "axis": "y",
+        "pos": -0.4108,
+        "flip": true
+      },
+      "durationMs": 12000
+    },
+    {
+      "text": {
+        "zh": "最外面这把扇形大肌把胳膊拉向胸前。它盖住了刚才那几条，所以从外面看，肩膀只是一条圆滑的轮廓。",
+        "en": "The outermost fan of muscle hauls the arm across the chest. It covers everything we have just looked at, which is why from outside a shoulder reads as one smooth curve."
+      },
+      "layer": 0.2,
+      "selected": "pectoralis_major",
+      "from": "front",
+      "durationMs": 12000
+    },
+    {
+      "text": {
+        "zh": "肩膀不是被卡住的，是被拉住的。那么大的活动范围，换来的是一副全靠软组织维持的平衡。",
+        "en": "The shoulder is not locked in place, it is held in place. All that range of motion is bought with a balance kept entirely by soft tissue."
+      },
+      "layer": 0.22,
+      "preset": "hero",
+      "durationMs": 11500
+    }
+  ]
+}

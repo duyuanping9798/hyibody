@@ -1,0 +1,97 @@
+{
+  "schema": 1,
+  "id": "gut_blood",
+  "title": {
+    "zh": "吃饱之后，血往哪走",
+    "en": "Where the Blood Goes After a Meal"
+  },
+  "system": "vessels",
+  "structures": [
+    "celiac_branches",
+    "mesenteric_arteries",
+    "spleen",
+    "portal_tributaries",
+    "renal_veins",
+    "azygos_vein"
+  ],
+  "steps": [
+    {
+      "text": {
+        "zh": "一顿饭下肚，腹腔里的血流会明显增多。多出来的这部分不是白给的——它要负责把刚吸收的东西运走。",
+        "en": "After a meal, blood flow through the abdomen rises sharply. That extra share is not a gift: its job is to carry away everything that has just been absorbed."
+      },
+      "layer": 0.66,
+      "preset": "front",
+      "durationMs": 12000
+    },
+    {
+      "text": {
+        "zh": "第一批岔口开在胃的上方。往右去的一支管肝和胆，往左去的那支沿着胰腺上缘蜿蜒着走向脾——腹腔里最弯的一条动脉就是它。",
+        "en": "The first junctions open above the stomach. The branch heading right serves liver and gallbladder; the one heading left snakes along the top edge of the pancreas towards the spleen — the most tortuous artery in the abdomen."
+      },
+      "layer": 0.8,
+      "selected": "celiac_branches",
+      "from": "front",
+      "durationMs": 13500
+    },
+    {
+      "text": {
+        "zh": "再往下两个岔口铺开一整张扇面，钻进吊着肠子的那层膜里。吃进去的东西走到哪一段，血就在哪一段最忙。",
+        "en": "Two junctions further down spread into a whole fan, threading into the membrane that slings the intestines. Wherever the meal has reached, that is the stretch where the blood is busiest."
+      },
+      "layer": 0.8,
+      "selected": "mesenteric_arteries",
+      "from": "front",
+      "durationMs": 10500
+    },
+    {
+      "text": {
+        "zh": "左上腹这个器官接的是同一批血，但它做的事完全不同：它在血里挑拣，把该退役的红细胞拦下来。",
+        "en": "This organ high on the left takes blood from the same supply, but does something else entirely with it: it sorts, holding back the red cells that have served their time."
+      },
+      "layer": 0.66,
+      "selected": "spleen",
+      "from": "left",
+      "durationMs": 10000
+    },
+    {
+      "text": {
+        "zh": "关键在回程。腹腔里这几条静脉不直接回心脏，它们先并成一股，把血整批送进肝——先过一道检查，才准进入全身。",
+        "en": "The twist is in the return. These abdominal veins do not head straight for the heart; they merge into a single trunk and deliver the whole load to the liver first — inspection before release."
+      },
+      "layer": 0.8,
+      "selected": "portal_tributaries",
+      "from": "front",
+      "durationMs": 11500
+    },
+    {
+      "text": {
+        "zh": "旁边这一对就不用绕。肾出来的血直接汇进下腔静脉往上走——同在腹腔，待遇完全不一样。",
+        "en": "The pair beside them skip that detour. Blood leaving the kidneys goes straight into the great vein and heads upwards — same abdomen, completely different treatment."
+      },
+      "layer": 0.8,
+      "selected": "renal_veins",
+      "from": "front",
+      "durationMs": 10000
+    },
+    {
+      "text": {
+        "zh": "脊柱右侧还藏着一条备用线，它把上下两条大静脉暗中接在一起。主路被压住时，血就从这里绕过去。",
+        "en": "A spare line hides along the right of the spine, quietly joining the upper and lower great veins. When the main road is squeezed shut, blood detours through here."
+      },
+      "layer": 0.8,
+      "selected": "azygos_vein",
+      "from": "right",
+      "durationMs": 10500
+    },
+    {
+      "text": {
+        "zh": "所以消化道的血液自成一套回路：动脉照常送来，静脉却先交给肝。全身只有这一段，血在回家路上被拦了一次。",
+        "en": "So the gut runs a circuit of its own: arteries deliver as usual, but the veins report to the liver first. Nowhere else in the body is blood stopped and checked on its way home."
+      },
+      "layer": 0.7,
+      "preset": "hero",
+      "durationMs": 12500
+    }
+  ]
+}

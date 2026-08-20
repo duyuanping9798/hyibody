@@ -1,0 +1,106 @@
+{
+  "schema": 1,
+  "id": "head",
+  "title": {
+    "zh": "头骨上唯一能动的那一块",
+    "en": "The One Piece of the Skull That Moves"
+  },
+  "system": "skeleton",
+  "structures": [
+    "skull",
+    "mandible",
+    "hyoid",
+    "sternocleidomastoid",
+    "splenius_capitis",
+    "platysma"
+  ],
+  "steps": [
+    {
+      "text": {
+        "zh": "脑袋是个矛盾的东西：里面装着最不能受伤的器官，外面却要留出眼、耳、鼻、口四套开口。",
+        "en": "The head is a contradiction: it houses the one organ that can least afford damage, yet its surface has to leave openings for eyes, ears, nose and mouth."
+      },
+      "layer": 0.06,
+      "preset": "front",
+      "durationMs": 11500
+    },
+    {
+      "text": {
+        "zh": "解决办法是把二十多块骨头拼成一个壳，接缝处做成犬牙交错的齿。受力时裂纹沿着缝走，不容易一路劈穿骨板。",
+        "en": "The answer is to assemble a shell from more than twenty pieces and make the seams interlock like teeth. Under impact a crack tends to travel along the seam rather than split straight across a plate."
+      },
+      "layer": 0.5,
+      "selected": "skull",
+      "from": "left",
+      "durationMs": 12500
+    },
+    {
+      "text": {
+        "zh": "整个壳里只有这一块是活的。它挂在耳朵正前方的一对关节上，既能上下咬合，又能前后左右磨——这两种动作用的是同一个关节。",
+        "en": "Of the whole shell only this piece is alive. It hangs from a pair of joints just in front of the ears and can both bite up and down and grind back and forth — the same joint delivers both movements."
+      },
+      "layer": 0.5,
+      "selected": "mandible",
+      "from": "left",
+      "durationMs": 12000
+    },
+    {
+      "text": {
+        "zh": "再往下，喉咙前面还浮着一块 U 形小骨。它不和任何骨头接榫，四面八方全靠肌肉和韧带拉着，就那么悬在颈前。",
+        "en": "Lower down, a small U-shaped bone floats in front of the throat. It joins no other bone at all; muscles and ligaments tug at it from every direction and simply hold it suspended there."
+      },
+      "layer": 0.5,
+      "selected": "hyoid",
+      "from": "front",
+      "clip": {
+        "axis": "y",
+        "pos": -0.1712,
+        "flip": true
+      },
+      "durationMs": 12500
+    },
+    {
+      "text": {
+        "zh": "颈侧这条粗绳把头和胸廓连起来。它是颈前最容易看见的一条——把下巴转到一边，绷起来的那道棱就是。",
+        "en": "This thick cord on the side of the neck ties the head to the chest. It is the easiest one to see from the front: turn your chin to one side and the ridge that springs up is this."
+      },
+      "layer": 0.2,
+      "selected": "sternocleidomastoid",
+      "from": "front",
+      "durationMs": 12000
+    },
+    {
+      "text": {
+        "zh": "后颈深处还有一条反方向的。前面那条把头往下拉，这条把头往后拽，两边势均力敌，脑袋才停在正中。",
+        "en": "Deep at the back of the neck runs another pulling the opposite way. The one in front draws the head down, this one hauls it back, and only because the two are evenly matched does the head sit level."
+      },
+      "layer": 0.2,
+      "selected": "splenius_capitis",
+      "from": "back",
+      "clip": {
+        "axis": "y",
+        "pos": 0.4109
+      },
+      "durationMs": 12000
+    },
+    {
+      "text": {
+        "zh": "最外面还蒙着一层薄得像纸的肌肉，直接长在皮肤下面。它不管骨头，只管把颈前的皮拉紧。",
+        "en": "Over everything lies a sheet of muscle as thin as paper, growing straight into the underside of the skin. It moves no bone at all; its only job is to tighten the skin at the front of the neck."
+      },
+      "layer": 0.2,
+      "selected": "platysma",
+      "from": "front",
+      "durationMs": 11500
+    },
+    {
+      "text": {
+        "zh": "一颗脑袋就是这么撑住的：一个焊死的壳、一块吊着的下颌、一块谁也不挨的小骨，外加前后两组互相较劲的绳。",
+        "en": "This is how a head is held up: one welded shell, one slung jaw, one small bone touching nothing, and two sets of ropes front and back pulling against each other."
+      },
+      "layer": 0.45,
+      "preset": "hero",
+      "durationMs": 12500
+    }
+  ]
+}
