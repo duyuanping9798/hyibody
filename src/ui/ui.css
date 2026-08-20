@@ -378,7 +378,12 @@
   min-width: 190px;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  /* 25 则奥秘 × 40 px 加六个分组标题已经有一千多像素，原来这里只有
+     overflow: hidden，列表直接从屏幕底下伸出去，后面几个系统点不到。 */
+  max-height: min(70vh, calc(100dvh - 120px));
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   z-index: 15;
 }
 .hyi-wonder-list button {
