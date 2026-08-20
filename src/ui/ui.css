@@ -131,7 +131,8 @@
   position: absolute;
   top: 116px;
   left: 12px;
-  width: 216px;
+  /* 216 → 240：剖切那一格是四个轴向按钮并排，216 px 下「关闭」「前后」会折成两行 */
+  width: 240px;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -1296,15 +1297,17 @@ body.hyi-kiosk .hyi-info .blurb {
     max-height: none;
     overflow: visible;
   }
+  /* 展开态的上限：72vh 只在高屏上够用。矮屏（402×640）实测卡片能长到 421 px，
+     三维只剩 39 px——所以再加一条绝对下限，无论屏幕多矮都给人体留出 250 px。 */
   .hyi-info.expanded {
-    max-height: 72vh;
+    max-height: min(72vh, calc(100vh - 250px));
   }
 }
 
 @supports (height: 100dvh) {
   @media (max-width: 720px) {
     .hyi-info.expanded {
-      max-height: 72dvh;
+      max-height: min(72dvh, calc(100dvh - 250px));
     }
   }
 }
