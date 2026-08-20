@@ -37,7 +37,7 @@
     - FMA9710
     - FMA54736
   source: bp3d
-  target_faces: 122000
+  target_faces: 159500
   priority: 1
 - slug: mandible
   zh: 下颌骨
@@ -92,7 +92,7 @@
   fma:
     - FMA9921
   source: bp3d
-  target_faces: 17000
+  target_faces: 17500
   priority: 1
 - slug: sacrum
   zh: 骶骨
@@ -149,7 +149,7 @@
     - FMA7487
     - FMA7488
   source: bp3d
-  target_faces: 8500
+  target_faces: 9500
   priority: 1
 - slug: clavicle_right
   zh: 右锁骨
@@ -282,7 +282,7 @@
     - FMA9612
     - FMA23914
   source: bp3d
-  target_faces: 14500
+  target_faces: 16000
   priority: 2
 - slug: hip_bone_right
   zh: 右髋骨
@@ -403,7 +403,7 @@
   fma:
     - FMA24491
   source: bp3d
-  target_faces: 13000
+  target_faces: 13500
   priority: 2
 - slug: foot_bones
   zh: 足骨（跖骨与趾骨）
@@ -415,7 +415,7 @@
     - FMA24492
     - FMA24493
   source: bp3d
-  target_faces: 18000
+  target_faces: 19500
   priority: 2
 - slug: heart
   zh: 心脏
@@ -447,7 +447,7 @@
   fma:
     - FMA7309
   source: bp3d_partof
-  target_faces: 73500
+  target_faces: 79500
   priority: 1
 - slug: lung_left
   zh: 左肺
@@ -458,7 +458,7 @@
   fma:
     - FMA7310
   source: bp3d_partof
-  target_faces: 41500
+  target_faces: 46000
   priority: 1
 - slug: esophagus
   zh: 食管
@@ -748,7 +748,7 @@
     - FMA22730
     - FMA22796
   source: bp3d
-  target_faces: 29500
+  target_faces: 33000
   priority: 3
 - slug: celiac_trunk
   zh: 腹腔干
@@ -829,7 +829,7 @@
   fma:
     - FMA14334
   source: bp3d
-  target_faces: 10000
+  target_faces: 10500
   priority: 2
 - slug: iliac_arteries
   zh: 髂动脉
@@ -920,7 +920,7 @@
   fma:
     - FMA50801
   source: bp3d_partof
-  target_faces: 322500
+  target_faces: 385500
   priority: 1
 - slug: optic_nerves
   zh: 视神经
@@ -953,7 +953,7 @@
   fma:
     - FMA45738
   source: bp3d
-  target_faces: 27500
+  target_faces: 28500
   priority: 3
 - slug: trapezius
   zh: 斜方肌
@@ -966,7 +966,7 @@
     - FMA32556
     - FMA32557
   source: bp3d
-  target_faces: 44500
+  target_faces: 48000
   priority: 1
 - slug: deltoid
   zh: 三角肌
@@ -979,7 +979,7 @@
     - FMA34678
     - FMA34679
   source: bp3d
-  target_faces: 11000
+  target_faces: 12000
   priority: 1
 - slug: pectoralis_major
   zh: 胸大肌
@@ -992,7 +992,7 @@
     - FMA34696
     - FMA34699
   source: bp3d
-  target_faces: 21000
+  target_faces: 24500
   priority: 1
 - slug: pectoralis_minor
   zh: 胸小肌
@@ -1026,7 +1026,7 @@
     - FMA9756
     - FMA9757
   source: bp3d
-  target_faces: 378000
+  target_faces: 408500
   priority: 2
 - slug: diaphragm
   zh: 膈肌
@@ -1065,7 +1065,7 @@
     - FMA22714
     - FMA22765
   source: bp3d
-  target_faces: 110000
+  target_faces: 113000
   priority: 2
 - slug: levator_scapulae
   zh: 肩胛提肌
@@ -1132,7 +1132,7 @@
     - FMA37682
     - FMA37683
   source: bp3d
-  target_faces: 7000
+  target_faces: 9000
   priority: 1
 - slug: triceps_brachii
   zh: 肱三头肌
@@ -1145,7 +1145,7 @@
     - FMA37693
     - FMA37694
   source: bp3d
-  target_faces: 10500
+  target_faces: 12000
   priority: 1
 - slug: brachialis
   zh: 肱肌
@@ -1200,7 +1200,7 @@
   fma:
     - FMA38469
   source: bp3d
-  target_faces: 19500
+  target_faces: 20000
   priority: 3
 - slug: extensor_digitorum
   zh: 指伸肌
@@ -1301,7 +1301,7 @@
     - FMA22432
     - FMA22433
   source: bp3d
-  target_faces: 31000
+  target_faces: 37000
   priority: 2
 - slug: adductor_muscles
   zh: 内收肌群
@@ -1328,7 +1328,7 @@
     - FMA45887
     - FMA45890
   source: bp3d
-  target_faces: 28500
+  target_faces: 30500
   priority: 1
 - slug: gastrocnemius
   zh: 腓肠肌
@@ -1340,7 +1340,7 @@
     - FMA45956
     - FMA45959
   source: bp3d
-  target_faces: 14000
+  target_faces: 14500
   priority: 1
 - slug: soleus
   zh: 比目鱼肌
@@ -2801,7 +2801,7 @@
   fma:
     - FMA62000
   source: bp3d_partof
-  target_faces: 210500
+  target_faces: 233500
   priority: 2
 - slug: cerebellum
   zh: 小脑
@@ -2827,7 +2827,7 @@
     - FMA67943
     - FMA62004
   source: bp3d_partof
-  target_faces: 47000
+  target_faces: 63500
   priority: 2
 - slug: thalamus
   zh: 丘脑
@@ -2851,7 +2851,7 @@
   fma:
     - FMA62008
   source: bp3d_partof
-  target_faces: 6000
+  target_faces: 6500
   priority: 3
 - slug: corpus_callosum
   zh: 胼胝体
@@ -3024,7 +3024,7 @@
   fma:
     - FMA46620
   source: bp3d
-  target_faces: 48500
+  target_faces: 51500
   priority: 3
 - slug: serratus_posterior
   zh: 后锯肌
@@ -3035,7 +3035,7 @@
   fma:
     - FMA13400
   source: bp3d
-  target_faces: 44500
+  target_faces: 46000
   priority: 3
 # ---- 2026-08-20 第二批扩充：颅骨拆块、脑叶、脑深部核团、视神经与被膜 ----
 # 颅骨与大脑都从「一整块」变成可展开的父结构；脑因此有了三层（脑 → 大脑 → 额叶），
@@ -3062,7 +3062,7 @@
   fma:
     - FMA9613
   source: bp3d
-  target_faces: 26500
+  target_faces: 36500
   priority: 3
 - slug: temporal_bones
   zh: 颞骨
@@ -3122,7 +3122,7 @@
   fma:
     - FMA9711
   source: bp3d
-  target_faces: 11000
+  target_faces: 11500
   priority: 3
 - slug: zygomatic_bones
   zh: 颧骨
@@ -3146,7 +3146,7 @@
   fma:
     - FMA52745
   source: bp3d
-  target_faces: 1000
+  target_faces: 1500
   priority: 3
 - slug: lacrimal_bones
   zh: 泪骨
@@ -3207,7 +3207,7 @@
     - FMA72969
     - FMA72970
   source: bp3d_partof
-  target_faces: 34500
+  target_faces: 38500
   priority: 3
 - slug: parietal_lobe
   zh: 顶叶
@@ -3220,7 +3220,7 @@
     - FMA72973
     - FMA72974
   source: bp3d_partof
-  target_faces: 30500
+  target_faces: 32500
   priority: 3
 - slug: temporal_lobe
   zh: 颞叶
@@ -3233,7 +3233,7 @@
     - FMA72971
     - FMA72972
   source: bp3d_partof
-  target_faces: 16000
+  target_faces: 18000
   priority: 3
 - slug: occipital_lobe
   zh: 枕叶

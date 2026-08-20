@@ -64,13 +64,16 @@ FACES_MAX_LARGE = 30000
 # 云端量不到。这一档就是为了让那次真机复核有意义。
 #
 # 上限统一放到"原生装得下"的量级；per-slug 表留着，是因为个别结构原生就超过它。
+# 括号里是**合并之后**该系统最大结构的面数，不是各元素网格面数之和——
+# union 会在接缝处新增三角形，合出来比那个和大。第一轮按"和"定上限，
+# 结果 30 个结构又被减了回去（颅骨 −24%、脑 −16%），见 DECISIONS.md。
 FACES_MAX_BY_SYSTEM = {
-    "skin": 210_000,
-    "muscles": 400_000,
-    "skeleton": 200_000,
-    "organs": 120_000,
-    "vessels": 90_000,
-    "nerves": 350_000,
+    "skin": 210_000,  # skin 203,382（单件，无合并）
+    "muscles": 410_000,  # intercostal_muscles 肋间肌 408,370
+    "skeleton": 200_000,  # ribs 肋骨 170,762
+    "organs": 120_000,  # 走 HRA，与 BP3D 无关，留额度给将来的 HRA 升级
+    "vessels": 90_000,  # forearm_arteries 前臂动脉 32,534
+    "nerves": 390_000,  # brain 脑 385,238
 }
 
 FACES_MAX_BY_SLUG: dict[str, int] = {}
