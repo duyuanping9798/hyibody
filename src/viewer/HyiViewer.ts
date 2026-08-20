@@ -10,13 +10,12 @@ import {
   PMREMGenerator,
   Raycaster,
   Scene,
-  ShaderMaterial,
   Vector2,
   Vector3,
   WebGLRenderer,
   type Material,
-  type Object3D,
   type Plane,
+  type Side,
 } from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
@@ -24,6 +23,7 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { loadManifest } from '../data/manifest';
 import type { Manifest, SystemId } from '../data/types';
 import { ANIMATED_STRUCTURES, pulseTransform, type PulseBase } from './animation';
+import { BufferGeometry, MeshBasicMaterial } from 'three';
 import {
   createCameraRig,
   poseForBox,
@@ -44,15 +44,11 @@ import {
 } from './cinematic';
 import { CAP_MIN_OPACITY, ClipCaps } from './clipCaps';
 import { clipPlaneFor, clipPosForCoordinate, type ClipAxis } from './clipping';
-import { applyHighlight } from './highlight';
+import { HIGHLIGHT_COLOR, HIGHLIGHT_TINT, type HighlightLevel } from './highlight';
+import { SystemBatch, type BatchInput } from './batching';
 import { computeSystemOpacity, PICKABLE_OPACITY_THRESHOLD } from './layers';
 import { probeBody, type Bbox, type ProbeResult, type ProbeTarget } from './regions';
-import {
-  colorForStructure,
-  createSystemMaterial,
-  createSkinMaterial,
-  setMaterialOpacity,
-} from './materials';
+import { colorForStructure, createSystemMaterial, createSkinMaterial } from './materials';
 import { createRenderPipeline, type RenderPipeline } from './postprocess';
 import {
   canToggleHighQuality,
@@ -105,8 +101,22 @@ const RENDER_ORDER: Record<SystemId, number> = {
 interface StructureEntry {
   slug: string;
   system: SystemId;
+  /**
+   * 代理网格：几何体与变换还在、也还在场景里，但材质 `visible: false`，**不参与绘制**。
+   *
+   * 留着它是为了三件事一行都不用改——标签落点的射线求交（anchor.ts）、
+   * 剖切封盖的模板网格（挂成它的子节点）、拾取。three 的 `projectObject` 按
+   * **对象自己的材质**决定入不入渲染列表，所以连 AO 那种 override 通道也绕不过
+   * `material.visible = false`；而子节点的渲染不受父节点材质影响。
+   */
   mesh: Mesh;
+  /** 代理的隐形材质，只用来挡住绘制；真正的外观走 batch */
   material: Material;
+  /** 这个结构在哪个系统批里 */
+  batch: SystemBatch;
+  /** 当前生效的不透明度。以前靠读 material.opacity，合批之后材质是共享的，得自己记 */
+  opacity: number;
+  highlight: HighlightLevel;
   /** 结构本色，剖切封盖的断面用同一个颜色 */
   color: number;
   /** 内部件指向父结构（心室壁 → 心脏）；顶层结构为 null */
@@ -223,6 +233,20 @@ export class HyiViewer extends EventTarget {
   private driftSuspended = false;
   /** 本步已经做了多久微动作。到 MAX_DRIFT_S 就停，免得一路推到贴脸。 */
   private driftElapsed = 0;
+  /** 每系统一个合批。逐结构的外观全部经由它写进每实例纹理。 */
+  private readonly batches = new Map<SystemId, SystemBatch>();
+  /**
+   * 描边专用代理：`OutlinePass` 要求被描的对象在场景里、且能进渲染列表，
+   * 而结构代理的材质是 `visible: false`（不进列表）。给每个结构都放开就是
+   * 235 次白画——所以只留**一份**，选中谁就把谁的几何体与变换换上来。
+   * 材质 `colorWrite: false`：它自己什么都不画，只为 OutlinePass 提供一份可描的形。
+   */
+  private readonly outlineProxy = new Mesh(
+    new BufferGeometry(),
+    new MeshBasicMaterial({ colorWrite: false, depthWrite: false }),
+  );
+  private readonly statsEnabled =
+    typeof location !== 'undefined' && new URLSearchParams(location.search).get('stats') === '1';
   /**
    * 每帧画完之后同步调一次，参数是 WebGL 画布本身。录像用。
    *
@@ -266,6 +290,10 @@ export class HyiViewer extends EventTarget {
 
     this.rig = createCameraRig(this.renderer.domElement, 1);
     this.scene.add(this.root);
+    // 描边代理常驻场景（默认不可见）：OutlinePass 要求被描对象在场景图里
+    this.outlineProxy.visible = false;
+    this.outlineProxy.frustumCulled = false;
+    this.root.add(this.outlineProxy);
     // 舞台：渐变背景球 + 三点光 + 接触阴影
     this.stage = createStage();
     this.scene.add(this.stage.root);
@@ -355,22 +383,61 @@ export class HyiViewer extends EventTarget {
     gltf.scene.traverse((obj) => {
       if (obj instanceof Mesh) meshes.push(obj);
     });
+
+    // 一个系统一份材质，不再一个结构一份。逐结构的**颜色**改由每实例颜色带，
+    // 所以基色给白：着色器里 diffuseColor.rgb = 白 × 实例色。
+    // vertexColors 必须开——否则 three 不定义 USE_COLOR_ALPHA，片元里拿不到 alpha，
+    // 分层滑块的逐结构不透明度就没了（见 batching.ts 的长注释）。
+    const shared =
+      sys === 'skin' ? createSkinMaterial(0xffffff) : createSystemMaterial(sys, 0xffffff);
+    shared.vertexColors = true;
+    // 合批之后没法逐结构切换 transparent：整批共用一份材质状态。
+    // 保留混合、同时**写深度**——完全不透明的实例照样正确遮挡，
+    // 半透明的靠 renderOrder 与逐实例排序，和以前一样。
+    shared.transparent = true;
+    shared.depthWrite = true;
+
+    const inputs: BatchInput[] = [];
     for (const mesh of meshes) {
       const extras = (mesh.userData as { slug?: string; en?: string; parent?: string }) ?? {};
       const slug = extras.slug ?? mesh.name;
       const color = colorForStructure(sys, extras.en ?? slug, slug);
-      const material =
-        sys === 'skin' ? createSkinMaterial(color) : createSystemMaterial(sys, color);
-      mesh.material = material;
-      mesh.renderOrder = RENDER_ORDER[sys];
-      // 自阴影才是深度感的来源：器官互相投影、肋骨在肺上留下条纹。
-      // 皮肤不投影（一张 6 万面的薄壳自投影只会长痤疮），但要接影。
-      mesh.castShadow = QUALITY_CAPS[this.quality].softShadows && sys !== 'skin';
-      mesh.receiveShadow = QUALITY_CAPS[this.quality].softShadows;
       mesh.geometry.computeBoundingBox();
+      mesh.updateMatrixWorld(true);
+      inputs.push({ slug, geometry: mesh.geometry, matrix: mesh.matrixWorld.clone(), color });
+    }
+    const batch = new SystemBatch(sys, shared, inputs);
+    batch.mesh.renderOrder = RENDER_ORDER[sys];
+    // 自阴影才是深度感的来源：器官互相投影、肋骨在肺上留下条纹。
+    // 皮肤不投影（一张 20 万面的薄壳自投影只会长痤疮），但要接影。
+    batch.mesh.castShadow = QUALITY_CAPS[this.quality].softShadows && sys !== 'skin';
+    batch.mesh.receiveShadow = QUALITY_CAPS[this.quality].softShadows;
+    this.batches.set(sys, batch);
+    this.root.add(batch.mesh);
+
+    for (const mesh of meshes) {
+      const extras = (mesh.userData as { slug?: string; en?: string; parent?: string }) ?? {};
+      const slug = extras.slug ?? mesh.name;
+      const color = colorForStructure(sys, extras.en ?? slug, slug);
+      // 代理网格：不画（材质 visible:false），但留在场景里给标签射线、
+      // 剖切封盖的模板子节点、以及拾取用
+      const material = new MeshBasicMaterial({ visible: false });
+      mesh.material = material;
+      mesh.castShadow = false;
+      mesh.receiveShadow = false;
       group.add(mesh);
       const parent = typeof extras.parent === 'string' ? extras.parent : null;
-      this.structures.set(slug, { slug, system: sys, mesh, material, color, parent });
+      this.structures.set(slug, {
+        slug,
+        system: sys,
+        mesh,
+        material,
+        batch,
+        opacity: 1,
+        highlight: 'none',
+        color,
+        parent,
+      });
       // 记下 glb 节点自带的反量化 TRS：微动画只能在它之上叠加，不能覆盖
       if (slug in ANIMATED_STRUCTURES) {
         const center = mesh.geometry.boundingBox?.getCenter(new Vector3()) ?? new Vector3();
@@ -400,7 +467,7 @@ export class HyiViewer extends EventTarget {
    */
   projectStructure(slug: string): { x: number; y: number } | null {
     const entry = this.structures.get(slug);
-    if (!entry || !entry.material.visible) return null;
+    if (!entry || entry.opacity <= 0.005) return null;
     const point = this.cachedAnchor(slug, entry);
     if (!point) return null;
     const ndc = point.clone().project(this.rig.camera);
@@ -564,7 +631,8 @@ export class HyiViewer extends EventTarget {
 
   private applyVisibility(): void {
     for (const entry of this.structures.values()) {
-      setMaterialOpacity(entry.material, this.effectiveOpacity(entry));
+      entry.opacity = this.effectiveOpacity(entry);
+      this.paint(entry);
     }
     this.updateClipCaps();
   }
@@ -579,8 +647,8 @@ export class HyiViewer extends EventTarget {
     for (const entry of this.structures.values()) {
       // 皮肤是一整张外壳：给它做封盖会把整个人体断面填成一片肤色，
       // 里面刚剖开的器官全被盖住。壳没有断面可言，跳过。
-      if (entry.system === 'skin' || entry.material instanceof ShaderMaterial) continue;
-      if (!entry.material.visible) continue;
+      if (entry.system === 'skin') continue;
+      if (entry.opacity <= 0.005) continue;
       if (this.effectiveOpacity(entry) < CAP_MIN_OPACITY) continue;
       candidates.push({ slug: entry.slug, mesh: entry.mesh, color: entry.color });
     }
@@ -605,10 +673,10 @@ export class HyiViewer extends EventTarget {
       this.highlight(entry, 'selected');
       // 皮肤是整具人体的外壳：给它描边就是给整个剪影镶一圈青光，
       // 手机实拍上那一圈"青色边框"就是这么来的。选中状态由信息卡表达就够了。
-      this.setOutlineTarget(isWholeBody(entry) ? [] : [entry.mesh]);
+      this.setOutlineTarget(isWholeBody(entry) ? null : entry);
       this.aimAt(entry);
     } else {
-      this.setOutlineTarget([]);
+      this.setOutlineTarget(null);
     }
     this.applyVisibility();
     this.dispatchEvent(new CustomEvent('select', { detail: { slug: entry ? slug : null } }));
@@ -731,6 +799,27 @@ export class HyiViewer extends EventTarget {
     };
   }
 
+  /**
+   * `?stats=1` 时把每帧的绘制统计挂到 `window.__hyiStats`。
+   *
+   * 加这个开关是因为"同屏 draw call ≤ 600"这条预算一直没人量过——
+   * 云端没有 GPU，帧率测不了，但**绘制调用数是 CPU 侧的账，软件渲染下照样准**。
+   * 合批改造这种事，改之前必须先有一个能对比的数。
+   */
+  private publishStats(): void {
+    if (!this.statsEnabled) return;
+    this.renderer.info.autoReset = false;
+    const info = this.renderer.info;
+    (window as unknown as { __hyiStats?: unknown }).__hyiStats = {
+      calls: info.render.calls,
+      triangles: info.render.triangles,
+      geometries: info.memory.geometries,
+      textures: info.memory.textures,
+      programs: info.programs?.length ?? 0,
+      structures: this.structures.size,
+    };
+  }
+
   /** WebGL 画布本体。录像要按它的尺寸开合成画布。 */
   getCanvas(): HTMLCanvasElement {
     return this.renderer.domElement;
@@ -782,8 +871,19 @@ export class HyiViewer extends EventTarget {
    * 剪影描边，就是人类在手机上看到的那一圈青边。选中皮肤这件事本来也不需要
    * 视觉强调——它是唯一一个"选中了也还是它"的结构，信息卡已经说清楚了。
    */
-  private highlight(entry: StructureEntry, level: 'none' | 'hover' | 'selected'): void {
-    applyHighlight(entry.mesh, isWholeBody(entry) ? 'none' : level);
+  private highlight(entry: StructureEntry, level: HighlightLevel): void {
+    entry.highlight = isWholeBody(entry) ? 'none' : level;
+    this.paint(entry);
+  }
+
+  /** 把这个结构当前的不透明度与高亮一并写进它所在的批。 */
+  private paint(entry: StructureEntry): void {
+    entry.batch.setAppearance(
+      entry.slug,
+      entry.opacity,
+      HIGHLIGHT_TINT[entry.highlight],
+      HIGHLIGHT_COLOR,
+    );
   }
 
   /** 当前不透明度够高、可以被射线打中的网格。 */
@@ -930,7 +1030,7 @@ export class HyiViewer extends EventTarget {
     const prev = this.hovered ? this.structures.get(this.hovered) : null;
     if (prev && prev.slug !== this.state.selected) this.highlight(prev, 'none');
     this.hovered = slug;
-    if (entry && entry.slug !== this.state.selected) applyHighlight(entry.mesh, 'hover');
+    if (entry && entry.slug !== this.state.selected) this.highlight(entry, 'hover');
     this.renderer.domElement.style.cursor = entry ? 'pointer' : '';
     this.dispatchEvent(new CustomEvent('hover', { detail: { slug } }));
   };
@@ -965,7 +1065,7 @@ export class HyiViewer extends EventTarget {
 
   private readonly onPointerLeave = (): void => {
     const prev = this.hovered ? this.structures.get(this.hovered) : null;
-    if (prev && prev.slug !== this.state.selected) applyHighlight(prev.mesh, 'none');
+    if (prev && prev.slug !== this.state.selected) this.highlight(prev, 'none');
     this.hovered = null;
   };
 
@@ -981,12 +1081,16 @@ export class HyiViewer extends EventTarget {
     for (const [slug, scaleFn] of Object.entries(ANIMATED_STRUCTURES)) {
       const entry = this.structures.get(slug);
       const base = this.pulseBases.get(slug);
-      if (!entry || !base || !entry.material.visible) continue;
+      if (!entry || !base || entry.opacity <= 0.005) continue;
       const next = pulseTransform(base, scaleFn(elapsed));
+      // 代理要动：剖切封盖的模板网格是它的子节点，跟着一起走。
+      // 但**画出来的是批**，所以同一份变换还得写进每实例矩阵，否则只有封盖在跳。
       entry.mesh.position.set(next.position.x, next.position.y, next.position.z);
       entry.mesh.scale.setScalar(next.scale);
+      entry.mesh.updateMatrixWorld(true);
+      entry.batch.setMatrix(slug, entry.mesh.matrixWorld);
     }
-    // 描边走 OutlinePass，直接描选中网格本身，动画时无需再同步 transform
+    // 描边走 OutlinePass，描的是一份专用代理（见 outlineProxy）
   }
 
   // ---- 剖切 ----------------------------------------------------------------
@@ -1024,12 +1128,14 @@ export class HyiViewer extends EventTarget {
         ? clipPlaneFor(clip.axis, clip.pos, this.contentBox, clip.flip === true)
         : null;
     const planes = this.clipPlane ? [this.clipPlane] : null;
-    for (const entry of this.structures.values()) {
-      entry.material.clippingPlanes = planes;
-      // 剖切时双面渲染，露出内壁形成"实心"断面感（X-ray 材质本就双面）
-      if (!(entry.material instanceof ShaderMaterial)) {
-        entry.material.side = planes ? DoubleSide : FrontSide;
-      }
+    // 设在**批的共享材质**上，不是结构代理的材质上——代理压根不参与绘制，
+    // 设在它上面等于没设（合批改造后实拍：剖切完全不生效）。
+    for (const batch of this.batches.values()) {
+      const material = batch.mesh.material as Material;
+      material.clippingPlanes = planes;
+      // 剖切时双面渲染，露出内壁形成"实心"断面感
+      if ('side' in material) (material as { side: Side }).side = planes ? DoubleSide : FrontSide;
+      material.needsUpdate = true;
     }
     this.clipCaps.setPlane(this.clipPlane);
     this.updateClipCaps();
@@ -1110,7 +1216,7 @@ export class HyiViewer extends EventTarget {
     this.quality = tier;
     this.applyQuality();
     const selected = this.state.selected ? this.structures.get(this.state.selected) : null;
-    this.setOutlineTarget(selected ? [selected.mesh] : []);
+    this.setOutlineTarget(selected ?? null);
     this.dispatchEvent(new CustomEvent('quality', { detail: { quality: tier } }));
   }
 
@@ -1131,8 +1237,8 @@ export class HyiViewer extends EventTarget {
     // 真阴影开着时假接触阴影淡一点，免得脚下糊成一团黑
     (this.stage.contactShadow.material as Material).opacity = caps.softShadows ? 0.45 : 0.9;
     for (const entry of this.structures.values()) {
-      entry.mesh.castShadow = caps.softShadows && entry.system !== 'skin';
-      entry.mesh.receiveShadow = caps.softShadows;
+      entry.mesh.castShadow = false;
+      entry.mesh.receiveShadow = false;
     }
 
     const w = this.container.clientWidth || 1;
@@ -1140,8 +1246,19 @@ export class HyiViewer extends EventTarget {
     this.pipeline?.setSize(w, h, this.renderer.getPixelRatio());
   }
 
-  private setOutlineTarget(objects: Object3D[]): void {
-    this.pipeline?.setSelected(objects);
+  /** 把描边目标换成某个结构（传 null 清空）。 */
+  private setOutlineTarget(entry: StructureEntry | null): void {
+    if (!entry) {
+      this.outlineProxy.visible = false;
+      this.pipeline?.setSelected([]);
+      return;
+    }
+    this.outlineProxy.geometry = entry.mesh.geometry;
+    this.outlineProxy.matrixAutoUpdate = false;
+    this.outlineProxy.matrix.copy(entry.mesh.matrixWorld);
+    this.outlineProxy.matrixWorld.copy(entry.mesh.matrixWorld);
+    this.outlineProxy.visible = true;
+    this.pipeline?.setSelected([this.outlineProxy]);
   }
 
   private tick(): void {
@@ -1179,8 +1296,12 @@ export class HyiViewer extends EventTarget {
     this.rig.controls.update();
     this.syncClipPlanes();
     this.clipCaps.syncToPlane();
+    // 统计要把**整帧**（含后处理各趟）算进来：renderer.info 默认每次 render()
+    // 清零一次，不关掉自动清零就只能量到最后那个全屏四边形（实测 calls:1）
+    if (this.statsEnabled) this.renderer.info.reset();
     if (this.pipeline) this.pipeline.render();
     else this.renderer.render(this.scene, this.rig.camera);
+    this.publishStats();
     // 抄帧必须紧跟在 render 后面，见 frameTap 的注释
     if (this.frameTap) this.frameTap(this.renderer.domElement);
   }
@@ -1197,6 +1318,8 @@ export class HyiViewer extends EventTarget {
     dom.removeEventListener('webglcontextlost', this.onContextLost);
     dom.removeEventListener('webglcontextrestored', this.onContextRestored);
     this.frameTap = null;
+    for (const batch of this.batches.values()) batch.dispose();
+    this.batches.clear();
     this.pipeline?.dispose();
     this.renderer.setAnimationLoop(null);
     this.resizeObserver.disconnect();

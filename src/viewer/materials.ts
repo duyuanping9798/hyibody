@@ -297,7 +297,17 @@ function addSkinDetail(
       .replace('void main() {', 'varying vec3 vSkinWorld;\nvoid main() {')
       .replace(
         '#include <project_vertex>',
-        '#include <project_vertex>\n  vSkinWorld = (modelMatrix * vec4(transformed, 1.0)).xyz;',
+        `#include <project_vertex>
+         // 合批时 transformed 留在几何体的**局部**空间——批矩阵是在 project_vertex
+         // 里加到 mvPosition 上的，不是加到 transformed 上。漏掉它的后果不是"偏一点"：
+         // glb 的顶点是量化过的，局部坐标在 ±1 附近、真实尺寸全在节点 TRS 里，
+         // 于是噪声的采样域从 ±800 毫米塌成 ±1，按毫米调的频率在那个域上几乎是常数
+         // ——皮肤直接变成一片光滑（合批改造后实拍出来的）。
+         #ifdef USE_BATCHING
+           vSkinWorld = (modelMatrix * batchingMatrix * vec4(transformed, 1.0)).xyz;
+         #else
+           vSkinWorld = (modelMatrix * vec4(transformed, 1.0)).xyz;
+         #endif`,
       );
     shader.fragmentShader = shader.fragmentShader
       .replace(
