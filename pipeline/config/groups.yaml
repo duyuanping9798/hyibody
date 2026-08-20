@@ -914,7 +914,7 @@ groups:
     side: none
     set: partof
     priority: 1
-    target_faces: 15000
+    target_faces: 85000
     concepts: [brain]
     note: isa 集无整脑；KICKOFF 神经示例含脑与脊髓，故归 nerves 层。
   - slug: cerebellum
@@ -924,7 +924,7 @@ groups:
     region: head
     side: none
     priority: 3
-    target_faces: 6000
+    target_faces: 20000
     concepts: [cerebellum]
     note: 与整脑重叠，人类二选一。
   - slug: brainstem
@@ -935,7 +935,7 @@ groups:
     side: none
     set: partof
     priority: 3
-    target_faces: 6000
+    target_faces: 14000
     concepts: [brainstem]
     note: 与整脑重叠，人类二选一。
   - slug: spinal_cord
