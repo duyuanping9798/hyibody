@@ -27,7 +27,19 @@ const FOCUS_MIN_SIZE_MM = 15;
 
 /** 创建相机 + 轨道控制器。默认自动旋转，用户一交互即停。 */
 export function createCameraRig(dom: HTMLElement, aspect: number): CameraRig {
-  const camera = new PerspectiveCamera(38, aspect, 1, 20000);
+  /*
+   * 近平面 1 → 5 毫米、远平面 20000 → 14000 毫米。
+   *
+   * 原来的 1:20000 是随手给的"够用就行"，代价藏得很深：深度缓冲的精度按
+   * near/far 的**比值**分配，比值越大，远处越粗。人体在 2.6 米外，恰好落在
+   * 精度最差的那一段——平时看不出来，但任何**读深度**的效果都会当场报废。
+   * GTAO 就是这么一开始完全不生效的：法线缓冲干干净净，AO 缓冲一片全白
+   * （`?aodebug=3` / `?aodebug=2` 逐环看出来的）。
+   *
+   * 5 毫米仍然远小于轨道控制器允许的最近距离（25 毫米），14000 也覆盖得住
+   * 最远 8000 加上人体本身——两头都没有被裁掉的风险，比值却小了 7 倍。
+   */
+  const camera = new PerspectiveCamera(38, aspect, 5, 14000);
   camera.position.set(0, -2600, 900);
   camera.up.set(0, 0, 1); // BP3D 坐标系 Z 轴向上（KICKOFF 第 5 节 M1-3）
 

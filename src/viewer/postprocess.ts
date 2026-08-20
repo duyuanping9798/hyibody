@@ -67,16 +67,40 @@ export function createRenderPipeline(
   let ao: GTAOPass | null = null;
   if (caps.ssao) {
     ao = new GTAOPass(scene, camera, Math.max(1, size.x), Math.max(1, size.y));
+    /*
+     * 半径走**屏幕空间**，不走世界空间。
+     *
+     * 第一版按毫米给（radius: 30），用 `?aodebug=1` 把 AO 缓冲直接画出来一看：
+     * 几乎全白，只有手指和腿缝有几道游丝——也就是说 AO 在跑，但等于没有。
+     * 原因是这个查看器的观察距离跨了两个数量级：整具人体（相机 2.6 米外）到
+     * 一颗晶状体（25 毫米外）。任何固定的世界半径，在一头是看不见的游丝，
+     * 在另一头是糊成一片的脏。
+     *
+     * `screenSpaceRadius` 把半径钉在屏幕上（1.0 ≈ 100 像素），于是无论推到多近，
+     * 遮蔽的尺度始终是"眼睛看到的那么大"。
+     */
     ao.updateGtaoMaterial({
-      radius: 30,
-      distanceExponent: 1.2,
-      thickness: 12,
-      scale: 1.1,
+      radius: 0.6,
+      distanceExponent: 1.0,
+      /*
+       * `thickness` **不是**屏幕空间的，它按视图空间的毫米比：着色器里那一行是
+       * `if (abs(viewDelta.z) < thickness)`——采样点与本像素的深度差超过它就被
+       * 当成"另一个物体"丢掉。默认值 1 是给单位尺度的场景用的，在毫米坐标系里
+       * 等于"只接受 1 毫米以内的遮挡"，于是几乎所有采样都被丢掉，AO 恒等于 1。
+       * 这就是 AO 缓冲一片全白的真正原因（`?aodebug=4` 看出来的）。
+       * 人体的凹处（腋窝、腹股沟、指缝）深度差在几十到两百毫米量级。
+       */
+      thickness: 200,
+      scale: 1.2,
       samples: caps.aoSamples,
-      screenSpaceRadius: false,
+      screenSpaceRadius: true,
     });
-    // 1.0 会把阴影压得太狠、像描了一圈脏边；0.85 刚好只在真凹处见效
-    ao.blendIntensity = 0.85;
+    ao.blendIntensity = 1;
+    // `?aodebug=1` 直接输出 AO 缓冲。留着是有代价的（一行生产代码），
+    // 但没有它就只能盯着成片猜"AO 到底有没有生效"——上面那个坑正是这么找出来的。
+    // 2=深度 3=法线 4=AO 5=降噪后：查"到底哪一环是空的"要靠逐环看
+    const debug = Number(new URLSearchParams(location.search).get('aodebug'));
+    if (debug >= 2 && debug <= 5) ao.output = debug;
     composer.addPass(ao);
   }
 
