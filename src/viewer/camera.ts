@@ -106,6 +106,20 @@ export interface SafeInsets {
  */
 export const FRAME_MARGIN = 1.05;
 
+/**
+ * 安全区占画布的比例，以及安全区中心相对画布中心的像素偏移。
+ * 两处取景（整体 poseForBox、单结构 poseForFocus）共用同一套换算。
+ */
+function safeFraction(safe?: SafeInsets): { usable: number; pxOffset: number } | null {
+  if (!safe || safe.height <= 0) return null;
+  const top = Math.max(0, safe.top);
+  const bottom = safe.height - Math.max(0, safe.bottom);
+  const usable = bottom - top;
+  // 安全区被挤没了（超小窗口、卡片几乎占满）就退回按整块画布取景
+  if (usable <= safe.height * 0.3) return null;
+  return { usable: usable / safe.height, pxOffset: (top + bottom) / 2 - safe.height / 2 };
+}
+
 /** 屏幕"上"方向在世界坐标里是哪一根轴（俯视时不是 +Z，所以要按观察方向现算）。 */
 function screenUpFor(dir: Vector3): Vector3 {
   const forward = dir.clone().normalize().negate();
@@ -136,16 +150,10 @@ export function poseForBox(
   let dist = (radius / Math.tan(halfFov)) * margin;
 
   let shift = 0;
-  if (safe && safe.height > 0) {
-    const top = Math.max(0, safe.top);
-    const bottom = Math.min(safe.height, safe.height - Math.max(0, safe.bottom));
-    const usable = bottom - top;
-    // 安全区被挤没了（超小窗口）就退回按整块画布取景
-    if (usable > safe.height * 0.3) {
-      dist /= usable / safe.height;
-      const pxOffset = (top + bottom) / 2 - safe.height / 2;
-      shift = pxOffset * ((2 * dist * Math.tan(halfFov)) / safe.height);
-    }
+  const fit = safeFraction(safe);
+  if (fit) {
+    dist /= fit.usable;
+    shift = fit.pxOffset * ((2 * dist * Math.tan(halfFov)) / safe!.height);
   }
 
   const { dir, lift } = VIEW_PRESETS[preset];
@@ -170,13 +178,29 @@ export function poseForFocus(
   currentTarget: Vector3,
   fovDeg: number,
   from?: ViewPresetId,
+  safe?: SafeInsets,
 ): CameraPose {
   const center = box.getCenter(new Vector3());
   const size = box.getSize(new Vector3());
   const radius = Math.max(size.x, size.y, size.z, FOCUS_MIN_SIZE_MM) * 0.5;
-  const dist = (radius / Math.tan(((fovDeg / 2) * Math.PI) / 180)) * 1.6;
+  const halfFov = ((fovDeg / 2) * Math.PI) / 180;
+  let dist = (radius / Math.tan(halfFov)) * 1.6;
   const dir = from
     ? VIEW_PRESETS[from].dir.clone().normalize()
     : cameraPos.clone().sub(currentTarget).normalize();
-  return { pos: center.clone().add(dir.multiplyScalar(dist)), target: center };
+
+  // 和 poseForBox 同一套：按界面之外剩下的空当取景，并把结构挪到那块空当的中心。
+  // 开屏取景上一轮已经这么做了，但**点选结构走的是这条路**——手机上信息卡盖住
+  // 画布下半部，居中到画布中心等于把结构藏进卡片后面（用户实拍复现）。
+  let shift = 0;
+  const fit = safeFraction(safe);
+  if (fit) {
+    dist /= fit.usable;
+    shift = fit.pxOffset * ((2 * dist * Math.tan(halfFov)) / safe!.height);
+  }
+  const offset = screenUpFor(dir).multiplyScalar(shift);
+  return {
+    pos: center.clone().add(dir.multiplyScalar(dist)).add(offset),
+    target: center.clone().add(offset),
+  };
 }

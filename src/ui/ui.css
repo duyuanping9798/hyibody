@@ -982,11 +982,14 @@ body.hyi-kiosk .hyi-info .blurb {
   .hyi-info {
     max-height: 46vh;
   }
+  /* --hyi-info-h 由 useSafeInsets 量真实 DOM 写进来；没有 JS 时退回 46vh */
   body:has(.hyi-info) .hyi-layer-slider {
-    bottom: calc(46vh + 10px);
+    bottom: calc(var(--hyi-info-h, 46vh) + 10px);
   }
+  /* 卡片盖住半屏时，这三条既够不着也用不上，白占 90 px（640 高的视口里是 14%）。
+     卡片一关自动回来。 */
   body:has(.hyi-info) .hyi-dock {
-    bottom: calc(46vh + 108px);
+    display: none;
   }
 }
 
@@ -1004,10 +1007,10 @@ body.hyi-kiosk .hyi-info .blurb {
       max-height: 46dvh;
     }
     body:has(.hyi-info) .hyi-layer-slider {
-      bottom: calc(46dvh + 10px);
+      bottom: calc(var(--hyi-info-h, 46dvh) + 10px);
     }
     body:has(.hyi-info) .hyi-dock {
-      bottom: calc(46dvh + 108px);
+      display: none;
     }
   }
 }

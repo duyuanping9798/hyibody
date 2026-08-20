@@ -580,6 +580,7 @@ export class HyiViewer extends EventTarget {
       this.rig.controls.target,
       this.rig.camera.fov,
       from,
+      this.safeArea(),
     );
     this.flyTo(pose.pos, pose.target);
   }

@@ -6,6 +6,15 @@ interface Anchor {
   y: number;
 }
 
+/** 小屏 + 信息卡打开 = 标签冗余。用真实 DOM 判断，不猜断点。 */
+function cardCoversLabel(): boolean {
+  const card = document.querySelector('.hyi-info');
+  if (!card) return false;
+  const r = card.getBoundingClientRect();
+  // 通栏（占了九成以上宽度）才算"卡片就在结构正下方"，桌面端的左下角卡片不算
+  return r.width >= window.innerWidth * 0.9;
+}
+
 /** 引线从结构中心斜拉到标签：短横 + 斜线，长度按容器尺寸自适应。 */
 const LEG = 46;
 const ARM = 26;
@@ -46,6 +55,9 @@ export function StructureLabel() {
 
   // 奥秘播放时底部有文案卡，标签会打架，暂时让位
   if (!selected || !anchor || !manifest || wonder) return null;
+  // 小屏上信息卡是通栏抽屉，顶部大字写的就是同一个结构名——这时候再挂一个
+  // 浮动标签等于把最稀缺的空间重复用了一次，而且引线多半正指向卡片后面
+  if (cardCoversLabel()) return null;
   const info = manifest.structures[selected];
   if (!info) return null;
 
