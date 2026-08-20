@@ -387,6 +387,10 @@ export class HyiViewer extends EventTarget {
             this.dispatchEvent(new CustomEvent('loaderror', { detail: { system: s.id, error } }));
           }
         }
+        // 首屏只剩皮肤之后，"ready" 与"画全了"之间隔了五个系统。截图脚本和
+        // e2e 需要一个确定的信号来等，否则只能靠 waitForTimeout 猜——猜短了
+        // 拍到的是一具光秃秃的皮肤，而且拍到什么全看当天机器多快。
+        this.container.dataset.hyiLoaded = '1';
         this.dispatchEvent(new CustomEvent('allloaded'));
       })();
     } catch (error) {

@@ -1,6 +1,6 @@
 {
   "version": "0.0.1",
-  "generatedAt": "2026-08-20T23:26:33+00:00",
+  "generatedAt": "2026-08-20T23:30:19+00:00",
   "systems": [
     {
       "id": "skin",
@@ -13,7 +13,7 @@
     {
       "id": "muscles",
       "file": "assets/muscles.glb",
-      "bytes": 9105424,
+      "bytes": 9447436,
       "structures": [
         "sternocleidomastoid",
         "platysma",
@@ -65,7 +65,7 @@
     {
       "id": "skeleton",
       "file": "assets/skeleton.glb",
-      "bytes": 4536916,
+      "bytes": 4855584,
       "structures": [
         "skull",
         "mandible",
@@ -120,7 +120,7 @@
     {
       "id": "organs",
       "file": "assets/organs.glb",
-      "bytes": 3940096,
+      "bytes": 4512280,
       "structures": [
         "heart",
         "lung_right",
@@ -204,7 +204,7 @@
     {
       "id": "vessels",
       "file": "assets/vessels.glb",
-      "bytes": 3681056,
+      "bytes": 3695464,
       "structures": [
         "aorta",
         "pulmonary_trunk",
@@ -249,7 +249,7 @@
     {
       "id": "nerves",
       "file": "assets/nerves.glb",
-      "bytes": 5780912,
+      "bytes": 6452936,
       "structures": [
         "brain",
         "optic_nerves",
@@ -397,8 +397,8 @@
         -118.37,
         318.24,
         194.9,
-        19.54,
-        548.81
+        19.67,
+        548.85
       ]
     },
     "pectoralis_minor": {
@@ -2151,9 +2151,9 @@
       ],
       "source": "bp3d_partof",
       "bbox": [
-        -116.36,
+        -116.47,
         -73.34,
-        227.89,
+        227.87,
         6.1,
         80.43,
         561.39
@@ -2171,8 +2171,8 @@
       "source": "bp3d_partof",
       "bbox": [
         20.11,
-        -77.72,
-        335.87,
+        -77.74,
+        335.9,
         126.15,
         81.33,
         569.23
@@ -2265,10 +2265,10 @@
       ],
       "source": "bp3d",
       "bbox": [
-        -61.92,
-        -1.54,
-        258.77,
-        76.16,
+        -61.95,
+        -1.58,
+        258.75,
+        76.14,
         37.67,
         321.47
       ]
@@ -3561,10 +3561,10 @@
       ],
       "source": "bp3d_partof",
       "bbox": [
-        -82.52,
+        -82.51,
         -81.45,
-        32.62,
-        96.0,
+        32.55,
+        96.1,
         51.03,
         276.93
       ]
@@ -3580,12 +3580,12 @@
       ],
       "source": "bp3d",
       "bbox": [
-        -79.87,
+        -79.88,
         -68.61,
-        32.62,
-        95.97,
-        -19.29,
-        243.25
+        32.55,
+        96.02,
+        -19.27,
+        243.47
       ]
     },
     "salivary_glands": {
@@ -3619,12 +3619,12 @@
       ],
       "source": "bp3d_partof",
       "bbox": [
-        -5.46,
+        -5.47,
         -107.64,
         687.84,
-        5.45,
+        5.46,
         -9.97,
-        731.37
+        731.36
       ]
     },
     "aorta": {
