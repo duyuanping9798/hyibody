@@ -7,7 +7,6 @@ import {
   Mesh,
   MeshBasicMaterial,
   PlaneGeometry,
-  ShadowMaterial,
   SphereGeometry,
   Vector3,
   type Box3,
@@ -28,8 +27,6 @@ export interface Stage {
   rim: DirectionalLight;
   /** 假接触阴影（脚下一张径向渐变贴图），低画质档也有 */
   contactShadow: Mesh;
-  /** 真软阴影的接影地面，只在高画质档显示 */
-  shadowCatcher: Mesh;
 }
 
 /** 径向渐变贴图：中心黑、边缘透明，用作脚下的接触阴影。 */
@@ -86,15 +83,12 @@ export function createStage(): Stage {
   contactShadow.renderOrder = -0.5;
   root.add(contactShadow);
 
-  const shadowCatcher = new Mesh(
-    new PlaneGeometry(1, 1),
-    new ShadowMaterial({ opacity: 0.32, transparent: true }),
-  );
-  shadowCatcher.receiveShadow = true;
-  shadowCatcher.visible = false;
-  root.add(shadowCatcher);
-
-  return { root, key, fill, rim, contactShadow, shadowCatcher };
+  // 这里曾经有一块 ShadowMaterial 的接影地面。去掉了：以主光 37.5° 的仰角算，
+  // 1720 mm 高的人投出的影子长 2242 mm，而那块地面只有 2534 mm 见方，
+  // 影子跑出边缘就断了（用户实拍："残缺的阴影"）。更要命的是结构网格只设了
+  // castShadow、没设 receiveShadow——整套阴影计算换来的只有地上那道断掉的条纹，
+  // 器官之间根本不互相投影。现在反过来：不要地面影子，把自阴影打开。
+  return { root, key, fill, rim, contactShadow };
 }
 
 /**
@@ -117,12 +111,10 @@ export function fitStage(stage: Stage, box: Box3): void {
   stage.contactShadow.position.set(center.x, center.y, groundZ + 1);
   stage.contactShadow.scale.set(span, span * 0.75, 1);
 
-  stage.shadowCatcher.position.set(center.x, center.y, groundZ);
-  stage.shadowCatcher.scale.set(span * 2, span * 2, 1);
-
-  // 主光投影范围也跟着内容走
+  // 主光投影范围只需要罩住人体本身（不再有地面接影），按包围球半径给，
+  // 比原来的 max(size)*0.75 更贴身，同样一张 2048 阴影图分到的精度更高
   const cam = stage.key.shadow.camera;
-  const half = Math.max(size.x, size.y, size.z) * 0.75;
+  const half = size.length() * 0.55;
   cam.left = -half;
   cam.right = half;
   cam.top = half;

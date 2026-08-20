@@ -108,15 +108,18 @@
   left: 50%;
   bottom: 18px;
   transform: translateX(-50%);
-  width: min(520px, calc(100% - 32px));
-  padding: 10px 16px 8px;
+  width: min(560px, calc(100% - 32px));
+  /* 收薄：原来 10/16/8 加上 4px gap 与 26px 标签行，整块 90 px 高。
+     刻度改成绝对定位之后行高固定，padding 可以压下来。 */
+  padding: 8px 18px 4px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
 }
+/* 刻度按真实值绝对定位（见 LayerSlider.tsx 的注释），所以这里不能再用 flex 等距排 */
 .hyi-layer-labels {
-  display: flex;
-  justify-content: space-between;
+  position: relative;
+  height: 32px;
   font-size: 11px;
   color: var(--hyi-text-dim);
   letter-spacing: 0.05em;
@@ -817,20 +820,26 @@ body.hyi-kiosk .hyi-info .blurb {
   appearance: none;
   border: 0;
   background: none;
-  padding: 4px 2px;
+  padding: 12px 4px 3px;
   font: inherit;
   font-size: 11.5px;
   color: var(--hyi-text-dim);
   cursor: pointer;
-  position: relative;
+  position: absolute;
+  top: 0;
+  white-space: nowrap;
   transition: color 0.15s;
 }
+/* 圆点绝对定位在**真实刻度**上：两端的文字为了不伸出轨道要偏移，
+   圆点不能跟着偏，否则又回到"点画在这儿、值在那儿"。 */
 .hyi-layer-stop::before {
   content: '';
-  display: block;
+  position: absolute;
+  top: 0;
+  left: var(--hyi-stop-dot, 50%);
+  transform: translateX(-50%);
   width: 6px;
   height: 6px;
-  margin: 0 auto 4px;
   border-radius: 50%;
   background: var(--hyi-stop-color);
   opacity: 0.55;
@@ -843,7 +852,9 @@ body.hyi-kiosk .hyi-info .blurb {
 }
 .hyi-layer-stop.active::before {
   opacity: 1;
-  transform: scale(1.5);
+  /* 必须带上 translateX(-50%)：只写 scale 会把上面的居中位移覆盖掉，
+     选中的那个点会往右跳半个身位 */
+  transform: translateX(-50%) scale(1.5);
 }
 .hyi-layer-stop:focus-visible {
   outline: 2px solid var(--hyi-accent);

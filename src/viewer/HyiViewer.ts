@@ -313,7 +313,10 @@ export class HyiViewer extends EventTarget {
         sys === 'skin' ? createSkinMaterial(color) : createSystemMaterial(sys, color);
       mesh.material = material;
       mesh.renderOrder = RENDER_ORDER[sys];
+      // 自阴影才是深度感的来源：器官互相投影、肋骨在肺上留下条纹。
+      // 皮肤不投影（一张 6 万面的薄壳自投影只会长痤疮），但要接影。
       mesh.castShadow = QUALITY_CAPS[this.quality].softShadows && sys !== 'skin';
+      mesh.receiveShadow = QUALITY_CAPS[this.quality].softShadows;
       mesh.geometry.computeBoundingBox();
       group.add(mesh);
       const parent = typeof extras.parent === 'string' ? extras.parent : null;
@@ -969,11 +972,11 @@ export class HyiViewer extends EventTarget {
     this.stage.key.shadow.mapSize.set(2048, 2048);
     this.stage.key.shadow.bias = -0.0006;
     this.stage.key.shadow.normalBias = 2;
-    this.stage.shadowCatcher.visible = caps.softShadows;
     // 真阴影开着时假接触阴影淡一点，免得脚下糊成一团黑
     (this.stage.contactShadow.material as Material).opacity = caps.softShadows ? 0.45 : 0.9;
     for (const entry of this.structures.values()) {
       entry.mesh.castShadow = caps.softShadows && entry.system !== 'skin';
+      entry.mesh.receiveShadow = caps.softShadows;
     }
 
     const w = this.container.clientWidth || 1;
