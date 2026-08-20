@@ -476,12 +476,26 @@ export class HyiViewer extends EventTarget {
   }
 
   /** 结构的最终不透明度：分层 × 系统开关/透明度 × 隐藏/隔离。 */
+  /** `slug` 是不是 `expanded` 本身、或它的某一级祖先。 */
+  private coversExpanded(slug: string, expanded: string): boolean {
+    let cursor: string | null = expanded;
+    // 层级最多几级，加个上限只为防数据里出现环
+    for (let depth = 0; cursor !== null && depth < 8; depth += 1) {
+      if (cursor === slug) return true;
+      cursor = this.structures.get(cursor)?.parent ?? null;
+    }
+    return false;
+  }
+
   private effectiveOpacity(entry: StructureEntry): number {
     const s = this.state;
     if (!s.systemsVisible[entry.system] || s.hidden.has(entry.slug)) return 0;
     // 内部件平时不出现；展开父结构时它们顶替父结构登场
     if (entry.parent !== null && s.expanded !== entry.parent) return 0;
-    if (s.expanded === entry.slug) return 0;
+    // 展开的那一个让位给自己的内部件——**连同它的所有祖先**。
+    // 层级现在有三层（颅骨 → 额骨、脑 → 大脑 → 额叶）：只让位一级的话，
+    // 钻进「大脑」时外面那层「脑」会重新冒出来，把刚露出的脑叶又罩住。
+    if (s.expanded !== null && this.coversExpanded(entry.slug, s.expanded)) return 0;
     let opacity = computeSystemOpacity(entry.system, s.layer) * s.systemOpacity[entry.system];
     if (s.isolated) {
       // 隔离 = 只看这一个。其他结构压到只剩一点点轮廓做参照——

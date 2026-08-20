@@ -44,6 +44,7 @@ export function InfoCard() {
   const focus = useUiStore((s) => s.focus);
   const expanded = useUiStore((s) => s.expanded);
   const expand = useUiStore((s) => s.expand);
+  const collapseParts = useUiStore((s) => s.collapseParts);
   const startWonder = useUiStore((s) => s.startWonder);
   const infoExpanded = useUiStore((s) => s.infoExpanded);
   const setInfoExpanded = useUiStore((s) => s.setInfoExpanded);
@@ -132,7 +133,7 @@ export function InfoCard() {
           </button>
         )}
         {(expanded === selected || (insideParent && expanded === insideParent)) && (
-          <button className="hyi-btn primary" onClick={() => expand(null)}>
+          <button className="hyi-btn primary" onClick={collapseParts}>
             {t.collapseParts}
           </button>
         )}

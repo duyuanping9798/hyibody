@@ -13,7 +13,8 @@
     "eye_lens",
     "eye_retina",
     "optic_nerves",
-    "brain"
+    "brain",
+    "optic_chiasm"
   ],
   "steps": [
     {
@@ -91,6 +92,16 @@
       "layer": 0.8,
       "selected": "brain",
       "durationMs": 9000
+    },
+    {
+      "text": {
+        "zh": "两根神经在脑底下碰了个头，一部分纤维趁机换了道。这一换，左边的脑从此负责右半个世界。",
+        "en": "The two optic nerves meet just in front of the pituitary, and some of their fibres take the chance to switch lanes. After that swap, the left side of the brain is in charge of the right half of the world."
+      },
+      "layer": 0.8,
+      "selected": "optic_chiasm",
+      "from": "left",
+      "durationMs": 10000
     },
     {
       "text": {

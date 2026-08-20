@@ -3037,3 +3037,310 @@
   source: bp3d
   target_faces: 6000
   priority: 3
+# ---- 2026-08-20 第二批扩充：颅骨拆块、脑叶、脑深部核团、视神经与被膜 ----
+# 颅骨与大脑都从「一整块」变成可展开的父结构；脑因此有了三层（脑 → 大脑 → 额叶），
+# HyiViewer.coversExpanded 支持多级让位。
+- slug: frontal_bone
+  zh: 额骨
+  en: Frontal bone
+  system: skeleton
+  region: head
+  side: none
+  parent: skull
+  fma:
+    - FMA52734
+  source: bp3d
+  target_faces: 5000
+  priority: 3
+- slug: parietal_bones
+  zh: 顶骨
+  en: Parietal bones
+  system: skeleton
+  region: head
+  side: both
+  parent: skull
+  fma:
+    - FMA9613
+  source: bp3d
+  target_faces: 5000
+  priority: 3
+- slug: temporal_bones
+  zh: 颞骨
+  en: Temporal bones
+  system: skeleton
+  region: head
+  side: both
+  parent: skull
+  fma:
+    - FMA52737
+  source: bp3d
+  target_faces: 5000
+  priority: 3
+- slug: occipital_bone
+  zh: 枕骨
+  en: Occipital bone
+  system: skeleton
+  region: head
+  side: none
+  parent: skull
+  fma:
+    - FMA52735
+  source: bp3d
+  target_faces: 5000
+  priority: 3
+- slug: sphenoid_bone
+  zh: 蝶骨
+  en: Sphenoid bone
+  system: skeleton
+  region: head
+  side: none
+  parent: skull
+  fma:
+    - FMA52736
+  source: bp3d
+  target_faces: 4500
+  priority: 3
+- slug: ethmoid_bone
+  zh: 筛骨
+  en: Ethmoid bone
+  system: skeleton
+  region: head
+  side: none
+  parent: skull
+  fma:
+    - FMA52740
+  source: bp3d
+  target_faces: 5000
+  priority: 3
+- slug: maxillae
+  zh: 上颌骨
+  en: Maxillae
+  system: skeleton
+  region: head
+  side: both
+  parent: skull
+  fma:
+    - FMA9711
+  source: bp3d
+  target_faces: 4500
+  priority: 3
+- slug: zygomatic_bones
+  zh: 颧骨
+  en: Zygomatic bones
+  system: skeleton
+  region: head
+  side: both
+  parent: skull
+  fma:
+    - FMA52747
+  source: bp3d
+  target_faces: 2000
+  priority: 3
+- slug: nasal_bones
+  zh: 鼻骨
+  en: Nasal bones
+  system: skeleton
+  region: head
+  side: both
+  parent: skull
+  fma:
+    - FMA52745
+  source: bp3d
+  target_faces: 800
+  priority: 3
+- slug: lacrimal_bones
+  zh: 泪骨
+  en: Lacrimal bones
+  system: skeleton
+  region: head
+  side: both
+  parent: skull
+  fma:
+    - FMA52741
+  source: bp3d
+  target_faces: 1000
+  priority: 3
+- slug: palatine_bones
+  zh: 腭骨
+  en: Palatine bones
+  system: skeleton
+  region: head
+  side: both
+  parent: skull
+  fma:
+    - FMA52746
+  source: bp3d
+  target_faces: 2000
+  priority: 3
+- slug: vomer
+  zh: 犁骨
+  en: Vomer
+  system: skeleton
+  region: head
+  side: none
+  parent: skull
+  fma:
+    - FMA9710
+  source: bp3d
+  target_faces: 2500
+  priority: 3
+- slug: inferior_nasal_conchae
+  zh: 下鼻甲
+  en: Inferior nasal conchae
+  system: skeleton
+  region: head
+  side: both
+  parent: skull
+  fma:
+    - FMA54736
+  source: bp3d
+  target_faces: 1200
+  priority: 3
+- slug: frontal_lobe
+  zh: 额叶
+  en: Frontal lobe
+  system: nerves
+  region: head
+  side: both
+  parent: cerebrum
+  fma:
+    - FMA72969
+    - FMA72970
+  source: bp3d_partof
+  target_faces: 9000
+  priority: 3
+- slug: parietal_lobe
+  zh: 顶叶
+  en: Parietal lobe
+  system: nerves
+  region: head
+  side: both
+  parent: cerebrum
+  fma:
+    - FMA72973
+    - FMA72974
+  source: bp3d_partof
+  target_faces: 8000
+  priority: 3
+- slug: temporal_lobe
+  zh: 颞叶
+  en: Temporal lobe
+  system: nerves
+  region: head
+  side: both
+  parent: cerebrum
+  fma:
+    - FMA72971
+    - FMA72972
+  source: bp3d_partof
+  target_faces: 7000
+  priority: 3
+- slug: occipital_lobe
+  zh: 枕叶
+  en: Occipital lobe
+  system: nerves
+  region: head
+  side: both
+  parent: cerebrum
+  fma:
+    - FMA67325
+  source: bp3d
+  target_faces: 5000
+  priority: 3
+- slug: limbic_lobe
+  zh: 边缘叶
+  en: Limbic lobe
+  system: nerves
+  region: head
+  side: both
+  parent: cerebrum
+  fma:
+    - FMA72980
+    - FMA72981
+  source: bp3d_partof
+  target_faces: 4000
+  priority: 3
+- slug: basal_ganglia
+  zh: 基底核
+  en: Basal ganglia
+  system: nerves
+  region: head
+  side: both
+  parent: brain
+  fma:
+    - FMA61833
+    - FMA61834
+    - FMA61835
+  source: bp3d
+  target_faces: 6000
+  priority: 3
+- slug: amygdala
+  zh: 杏仁核
+  en: Amygdala
+  system: nerves
+  region: head
+  side: both
+  parent: brain
+  fma:
+    - FMA61841
+  source: bp3d
+  target_faces: 900
+  priority: 3
+- slug: fornix
+  zh: 穹窿
+  en: Fornix
+  system: nerves
+  region: head
+  side: both
+  parent: brain
+  fma:
+    - FMA61965
+  source: bp3d
+  target_faces: 3500
+  priority: 3
+- slug: pineal_gland
+  zh: 松果体
+  en: Pineal gland
+  system: nerves
+  region: head
+  side: none
+  parent: brain
+  fma:
+    - FMA62033
+  source: bp3d_partof
+  target_faces: 500
+  priority: 3
+- slug: choroid_plexus
+  zh: 脉络丛
+  en: Choroid plexus
+  system: nerves
+  region: head
+  side: both
+  parent: brain
+  fma:
+    - FMA61934
+  source: bp3d
+  target_faces: 3000
+  priority: 3
+- slug: optic_chiasm
+  zh: 视交叉
+  en: Optic chiasm
+  system: nerves
+  region: head
+  side: none
+  fma:
+    - FMA62045
+  source: bp3d
+  target_faces: 900
+  priority: 3
+- slug: nasal_septum
+  zh: 鼻中隔
+  en: Nasal septum
+  system: organs
+  region: head
+  side: none
+  fma:
+    - FMA54375
+  source: bp3d_partof
+  target_faces: 3500
+  priority: 3

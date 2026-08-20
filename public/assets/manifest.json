@@ -1,6 +1,6 @@
 {
   "version": "0.0.1",
-  "generatedAt": "2026-08-20T04:00:57+00:00",
+  "generatedAt": "2026-08-20T06:29:46+00:00",
   "systems": [
     {
       "id": "skin",
@@ -65,7 +65,7 @@
     {
       "id": "skeleton",
       "file": "assets/skeleton.glb",
-      "bytes": 1590688,
+      "bytes": 1902292,
       "structures": [
         "skull",
         "mandible",
@@ -101,13 +101,26 @@
         "fibula_right",
         "fibula_left",
         "tarsal_bones",
-        "foot_bones"
+        "foot_bones",
+        "frontal_bone",
+        "parietal_bones",
+        "temporal_bones",
+        "occipital_bone",
+        "sphenoid_bone",
+        "ethmoid_bone",
+        "maxillae",
+        "zygomatic_bones",
+        "nasal_bones",
+        "lacrimal_bones",
+        "palatine_bones",
+        "vomer",
+        "inferior_nasal_conchae"
       ]
     },
     {
       "id": "organs",
       "file": "assets/organs.glb",
-      "bytes": 3684152,
+      "bytes": 3708088,
       "structures": [
         "heart",
         "lung_right",
@@ -184,7 +197,8 @@
         "thymus",
         "peritoneum",
         "mesentery",
-        "salivary_glands"
+        "salivary_glands",
+        "nasal_septum"
       ]
     },
     {
@@ -235,7 +249,7 @@
     {
       "id": "nerves",
       "file": "assets/nerves.glb",
-      "bytes": 815476,
+      "bytes": 1153876,
       "structures": [
         "brain",
         "optic_nerves",
@@ -251,7 +265,18 @@
         "hypothalamus",
         "corpus_callosum",
         "brain_ventricles",
-        "hippocampus"
+        "hippocampus",
+        "frontal_lobe",
+        "parietal_lobe",
+        "temporal_lobe",
+        "occipital_lobe",
+        "limbic_lobe",
+        "basal_ganglia",
+        "amygdala",
+        "fornix",
+        "pineal_gland",
+        "choroid_plexus",
+        "optic_chiasm"
       ]
     }
   ],
@@ -1301,7 +1326,7 @@
     },
     "intervertebral_disks": {
       "zh": "椎间盘",
-      "en": "Intervertebral disks",
+      "en": "Intervertebral discs",
       "system": "skeleton",
       "region": "whole",
       "side": "none",
@@ -1833,6 +1858,266 @@
         170.0,
         11.51,
         -805.02
+      ]
+    },
+    "frontal_bone": {
+      "zh": "额骨",
+      "en": "Frontal bone",
+      "system": "skeleton",
+      "region": "head",
+      "side": "none",
+      "fma": [
+        "FMA52734"
+      ],
+      "source": "bp3d",
+      "parent": "skull",
+      "bbox": [
+        -62.64,
+        -76.68,
+        734.11,
+        62.65,
+        -5.93,
+        843.14
+      ]
+    },
+    "parietal_bones": {
+      "zh": "顶骨",
+      "en": "Parietal bones",
+      "system": "skeleton",
+      "region": "head",
+      "side": "both",
+      "fma": [
+        "FMA9613"
+      ],
+      "source": "bp3d",
+      "parent": "skull",
+      "bbox": [
+        -75.69,
+        -30.97,
+        731.07,
+        75.74,
+        115.74,
+        849.49
+      ]
+    },
+    "temporal_bones": {
+      "zh": "颞骨",
+      "en": "Temporal bones",
+      "system": "skeleton",
+      "region": "head",
+      "side": "both",
+      "fma": [
+        "FMA52737"
+      ],
+      "source": "bp3d",
+      "parent": "skull",
+      "bbox": [
+        -73.38,
+        -32.98,
+        688.73,
+        73.23,
+        65.77,
+        764.8
+      ]
+    },
+    "occipital_bone": {
+      "zh": "枕骨",
+      "en": "Occipital bone",
+      "system": "skeleton",
+      "region": "head",
+      "side": "none",
+      "fma": [
+        "FMA52735"
+      ],
+      "source": "bp3d",
+      "parent": "skull",
+      "bbox": [
+        -61.35,
+        -0.23,
+        690.99,
+        61.38,
+        118.77,
+        797.76
+      ]
+    },
+    "sphenoid_bone": {
+      "zh": "蝶骨",
+      "en": "Sphenoid bone",
+      "system": "skeleton",
+      "region": "head",
+      "side": "none",
+      "fma": [
+        "FMA52736"
+      ],
+      "source": "bp3d",
+      "parent": "skull",
+      "bbox": [
+        -55.67,
+        -44.26,
+        692.1,
+        55.74,
+        10.26,
+        761.72
+      ]
+    },
+    "ethmoid_bone": {
+      "zh": "筛骨",
+      "en": "Ethmoid bone",
+      "system": "skeleton",
+      "region": "head",
+      "side": "none",
+      "fma": [
+        "FMA52740"
+      ],
+      "source": "bp3d",
+      "parent": "skull",
+      "bbox": [
+        -20.92,
+        -66.43,
+        710.57,
+        20.83,
+        -19.07,
+        745.58
+      ]
+    },
+    "maxillae": {
+      "zh": "上颌骨",
+      "en": "Maxillae",
+      "system": "skeleton",
+      "region": "head",
+      "side": "both",
+      "fma": [
+        "FMA9711"
+      ],
+      "source": "bp3d",
+      "parent": "skull",
+      "bbox": [
+        -47.03,
+        -83.29,
+        677.28,
+        46.44,
+        -25.94,
+        746.51
+      ]
+    },
+    "zygomatic_bones": {
+      "zh": "颧骨",
+      "en": "Zygomatic bones",
+      "system": "skeleton",
+      "region": "head",
+      "side": "both",
+      "fma": [
+        "FMA52747"
+      ],
+      "source": "bp3d",
+      "parent": "skull",
+      "bbox": [
+        -63.99,
+        -60.67,
+        693.86,
+        63.89,
+        -21.0,
+        749.98
+      ]
+    },
+    "nasal_bones": {
+      "zh": "鼻骨",
+      "en": "Nasal bones",
+      "system": "skeleton",
+      "region": "head",
+      "side": "both",
+      "fma": [
+        "FMA52745"
+      ],
+      "source": "bp3d",
+      "parent": "skull",
+      "bbox": [
+        -8.5,
+        -90.07,
+        714.41,
+        7.85,
+        -68.52,
+        746.73
+      ]
+    },
+    "lacrimal_bones": {
+      "zh": "泪骨",
+      "en": "Lacrimal bones",
+      "system": "skeleton",
+      "region": "head",
+      "side": "both",
+      "fma": [
+        "FMA52741"
+      ],
+      "source": "bp3d",
+      "parent": "skull",
+      "bbox": [
+        -17.39,
+        -64.74,
+        711.07,
+        18.58,
+        -50.0,
+        740.59
+      ]
+    },
+    "palatine_bones": {
+      "zh": "腭骨",
+      "en": "Palatine bones",
+      "system": "skeleton",
+      "region": "head",
+      "side": "both",
+      "fma": [
+        "FMA52746"
+      ],
+      "source": "bp3d",
+      "parent": "skull",
+      "bbox": [
+        -28.17,
+        -49.19,
+        683.34,
+        28.17,
+        -2.53,
+        726.63
+      ]
+    },
+    "vomer": {
+      "zh": "犁骨",
+      "en": "Vomer",
+      "system": "skeleton",
+      "region": "head",
+      "side": "none",
+      "fma": [
+        "FMA9710"
+      ],
+      "source": "bp3d",
+      "parent": "skull",
+      "bbox": [
+        -5.45,
+        -65.03,
+        687.83,
+        5.46,
+        -9.97,
+        731.36
+      ]
+    },
+    "inferior_nasal_conchae": {
+      "zh": "下鼻甲",
+      "en": "Inferior nasal conchae",
+      "system": "skeleton",
+      "region": "head",
+      "side": "both",
+      "fma": [
+        "FMA54736"
+      ],
+      "source": "bp3d",
+      "parent": "skull",
+      "bbox": [
+        -15.89,
+        -68.71,
+        691.76,
+        16.59,
+        -29.19,
+        711.72
       ]
     },
     "heart": {
@@ -3323,6 +3608,25 @@
         674.03
       ]
     },
+    "nasal_septum": {
+      "zh": "鼻中隔",
+      "en": "Nasal septum",
+      "system": "organs",
+      "region": "head",
+      "side": "none",
+      "fma": [
+        "FMA54375"
+      ],
+      "source": "bp3d_partof",
+      "bbox": [
+        -5.46,
+        -107.64,
+        687.84,
+        5.45,
+        -9.97,
+        731.37
+      ]
+    },
     "aorta": {
       "zh": "主动脉",
       "en": "Aorta",
@@ -4373,6 +4677,231 @@
         37.25,
         41.32,
         764.48
+      ]
+    },
+    "frontal_lobe": {
+      "zh": "额叶",
+      "en": "Frontal lobe",
+      "system": "nerves",
+      "region": "head",
+      "side": "both",
+      "fma": [
+        "FMA72969",
+        "FMA72970"
+      ],
+      "source": "bp3d_partof",
+      "parent": "cerebrum",
+      "bbox": [
+        -63.43,
+        -68.99,
+        759.89,
+        63.41,
+        61.5,
+        843.83
+      ]
+    },
+    "parietal_lobe": {
+      "zh": "顶叶",
+      "en": "Parietal lobe",
+      "system": "nerves",
+      "region": "head",
+      "side": "both",
+      "fma": [
+        "FMA72973",
+        "FMA72974"
+      ],
+      "source": "bp3d_partof",
+      "parent": "cerebrum",
+      "bbox": [
+        -68.94,
+        12.78,
+        752.36,
+        69.63,
+        107.23,
+        837.01
+      ]
+    },
+    "temporal_lobe": {
+      "zh": "颞叶",
+      "en": "Temporal lobe",
+      "system": "nerves",
+      "region": "head",
+      "side": "both",
+      "fma": [
+        "FMA72971",
+        "FMA72972"
+      ],
+      "source": "bp3d_partof",
+      "parent": "cerebrum",
+      "bbox": [
+        -69.29,
+        -24.19,
+        726.74,
+        69.54,
+        86.77,
+        769.09
+      ]
+    },
+    "occipital_lobe": {
+      "zh": "枕叶",
+      "en": "Occipital lobe",
+      "system": "nerves",
+      "region": "head",
+      "side": "both",
+      "fma": [
+        "FMA67325"
+      ],
+      "source": "bp3d",
+      "parent": "cerebrum",
+      "bbox": [
+        -44.18,
+        47.76,
+        730.98,
+        44.26,
+        111.1,
+        784.8
+      ]
+    },
+    "limbic_lobe": {
+      "zh": "边缘叶",
+      "en": "Limbic lobe",
+      "system": "nerves",
+      "region": "head",
+      "side": "both",
+      "fma": [
+        "FMA72980",
+        "FMA72981"
+      ],
+      "source": "bp3d_partof",
+      "parent": "cerebrum",
+      "bbox": [
+        -37.27,
+        -41.39,
+        735.01,
+        37.25,
+        70.04,
+        810.51
+      ]
+    },
+    "basal_ganglia": {
+      "zh": "基底核",
+      "en": "Basal ganglia",
+      "system": "nerves",
+      "region": "head",
+      "side": "both",
+      "fma": [
+        "FMA61833",
+        "FMA61834",
+        "FMA61835"
+      ],
+      "source": "bp3d",
+      "parent": "brain",
+      "bbox": [
+        -35.09,
+        -23.18,
+        753.47,
+        35.11,
+        40.38,
+        790.59
+      ]
+    },
+    "amygdala": {
+      "zh": "杏仁核",
+      "en": "Amygdala",
+      "system": "nerves",
+      "region": "head",
+      "side": "both",
+      "fma": [
+        "FMA61841"
+      ],
+      "source": "bp3d",
+      "parent": "brain",
+      "bbox": [
+        -33.98,
+        -6.82,
+        745.17,
+        34.03,
+        11.63,
+        758.03
+      ]
+    },
+    "fornix": {
+      "zh": "穹窿",
+      "en": "Fornix",
+      "system": "nerves",
+      "region": "head",
+      "side": "both",
+      "fma": [
+        "FMA61965"
+      ],
+      "source": "bp3d",
+      "parent": "brain",
+      "bbox": [
+        -31.49,
+        -2.0,
+        748.54,
+        31.47,
+        42.51,
+        780.65
+      ]
+    },
+    "pineal_gland": {
+      "zh": "松果体",
+      "en": "Pineal gland",
+      "system": "nerves",
+      "region": "head",
+      "side": "none",
+      "fma": [
+        "FMA62033"
+      ],
+      "source": "bp3d_partof",
+      "parent": "brain",
+      "bbox": [
+        -3.0,
+        30.18,
+        753.42,
+        3.26,
+        41.61,
+        761.13
+      ]
+    },
+    "choroid_plexus": {
+      "zh": "脉络丛",
+      "en": "Choroid plexus",
+      "system": "nerves",
+      "region": "head",
+      "side": "both",
+      "fma": [
+        "FMA61934"
+      ],
+      "source": "bp3d",
+      "parent": "brain",
+      "bbox": [
+        -37.34,
+        1.1,
+        748.09,
+        37.37,
+        44.5,
+        782.08
+      ]
+    },
+    "optic_chiasm": {
+      "zh": "视交叉",
+      "en": "Optic chiasm",
+      "system": "nerves",
+      "region": "head",
+      "side": "none",
+      "fma": [
+        "FMA62045"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -7.32,
+        -9.67,
+        749.16,
+        7.28,
+        0.66,
+        757.26
       ]
     }
   },

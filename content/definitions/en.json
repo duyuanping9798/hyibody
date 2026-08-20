@@ -845,5 +845,105 @@
   "serratus_posterior": {
     "blurb": "Two groups lying deep in the back at a slant, one pulling the ribs upwards and the other pulling them down.",
     "fact": "The upper group lifts ribs to help you breathe in while the lower group pulls them down to help you breathe out — an unusual pair working in opposite directions."
+  },
+  "frontal_bone": {
+    "blurb": "Forms the forehead and the upper rim of the eye sockets, meeting the parietal bones behind at the coronal suture.",
+    "fact": "A baby’s frontal bone comes in two halves; the seam between them usually closes before the age of two, though in a few people it never does."
+  },
+  "parietal_bones": {
+    "blurb": "A squarish flat bone on each side of the vault, together making up most of the roof of the skull.",
+    "fact": "Where the two meet along the midline they form the sagittal suture, the longest seam in the skull."
+  },
+  "temporal_bones": {
+    "blurb": "Wraps around the ear, forming the side wall of the skull and housing the whole apparatus of hearing and balance.",
+    "fact": "The hardest bone in the body is buried inside it: the petrous portion that encases the cochlea."
+  },
+  "occipital_bone": {
+    "blurb": "Cradles the back of the brain and carries a large opening in its base where the brainstem meets the spinal cord.",
+    "fact": "That opening, the foramen magnum, is the only passage between the cranial cavity and the spinal canal."
+  },
+  "sphenoid_bone": {
+    "blurb": "Spans the middle of the skull base like a butterfly with spread wings, touching almost every other bone of the skull.",
+    "fact": "The hollow at its centre is the sella turcica, and the pituitary gland sits inside it."
+  },
+  "ethmoid_bone": {
+    "blurb": "Sits between the eyes, light and fragile, forming the roof of the nasal cavity and the inner wall of each orbit.",
+    "fact": "Its upper plate is peppered with holes, and the fine branches of the olfactory nerve thread through them."
+  },
+  "maxillae": {
+    "blurb": "Carries the upper teeth and forms the palate, the outer wall of the nasal cavity and the floor of the orbit.",
+    "fact": "It is hollow inside: the maxillary sinuses are the largest pair of air spaces in the skull."
+  },
+  "zygomatic_bones": {
+    "blurb": "The prominence of the cheek, bridging the maxilla and the temporal bone into an arch.",
+    "fact": "It juts out further than anything else on the face, which makes it one of the first bones to break in a punch."
+  },
+  "nasal_bones": {
+    "blurb": "A pair of small oblong bones at the top of the bridge of the nose; below them the nose is cartilage.",
+    "fact": "When a nose is knocked crooked it is usually this pair that breaks — the lower half cannot break, because it is not bone."
+  },
+  "lacrimal_bones": {
+    "blurb": "A small thin plate on the inner wall of the orbit, hollowed to hold the tear sac.",
+    "fact": "It is the smallest and thinnest bone in the skull — thin enough to let light through."
+  },
+  "palatine_bones": {
+    "blurb": "Slot in behind the maxillae to form the back of the hard palate and part of the side wall of the nose.",
+    "fact": "The hard palate is really two sets of bone joined front to back, and the seam between them can be felt with the tip of the tongue."
+  },
+  "vomer": {
+    "blurb": "A thin ploughshare-shaped blade standing in the midline of the nose, forming the lower back part of the septum.",
+    "fact": "The front of the septum is cartilage and only the back is this bone, which is why a deviated septum usually bends in the cartilage."
+  },
+  "inferior_nasal_conchae": {
+    "blurb": "A scroll of bone on the side wall of the nose that splits incoming air into thin layers.",
+    "fact": "A blocked nose in a cold is usually the lining over this bone swelling up, not something lodged in the passage."
+  },
+  "frontal_lobe": {
+    "blurb": "The front third of the cerebrum: motor commands, spoken language, planning and restraint.",
+    "fact": "It is the last part of the brain to finish developing, somewhere around the age of twenty-five."
+  },
+  "parietal_lobe": {
+    "blurb": "Behind the frontal lobe: touch, temperature, the sense of where your limbs are, and the spatial picture built from them.",
+    "fact": "Two mirror-image strips face each other across the central sulcus — the front one issues movement, the back one receives touch."
+  },
+  "temporal_lobe": {
+    "blurb": "Sits above the ear, handling hearing, the understanding of language, and the laying down of memory.",
+    "fact": "The hippocampus is tucked into its inner surface, which is why damage here so often costs the ability to form new memories."
+  },
+  "occipital_lobe": {
+    "blurb": "The rearmost part of the cerebrum, doing almost one thing only: processing what the eyes send.",
+    "fact": "Visual signals cross most of the brain to get here — the place that first \"sees\" is at the back of your head."
+  },
+  "limbic_lobe": {
+    "blurb": "A ring of cortex curling around the corpus callosum, involved in emotion, motivation and memory.",
+    "fact": "The \"limbic\" in its name means border: it lies exactly on the rim where the cerebrum meets the brainstem."
+  },
+  "basal_ganglia": {
+    "blurb": "Several masses of grey matter deep in the cerebrum that select and launch movements — and hold back the ones you do not want.",
+    "fact": "The stiffness and tremor of Parkinson’s disease follow directly from these nuclei receiving less dopamine."
+  },
+  "amygdala": {
+    "blurb": "A pair of almond-sized nuclei deep in the temporal lobes that attach emotional weight to what the senses bring in.",
+    "fact": "A fright can set your body going before you know what you saw, along a short cut that bypasses the cortex entirely."
+  },
+  "fornix": {
+    "blurb": "An arched bundle of white matter linking the hippocampus to the hypothalamus and beyond.",
+    "fact": "It vaults over the ventricles like a slung cable, and it is the main road of the memory circuit."
+  },
+  "pineal_gland": {
+    "blurb": "No bigger than a grain of rice, sitting behind the thalami and releasing melatonin to set the sleep rhythm.",
+    "fact": "It is one of the few unpaired structures in the brain, and among the first found to track the light outside."
+  },
+  "choroid_plexus": {
+    "blurb": "Tufts of vessel-rich tissue hanging inside the ventricles, where cerebrospinal fluid is made.",
+    "fact": "The fluid is replaced three or four times a day, and every drop of it comes from these tufts."
+  },
+  "optic_chiasm": {
+    "blurb": "Where the two optic nerves meet in front of the pituitary and part of their fibres cross to the other side.",
+    "fact": "Only the fibres from the inner half of each retina cross, so each hemisphere receives half the field of view — not one whole eye."
+  },
+  "nasal_septum": {
+    "blurb": "Divides the nasal cavity into left and right halves — cartilage at the front, bone behind.",
+    "fact": "Most people’s septum leans slightly to one side; a perfectly central one is the exception rather than the rule."
   }
 }

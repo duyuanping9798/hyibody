@@ -59,6 +59,8 @@ interface UiState {
   select(slug: string | null): void;
   isolate(slug: string | null): void;
   expand(slug: string | null): void;
+  /** 收起内部：退回上一级而不是一路回到全身（脑 → 大脑 → 额叶 是三层） */
+  collapseParts(): void;
   hide(slug: string): void;
   resetVisibility(): void;
   /** 一键回到全身：清掉隔离/展开/剖切/隐藏，并把相机拉回默认取景 */
@@ -270,6 +272,13 @@ export const useUiStore = create<UiState>((set, get) => ({
       isolated: state?.isolated ?? null,
       selected: state?.selected ?? null,
     });
+  },
+  collapseParts: () => {
+    const { expanded, manifest } = get();
+    // 三层层级下「收起内部」应该退一级：从额叶收回大脑，而不是直接回整具人体
+    const parent = expanded ? (manifest?.structures[expanded]?.parent ?? null) : null;
+    get().expand(parent);
+    if (parent) get().select(parent);
   },
   hide: (slug) => {
     viewer?.hide(slug);

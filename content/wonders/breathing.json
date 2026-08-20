@@ -15,7 +15,8 @@
     "lung_left",
     "diaphragm",
     "intercostal_muscles",
-    "serratus_posterior"
+    "serratus_posterior",
+    "nasal_septum"
   ],
   "steps": [
     {
@@ -25,6 +26,16 @@
       },
       "layer": 0.05,
       "preset": "hero",
+      "durationMs": 10500
+    },
+    {
+      "text": {
+        "zh": "这口气先分成两路。鼻腔正中立着一道隔板，前半是软骨、后半是骨——大多数人的这道墙都略微偏向一边。",
+        "en": "The breath is split in two before anything else. A partition stands in the midline of the nose, cartilage at the front and bone behind — and in most people it leans slightly to one side."
+      },
+      "layer": 0.6,
+      "selected": "nasal_septum",
+      "from": "front",
       "durationMs": 10500
     },
     {
