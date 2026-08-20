@@ -14,7 +14,7 @@
   fma:
     - FMA7163
   source: bp3d
-  target_faces: 60000
+  target_faces: 200000
   priority: 1
 - slug: skull
   zh: 颅骨
@@ -37,7 +37,7 @@
     - FMA9710
     - FMA54736
   source: bp3d
-  target_faces: 30000
+  target_faces: 70000
   priority: 1
 - slug: mandible
   zh: 下颌骨
@@ -125,7 +125,7 @@
   fma:
     - FMA7574
   source: bp3d
-  target_faces: 30000
+  target_faces: 50000
   priority: 1
 - slug: costal_cartilages
   zh: 肋软骨

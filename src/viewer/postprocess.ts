@@ -13,7 +13,7 @@ import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { SMAAPass } from 'three/addons/postprocessing/SMAAPass.js';
-import { SSAOPass } from 'three/addons/postprocessing/SSAOPass.js';
+import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import type { QualityCaps } from './quality';
 
@@ -53,14 +53,31 @@ export function createRenderPipeline(
   const composer = new EffectComposer(renderer, target);
   composer.addPass(new RenderPass(scene, camera));
 
-  let ssao: SSAOPass | null = null;
+  /**
+   * 环境光遮蔽：SSAO → GTAO。
+   *
+   * 换的理由不是"新的更好"，是**这一档决定了人体看起来有没有体积**。
+   * SSAO 靠半球采样凑遮蔽，人体这种大片平滑曲面上出来的是一层灰雾；
+   * GTAO 算的是水平角遮蔽，腋窝、颈侧、锁骨窝、指缝这些真正的凹处才会暗下去
+   * ——皮肤从"塑料模特"变成"有肉"，八成靠这个，而且一个三角面都不用多加。
+   *
+   * 半径按毫米给：人体的褶皱在 10–40 mm 这个量级，默认值（场景单位 0.25）
+   * 在毫米坐标系里等于没有。
+   */
+  let ao: GTAOPass | null = null;
   if (caps.ssao) {
-    ssao = new SSAOPass(scene, camera);
-    // 人体尺度是毫米：AO 半径按毫米给，否则默认值（8）在这个场景里等于没有
-    ssao.kernelRadius = 24;
-    ssao.minDistance = 0.0006;
-    ssao.maxDistance = 0.06;
-    composer.addPass(ssao);
+    ao = new GTAOPass(scene, camera, Math.max(1, size.x), Math.max(1, size.y));
+    ao.updateGtaoMaterial({
+      radius: 30,
+      distanceExponent: 1.2,
+      thickness: 12,
+      scale: 1.1,
+      samples: caps.aoSamples,
+      screenSpaceRadius: false,
+    });
+    // 1.0 会把阴影压得太狠、像描了一圈脏边；0.85 刚好只在真凹处见效
+    ao.blendIntensity = 0.85;
+    composer.addPass(ao);
   }
 
   let outline: OutlinePass | null = null;
@@ -98,7 +115,12 @@ export function createRenderPipeline(
       composer.setPixelRatio(pixelRatio);
       composer.setSize(width, height);
       outline?.setSize(width, height);
-      ssao?.setSize(width, height);
+      // AO 可以按比例降分辨率跑：它是低频信号，半分辨率肉眼看不出，
+      // 但填充率省一半——手机上开不开 AO 的分界线就在这儿
+      ao?.setSize(
+        Math.max(1, Math.round(width * caps.aoScale)),
+        Math.max(1, Math.round(height * caps.aoScale)),
+      );
     },
     setSelected(objects) {
       if (outline) outline.selectedObjects = objects;

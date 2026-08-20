@@ -238,6 +238,50 @@ export function createSystemMaterial(
  * 粗的一层做皮下的起伏、细的一层做毛孔级的颗粒，再用有限差分求梯度扰动法线，
  * 顺带让粗糙度不均匀——皮肤最不像皮肤的地方，就是它光滑得像塑料。
  */
+/**
+ * 次表面散射的廉价近似：掠射角上加一层暖光。
+ *
+ * 真皮肤是半透的——耳廓、指缝、鼻翼被光穿过去会透出血色。完整的次表面散射
+ * 在 WebGL2 里太贵（要多次模糊 irradiance），但**观感上最值钱的那一部分**
+ * 恰恰只发生在边缘：光从侧后方钻进薄的地方再出来。所以只在菲涅尔边缘加一点
+ * 暖色，就能把"蜡像/塑料"拉回"有血的肉"。
+ *
+ * 乘 `opacity`：皮肤一开始透明，这层暖光就该让位给 X-ray 的青边，
+ * 两者不能同时在边缘上打架。
+ */
+function addSubsurfaceRim(
+  material: MeshStandardMaterial,
+  options: { color: Color; strength: number; power: number },
+): void {
+  const previous = material.onBeforeCompile;
+  material.onBeforeCompile = (shader, renderer) => {
+    previous?.call(material, shader, renderer);
+    shader.uniforms.uSssColor = { value: options.color };
+    shader.uniforms.uSssStrength = { value: options.strength };
+    shader.uniforms.uSssPower = { value: options.power };
+    shader.fragmentShader = shader.fragmentShader
+      .replace(
+        'void main() {',
+        `uniform vec3 uSssColor;
+         uniform float uSssStrength;
+         uniform float uSssPower;
+         void main() {`,
+      )
+      .replace(
+        '#include <dithering_fragment>',
+        `#include <dithering_fragment>
+         {
+           float sssFacing = abs(dot(normalize(vNormal), normalize(vViewPosition)));
+           float sssRim = pow(1.0 - clamp(sssFacing, 0.0, 1.0), uSssPower);
+           gl_FragColor.rgb += uSssColor * sssRim * uSssStrength * opacity;
+         }`,
+      );
+  };
+  const key = `sss:${options.strength}:${options.power}`;
+  const prevKey = material.customProgramCacheKey;
+  material.customProgramCacheKey = () => `${prevKey ? prevKey.call(material) : ''}|${key}`;
+}
+
 function addSkinDetail(
   material: MeshStandardMaterial,
   options: { coarse: number; fine: number; strength: number; roughVariation: number },
@@ -286,8 +330,15 @@ function addSkinDetail(
            float mmPerPixel = max(max(fwidth(w.x), fwidth(w.y)), fwidth(w.z));
            return clamp(1.0 - mmPerPixel * uSkinFine * 1.5, 0.0, 1.0);
          }
+         // 细的那一层换个朝向再采样。两层用同一套轴对齐格子时，凑近看是一片
+         // 规整的方格纹——像布，不像皮肤。转一个不对称的角度就散开了。
+         const mat3 HYI_TWIST = mat3(
+           0.80, 0.36, -0.48,
+           -0.48, 0.86, -0.16,
+           0.36, 0.36, 0.86
+         );
          float hyiSkinField(vec3 w, float fade) {
-           return hyiNoise(w * uSkinCoarse) * 0.7 + hyiNoise(w * uSkinFine) * 0.3 * fade;
+           return hyiNoise(w * uSkinCoarse) * 0.7 + hyiNoise(HYI_TWIST * w * uSkinFine) * 0.3 * fade;
          }
          void main() {`,
       )
@@ -376,6 +427,8 @@ export function createSkinMaterial(color: string | number): MeshPhysicalMaterial
     alpha: 0.55,
     xrayOnly: true,
   });
+  // 边缘那一点暖光就是次表面散射最值钱的部分：光从侧后方钻进薄的地方再出来
+  addSubsurfaceRim(material, { color: new Color(0xff7a52), strength: 0.11, power: 3.6 });
   // 尺度按毫米给：粗的一层周期约 30 mm（皮下起伏），细的约 4 mm（颗粒感）。
   // strength 是法线扰动的倍率——梯度本身只有 0.05 量级，0.35 的话肉眼根本看不出。
   // 4.0 在全身远景下会糊成沙粒（实拍可见），所以细的那一层按 fwidth 淡出，

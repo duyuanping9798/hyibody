@@ -42,18 +42,32 @@ SOURCE_SETS = {"bp3d": "isa", "bp3d_partof": "partof"}
 HRA_SOURCE = "hra"
 
 # 面数预算（CLAUDE.md，2026-08-18 数据质量升级修订——见 docs/DECISIONS.md）：
-# 单结构下限 500、常规上限 30,000（groups.yaml 的 max_target_faces），
-# 皮肤这类整张外壳上限 60,000；总量目标 100–130 万，硬上限仍 150 万。
+# 单结构下限 500、常规上限 30,000（groups.yaml 的 max_target_faces）；
+# 总量目标 100–180 万，硬上限 200 万。
 FACES_MIN = 500
 FACES_MAX = 6000
 FACES_MAX_LARGE = 30000
-# 皮肤是唯一一张覆盖全身的壳，轮廓直接决定第一眼观感，单独给更高上限
-FACES_MAX_SKIN = 60000
+
+# 少数几个"看得最多"的结构单独放宽（2026-08-20，见 docs/DECISIONS.md）。
+#
+# 依据是量出来的：BP3D 里我们用到的 924 件元素网格原生共 410 万面，
+# 而当前目标只有 180 万——**整体只保留了 39%**。全量放开会撑爆体积与帧率预算，
+# 所以把放宽的额度花在视线真正落到的地方，而不是平摊：
+#
+#   skin  原生 203,382 → 原来 60,000（29%）。它是分层滑到最外层时**唯一**可见的
+#         东西，脸和手的清晰度全看它。给到接近原生。
+#   skull 原生 121,518 → 原来 30,000（25%）。人看人先看脸。
+#   ribs  原生 170,762 → 原来 30,000（18%）。肋骨是"透视"这件事的招牌画面。
+FACES_MAX_BY_SLUG = {
+    "skin": 200_000,
+    "skull": 70_000,
+    "ribs": 50_000,
+}
 
 
 def max_faces_for(slug: str) -> int:
-    """单结构面数上限：皮肤特殊，其余走大结构上限。"""
-    return FACES_MAX_SKIN if slug == "skin" else FACES_MAX_LARGE
+    """单结构面数上限：几个"看得最多"的结构单独放宽，其余走大结构上限。"""
+    return FACES_MAX_BY_SLUG.get(slug, FACES_MAX_LARGE)
 
 
 @dataclass(frozen=True)
