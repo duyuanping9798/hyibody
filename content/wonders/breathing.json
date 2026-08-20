@@ -14,7 +14,8 @@
     "lung_right",
     "lung_left",
     "diaphragm",
-    "intercostal_muscles"
+    "intercostal_muscles",
+    "serratus_posterior"
   ],
   "steps": [
     {
@@ -83,6 +84,16 @@
       "layer": 0.24,
       "selected": "intercostal_muscles",
       "durationMs": 10500
+    },
+    {
+      "text": {
+        "zh": "背上还有两组斜贴的薄肌搭把手：上面一组把肋骨往上提，下面一组往下拉，一进一出各管一头。",
+        "en": "Two thin sheets set at a slant across the back lend a hand: the upper group lifts the ribs, the lower group draws them down — one for each direction of the breath."
+      },
+      "layer": 0.24,
+      "selected": "serratus_posterior",
+      "from": "back",
+      "durationMs": 10000
     },
     {
       "text": {

@@ -124,15 +124,19 @@
 
 /* 工具抽屉（界面减负）：右上角三条标题栏，一次只展开一格，默认全收起。
    原来这里是两块常驻大面板，六行滑块 + 十个按钮 + 一段画质说明常年挂在画面上。 */
+/* 工具抽屉跟搜索框排在左边一列：右下角让给信息卡（2026-08-20）。
+   这一条最早是为了不挡住剖切按钮才把信息卡赶到左边的——现在两者分居左右，
+   那个冲突从根上没有了。 */
 .hyi-dock {
   position: absolute;
-  top: 58px;
-  right: 12px;
+  top: 116px;
+  left: 12px;
   width: 216px;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  max-height: calc(100% - 150px);
+  /* 底部要给分层滑块（18 + 高约 90）留出地方，不然展开三格会压上去 */
+  max-height: calc(100% - 240px);
   z-index: 4;
 }
 .hyi-drawer {
@@ -223,22 +227,41 @@
   margin-bottom: 8px;
 }
 
+/* 搜索框常驻左上角（2026-08-20 按用户要求改回原位）。
+   放大镜图标留在框里做提示——手机上尤其重要，图标按钮看不出是搜索。 */
 .hyi-search {
   position: absolute;
-  top: 58px;
-  right: 12px;
-  width: min(300px, calc(100% - 24px));
+  top: 64px;
+  left: 12px;
+  width: min(280px, calc(100% - 24px));
   z-index: 8;
+}
+.hyi-search-icon {
+  position: absolute;
+  left: 11px;
+  top: 10px;
+  width: 16px;
+  height: 16px;
+  color: var(--hyi-text-dim);
+  pointer-events: none;
+}
+.hyi-search-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 .hyi-search input {
   width: 100%;
   box-sizing: border-box;
-  padding: 9px 12px;
+  padding: 9px 12px 9px 34px;
   font-size: 13px;
   color: var(--hyi-text);
   background: transparent;
   border: none;
   outline: none;
+}
+.hyi-search:focus-within {
+  border-color: var(--hyi-accent-dim);
 }
 .hyi-search input::placeholder {
   color: var(--hyi-text-dim);
@@ -281,11 +304,12 @@
   color: var(--hyi-text-dim);
 }
 
-/* 桌面端信息卡放左下：右侧是系统/视角面板，卡片压在上面会挡住剖切那几个按钮
-   （实测"沿此结构半剖"点不到），左侧本来就是空的 */
+/* 桌面端信息卡放右下（2026-08-20 按用户要求）。
+   原来在左下，是因为当时右侧上方是系统/视角面板，卡片压上去会挡住剖切按钮
+   （实测"沿此结构半剖"点不到）。现在抽屉整体搬到了左边一列，右侧空出来了。 */
 .hyi-info {
   position: absolute;
-  left: 12px;
+  right: 12px;
   bottom: 96px;
   width: min(320px, calc(100% - 24px));
   padding: 14px 16px;
@@ -578,8 +602,10 @@ body.hyi-kiosk .hyi-info .blurb {
     width: auto;
     z-index: 6;
   }
+  /* 手机上搜索框占顶栏下面一整条：图标按钮看不出是搜索，实测没人点。
+     顶栏按钮在触屏上是 44 px 高（top:14 → 58），所以这里从 62 起，别压上去。 */
   .hyi-search {
-    top: 52px;
+    top: 62px;
     left: 8px;
     right: 8px;
     width: auto;

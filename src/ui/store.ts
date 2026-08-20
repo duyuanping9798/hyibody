@@ -34,8 +34,6 @@ interface UiState {
   attributionOpen: boolean;
   /** 工具抽屉：当前展开的那一格，null = 全收起（桌面与小屏同一套，见 Dock.tsx） */
   activePanel: PanelId | null;
-  /** 搜索框是否展开（默认收起成一个图标，见 App.tsx 的界面减负说明） */
-  searchOpen: boolean;
   /** 信息卡是否展开全文。小屏上默认收起成「名字 + 一句话 + 操作」的窄条 */
   infoExpanded: boolean;
   /** 界面语言（M2-5，默认中文） */
@@ -71,7 +69,6 @@ interface UiState {
   focus(slug: string, from?: ViewPresetId): void;
   setAttributionOpen(open: boolean): void;
   togglePanel(panel: PanelId): void;
-  setSearchOpen(open: boolean): void;
   setInfoExpanded(open: boolean): void;
   startWonder(wonder: Wonder): void;
   exitWonder(): void;
@@ -220,7 +217,6 @@ export const useUiStore = create<UiState>((set, get) => ({
   clip: null,
   attributionOpen: false,
   activePanel: null,
-  searchOpen: false,
   infoExpanded: false,
   wonder: null,
   wonderIndex: 0,
@@ -310,7 +306,6 @@ export const useUiStore = create<UiState>((set, get) => ({
     viewer?.focus(slug, from);
   },
   setAttributionOpen: (attributionOpen) => set({ attributionOpen }),
-  setSearchOpen: (searchOpen) => set({ searchOpen }),
 
   setInfoExpanded: (infoExpanded) => {
     set({ infoExpanded });
@@ -328,7 +323,7 @@ export const useUiStore = create<UiState>((set, get) => ({
   togglePanel: (panel) => set((s) => ({ activePanel: s.activePanel === panel ? null : panel })),
 
   startWonder: (wonder) => {
-    set({ wonder, wonderIndex: 0, wonderPlaying: true, activePanel: null, searchOpen: false });
+    set({ wonder, wonderIndex: 0, wonderPlaying: true, activePanel: null });
     wonderEngine.start(wonder);
   },
   exitWonder: () => wonderEngine.stop(),

@@ -394,8 +394,9 @@ test('keyboard shortcuts drive search, help and escape', async ({ page }) => {
   await page.keyboard.press('Escape');
   await expect(page.getByTestId('shortcut-help')).toHaveCount(0);
 
-  // / 展开并聚焦搜索框（默认收起成顶栏图标），打字 → ↓ 走一格 → 回车选中
-  await expect(page.locator('.hyi-search input')).toHaveCount(0);
+  // 搜索框常驻（2026-08-20 改回左上角），/ 只负责把焦点送过去
+  await expect(page.locator('.hyi-search input')).toBeVisible();
+  await expect(page.locator('.hyi-search input')).not.toBeFocused();
   await page.keyboard.press('/');
   await expect(page.locator('.hyi-search input')).toBeFocused();
   await page.keyboard.type('骨');

@@ -2788,3 +2788,252 @@
       - FMA9607
   target_faces: 2700
   priority: 2
+# ---- 2026-08-20 内容扩充：脑内部件 + 膜/系膜 + 浅静脉 + 几条肌肉 ----
+# 脑此前是一整块，跟心脏没打开之前一样。BP3D partof 集里大脑/小脑/脑干/脑室
+# 都是现成的，补上之后「脑」也能像心脏那样展开。
+- slug: cerebrum
+  zh: 大脑
+  en: Cerebrum
+  system: nerves
+  region: head
+  side: none
+  parent: brain
+  fma:
+    - FMA62000
+  source: bp3d_partof
+  target_faces: 22000
+  priority: 2
+- slug: cerebellum
+  zh: 小脑
+  en: Cerebellum
+  system: nerves
+  region: head
+  side: none
+  parent: brain
+  fma:
+    - FMA67944
+  source: bp3d_partof
+  target_faces: 12000
+  priority: 2
+- slug: brainstem
+  zh: 脑干
+  en: Brainstem
+  system: nerves
+  region: head
+  side: none
+  parent: brain
+  fma:
+    - FMA61993
+    - FMA67943
+    - FMA62004
+  source: bp3d_partof
+  target_faces: 8000
+  priority: 2
+- slug: thalamus
+  zh: 丘脑
+  en: Thalamus
+  system: nerves
+  region: head
+  side: both
+  parent: brain
+  fma:
+    - FMA62007
+  source: bp3d
+  target_faces: 2500
+  priority: 3
+- slug: hypothalamus
+  zh: 下丘脑
+  en: Hypothalamus
+  system: nerves
+  region: head
+  side: none
+  parent: brain
+  fma:
+    - FMA62008
+  source: bp3d_partof
+  target_faces: 2500
+  priority: 3
+- slug: corpus_callosum
+  zh: 胼胝体
+  en: Corpus callosum
+  system: nerves
+  region: head
+  side: none
+  parent: brain
+  fma:
+    - FMA86464
+  source: bp3d
+  target_faces: 5000
+  priority: 3
+- slug: brain_ventricles
+  zh: 脑室
+  en: Ventricles of the brain
+  system: nerves
+  region: head
+  side: none
+  parent: brain
+  fma:
+    - FMA242787
+  source: bp3d_partof
+  target_faces: 6000
+  priority: 3
+- slug: hippocampus
+  zh: 海马
+  en: Hippocampus
+  system: nerves
+  region: head
+  side: both
+  parent: brain
+  fma:
+    - FMA62493
+  source: bp3d
+  target_faces: 2500
+  priority: 3
+# 膜与系膜：腹腔里的器官不是散着堆的，是被这两层兜住、吊住的
+- slug: peritoneum
+  zh: 腹膜
+  en: Peritoneum
+  system: organs
+  region: abdomen
+  side: none
+  fma:
+    - FMA9584
+  source: bp3d_partof
+  target_faces: 16000
+  priority: 3
+- slug: mesentery
+  zh: 肠系膜
+  en: Mesentery
+  system: organs
+  region: abdomen
+  side: none
+  fma:
+    - FMA14643
+  source: bp3d
+  target_faces: 14000
+  priority: 3
+- slug: salivary_glands
+  zh: 唾液腺
+  en: Salivary glands
+  system: organs
+  region: head
+  side: both
+  fma:
+    - FMA55093
+    - FMA59791
+  source: bp3d
+  target_faces: 2500
+  priority: 3
+# 浅静脉：抽血、输液、取血管做搭桥，摸得到用得着的都在这一层
+- slug: cephalic_veins
+  zh: 头静脉
+  en: Cephalic veins
+  system: vessels
+  region: upper_limb
+  side: both
+  fma:
+    - FMA13324
+  source: bp3d
+  target_faces: 6000
+  priority: 3
+- slug: basilic_veins
+  zh: 贵要静脉
+  en: Basilic veins
+  system: vessels
+  region: upper_limb
+  side: both
+  fma:
+    - FMA22908
+  source: bp3d
+  target_faces: 5000
+  priority: 3
+- slug: small_saphenous_veins
+  zh: 小隐静脉
+  en: Small saphenous veins
+  system: vessels
+  region: lower_limb
+  side: both
+  fma:
+    - FMA44333
+  source: bp3d
+  target_faces: 5000
+  priority: 3
+- slug: popliteal_veins
+  zh: 腘静脉
+  en: Popliteal veins
+  system: vessels
+  region: lower_limb
+  side: both
+  fma:
+    - FMA44327
+  source: bp3d
+  target_faces: 4500
+  priority: 3
+- slug: tibial_veins
+  zh: 胫前静脉与胫后静脉
+  en: Tibial veins
+  system: vessels
+  region: lower_limb
+  side: both
+  fma:
+    - FMA44331
+    - FMA44332
+  source: bp3d
+  target_faces: 5000
+  priority: 3
+- slug: lumbar_arteries
+  zh: 腰动脉
+  en: Lumbar arteries
+  system: vessels
+  region: abdomen
+  side: both
+  fma:
+    - FMA14735
+  source: bp3d
+  target_faces: 4000
+  priority: 3
+- slug: posterior_intercostal_arteries
+  zh: 肋间后动脉
+  en: Posterior intercostal arteries
+  system: vessels
+  region: thorax
+  side: both
+  fma:
+    - FMA63822
+  source: bp3d
+  target_faces: 7000
+  priority: 3
+# 肌肉与筋膜
+- slug: iliotibial_tract
+  zh: 髂胫束
+  en: Iliotibial tract
+  system: muscles
+  region: lower_limb
+  side: both
+  fma:
+    - FMA51048
+  source: bp3d
+  target_faces: 6000
+  priority: 3
+- slug: pharyngeal_constrictors
+  zh: 咽缩肌
+  en: Pharyngeal constrictors
+  system: muscles
+  region: neck
+  side: both
+  fma:
+    - FMA46620
+  source: bp3d
+  target_faces: 7000
+  priority: 3
+- slug: serratus_posterior
+  zh: 后锯肌
+  en: Serratus posterior
+  system: muscles
+  region: thorax
+  side: both
+  fma:
+    - FMA13400
+  source: bp3d
+  target_faces: 6000
+  priority: 3

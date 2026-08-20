@@ -2,7 +2,9 @@ import { useEffect } from 'react';
 import { getViewer, useUiStore } from './store';
 
 /** 会遮住三维画面的常驻元素：上面一组、下面一组。 */
-const TOP = ['.hyi-header', '.hyi-topbar'];
+// 搜索框在手机上是顶栏下面通栏的一条，会盖住人体头顶；桌面端它在左上角，
+// 横向压不到画布中线，下面的 edges() 会自动把它排除掉
+const TOP = ['.hyi-header', '.hyi-topbar', '.hyi-search'];
 // 信息卡在小屏上是底部抽屉，一弹出就吃掉半屏——它必须算进来，
 // 否则点选一个结构后相机把它居中到画布中心，正好藏在卡片后面（用户实拍复现）
 const BOTTOM = ['.hyi-layer-slider', '.hyi-wonder', '.hyi-dock', '.hyi-info'];

@@ -761,5 +761,89 @@
   "renal_calyces": {
     "blurb": "A set of cups upstream of the renal pelvis: minor calyces catch the drip from each papilla and empty into major ones.",
     "fact": "A kidney has roughly 7–14 minor and 2–3 major calyces; the small ones merge into the large, and the large into the pelvis, like branches gathering back into a trunk."
+  },
+  "cerebrum": {
+    "blurb": "Two hemispheres with a deeply folded surface, handling sensation, movement, language and memory.",
+    "fact": "The cortex is only 2–4 mm thick, but folding packs in so much of it that flattened out it would cover a newspaper spread."
+  },
+  "cerebellum": {
+    "blurb": "Tucked under the back of the cerebrum, it makes movement accurate, steady and well timed.",
+    "fact": "It takes up about a tenth of the brain by volume yet holds more neurons than all the rest of the brain put together."
+  },
+  "brainstem": {
+    "blurb": "Midbrain, pons and medulla stacked top to bottom — the only route between the brain and the spinal cord.",
+    "fact": "The basic rhythm of breathing and heartbeat is generated in the medulla at its lower end, which is why this short stretch matters far more than its size suggests."
+  },
+  "thalamus": {
+    "blurb": "A pair of egg-shaped grey masses sitting deep in the middle of the brain.",
+    "fact": "Every sense except smell changes trains here before its signals are allowed on to the cortex."
+  },
+  "hypothalamus": {
+    "blurb": "No bigger than an almond and sitting below the thalamus, it governs temperature, hunger and sleep, and reaches the body’s hormones through the pituitary.",
+    "fact": "A short private set of vessels links it straight down to the pituitary, so its hormones arrive without a lap of the whole circulation."
+  },
+  "corpus_callosum": {
+    "blurb": "A thick bundle of nerve fibres bridging the two cerebral hemispheres across the midline.",
+    "fact": "Made of more than 200 million fibres, it is the largest bundle of white matter anywhere in the brain."
+  },
+  "brain_ventricles": {
+    "blurb": "A set of connected cavities inside the brain, filled with cerebrospinal fluid.",
+    "fact": "The fluid is replaced three or four times a day, and floating in it cuts the brain’s effective weight roughly thirtyfold — otherwise its own mass would crush its underside."
+  },
+  "hippocampus": {
+    "blurb": "A pair of curved structures deep in the temporal lobes that turn experience into long-term memory.",
+    "fact": "It is named for the seahorse it resembles; people who lose both sides keep their old memories but can form no new ones."
+  },
+  "peritoneum": {
+    "blurb": "A smooth, thin membrane lining the wall of the abdomen and wrapping most of the organs inside it.",
+    "fact": "Only a few tens of millilitres of fluid lie between its two layers, and that thin film is what lets loops of bowel slide over one another instead of sticking."
+  },
+  "mesentery": {
+    "blurb": "A fan-shaped double sheet that slings the small intestine from the back wall of the abdomen, carrying its vessels and nerves inside.",
+    "fact": "Metres of bowel are gathered into this pleated fan to fit inside the abdomen, and every loop still keeps room to move."
+  },
+  "salivary_glands": {
+    "blurb": "The submandibular and sublingual glands sit under the floor of the mouth and deliver saliva through short ducts.",
+    "fact": "A person makes on the order of a litre of saliva a day, most of it from the submandibular gland."
+  },
+  "cephalic_veins": {
+    "blurb": "Runs up the outer side of the arm and dives deep in the groove between deltoid and pectoralis major at the front of the shoulder.",
+    "fact": "The \"cephalic\" in its name is a translation accident: the Arabic word meant \"outer\", and was mistaken for the Greek word for \"head\"."
+  },
+  "basilic_veins": {
+    "blurb": "Runs up the inner side of the arm and pierces the deep fascia halfway up before joining the axillary vein.",
+    "fact": "A slanting branch links it to the cephalic vein at the crook of the elbow, and that connection is usually the one a needle finds when blood is taken."
+  },
+  "small_saphenous_veins": {
+    "blurb": "Climbs from the outer side of the foot up the middle of the back of the calf and joins the deep veins behind the knee.",
+    "fact": "It takes the back of the calf while the great saphenous takes the inner side, and between them they drain the whole superficial layer of the lower leg."
+  },
+  "popliteal_veins": {
+    "blurb": "Gathers the deep veins of the calf behind the knee and continues upwards as the femoral vein.",
+    "fact": "Three things lie in a fixed order in that hollow: the vein nearest the surface, the artery deeper, and the nerve to the outer side."
+  },
+  "tibial_veins": {
+    "blurb": "The anterior and posterior tibial veins each accompany the artery of the same name and merge behind the knee into the popliteal vein.",
+    "fact": "One artery is usually flanked by two veins carrying the same name, so the \"posterior tibial vein\" is in practice usually a pair."
+  },
+  "lumbar_arteries": {
+    "blurb": "Paired branches leaving the back of the abdominal aorta and curving round the lumbar vertebrae to supply the muscles of the back and the spinal cord.",
+    "fact": "The aorta gives off few paired branches along its length, and these are the tidiest of them: one pair to each lumbar vertebra."
+  },
+  "posterior_intercostal_arteries": {
+    "blurb": "Branches of the thoracic aorta that run forwards in the groove along the lower edge of each rib, supplying the chest wall.",
+    "fact": "It shelters in a groove under the lower edge of each rib, and where that groove sits is what decides which side of a rib a chest needle goes in."
+  },
+  "iliotibial_tract": {
+    "blurb": "A long, thick band of fascia down the outside of the thigh, running from the hip to the top of the shin bone.",
+    "fact": "It cannot contract on its own; two muscles at its upper end tension it, and that cable is what holds the pelvis level when you stand on one leg."
+  },
+  "pharyngeal_constrictors": {
+    "blurb": "Three pairs of flat muscles wrapped around the wall of the throat, tightening from the top down as you swallow.",
+    "fact": "The three pairs overlap like stacked funnels, each squeezing down onto the next, which is what stops a mouthful travelling back up."
+  },
+  "serratus_posterior": {
+    "blurb": "Two groups lying deep in the back at a slant, one pulling the ribs upwards and the other pulling them down.",
+    "fact": "The upper group lifts ribs to help you breathe in while the lower group pulls them down to help you breathe out — an unusual pair working in opposite directions."
   }
 }

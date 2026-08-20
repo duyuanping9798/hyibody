@@ -68,6 +68,7 @@ describe('奥秘内容契约', () => {
       'hand',
       'head',
       'heartbeat',
+      'inside_the_brain',
       'leg',
       'leg_blood',
       'nerve',

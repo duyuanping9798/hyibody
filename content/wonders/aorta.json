@@ -13,7 +13,9 @@
     "celiac_trunk",
     "renal_arteries",
     "iliac_arteries",
-    "femoral_arteries"
+    "femoral_arteries",
+    "lumbar_arteries",
+    "posterior_intercostal_arteries"
   ],
   "steps": [
     {
@@ -54,6 +56,16 @@
     },
     {
       "text": {
+        "zh": "下行途中它一直在往两侧发小支。胸段每一对肋骨的下缘都接一条，钻进骨头下那道沟里往前走。",
+        "en": "All the way down it keeps throwing off small side branches. In the chest one runs to the lower edge of every pair of ribs, slipping into the groove beneath the bone."
+      },
+      "layer": 0.8,
+      "selected": "posterior_intercostal_arteries",
+      "from": "back",
+      "durationMs": 10000
+    },
+    {
+      "text": {
         "zh": "腹腔干短到几乎看不出是一段血管，更像主动脉侧壁上直接开的一个口。就这么一小截，供着肝、胃和脾三家。",
         "en": "The coeliac trunk is so short it hardly reads as a length of vessel at all — more like a hole opened straight in the aortic wall. That stub alone supplies liver, stomach and spleen."
       },
@@ -87,6 +99,16 @@
       "layer": 0.8,
       "selected": "femoral_arteries",
       "durationMs": 11000
+    },
+    {
+      "text": {
+        "zh": "过了肾动脉，同样的规律还在继续：一节腰椎配一对，绕着椎体向后走。整条干线的分支表比想象中规整。",
+        "en": "Past the kidney branches the same pattern carries on: one pair for each lumbar vertebra, curving backwards around the bone. The branch list of this trunk is tidier than you would guess."
+      },
+      "layer": 0.8,
+      "selected": "lumbar_arteries",
+      "from": "back",
+      "durationMs": 10500
     },
     {
       "text": {

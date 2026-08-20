@@ -11,7 +11,10 @@
     "popliteal_arteries",
     "tibial_arteries",
     "femoral_veins",
-    "great_saphenous_veins"
+    "great_saphenous_veins",
+    "small_saphenous_veins",
+    "popliteal_veins",
+    "tibial_veins"
   ],
   "steps": [
     {
@@ -55,6 +58,16 @@
     },
     {
       "text": {
+        "zh": "回程从脚开始。深层这几条紧贴着同名动脉往上走，一条动脉两边常常各夹一条静脉。",
+        "en": "The way back starts at the foot. These deep ones hug the arteries of the same name as they climb, an artery commonly flanked by a vein on either side."
+      },
+      "layer": 0.8,
+      "selected": "tibial_veins",
+      "from": "front",
+      "durationMs": 9500
+    },
+    {
+      "text": {
         "zh": "回程走的是紧贴动脉的这一条。两根管子被同一层筋膜箍住，上行那根每搏一次就把它挤扁一点——泵就在旁边，白蹭一份力。",
         "en": "The return runs in the vessel hugging the artery. One layer of fascia binds the two tubes together, so each beat of the upward one flattens the other a little — a free push from the pump next door."
       },
@@ -62,6 +75,16 @@
       "selected": "femoral_veins",
       "from": "front",
       "durationMs": 12000
+    },
+    {
+      "text": {
+        "zh": "到膝后它们并成一条。这个窝里的排列顺序从不改变：静脉贴着表面，动脉压在它下面，神经再往外一点。",
+        "en": "Behind the knee they merge into one. The order inside that hollow never varies: the vein nearest the surface, the artery pressed beneath it, and the nerve a little further out."
+      },
+      "layer": 0.8,
+      "selected": "popliteal_veins",
+      "from": "back",
+      "durationMs": 10500
     },
     {
       "text": {
@@ -90,6 +113,16 @@
       "layer": 0.75,
       "preset": "hero",
       "durationMs": 12500
+    },
+    {
+      "text": {
+        "zh": "浅层其实是两条分工。刚才那条包了内侧，这一条从足外侧起步，顺着腓肠肌正中往上。",
+        "en": "The superficial layer is really a job split between two. The one we just saw takes the inner side; this one starts on the outer edge of the foot and runs up the middle of the calf muscle."
+      },
+      "layer": 0.8,
+      "selected": "small_saphenous_veins",
+      "from": "back",
+      "durationMs": 9500
     }
   ]
 }

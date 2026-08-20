@@ -18,7 +18,7 @@ import { useSafeInsets } from './useSafeInsets';
 import { WONDERS } from '../wonders';
 import { bindViewer, toUrlState, useUiStore } from './store';
 import { Dock } from './Dock';
-import { InfoIcon, SearchIcon, ShareIcon } from './Icon';
+import { InfoIcon, ShareIcon } from './Icon';
 import { WonderMenu, WonderPlayer } from './WonderPlayer';
 import './ui.css';
 
@@ -69,8 +69,6 @@ export function App() {
   const loadState = useUiStore((s) => s.loadState);
   const manifest = useUiStore((s) => s.manifest);
   const setAttributionOpen = useUiStore((s) => s.setAttributionOpen);
-  const searchOpen = useUiStore((s) => s.searchOpen);
-  const setSearchOpen = useUiStore((s) => s.setSearchOpen);
   const wonder = useUiStore((s) => s.wonder);
   const [shareOpen, setShareOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
@@ -139,15 +137,6 @@ export function App() {
           <div className="hyi-topbar">
             <WonderMenu />
             <button
-              className={`hyi-btn hyi-btn-icon${searchOpen ? ' active' : ''}`}
-              aria-label={t.searchTitle}
-              title={`${t.searchTitle}（/）`}
-              aria-expanded={searchOpen}
-              onClick={() => setSearchOpen(!searchOpen)}
-            >
-              <SearchIcon />
-            </button>
-            <button
               className="hyi-btn hyi-btn-icon"
               aria-label={t.shareTitle}
               title={t.shareTitle}
@@ -179,7 +168,7 @@ export function App() {
               {lang === 'zh' ? 'EN' : '中文'}
             </button>
           </div>
-          {searchOpen && <SearchBox />}
+          <SearchBox />
           <Dock />
           {!wonder && <StructureLabel />}
           {!wonder && <InfoCard />}

@@ -15,7 +15,8 @@
     "vastus_muscles",
     "sartorius",
     "adductor_muscles",
-    "external_oblique"
+    "external_oblique",
+    "iliotibial_tract"
   ],
   "steps": [
     {
@@ -46,6 +47,16 @@
       "selected": "tensor_fasciae_latae",
       "from": "right",
       "durationMs": 11500
+    },
+    {
+      "text": {
+        "zh": "那条厚筋膜带值得单独看一眼。它自己没有肌纤维，绷紧全靠上端那两块——它是被拉住的绳，不是拉人的手。",
+        "en": "That thick band of fascia deserves a look of its own. It has no muscle fibres at all; everything that tightens it comes from the two above — it is the rope being pulled, not the hand pulling."
+      },
+      "layer": 0.2,
+      "selected": "iliotibial_tract",
+      "from": "right",
+      "durationMs": 11000
     },
     {
       "text": {

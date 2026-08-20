@@ -12,7 +12,9 @@
     "spleen",
     "portal_tributaries",
     "renal_veins",
-    "azygos_vein"
+    "azygos_vein",
+    "peritoneum",
+    "mesentery"
   ],
   "steps": [
     {
@@ -46,6 +48,16 @@
     },
     {
       "text": {
+        "zh": "那层膜本身也值得看：扇形的双层，一边固定在腹后壁上，一边散开去吊住每一段肠子。",
+        "en": "The membrane itself is worth a look: a double sheet fanning out, fixed along the back wall at one edge and spreading at the other to carry every loop of bowel."
+      },
+      "layer": 0.66,
+      "selected": "mesentery",
+      "from": "front",
+      "durationMs": 9500
+    },
+    {
+      "text": {
         "zh": "左上腹这个器官接的是同一批血，但它做的事完全不同：它在血里挑拣，把该退役的红细胞拦下来。",
         "en": "This organ high on the left takes blood from the same supply, but does something else entirely with it: it sorts, holding back the red cells that have served their time."
       },
@@ -53,6 +65,16 @@
       "selected": "spleen",
       "from": "left",
       "durationMs": 10000
+    },
+    {
+      "text": {
+        "zh": "再往外还有一层更大的，衬着整个腹腔的内壁，又翻回来包住器官。器官不是堆在腔里的，是被这层膜兜住的。",
+        "en": "Outside that lies a larger one still, lining the whole cavity and folding back to wrap the organs. They are not piled loose in there; this sheet holds them."
+      },
+      "layer": 0.66,
+      "selected": "peritoneum",
+      "from": "front",
+      "durationMs": 11000
     },
     {
       "text": {

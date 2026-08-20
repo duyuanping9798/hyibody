@@ -18,7 +18,9 @@
     "liver",
     "gallbladder",
     "pancreas",
-    "hepatic_portal_vein"
+    "hepatic_portal_vein",
+    "pharyngeal_constrictors",
+    "salivary_glands"
   ],
   "steps": [
     {
@@ -32,6 +34,16 @@
     },
     {
       "text": {
+        "zh": "搅拌的同时，口底两侧的腺体正把唾液送进来。淀粉的分解其实在嘴里就已经开始了。",
+        "en": "While it churns, glands under the floor of the mouth are already feeding in saliva. The breakdown of starch begins before the food has even left your mouth."
+      },
+      "layer": 0.6,
+      "selected": "salivary_glands",
+      "from": "front",
+      "durationMs": 9500
+    },
+    {
+      "text": {
         "zh": "食管接手：这条 25 厘米的肌肉滑梯用波浪式收缩把食物送进胃里——就算倒立，饭也照样能咽下去。",
         "en": "The esophagus takes over, squeezing food downward in waves — it works even upside-down."
       },
@@ -41,12 +53,22 @@
     },
     {
       "text": {
-        "zh": "胃是一台强酸搅拌机：胃酸浓到能溶解金属，胃壁靠每隔几天换一层新黏膜保护自己。",
-        "en": "The stomach is an acid mixer — strong enough to dissolve metal, protected by a lining renewed every few days."
+        "zh": "咽下去那一下不是靠重力。咽壁上三对环形的肌肉一层接一层地从上往下收紧，把这口食物推走。",
+        "en": "Swallowing is not gravity doing the work. Three rings of muscle in the wall of the throat tighten one after another from the top down, pushing the mouthful on its way."
+      },
+      "layer": 0.24,
+      "selected": "pharyngeal_constrictors",
+      "from": "front",
+      "durationMs": 10000
+    },
+    {
+      "text": {
+        "zh": "胃是一台搅拌机，里面泡着 pH 一点五上下的稀盐酸。胃壁受得住，是因为它每隔几天就换一层新的黏膜。",
+        "en": "The stomach is a mixer holding dilute hydrochloric acid at around pH 1.5. Its wall survives because it grows itself a fresh lining every few days."
       },
       "layer": 0.7,
       "selected": "stomach",
-      "durationMs": 9000
+      "durationMs": 10500
     },
     {
       "text": {

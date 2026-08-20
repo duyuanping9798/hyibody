@@ -1,14 +1,19 @@
 import { STRINGS } from './i18n';
 import { useEffect, useRef, useState } from 'react';
 import { searchStructures } from '../data/search';
+import { SearchIcon } from './Icon';
 import { useUiStore } from './store';
 
 /**
  * 搜索框：中英文子串匹配，点选或回车后选中并聚焦（KICKOFF 第 6 节）。
  * 键盘可用：`/` 展开并聚焦到这里，↑↓ 在结果里走，回车选中，Esc 收起。
  *
- * 默认收起成顶栏上的一个放大镜（界面减负）：一个空搜索框常年占着左上角
- * 三百像素，实际上大部分时间没人用。
+ * 常驻显示：桌面端在左上角，手机上是顶栏下面一整条。
+ *
+ * 曾经收起成顶栏上的一个放大镜（"界面减负"），理由是空搜索框常年占着左上角
+ * 三百像素。2026-08-20 用户要求改回来——收起省下的那点空间，代价是最常用的
+ * 入口没人找得到，尤其在手机上：一个放大镜图标看不出是搜索还是别的什么。
+ * 发现率优先于省空间。
  */
 export function SearchBox() {
   const lang = useUiStore((s) => s.lang);
@@ -16,7 +21,6 @@ export function SearchBox() {
   const manifest = useUiStore((s) => s.manifest);
   const select = useUiStore((s) => s.select);
   const focus = useUiStore((s) => s.focus);
-  const setSearchOpen = useUiStore((s) => s.setSearchOpen);
   const [query, setQuery] = useState('');
   const [cursor, setCursor] = useState(0);
   const listRef = useRef<HTMLDivElement>(null);
@@ -29,8 +33,6 @@ export function SearchBox() {
   useEffect(() => {
     listRef.current?.children[cursor]?.scrollIntoView({ block: 'nearest' });
   }, [cursor]);
-  // 展开即聚焦，省得再点一下
-  useEffect(() => inputRef.current?.focus(), []);
 
   if (!manifest) return null;
 
@@ -38,11 +40,15 @@ export function SearchBox() {
     select(slug);
     focus(slug);
     setQuery('');
-    setSearchOpen(false);
+    // 搜索框不再收起，所以选完把焦点交还给画布，接着按 Esc / 方向键才是操作三维
+    inputRef.current?.blur();
   }
 
   return (
     <div className="hyi-panel hyi-search">
+      <span className="hyi-search-icon" aria-hidden>
+        <SearchIcon />
+      </span>
       <input
         ref={inputRef}
         type="search"
@@ -56,10 +62,10 @@ export function SearchBox() {
         onChange={(e) => setQuery(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === 'Escape') {
-            // 先清空 / 收起搜索框，别一路冒泡到全局 Esc 把选中也清了
+            // 先清空、再交还焦点，别一路冒泡到全局 Esc 把选中也清了
             e.stopPropagation();
             if (query !== '') setQuery('');
-            else setSearchOpen(false);
+            else inputRef.current?.blur();
             return;
           }
           if (hits.length === 0) return;
