@@ -345,13 +345,15 @@ export class HyiViewer extends EventTarget {
       this.manifest = await loadManifest(this.options.base);
       const systems = this.manifest.systems;
       const first = systems.filter((s) => (FIRST_SCREEN_SYSTEMS as string[]).includes(s.id));
+      // 表里没有的系统排到最后：indexOf 找不到会返回 -1，直接拿去比大小
+      // 等于把陌生系统排到骨骼**前面**——将来加个系统就会莫名其妙插队到首位
+      const order = (id: string) => {
+        const i = (BACKGROUND_ORDER as string[]).indexOf(id);
+        return i < 0 ? BACKGROUND_ORDER.length : i;
+      };
       const rest = systems
         .filter((s) => !(FIRST_SCREEN_SYSTEMS as string[]).includes(s.id))
-        .sort(
-          (a, b) =>
-            (BACKGROUND_ORDER as string[]).indexOf(a.id) -
-            (BACKGROUND_ORDER as string[]).indexOf(b.id),
-        );
+        .sort((a, b) => order(a.id) - order(b.id));
       // 占位 manifest（无皮肤/骨骼）时退化为全量加载
       const firstBatch = first.length > 0 ? first : systems;
       let loaded = 0;
