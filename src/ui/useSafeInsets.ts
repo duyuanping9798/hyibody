@@ -77,6 +77,15 @@ export function useSafeInsets(): void {
       const cardH = card ? Math.round(card.getBoundingClientRect().height) : 0;
       const cap = Math.round(rect.height * 0.4);
       document.documentElement.style.setProperty('--hyi-info-h', `${Math.min(cardH, cap)}px`);
+
+      // 底部那条全局控制条的真实高度：平时是分层滑块，播奥秘时换成控制条，
+      // 两者高度差一截。手机上抽屉要叠在它上面，写死常数迟早对不上——
+      // 事实上就对不上了：v0.8 把滑块从 90 px 压到 39 px，而这里的偏移量
+      // 一直还按 90 算，于是每块手机屏上白白空出约 60 px（人类截图里那道缝）。
+      const bar =
+        document.querySelector('.hyi-wonder') ?? document.querySelector('.hyi-layer-slider');
+      const barH = bar ? Math.round(bar.getBoundingClientRect().height) : 0;
+      document.documentElement.style.setProperty('--hyi-bottombar-h', `${barH}px`);
     };
     const schedule = () => {
       cancelAnimationFrame(frame);

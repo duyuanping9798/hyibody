@@ -89,6 +89,8 @@
   "qualityUnavailable": "Software rendering detected — locked to basic quality",
   "infoFactTitle": "Did you know",
   "relatedWonders": "{n} wonders about this",
+  "skinAtRegion": "Skin · {region}",
+  "beneathSkin": "Underneath",
   "infoUnreviewed": "AI draft, pending review",
   "infoTagSystem": "System",
   "infoTagRegion": "Region",

@@ -89,6 +89,8 @@
   "qualityUnavailable": "当前设备用软件渲染，已自动降到基础画质",
   "infoFactTitle": "你知道吗",
   "relatedWonders": "关于它的 {n} 则奥秘",
+  "skinAtRegion": "{region}的皮肤",
+  "beneathSkin": "这层皮下面是",
   "infoUnreviewed": "AI 初稿，待审校",
   "infoTagSystem": "系统",
   "infoTagRegion": "部位",

@@ -48,6 +48,7 @@ export function InfoCard() {
   const startWonder = useUiStore((s) => s.startWonder);
   const infoExpanded = useUiStore((s) => s.infoExpanded);
   const setInfoExpanded = useUiStore((s) => s.setInfoExpanded);
+  const skinProbe = useUiStore((s) => s.skinProbe);
 
   if (!selected || !manifest) return null;
   const info = manifest.structures[selected];
@@ -58,6 +59,18 @@ export function InfoCard() {
   const children = Object.entries(manifest.structures).filter(([, s]) => s.parent === selected);
   const insideParent = info.parent;
   const definition = definitionsFor(lang)[selected];
+  /**
+   * 皮肤是一整张外壳、只有一个结构：不做点什么的话，点头顶和点小腿弹出的是
+   * 同一张卡片、同一句话。反查出的部位名进标题，反查出的近邻进"这层皮下面是"，
+   * 皮肤于是从一条死路变成入口。
+   */
+  const probe = selected === 'skin' ? skinProbe : null;
+  const displayName = probe
+    ? t.skinAtRegion.replace('{region}', t.regions[probe.region] ?? probe.region)
+    : lang === 'zh'
+      ? info.zh
+      : info.en;
+  const beneath = (probe?.nearby ?? []).filter((slug) => manifest.structures[slug]);
   // 讲到这个结构的奥秘。内部件没有自己的内容时回退到父结构（见 wondersForStructure）
   const related = wondersForStructure(selected, insideParent);
 
@@ -72,7 +85,7 @@ export function InfoCard() {
       >
         <span className="hyi-info-dot" style={{ background: systemDot(system) }} aria-hidden />
         <span className="hyi-info-name">
-          <h2>{lang === 'zh' ? info.zh : info.en}</h2>
+          <h2>{displayName}</h2>
           <span className="en">
             {lang === 'zh' ? info.en : info.zh}
             {/* 本体 id：优先 FMA，BP3D 没有该概念时退到 HRA 给的 UBERON */}
@@ -88,7 +101,7 @@ export function InfoCard() {
       <div className="hyi-info-details">
         <ul className="hyi-tags">
           <li>{t.systems[system]}</li>
-          <li>{t.regions[info.region]}</li>
+          <li>{t.regions[probe?.region ?? info.region]}</li>
           {info.side !== 'none' && <li>{t.sides[info.side]}</li>}
         </ul>
       </div>
@@ -110,6 +123,27 @@ export function InfoCard() {
           </span>
           {definition && <span className="hyi-review-tag"> · {reviewLabel(lang, t)}</span>}
         </p>
+
+        {beneath.length > 0 && (
+          <section className="hyi-beneath" data-testid="beneath-skin">
+            <h3>{t.beneathSkin}</h3>
+            <div className="chips">
+              {beneath.map((slug) => (
+                <button
+                  key={slug}
+                  onClick={() => {
+                    // 跟搜索结果同一套：选中 + 聚焦。focus 会顺手把分层挪到
+                    // 该系统的主场，否则相机飞进去只看到一团半透明组织
+                    select(slug);
+                    focus(slug);
+                  }}
+                >
+                  {lang === 'zh' ? manifest.structures[slug]!.zh : manifest.structures[slug]!.en}
+                </button>
+              ))}
+            </div>
+          </section>
+        )}
 
         {related.length > 0 && (
           <section className="hyi-related">

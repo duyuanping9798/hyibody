@@ -521,6 +521,39 @@
   color: #ff8080;
 }
 
+/* 「这层皮下面是」——皮肤只有一个结构，点哪儿都是同一张卡片；
+   反查出来的近邻做成一排可点的小标签，皮肤就从死路变成了入口。 */
+.hyi-beneath {
+  margin-top: 10px;
+}
+.hyi-beneath h3 {
+  margin: 0 0 6px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--hyi-text-dim);
+  font-weight: 500;
+}
+.hyi-beneath .chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.hyi-beneath button {
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--hyi-line);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--hyi-text);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.hyi-beneath button:hover,
+.hyi-beneath button:focus-visible {
+  border-color: var(--hyi-accent-dim);
+  background: rgba(79, 227, 224, 0.12);
+}
+
 /* ---- 创作面板（UGC）----
    放左列：右列被抽屉与信息卡占了，而创作时最需要同时看得见信息卡
    （挑结构靠它）。高度封顶，底下留出三维给用户调画面——这个面板存在的
@@ -1048,8 +1081,10 @@ body.hyi-kiosk .hyi-info .blurb {
 @media (max-width: 720px) {
   .hyi-dock {
     top: auto;
-    /* 分层滑块占了底部 8~98 px（面板高 90），抽屉得完全让开再留 8 px 空隙 */
-    bottom: 106px;
+    /* 抽屉要让开底部那条全局控制条，再留 8 px 空隙。高度由 useSafeInsets 量
+       真实 DOM 写进 --hyi-bottombar-h：写死常数对不上——v0.8 把滑块从 90 px
+       压到 39 px 之后，这里一直还按 90 算，白空出约 60 px。 */
+    bottom: calc(var(--hyi-bottombar-h, 90px) + 18px);
     left: 8px;
     right: 8px;
     width: auto;
@@ -1569,12 +1604,12 @@ body.hyi-kiosk .hyi-info .blurb {
   body:has(.hyi-info) .hyi-layer-slider {
     bottom: calc(var(--hyi-info-h, 46vh) + 10px);
   }
-  /* 抽屉叠在滑块之上：滑块在 --hyi-info-h + 10，高 90，再留 8 空隙。
-     曾经试过卡片打开就把抽屉藏起来，只换回 44 px（屏幕的 6.9%），
+  /* 抽屉叠在控制条之上：控制条在 --hyi-info-h + 10，高 --hyi-bottombar-h，
+     再留 8 空隙。曾经试过卡片打开就把抽屉藏起来，只换回 44 px（屏幕的 6.9%），
      代价却是一个控件在用户眼皮底下无解释地消失——不划算，撤了。
      真正的大头是信息卡本身那 326 px，得靠两段式抽屉解决。 */
   body:has(.hyi-info) .hyi-dock {
-    bottom: calc(var(--hyi-info-h, 46vh) + 108px);
+    bottom: calc(var(--hyi-info-h, 46vh) + var(--hyi-bottombar-h, 90px) + 18px);
   }
 }
 
@@ -1595,7 +1630,7 @@ body.hyi-kiosk .hyi-info .blurb {
       bottom: calc(var(--hyi-info-h, 46dvh) + 10px);
     }
     body:has(.hyi-info) .hyi-dock {
-      bottom: calc(var(--hyi-info-h, 46dvh) + 108px);
+      bottom: calc(var(--hyi-info-h, 46dvh) + var(--hyi-bottombar-h, 90px) + 18px);
     }
   }
 }

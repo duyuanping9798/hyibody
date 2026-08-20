@@ -92,8 +92,23 @@ export function createStructureMaterial(color: string | number): MeshStandardMat
  */
 function addFresnelRim(
   material: MeshStandardMaterial,
-  options: { color: Color; strength: number; power: number; alpha: number },
+  options: {
+    color: Color;
+    strength: number;
+    power: number;
+    alpha: number;
+    /**
+     * 只在这一层开始透明时才亮起来（`1.0` = 完全按透明度渐入）。
+     *
+     * 皮肤要这个。不透明的皮肤上挂一圈青边，看着不是人，是全息投影——
+     * 人类在手机上一眼就指出来了。但边缘光本身没错：它是"透视"这个身份的
+     * 视觉签名，只是**应该在皮肤开始透的时候才出现**。用材质自己的 `opacity`
+     * 当权重，分层滑块一动它自己就渐入，不需要额外的状态。
+     */
+    xrayOnly?: boolean;
+  },
 ): void {
+  const xrayOnly = options.xrayOnly === true;
   material.onBeforeCompile = (shader) => {
     shader.uniforms.uRimColor = { value: options.color };
     shader.uniforms.uRimStrength = { value: options.strength };
@@ -113,13 +128,14 @@ function addFresnelRim(
         `#include <dithering_fragment>
          float rimFacing = abs(dot(normalize(vNormal), normalize(vViewPosition)));
          float rim = pow(1.0 - clamp(rimFacing, 0.0, 1.0), uRimPower);
+         ${xrayOnly ? 'rim *= 1.0 - opacity;' : ''}
          gl_FragColor.rgb += uRimColor * rim * uRimStrength;
          gl_FragColor.a = clamp(gl_FragColor.a + rim * uRimAlpha * (1.0 - gl_FragColor.a), 0.0, 1.0);`,
       );
   };
   // onBeforeCompile 变了要让 three 重新编译
   material.customProgramCacheKey = () =>
-    `rim:${options.strength}:${options.power}:${options.alpha}`;
+    `rim:${options.strength}:${options.power}:${options.alpha}:${xrayOnly ? 'x' : 'o'}`;
 }
 
 /**
@@ -282,11 +298,18 @@ function addSkinDetail(
          float hyiSkinN = hyiSkinField(vSkinWorld, hyiSkinFadeV);
          roughnessFactor = clamp(roughnessFactor + (hyiSkinN - 0.5) * uSkinRough, 0.04, 1.0);`,
       )
-      // 肤色本身也不均匀：同一片皮肤有深有浅，纯色会立刻露出"这是个模型"
+      // 肤色本身也不均匀：同一片皮肤有深有浅，纯色会立刻露出"这是个模型"。
+      //
+      // 原来是整体乘一个 0.93–1.07 的亮度系数——那只会把噪声变成**脏点**
+      //（手机实拍上一片灰斑）。真皮肤的不均匀是**冷暖**的不均匀：血流多的地方偏红，
+      //  脂肪厚的地方偏黄。改成在冷暖之间插值，亮度基本不动。
       .replace(
         '#include <color_fragment>',
         `#include <color_fragment>
-         diffuseColor.rgb *= 0.93 + hyiSkinField(vSkinWorld, hyiSkinFade(vSkinWorld)) * 0.14;`,
+         {
+           float hyiTint = hyiSkinField(vSkinWorld, hyiSkinFade(vSkinWorld));
+           diffuseColor.rgb *= mix(vec3(0.97, 0.975, 1.0), vec3(1.04, 0.99, 0.95), hyiTint);
+         }`,
       )
       .replace(
         '#include <normal_fragment_begin>',
@@ -332,7 +355,9 @@ export function createSkinMaterial(color: string | number): MeshPhysicalMaterial
     // 皮脂那一点点反光，多一分就成了汗
     clearcoat: 0.05,
     clearcoatRoughness: 0.9,
-    envMapIntensity: 0.72,
+    // 0.72 → 0.55：手机实拍是一具**苍白的石膏像**。环境光是 RoomEnvironment，
+    // 又白又匀，给多了整个人就被洗成灰白；压下去之后基色的暖调才回得来。
+    envMapIntensity: 0.55,
     transparent: true,
     side: FrontSide,
     // 皮肤是一张 6 万面的减面外壳，精度不够：大隐静脉这类紧贴皮下的结构会从
@@ -342,21 +367,29 @@ export function createSkinMaterial(color: string | number): MeshPhysicalMaterial
     polygonOffsetFactor: -1,
     polygonOffsetUnits: -2,
   });
+  // 边缘光只在皮肤开始透明时渐入。不透明的皮肤挂一圈青边看着不是人，是全息投影
+  //（人类在手机上一眼指出来）；但它是"透视"的视觉签名，该留，只是要留在对的时候。
   addFresnelRim(material, {
     color: new Color(0x6fe0ee),
     strength: 0.42,
     power: 3.0,
     alpha: 0.55,
+    xrayOnly: true,
   });
   // 尺度按毫米给：粗的一层周期约 30 mm（皮下起伏），细的约 4 mm（颗粒感）。
   // strength 是法线扰动的倍率——梯度本身只有 0.05 量级，0.35 的话肉眼根本看不出。
   // 4.0 在全身远景下会糊成沙粒（实拍可见），所以细的那一层按 fwidth 淡出，
   // 倍率降到 2.5：远看只剩皮下起伏，凑近才浮出颗粒。
+  // 手机实拍的评价是"皮肤只是一个糙面"。三个数都调小了一档：
+  // 30 mm 的起伏在一张脸上就是疙瘩（改成 70 mm，读作肌肉与脂肪的柔和高低）；
+  // 4 mm 的毛孔在全身景下正好落在"半淡出"的尴尬区间、糊成沙粒（改成 2.2 mm，
+  // 远景直接淡光、凑近才浮出来）；法线扰动的倍率砍掉一半——原来那个量级
+  // 已经不是毛孔，是橘皮。
   addSkinDetail(material, {
-    coarse: 1 / 30,
-    fine: 1 / 4,
-    strength: 2.5,
-    roughVariation: 0.2,
+    coarse: 1 / 70,
+    fine: 1 / 2.2,
+    strength: 1.3,
+    roughVariation: 0.14,
   });
   return material;
 }

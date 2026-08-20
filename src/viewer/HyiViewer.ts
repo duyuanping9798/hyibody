@@ -46,6 +46,7 @@ import { CAP_MIN_OPACITY, ClipCaps } from './clipCaps';
 import { clipPlaneFor, clipPosForCoordinate, type ClipAxis } from './clipping';
 import { applyHighlight } from './highlight';
 import { computeSystemOpacity, PICKABLE_OPACITY_THRESHOLD } from './layers';
+import { probeBody, type Bbox, type ProbeResult, type ProbeTarget } from './regions';
 import {
   colorForStructure,
   createSystemMaterial,
@@ -810,7 +811,40 @@ export class HyiViewer extends EventTarget {
     }
     const entry = this.pickAt(e.clientX, e.clientY);
     this.select(entry ? entry.slug : null);
+    // 点在皮肤上时额外报一次"这是身体的哪儿、底下是什么"。皮肤是一整张外壳，
+    // 只有一个结构，不这么做的话点头顶和点小腿弹出的是同一张卡片。
+    if (entry?.system === 'skin') {
+      const point = this.pickPoint(e.clientX, e.clientY);
+      this.dispatchEvent(new CustomEvent('probe', { detail: point ? this.probeAt(point) : null }));
+    } else {
+      this.dispatchEvent(new CustomEvent('probe', { detail: null }));
+    }
   };
+
+  /**
+   * 反查命中点属于哪个部位、底下压着哪几个结构。
+   *
+   * 目标表只按 manifest 建一次：235 个结构里排掉皮肤本身和 `region: whole`
+   * 这类"罩住一切"的条目，剩下的都是能指得出地方的。
+   */
+  private probeTargets: ProbeTarget[] | null = null;
+
+  private probeAt(point: Vector3): ProbeResult | null {
+    const manifest = this.manifest;
+    if (!manifest) return null;
+    if (!this.probeTargets) {
+      this.probeTargets = Object.entries(manifest.structures)
+        .filter(([, info]) => info.system !== 'skin' && info.region !== 'whole' && info.bbox)
+        .map(([slug, info]) => ({
+          slug,
+          region: info.region,
+          bbox: info.bbox as unknown as Bbox,
+        }));
+    }
+    const body = manifest.structures.skin?.bbox as unknown as Bbox | undefined;
+    if (!body) return null;
+    return probeBody([point.x, point.y, point.z], this.probeTargets, body);
+  }
 
   /**
    * 双击/双指双击：把轨道中心挪到点中的那个点上，并凑近一半。

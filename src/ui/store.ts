@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { STRINGS, type Locale } from './i18n';
-import { SYSTEM_IDS, type Manifest, type SystemId } from '../data/types';
+import { SYSTEM_IDS, type Manifest, type Region, type SystemId } from '../data/types';
 import type { ViewerUrlState } from '../data/urlState';
 import { WonderEngine, type Wonder, type WonderStep } from '../wonders/engine';
 import { splitClauses } from '../wonders/caption';
@@ -82,6 +82,11 @@ interface UiState {
   canNarrate: boolean;
   /** 语音讲解开着没有（记在 localStorage，下次进来还是这个设置） */
   narrating: boolean;
+  /**
+   * 点在皮肤上时反查出来的"这是哪儿、底下是什么"。
+   * 皮肤是一整张外壳、只有一个结构，没有它的话点头顶和点小腿是同一张卡片。
+   */
+  skinProbe: { region: Region; nearby: string[] } | null;
   /** 正在编辑的自创奥秘草稿；null = 没开创作面板 */
   draft: Wonder | null;
   /** 创作面板里正在改哪一步（null = 只看列表） */
@@ -312,12 +317,23 @@ export function bindViewer(v: HyiViewer | null): void {
     const slug = (e as CustomEvent<{ slug: string | null }>).detail.slug;
     // 抽屉不再自动收起：信息卡与抽屉在两边（小屏上 CSS 会把抽屉抬到卡片之上），
     // 原来"点一下结构面板就关了"在桌面端很别扭——刚调完不透明度就得重开
-    useUiStore.setState({ selected: slug, infoExpanded: false });
+    useUiStore.setState({
+      selected: slug,
+      infoExpanded: false,
+      // 换选别的结构就把皮肤的部位反查清掉；点皮肤时紧跟着的 'probe' 事件会重新填上
+      ...(slug === 'skin' ? {} : { skinProbe: null }),
+    });
   });
   useUiStore.setState({ quality: v.getQuality(), qualityToggleable: v.canToggleQuality() });
   v.addEventListener('progress', (e) => {
     const detail = (e as CustomEvent<{ loaded: number; total: number }>).detail;
     useUiStore.setState({ progress: detail });
+  });
+  v.addEventListener('probe', (e) => {
+    const detail = (e as CustomEvent<{ region: Region | null; nearby: string[] } | null>).detail;
+    useUiStore.setState({
+      skinProbe: detail?.region ? { region: detail.region, nearby: detail.nearby } : null,
+    });
   });
   v.addEventListener('systemloaded', (e) => {
     const system = (e as CustomEvent<{ system: string }>).detail.system;
@@ -371,6 +387,7 @@ export const useUiStore = create<UiState>((set, get) => ({
   canRecordVideo: canRecord(),
   canNarrate: canSpeak(),
   narrating: readNarrationPref(),
+  skinProbe: null,
   draft: null,
   draftStep: null,
   recording: false,

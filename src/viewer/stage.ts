@@ -66,7 +66,10 @@ export function createStage(): Stage {
   fill.position.set(-1800, -1400, 400);
   root.add(fill);
 
-  const rim = new DirectionalLight(0x6fe6ff, 0.85);
+  // 0.85 → 0.62：这盏青色背光是"科技感"的一半，对骨骼血管很对味，
+  // 但打在不透明的皮肤上就是一层冷调镀边——人类的手机实拍里，
+  // 人整个偏灰白。压一档，暖调的主光才占得住。
+  const rim = new DirectionalLight(0x6fe6ff, 0.62);
   rim.position.set(-900, 2400, 1500);
   root.add(rim);
 
