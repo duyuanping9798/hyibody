@@ -36,12 +36,18 @@ MAX_FILE_BYTES = 50_000_000  # 仓库单文件上限（CLAUDE.md）
 # 2026-08-18 数据质量升级后收紧到本次验收标准（CLAUDE.md 的硬上限是 40 MB / 5 MB）
 MAX_TOTAL_BYTES = 25_000_000  # 全部资产
 MAX_FIRST_SCREEN_BYTES = 4_000_000  # 首屏：皮肤 + 骨骼 + manifest
-MAX_TOTAL_TRIANGLES = 2_000_000
-# 面数目标区间：低于下限说明网格被压得太狠（观感粗糙），只警告不报错
-# 2026-08-18 修订（用户拍板"完整性和效果优先"）：目标区间 100–180 万，硬上限 200 万。
-# 换 HRA 数据源之后结构从 135 涨到近 200 个，1.3 万上限已经卡住内容扩展。
-TARGET_TRIANGLES_MIN = 1_000_000
-TARGET_TRIANGLES_MAX = 1_800_000
+MAX_TOTAL_TRIANGLES = 3_000_000
+# 面数目标区间：低于下限说明网格被压得太狠（观感粗糙），只警告不报错。
+#
+# 2026-08-18 修订（用户拍板"完整性和效果优先"）：100–180 万，硬上限 200 万。
+# 2026-08-20 修订（用户拍板走"B 计划"）：**150–290 万，硬上限 300 万**。
+# 单结构上限同时从"一刀切 3 万"改成按可见性分系统（见 bp3d.FACES_MAX_BY_SYSTEM）。
+# 依据：我们用到的 924 件 BP3D 元素网格原生共 410 万面，而当时只保留 39%——
+# 人类的评价是"离想要的效果还差 2/3"，量出来几乎是字面精确的。
+# **代价照旧写在明处：中端安卓 30 fps 这条只能由人类真机复核，这一档正是为了让那次
+# 复核有意义——先把额度花对地方，再测，而不是一次跳到全量 458 万。**
+TARGET_TRIANGLES_MIN = 1_500_000
+TARGET_TRIANGLES_MAX = 2_900_000
 # 每结构一份材质一次绘制 + 背景/描边等开销余量，静态估算不超过同屏 600 draw call
 MAX_STRUCTURES_FOR_DRAWCALLS = 580
 VALID_SOURCES = ("bp3d", "bp3d_partof", "hra", "cc0")
@@ -87,7 +93,7 @@ def validate_structures(entries: list[dict], chk: Checker, list_name: str = "str
             # 用 HRA 给的 UBERON 顶上，两者都没有才算缺
             chk.error(f"{list_name}: {slug} fma 与 uberon 不能都为空")
         tf = e.get("target_faces")
-        cap = max_faces_for(slug)
+        cap = max_faces_for(slug, e.get("system"))
         if not isinstance(tf, int) or not FACES_MIN <= tf <= cap:
             chk.error(f"{list_name}: {slug} target_faces {tf!r} 不在 {FACES_MIN}–{cap}")
         if e.get("priority") not in (1, 2, 3):
@@ -194,6 +200,8 @@ def glb_extras_ok(path: Path) -> list[str]:
 
 
 def validate_assets(manifest: dict, chk: Checker) -> None:
+    # 单结构上限按系统分档，所以这里要能从 manifest 反查 slug → system
+    structures = manifest.get("structures", {})
     total_bytes = (ASSETS_DIR / "manifest.json").stat().st_size
     total_tris = 0
     first_screen = (ASSETS_DIR / "manifest.json").stat().st_size
@@ -219,7 +227,7 @@ def validate_assets(manifest: dict, chk: Checker) -> None:
             chk.error(f"{glb.name}: glb 节点 {slug} 不在 manifest 中")
         for slug, tris in counts.items():
             total_tris += tris
-            cap = max_faces_for(slug)
+            cap = max_faces_for(slug, structures.get(slug, {}).get("system"))
             if tris > cap * 1.05:
                 chk.error(f"{glb.name}: {slug} {tris} 面超过单结构上限 {cap}")
             elif tris < 100:

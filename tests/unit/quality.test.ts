@@ -48,7 +48,16 @@ describe('quality: 画质档位选择', () => {
     expect(
       QUALITY_CAPS.medium.outline && QUALITY_CAPS.medium.bloom && QUALITY_CAPS.medium.smaa,
     ).toBe(true);
-    expect(QUALITY_CAPS.medium.ssao || QUALITY_CAPS.medium.softShadows).toBe(false);
+    // AO 在 medium 也开：它不是锦上添花，是"皮肤看起来有没有肉"的分界线，
+    // 而 medium 正是绝大多数手机拿到的档位。代价靠**降规格**买单而不是关掉——
+    // 半分辨率 + 更少采样。软阴影仍然只在 high。
+    expect(QUALITY_CAPS.medium.ssao).toBe(true);
+    expect(QUALITY_CAPS.medium.aoScale).toBeLessThan(1);
+    expect(QUALITY_CAPS.medium.aoSamples).toBeLessThan(QUALITY_CAPS.high.aoSamples);
+    expect(QUALITY_CAPS.medium.softShadows).toBe(false);
     expect(QUALITY_CAPS.high.ssao && QUALITY_CAPS.high.softShadows).toBe(true);
+    expect(QUALITY_CAPS.high.aoScale).toBe(1);
+    // low 是软件渲染兜底：后处理整条链都不走，AO 自然也不能开
+    expect(QUALITY_CAPS.low.ssao).toBe(false);
   });
 });

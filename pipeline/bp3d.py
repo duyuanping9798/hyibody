@@ -42,18 +42,64 @@ SOURCE_SETS = {"bp3d": "isa", "bp3d_partof": "partof"}
 HRA_SOURCE = "hra"
 
 # 面数预算（CLAUDE.md，2026-08-18 数据质量升级修订——见 docs/DECISIONS.md）：
-# 单结构下限 500、常规上限 30,000（groups.yaml 的 max_target_faces），
-# 皮肤这类整张外壳上限 60,000；总量目标 100–130 万，硬上限仍 150 万。
+# 单结构下限 500、常规上限 30,000（groups.yaml 的 max_target_faces）；
+# 总量目标 100–180 万，硬上限 200 万。
 FACES_MIN = 500
 FACES_MAX = 6000
 FACES_MAX_LARGE = 30000
-# 皮肤是唯一一张覆盖全身的壳，轮廓直接决定第一眼观感，单独给更高上限
-FACES_MAX_SKIN = 60000
+
+# 2026-08-20（B 计划，人类拍板）：单结构上限从"一刀切 30,000"改成**按可见性分系统**。
+#
+# 一刀切是为了防止肋间肌（37.7 万面）一个结构吃掉四分之一预算才加的，
+# 代价是脸、肋骨、铺满整屏的浅层肌被同一条规则一起摁住。现在按"这一层亮起来时
+# 它占多少屏"分档：
+#   muscles  分层滑到 0.2–0.45 时整屏都是肌肉，原来只保留 28%，最亏
+#   skeleton 骨骼层是第二常看的
+#   organs   走 HRA，本来就细
+#   vessels  细管子，占屏小，但低模在近景下棱角很明显；单个便宜，值得给
+#   nerves   周围神经细，脑另有 per-slug 放宽
+FACES_MAX_BY_SYSTEM = {
+    "skin": 30_000,
+    "muscles": 75_000,
+    "skeleton": 60_000,
+    "organs": 45_000,
+    # 30,000 而不是 25,000：胫动脉与大隐静脉本来就定稿在 30,000，
+    # 上限压到它们底下会让既有数据违规——上限要能容下已经审过的定稿
+    "vessels": 30_000,
+    "nerves": 35_000,
+}
+
+# 少数几个"看得最多"的结构单独放宽（2026-08-20，见 docs/DECISIONS.md）。
+#
+# 依据是量出来的：BP3D 里我们用到的 924 件元素网格原生共 410 万面，
+# 而当前目标只有 180 万——**整体只保留了 39%**。全量放开会撑爆体积与帧率预算，
+# 所以把放宽的额度花在视线真正落到的地方，而不是平摊：
+#
+#   skin  原生 203,382 → 原来 60,000（29%）。它是分层滑到最外层时**唯一**可见的
+#         东西，脸和手的清晰度全看它。给到接近原生。
+#   skull 原生 121,518 → 原来 30,000（25%）。人看人先看脸。
+#   ribs  原生 170,762 → 原来 30,000（18%）。肋骨是"透视"这件事的招牌画面。
+FACES_MAX_BY_SLUG = {
+    "skin": 200_000,
+    "skull": 70_000,
+    "ribs": 50_000,
+    # 2026-08-20 第二批：把 200 万上限剩下的额度花掉。
+    # 脑原生 322,262 面却只留 30,000（9.3%），是所有大结构里压得最狠的；
+    # 而 v0.8 刚把脑叶与脑深部拆开、配了三则奥秘，它已经是个"主角"。
+    "brain": 85_000,
+    "cerebrum": 50_000,
+    "cerebellum": 20_000,
+    "brainstem": 14_000,
+}
 
 
-def max_faces_for(slug: str) -> int:
-    """单结构面数上限：皮肤特殊，其余走大结构上限。"""
-    return FACES_MAX_SKIN if slug == "skin" else FACES_MAX_LARGE
+def max_faces_for(slug: str, system: str | None = None) -> int:
+    """单结构面数上限：先看 per-slug 放宽，再看所属系统的可见性档，最后兜底。"""
+    if slug in FACES_MAX_BY_SLUG:
+        return FACES_MAX_BY_SLUG[slug]
+    if system and system in FACES_MAX_BY_SYSTEM:
+        return FACES_MAX_BY_SYSTEM[system]
+    return FACES_MAX_LARGE
 
 
 @dataclass(frozen=True)

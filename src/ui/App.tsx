@@ -20,6 +20,10 @@ import { bindViewer, toUrlState, useUiStore } from './store';
 import { Dock } from './Dock';
 import { InfoIcon, ShareIcon } from './Icon';
 import { WonderMenu, WonderPlayer } from './WonderPlayer';
+import { WonderStage } from './WonderStage';
+import { VideoExport } from './VideoExport';
+import { EditorButton, WonderEditor } from './WonderEditor';
+import { decodeWonder } from '../wonders/draft';
 import './ui.css';
 
 /** Kiosk 参数：?kiosk=1（或分享状态里带 kiosk）开启；?idle=秒 调闲置阈值。 */
@@ -103,12 +107,16 @@ export function App() {
         const params = new URLSearchParams(window.location.search);
         const encoded = params.get('v');
         if (encoded) useUiStore.getState().applyUrlState(decodeUrlState(encoded));
-        // ?wonder=<id> 直接开播某一则奥秘（分享链接用）
+        // ?wonder=<id> 直接开播内置的某一则（分享链接用）
         const wantWonder = params.get('wonder');
         if (wantWonder) {
           const found = WONDERS.find((w) => w.id === wantWonder);
           if (found) useUiStore.getState().startWonder(found);
         }
+        // ?w=<编码> 开播别人自创的一则。内容整则在链接里，不需要后端。
+        // decodeWonder 对坏链接返回 null 而不是抛——链接会被聊天软件截断
+        const shared = decodeWonder(params.get('w'));
+        if (shared) useUiStore.getState().startWonder(shared);
       })
       .catch(() => useUiStore.getState().setLoadState('error'));
     return () => {
@@ -136,6 +144,7 @@ export function App() {
         <>
           <div className="hyi-topbar">
             <WonderMenu />
+            <EditorButton />
             <button
               className="hyi-btn hyi-btn-icon"
               aria-label={t.shareTitle}
@@ -168,12 +177,19 @@ export function App() {
               {lang === 'zh' ? 'EN' : '中文'}
             </button>
           </div>
-          <SearchBox />
-          <Dock />
+          {/* 播放时屏幕归内容：搜索框、工具抽屉、结构标签、信息卡一起让位。
+              这不违反「界面元素不许无解释地消失」——奥秘是一个用户自己进、
+              随时能按「退出」出来的模式，不是为了省空间偷偷藏东西。 */}
+          {!wonder && <SearchBox />}
+          {!wonder && <Dock />}
           {!wonder && <StructureLabel />}
           {!wonder && <InfoCard />}
+          {/* 放映层在控制条之下渲染、在层级上盖住画面：黑边、片头、字幕、片尾 */}
+          <WonderStage />
           {wonder ? <WonderPlayer /> : <LayerSlider />}
           <Attribution />
+          <WonderEditor />
+          <VideoExport />
           {shareOpen && <ShareDialog onClose={() => setShareOpen(false)} />}
           {helpOpen && <ShortcutHelp onClose={() => setHelpOpen(false)} />}
           {/* 点画布选中结构时读屏软件也要能听见，所以单独播一条 */}

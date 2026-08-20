@@ -114,9 +114,10 @@ describe('manifest: 内部件层级（parent）', () => {
       while (cursor) {
         expect(chain, `${slug} 的父结构链成环`).not.toContain(cursor);
         chain.push(cursor);
-        expect(chain.length, `${slug} 的父结构链超过三层：${chain.join(' → ')}`).toBeLessThanOrEqual(
-          2,
-        );
+        expect(
+          chain.length,
+          `${slug} 的父结构链超过三层：${chain.join(' → ')}`,
+        ).toBeLessThanOrEqual(2);
         cursor = structures[cursor]?.parent;
       }
     }

@@ -79,18 +79,30 @@ export function WonderPlayer() {
   const wonderNext = useUiStore((s) => s.wonderNext);
   const wonderPrev = useUiStore((s) => s.wonderPrev);
   const wonderToggle = useUiStore((s) => s.wonderToggle);
+  const canRecordVideo = useUiStore((s) => s.canRecordVideo);
+  const recording = useUiStore((s) => s.recording);
+  const recordElapsedMs = useUiStore((s) => s.recordElapsedMs);
+  const startRecording = useUiStore((s) => s.startRecording);
+  const stopRecording = useUiStore((s) => s.stopRecording);
+  const canNarrate = useUiStore((s) => s.canNarrate);
+  const narrating = useUiStore((s) => s.narrating);
+  const toggleNarration = useUiStore((s) => s.toggleNarration);
 
   if (!wonder) return null;
-  const step = wonder.steps[index];
   return (
     <div className="hyi-panel hyi-wonder" data-testid="wonder-player">
       <header>
         <strong>{wonder.title[lang]}</strong>
+        {recording && (
+          <span className="rec" data-testid="wonder-recording">
+            <i />
+            {`${t.wonderRecording} ${Math.floor(recordElapsedMs / 1000)}s`}
+          </span>
+        )}
         <span className="progress">
           {index + 1} / {wonder.steps.length}
         </span>
       </header>
-      <p>{step?.text[lang]}</p>
       <div className="controls">
         <button className="hyi-btn" onClick={wonderPrev} disabled={index === 0}>
           {t.wonderPrev}
@@ -104,6 +116,27 @@ export function WonderPlayer() {
         <button className="hyi-btn" onClick={exitWonder}>
           {t.wonderExit}
         </button>
+        {canNarrate && (
+          <button
+            className={narrating ? 'hyi-btn hyi-btn-warm' : 'hyi-btn'}
+            data-testid="wonder-narrate"
+            aria-pressed={narrating}
+            onClick={toggleNarration}
+          >
+            {narrating ? t.wonderNarrateOff : t.wonderNarrate}
+          </button>
+        )}
+        {/* 录不了就不摆按钮：Safari 17 之前没有 MediaRecorder 的 mp4 支持，
+            摆一个点了没反应的按钮比没有按钮更糟 */}
+        {canRecordVideo && (
+          <button
+            className={recording ? 'hyi-btn hyi-btn-rec' : 'hyi-btn'}
+            data-testid="wonder-record"
+            onClick={recording ? stopRecording : startRecording}
+          >
+            {recording ? t.wonderRecordStop : t.wonderRecord}
+          </button>
+        )}
       </div>
     </div>
   );

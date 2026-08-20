@@ -13,7 +13,7 @@ import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { SMAAPass } from 'three/addons/postprocessing/SMAAPass.js';
-import { SSAOPass } from 'three/addons/postprocessing/SSAOPass.js';
+import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import type { QualityCaps } from './quality';
 
@@ -53,14 +53,55 @@ export function createRenderPipeline(
   const composer = new EffectComposer(renderer, target);
   composer.addPass(new RenderPass(scene, camera));
 
-  let ssao: SSAOPass | null = null;
+  /**
+   * 环境光遮蔽：SSAO → GTAO。
+   *
+   * 换的理由不是"新的更好"，是**这一档决定了人体看起来有没有体积**。
+   * SSAO 靠半球采样凑遮蔽，人体这种大片平滑曲面上出来的是一层灰雾；
+   * GTAO 算的是水平角遮蔽，腋窝、颈侧、锁骨窝、指缝这些真正的凹处才会暗下去
+   * ——皮肤从"塑料模特"变成"有肉"，八成靠这个，而且一个三角面都不用多加。
+   *
+   * 半径按毫米给：人体的褶皱在 10–40 mm 这个量级，默认值（场景单位 0.25）
+   * 在毫米坐标系里等于没有。
+   */
+  let ao: GTAOPass | null = null;
   if (caps.ssao) {
-    ssao = new SSAOPass(scene, camera);
-    // 人体尺度是毫米：AO 半径按毫米给，否则默认值（8）在这个场景里等于没有
-    ssao.kernelRadius = 24;
-    ssao.minDistance = 0.0006;
-    ssao.maxDistance = 0.06;
-    composer.addPass(ssao);
+    ao = new GTAOPass(scene, camera, Math.max(1, size.x), Math.max(1, size.y));
+    /*
+     * 半径走**屏幕空间**，不走世界空间。
+     *
+     * 第一版按毫米给（radius: 30），用 `?aodebug=1` 把 AO 缓冲直接画出来一看：
+     * 几乎全白，只有手指和腿缝有几道游丝——也就是说 AO 在跑，但等于没有。
+     * 原因是这个查看器的观察距离跨了两个数量级：整具人体（相机 2.6 米外）到
+     * 一颗晶状体（25 毫米外）。任何固定的世界半径，在一头是看不见的游丝，
+     * 在另一头是糊成一片的脏。
+     *
+     * `screenSpaceRadius` 把半径钉在屏幕上（1.0 ≈ 100 像素），于是无论推到多近，
+     * 遮蔽的尺度始终是"眼睛看到的那么大"。
+     */
+    ao.updateGtaoMaterial({
+      radius: 0.6,
+      distanceExponent: 1.0,
+      /*
+       * `thickness` **不是**屏幕空间的，它按视图空间的毫米比：着色器里那一行是
+       * `if (abs(viewDelta.z) < thickness)`——采样点与本像素的深度差超过它就被
+       * 当成"另一个物体"丢掉。默认值 1 是给单位尺度的场景用的，在毫米坐标系里
+       * 等于"只接受 1 毫米以内的遮挡"，于是几乎所有采样都被丢掉，AO 恒等于 1。
+       * 这就是 AO 缓冲一片全白的真正原因（`?aodebug=4` 看出来的）。
+       * 人体的凹处（腋窝、腹股沟、指缝）深度差在几十到两百毫米量级。
+       */
+      thickness: 200,
+      scale: 1.2,
+      samples: caps.aoSamples,
+      screenSpaceRadius: true,
+    });
+    ao.blendIntensity = 1;
+    // `?aodebug=1` 直接输出 AO 缓冲。留着是有代价的（一行生产代码），
+    // 但没有它就只能盯着成片猜"AO 到底有没有生效"——上面那个坑正是这么找出来的。
+    // 2=深度 3=法线 4=AO 5=降噪后：查"到底哪一环是空的"要靠逐环看
+    const debug = Number(new URLSearchParams(location.search).get('aodebug'));
+    if (debug >= 2 && debug <= 5) ao.output = debug;
+    composer.addPass(ao);
   }
 
   let outline: OutlinePass | null = null;
@@ -98,7 +139,12 @@ export function createRenderPipeline(
       composer.setPixelRatio(pixelRatio);
       composer.setSize(width, height);
       outline?.setSize(width, height);
-      ssao?.setSize(width, height);
+      // AO 可以按比例降分辨率跑：它是低频信号，半分辨率肉眼看不出，
+      // 但填充率省一半——手机上开不开 AO 的分界线就在这儿
+      ao?.setSize(
+        Math.max(1, Math.round(width * caps.aoScale)),
+        Math.max(1, Math.round(height * caps.aoScale)),
+      );
     },
     setSelected(objects) {
       if (outline) outline.selectedObjects = objects;

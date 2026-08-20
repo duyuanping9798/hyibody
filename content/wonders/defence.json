@@ -6,12 +6,7 @@
     "en": "A Few Outposts Inside You"
   },
   "system": "organs",
-  "structures": [
-    "palatine_tonsils",
-    "thymus",
-    "spleen",
-    "appendix"
-  ],
+  "structures": ["palatine_tonsils", "thymus", "spleen", "appendix"],
   "steps": [
     {
       "text": {

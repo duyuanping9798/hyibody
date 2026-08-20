@@ -17,8 +17,15 @@ export interface QualityCaps {
   bloom: boolean;
   /** SMAA 抗锯齿（关掉时退回 renderer 自带的 MSAA） */
   smaa: boolean;
-  /** 屏幕空间环境光遮蔽 */
+  /** 环境光遮蔽（GTAO）。人体看起来有没有体积，八成靠这一档 */
   ssao: boolean;
+  /** AO 采样数：越多越干净，越贵 */
+  aoSamples: number;
+  /**
+   * AO 的渲染分辨率倍率。AO 是低频信号，半分辨率肉眼看不出，填充率省一半——
+   * 手机上"开不开得起 AO"的分界线就在这儿。
+   */
+  aoScale: number;
   /** 平行光软阴影 + 地面接影 */
   softShadows: boolean;
 }
@@ -30,6 +37,8 @@ export const QUALITY_CAPS: Record<QualityTier, QualityCaps> = {
     bloom: false,
     smaa: false,
     ssao: false,
+    aoSamples: 8,
+    aoScale: 0.5,
     softShadows: false,
   },
   medium: {
@@ -37,7 +46,12 @@ export const QUALITY_CAPS: Record<QualityTier, QualityCaps> = {
     outline: true,
     bloom: true,
     smaa: true,
-    ssao: false,
+    // AO 在 medium 也开：它不是锦上添花，是"皮肤看起来有没有肉"的分界线，
+    // 而 medium 正是绝大多数手机拿到的档位。代价用半分辨率 + 8 次采样买单。
+    // 真机上若掉帧，先把 aoScale 调到 0.4 或把这一行改回 false（人类待办）。
+    ssao: true,
+    aoSamples: 8,
+    aoScale: 0.5,
     softShadows: false,
   },
   high: {
@@ -46,6 +60,8 @@ export const QUALITY_CAPS: Record<QualityTier, QualityCaps> = {
     bloom: true,
     smaa: true,
     ssao: true,
+    aoSamples: 16,
+    aoScale: 1,
     softShadows: true,
   },
 };

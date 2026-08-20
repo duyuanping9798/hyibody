@@ -1,3 +1,4 @@
+import { fromBase64Url, toBase64Url } from './base64url';
 import type { SystemId } from './types';
 
 /** 可通过 URL `?v=` 分享/恢复的查看器状态（KICKOFF 第 6 节）。 */
@@ -19,19 +20,6 @@ export interface ViewerUrlState {
 }
 
 export const DEFAULT_URL_STATE: ViewerUrlState = { layer: 0 };
-
-function toBase64Url(bytes: Uint8Array): string {
-  let bin = '';
-  for (const b of bytes) bin += String.fromCharCode(b);
-  return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-}
-
-function fromBase64Url(text: string): Uint8Array {
-  const b64 = text.replace(/-/g, '+').replace(/_/g, '/');
-  const pad = b64.length % 4 === 0 ? '' : '='.repeat(4 - (b64.length % 4));
-  const bin = atob(b64 + pad);
-  return Uint8Array.from(bin, (c) => c.charCodeAt(0));
-}
 
 /** 编码为 URL 安全字符串（base64url(JSON)）。 */
 export function encodeUrlState(state: ViewerUrlState): string {
