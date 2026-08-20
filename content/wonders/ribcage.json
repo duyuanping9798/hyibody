@@ -1,0 +1,104 @@
+{
+  "schema": 1,
+  "id": "ribcage",
+  "title": {
+    "zh": "胸廓：一只会呼吸的笼子",
+    "en": "The Ribcage: A Cage That Breathes"
+  },
+  "system": "skeleton",
+  "structures": [
+    "ribs",
+    "sternum",
+    "costal_cartilages",
+    "thoracic_vertebrae",
+    "intercostal_muscles",
+    "heart",
+    "lung_left"
+  ],
+  "steps": [
+    {
+      "text": {
+        "zh": "胸口这一圈骨头有个难题：既要硬到能挡住撞击，又要软到每分钟能张开 10 多次。",
+        "en": "The ring of bone around your chest faces a contradiction: hard enough to take a blow, yet supple enough to open a dozen times a minute."
+      },
+      "layer": 0.08,
+      "preset": "front",
+      "durationMs": 11000
+    },
+    {
+      "text": {
+        "zh": "12 对肋骨从脊柱向前包过来，一根根斜着往下垂。吸气时它们被提平，胸腔前后一下就深了一截。",
+        "en": "Twelve pairs of ribs sweep forward from the spine, each hanging at a downward slant. Breathe in and they swing level, deepening the chest front to back in one motion."
+      },
+      "layer": 0.5,
+      "selected": "ribs",
+      "durationMs": 11500
+    },
+    {
+      "text": {
+        "zh": "正前方是胸骨，一块刀片似的扁骨，上面钉着锁骨和一排肋软骨。整只笼子里，只有它是从外面按得到的。",
+        "en": "Straight in front lies the sternum, a flat blade of bone with the collarbones and a row of costal cartilages pinned to it. Of the whole cage, it is the only part you can press on from outside."
+      },
+      "layer": 0.5,
+      "selected": "sternum",
+      "durationMs": 10500
+    },
+    {
+      "text": {
+        "zh": "上面几对肋骨并没有直接长到胸骨上，中间隔着一段肋软骨。这段软的，正是胸廓能张开的原因。",
+        "en": "The upper ribs never reach the sternum directly; a length of costal cartilage bridges the gap. That soft segment is exactly why the cage can open at all."
+      },
+      "layer": 0.5,
+      "selected": "costal_cartilages",
+      "durationMs": 10000
+    },
+    {
+      "text": {
+        "zh": "后方每一根肋骨都挂在胸椎上，肋头还同时搭住上面那一块。12 对肋骨、12 块胸椎，一一对应。",
+        "en": "At the back, every rib hangs from its own thoracic vertebra and catches the one above as well. Twelve pairs of ribs, twelve vertebrae, matched one to one."
+      },
+      "layer": 0.5,
+      "selected": "thoracic_vertebrae",
+      "from": "back",
+      "durationMs": 10000
+    },
+    {
+      "text": {
+        "zh": "肋骨之间填着两层肋间肌，纤维方向正好交叉。一层往上提，一层往下拉，同一处肌肉管着一进一出。",
+        "en": "Two layers of intercostal muscle fill each gap, their fibres crossing at an angle. One layer lifts, the other pulls down — the same patch of muscle handles both the in and the out."
+      },
+      "layer": 0.24,
+      "selected": "intercostal_muscles",
+      "durationMs": 10500
+    },
+    {
+      "text": {
+        "zh": "笼子里装的是心脏。它大半在正中线的左边，前面正好压着胸骨和几段肋软骨。",
+        "en": "Inside the cage sits the heart, most of it to the left of the midline, with the sternum and several costal cartilages pressing directly in front of it."
+      },
+      "layer": 0.6,
+      "selected": "heart",
+      "durationMs": 9000,
+      "from": "front"
+    },
+    {
+      "text": {
+        "zh": "左肺的前缘缺了一角，正好让心脏顶进去。同一只笼子里塞两样东西，总得有一个先让。",
+        "en": "The front edge of the left lung is notched away, leaving a hollow for the heart to press into. Fit two things in one cage and one of them has to give."
+      },
+      "layer": 0.6,
+      "selected": "lung_left",
+      "durationMs": 9500,
+      "from": "front"
+    },
+    {
+      "text": {
+        "zh": "所以胸廓不是一副静止的盔甲。它一边护着心肺，一边跟着每一口气张开又合上，一天到晚没停过。",
+        "en": "So the ribcage is no static suit of armour. It guards the heart and lungs while opening and closing with every breath you take, all day and all night."
+      },
+      "layer": 0.5,
+      "preset": "hero",
+      "durationMs": 11500
+    }
+  ]
+}

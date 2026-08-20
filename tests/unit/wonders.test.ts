@@ -55,8 +55,41 @@ describe('奥秘内容契约', () => {
     }
   });
 
-  it('内置三条奥秘（按文件名自动收录，顺序稳定）', () => {
-    expect(WONDERS.map((t) => t.id)).toEqual(['digestion', 'heartbeat', 'nerve']);
+  it('内置奥秘按文件名自动收录，顺序稳定', () => {
+    expect(WONDERS.map((t) => t.id)).toEqual([
+      'aorta',
+      'breathing',
+      'digestion',
+      'hand',
+      'heartbeat',
+      'nerve',
+      'reach',
+      'ribcage',
+      'spine',
+      'standing',
+      'urine',
+      'vision',
+      'voice',
+    ]);
+  });
+
+  /**
+   * 有父结构的部件，必须在该步 expand 它的父结构，否则它的不透明度直接是 0
+   * （HyiViewer.effectiveOpacity：`parent !== null && expanded !== parent` → 0）。
+   * 「主角在该分层下可见」那条测试只看系统不透明度，漏得掉这一种看不见。
+   */
+  it('选中内部件的步骤必须展开它的父结构', () => {
+    for (const wonder of WONDERS) {
+      for (const [i, step] of wonder.steps.entries()) {
+        const parent = step.selected && manifest.structures[step.selected]?.parent;
+        if (!parent) continue;
+        expect(
+          step.expand,
+          `${wonder.id}[${i}] 选中了内部件 ${step.selected}，但没有 expand 它的父结构 ${parent}，` +
+            `这一步观众什么都看不到`,
+        ).toBe(parent);
+      }
+    }
   });
 
   it('每条奥秘都声明了主系统与涉及的结构，且结构真实存在', () => {
@@ -167,6 +200,88 @@ describe('奥秘内容契约', () => {
           JSON.stringify(a.systems ?? null) !== JSON.stringify(b.systems ?? null) ||
           Math.abs(a.layer - b.layer) >= 0.1;
         expect(changed, `${wonder.id}[${i}] 与上一步画面完全相同`).toBe(true);
+      }
+    }
+  });
+
+  /**
+   * 脚本不许复述信息卡。
+   *
+   * 信息卡负责"它是什么"，脚本负责"它正在做什么"——观众点开一个结构会先后看到
+   * 两处，重复很刺眼。这条以前只是 CONTENT-GUIDE 上的一句话，靠人自觉；2026-08-19
+   * 专家审核在十则新奥秘里查出 21 处复述，最严重的逐字重合达 14 个汉字，说明
+   * 光靠自觉不行。
+   *
+   * 判据：某步展词与它 `selected` 结构的 blurb + fact 之间，去掉非汉字后的
+   * **最长公共子串**不得超过 7 个汉字。留到 7 是因为数字必须与信息卡逐字一致
+   * （"每天跳动约 10 万次"），这类重合是规范要求的，不该被这条测试判死。
+   */
+  it('展词不许复述信息卡', () => {
+    const zh = JSON.parse(
+      readFileSync(resolve(__dirname, '../../content/definitions/zh.json'), 'utf8'),
+    ) as Record<string, { blurb?: string; fact?: string }>;
+    const hanzi = (s: string) => s.replace(/[^\u4e00-\u9fff]/g, '');
+    /** 最长公共子串长度，滚动一维数组。 */
+    const longestCommon = (a: string, b: string): { len: number; text: string } => {
+      let best = 0;
+      let end = 0;
+      const row = new Array<number>(b.length + 1).fill(0);
+      for (let i = 1; i <= a.length; i += 1) {
+        let prev = 0;
+        for (let j = 1; j <= b.length; j += 1) {
+          const cur = row[j]!;
+          row[j] = a[i - 1] === b[j - 1] ? prev + 1 : 0;
+          if (row[j]! > best) {
+            best = row[j]!;
+            end = i;
+          }
+          prev = cur;
+        }
+      }
+      return { len: best, text: a.slice(end - best, end) };
+    };
+
+    for (const wonder of WONDERS) {
+      for (const [i, step] of wonder.steps.entries()) {
+        const card = step.selected ? zh[step.selected] : undefined;
+        if (!card) continue;
+        const ref = hanzi(`${card.blurb ?? ''}${card.fact ?? ''}`);
+        const { len, text } = longestCommon(hanzi(step.text.zh), ref);
+        expect(
+          len,
+          `${wonder.id}[${i}] 与 ${step.selected} 的信息卡逐字重合 ${len} 字（"${text}"）——` +
+            `脚本该讲"它正在做什么"，别把信息卡换句话说一遍`,
+        ).toBeLessThanOrEqual(7);
+      }
+    }
+  });
+
+  /**
+   * 展开某个父结构时，兄弟件一律是不透明的（isolate 期间同家结构不压暗）。
+   * 所以如果主角的包围盒被某个兄弟件整个包住，不剖开就一点也看不见。
+   *
+   * 2026-08-19 专家审核用真网格做屏幕空间遮挡光栅化，量出 urine[4] 的肾锥体
+   * 可见面积 **0.0%**——它整个躲在肾皮质里，观众盯着肾的外壳听了 9.5 秒。
+   * 那轮审核靠的是渲染，这里退而求其次用包围盒包含关系，抓得住"完全套住"
+   * 这一类；抓不住的部分遮挡只能靠人或 agent 复核（见 CONTENT-GUIDE）。
+   */
+  it('主角被同组兄弟件套住时必须剖开', () => {
+    const inside = (a: NonNullable<StructureInfo['bbox']>, b: NonNullable<StructureInfo['bbox']>) =>
+      [0, 1, 2].every((k) => a[k]! >= b[k]! && a[k + 3]! <= b[k + 3]!);
+
+    for (const wonder of WONDERS) {
+      for (const [i, step] of wonder.steps.entries()) {
+        if (!step.selected || !step.expand || step.clip) continue;
+        const self = manifest.structures[step.selected];
+        if (!self?.bbox || self.parent !== step.expand) continue;
+        for (const [slug, other] of Object.entries(manifest.structures)) {
+          if (slug === step.selected || other.parent !== step.expand || !other.bbox) continue;
+          expect(
+            inside(self.bbox, other.bbox),
+            `${wonder.id}[${i}] 主角 ${step.selected} 的包围盒整个套在兄弟件 ${slug} 里面，` +
+              `展开期间兄弟件是实心的，不加 clip 就一点也看不见`,
+          ).toBe(false);
+        }
       }
     }
   });

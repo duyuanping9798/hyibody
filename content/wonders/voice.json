@@ -1,0 +1,94 @@
+{
+  "schema": 1,
+  "id": "voice",
+  "title": {
+    "zh": "声音是怎么被造出来的",
+    "en": "How a Voice Gets Made"
+  },
+  "system": "organs",
+  "structures": [
+    "larynx_cartilages",
+    "thyroid_cartilage",
+    "cricoid_cartilage",
+    "epiglottic_cartilage",
+    "trachea",
+    "tongue"
+  ],
+  "steps": [
+    {
+      "text": {
+        "zh": "说话其实就是一次控制得极细的呼气。同一股气，放着不管是一声叹息，稍加改造就成了一句话。",
+        "en": "Speaking is really one very finely controlled exhalation. Left alone, the same stream of air is a sigh; shape it a little and it becomes a sentence."
+      },
+      "layer": 0.08,
+      "preset": "front",
+      "durationMs": 11500
+    },
+    {
+      "text": {
+        "zh": "改造发生在喉。几块软骨搭成一个框架，中间绷着两片声带；气流挤过它们之间的窄缝，就被拨动成声。",
+        "en": "The reshaping happens in the larynx, where a few cartilages frame two vocal folds. Air squeezing through the slit between them is set vibrating into sound."
+      },
+      "layer": 0.6,
+      "selected": "larynx_cartilages",
+      "durationMs": 12000
+    },
+    {
+      "text": {
+        "zh": "最大的一块是甲状软骨，两片薄板在前面合拢成一个角。这个角在青春期会从钝的变成尖的，同一块软骨，从此在脖子上顶出一个包。",
+        "en": "The largest piece is the thyroid cartilage, two thin plates meeting at an angle in front. Puberty sharpens that angle from blunt to keen — same cartilage, but from then on it pushes a bump out on the neck."
+      },
+      "layer": 0.6,
+      "expand": "larynx_cartilages",
+      "selected": "thyroid_cartilage",
+      "durationMs": 13500
+    },
+    {
+      "text": {
+        "zh": "它底下坐着环状软骨。整条气道往下，就数这一圈最结实：窄的一边朝前，宽的一边朝后，从头到尾没有缺口。",
+        "en": "Beneath it sits the cricoid cartilage. Of the whole airway this ring is the sturdiest: narrow at the front, broad at the back, and closed the whole way round."
+      },
+      "layer": 0.6,
+      "expand": "larynx_cartilages",
+      "selected": "cricoid_cartilage",
+      "durationMs": 11000
+    },
+    {
+      "text": {
+        "zh": "喉口上方还立着一片会厌软骨，形状像片叶子。吞咽那一瞬它向后倒下，把这个口封死——所以你没法一边咽一边说话。",
+        "en": "Above the opening stands the epiglottic cartilage, shaped like a leaf. The instant you swallow it tips backwards and seals the way — which is why you cannot swallow and speak at the same time."
+      },
+      "layer": 0.6,
+      "expand": "larynx_cartilages",
+      "selected": "epiglottic_cartilage",
+      "durationMs": 11500
+    },
+    {
+      "text": {
+        "zh": "这股气从下面的肺里来，沿气管一路上行。你能喊多久、喊多响，取决于肺里存了多少气、呼气的肌肉能推多用力。",
+        "en": "The power comes from the lungs below, travelling up the trachea. How long and how loudly you can shout depends on the air you stored and the muscles driving it out."
+      },
+      "layer": 0.6,
+      "selected": "trachea",
+      "durationMs": 12500
+    },
+    {
+      "text": {
+        "zh": "喉只造出一个嗡嗡的原声。真正把它切成词的是舌头——同一个音，舌位一变就成了另一个字。",
+        "en": "The larynx only makes a raw buzz. What carves it into words is the tongue: keep the sound, move the tongue, and an entirely different syllable comes out."
+      },
+      "layer": 0.6,
+      "selected": "tongue",
+      "durationMs": 10000
+    },
+    {
+      "text": {
+        "zh": "下次你开口之前，喉里这几块软骨已经先摆好了位置。声音听起来是一瞬间的事，准备工作却早了半拍。",
+        "en": "The next time you open your mouth, these cartilages will already have taken up their positions. The sound seems instant, but the setting-up ran half a beat ahead."
+      },
+      "layer": 0.55,
+      "preset": "hero",
+      "durationMs": 12000
+    }
+  ]
+}

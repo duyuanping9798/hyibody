@@ -982,11 +982,16 @@ body.hyi-kiosk .hyi-info .blurb {
   .hyi-info {
     max-height: 46vh;
   }
+  /* --hyi-info-h 由 useSafeInsets 量真实 DOM 写进来；没有 JS 时退回 46vh */
   body:has(.hyi-info) .hyi-layer-slider {
-    bottom: calc(46vh + 10px);
+    bottom: calc(var(--hyi-info-h, 46vh) + 10px);
   }
+  /* 抽屉叠在滑块之上：滑块在 --hyi-info-h + 10，高 90，再留 8 空隙。
+     曾经试过卡片打开就把抽屉藏起来，只换回 44 px（屏幕的 6.9%），
+     代价却是一个控件在用户眼皮底下无解释地消失——不划算，撤了。
+     真正的大头是信息卡本身那 326 px，得靠两段式抽屉解决。 */
   body:has(.hyi-info) .hyi-dock {
-    bottom: calc(46vh + 108px);
+    bottom: calc(var(--hyi-info-h, 46vh) + 108px);
   }
 }
 
@@ -1004,10 +1009,10 @@ body.hyi-kiosk .hyi-info .blurb {
       max-height: 46dvh;
     }
     body:has(.hyi-info) .hyi-layer-slider {
-      bottom: calc(46dvh + 10px);
+      bottom: calc(var(--hyi-info-h, 46dvh) + 10px);
     }
     body:has(.hyi-info) .hyi-dock {
-      bottom: calc(46dvh + 108px);
+      bottom: calc(var(--hyi-info-h, 46dvh) + 108px);
     }
   }
 }

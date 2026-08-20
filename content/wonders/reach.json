@@ -1,0 +1,106 @@
+{
+  "schema": 1,
+  "id": "reach",
+  "title": {
+    "zh": "把手举起来的那一瞬",
+    "en": "The Instant You Raise an Arm"
+  },
+  "system": "muscles",
+  "structures": [
+    "scapula_left",
+    "humerus_left",
+    "supraspinatus",
+    "deltoid",
+    "brachialis",
+    "biceps_brachii",
+    "triceps_brachii"
+  ],
+  "steps": [
+    {
+      "text": {
+        "zh": "举手是个再普通不过的动作。可要让手臂抬到头顶，肩膀里得先有一整套接力。",
+        "en": "Raising a hand could hardly be more ordinary. Yet to lift the arm overhead, the shoulder must first run a whole relay."
+      },
+      "layer": 0.08,
+      "preset": "front",
+      "durationMs": 10500
+    },
+    {
+      "text": {
+        "zh": "起点是肩胛骨。它跟躯干只有锁骨那一个小接头，其余全是浮着的——所以举手的时候，它自己也在背上转。",
+        "en": "It begins at the shoulder blade. Its only bony link to the trunk is one small joint at the collarbone; everything else floats — so when you raise an arm, the blade itself turns on your back."
+      },
+      "layer": 0.5,
+      "selected": "scapula_left",
+      "from": "back",
+      "durationMs": 12000
+    },
+    {
+      "text": {
+        "zh": "接进那个窝里的是肱骨，上端是个滑溜溜的球。球比窝大得多，只有三分之一泡在里面——肩膀能甩出这么大的圈，代价就是它比任何关节都容易脱位。",
+        "en": "What sits in that socket is the humerus, its upper end a smooth ball far larger than the socket itself — only a third of it ever rests inside. The shoulder swings so wide, and dislocates more easily than any other joint."
+      },
+      "layer": 0.5,
+      "selected": "humerus_left",
+      "durationMs": 13000
+    },
+    {
+      "text": {
+        "zh": "抬臂的第一棒交给冈上肌。它藏在肩胛骨上缘，负责把手臂从贴身位置“掰离”躯干。",
+        "en": "The first leg of the relay goes to the supraspinatus. Tucked above the shoulder blade, its job is to prise the arm away from the body."
+      },
+      "layer": 0.24,
+      "selected": "supraspinatus",
+      "from": "back",
+      "durationMs": 9500
+    },
+    {
+      "text": {
+        "zh": "接棒的是三角肌，包住整个肩头的那块。它一发力手臂就抬到与肩齐平，再往上还得靠肩胛骨跟着转。",
+        "en": "The deltoid takes over — the muscle wrapping the entire shoulder cap. It lifts the arm to shoulder height; going any higher needs the shoulder blade to rotate as well."
+      },
+      "layer": 0.24,
+      "selected": "deltoid",
+      "durationMs": 10500
+    },
+    {
+      "text": {
+        "zh": "顺手把肘弯起来看看。掌心朝上朝下都不影响力气的那一块，是藏在深处的肱肌——它不挑姿势。",
+        "en": "Bend your elbow for a moment. The muscle whose pull is the same whether your palm faces up or down is the brachialis, buried deeper in — it is the one that never minds the angle."
+      },
+      "layer": 0.24,
+      "selected": "brachialis",
+      "durationMs": 10000,
+      "from": "front"
+    },
+    {
+      "text": {
+        "zh": "盖在它外面的是肱二头肌。它上端有两根腱分别绕过肩关节，所以你举手的时候，它其实也在帮忙。",
+        "en": "Covering it is the biceps brachii. Its two upper tendons each hook around the shoulder joint, which means it lends a hand when you raise the arm as well."
+      },
+      "layer": 0.24,
+      "selected": "biceps_brachii",
+      "durationMs": 10000,
+      "from": "front"
+    },
+    {
+      "text": {
+        "zh": "手臂后面是肱三头肌，它干的正好是反的事：把肘推直。屈和伸各有各的肌肉，一块用力时另一块必须放开——这才叫一个动作。",
+        "en": "Behind the arm sits the triceps brachii, doing the exact opposite: pushing the elbow straight. Bending and straightening have separate muscles, and one must let go as the other pulls — that is what a movement is."
+      },
+      "layer": 0.24,
+      "selected": "triceps_brachii",
+      "from": "back",
+      "durationMs": 12000
+    },
+    {
+      "text": {
+        "zh": "从想举手到手举起来，中间隔了多少个环节？肩胛骨转、肱骨滚、4 到 5 块肌肉按先后接力，你只觉得抬了一下。",
+        "en": "How many steps sit between deciding to raise a hand and the hand going up? The blade rotates, the humerus rolls, four or five muscles hand off in order — and all you feel is a lift."
+      },
+      "layer": 0.25,
+      "preset": "hero",
+      "durationMs": 12500
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "schema": 1,
+  "id": "spine",
+  "title": {
+    "zh": "脊柱：一根会弯的塔",
+    "en": "The Spine: A Tower That Bends"
+  },
+  "system": "skeleton",
+  "structures": [
+    "cervical_vertebrae",
+    "thoracic_vertebrae",
+    "lumbar_vertebrae",
+    "sacrum",
+    "intervertebral_disks",
+    "spinal_cord",
+    "erector_spinae"
+  ],
+  "steps": [
+    {
+      "text": {
+        "zh": "转到侧面看。脊柱正面看是一条直线，侧过来完全不是——一路弯了四回，一前一后地来回倒。正是这几道弯，让它扛得住你。",
+        "en": "Turn to the side. From the front the spine is a straight line; from here it is nothing of the sort — four curves, alternating front and back all the way down. Those curves are why it can carry you."
+      },
+      "layer": 0.08,
+      "preset": "left",
+      "durationMs": 13500
+    },
+    {
+      "text": {
+        "zh": "最上面 7 块是颈椎，最轻也最灵活。你此刻点头、摇头、转头，动的都是它们。",
+        "en": "The top seven are the cervical vertebrae — the lightest and most mobile. Every nod, shake and turn of your head happens here."
+      },
+      "layer": 0.5,
+      "selected": "cervical_vertebrae",
+      "durationMs": 10500
+    },
+    {
+      "text": {
+        "zh": "往下 12 块胸椎，棘突长得又长又斜，一片压着一片，像屋顶的瓦。稳固是有代价的——这一段几乎扭不动。",
+        "en": "Next come twelve thoracic vertebrae, their spines long and steeply angled, overlapping like roof tiles. Stability comes at a price: this is the least mobile stretch of the whole spine."
+      },
+      "layer": 0.5,
+      "selected": "thoracic_vertebrae",
+      "durationMs": 10500
+    },
+    {
+      "text": {
+        "zh": "再往下只剩 5 块腰椎，个头却是全脊柱最大的。上面几十斤的分量最后全压在这 5 块上，不长得厚实一点撑不住。",
+        "en": "Only five lumbar vertebrae remain below, and they are the largest in the whole spine. Everything above finally comes to rest on these five — they had no choice but to grow thick."
+      },
+      "layer": 0.5,
+      "selected": "lumbar_vertebrae",
+      "durationMs": 11000
+    },
+    {
+      "text": {
+        "zh": "重量最后压在骶骨上。它由 5 块椎骨长死成一整块，左右两面卡进髋骨——从这里往下，一条脊柱就变成了两条腿。",
+        "en": "The load finally rests on the sacrum. Five vertebrae have fused into one solid wedge, locked into the hip bones on either side — from here down, one spine becomes two legs."
+      },
+      "layer": 0.5,
+      "selected": "sacrum",
+      "durationMs": 11000
+    },
+    {
+      "text": {
+        "zh": "从颈椎到腰椎，几乎每两块椎骨之间都垫着一片椎间盘。它们加起来约占脊柱长度的四分之一，弯腰的角度全靠它们让出来。",
+        "en": "From the neck down to the lower back, almost every two vertebrae have a disc between them. Together they make up roughly a quarter of the spine's length, and every degree of bending is borrowed from them."
+      },
+      "layer": 0.5,
+      "selected": "intervertebral_disks",
+      "durationMs": 11500
+    },
+    {
+      "text": {
+        "zh": "这座塔是空心的。椎孔连成一条管道，脊髓就住在里面——脊柱的形状，本来就是为了护住它。",
+        "en": "The tower is hollow. The vertebral openings line up into a canal and the spinal cord lives inside it — the whole shape of the spine exists to protect that cord."
+      },
+      "layer": 0.75,
+      "selected": "spinal_cord",
+      "durationMs": 10000
+    },
+    {
+      "text": {
+        "zh": "光靠骨头它立不住。两侧的竖脊肌把每一节都往回拽，脊柱才不会像一摞积木那样散开。",
+        "en": "Bone alone cannot hold it upright. The erector spinae on either side pull every segment back into line, so the spine never scatters like a stack of blocks."
+      },
+      "layer": 0.24,
+      "selected": "erector_spinae",
+      "durationMs": 9500
+    },
+    {
+      "text": {
+        "zh": "一节骨、一片软垫，外面再箍上两条肌肉。少哪一样，你都既撑不住体重，也弯不下腰。",
+        "en": "A block of bone, a cushion between, and two ropes of muscle lashed around the outside. Take away any one of them and you can neither hold your weight nor bend at all."
+      },
+      "layer": 0.35,
+      "preset": "hero",
+      "durationMs": 11000
+    }
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "schema": 1,
+  "id": "vision",
+  "title": {
+    "zh": "光走进眼睛之后",
+    "en": "After the Light Gets In"
+  },
+  "system": "organs",
+  "structures": [
+    "eyes",
+    "eye_cornea",
+    "eye_iris",
+    "eye_lens",
+    "eye_retina",
+    "optic_nerves",
+    "brain"
+  ],
+  "steps": [
+    {
+      "text": {
+        "zh": "你正在用眼睛读这行字。光从屏幕出发到你“看见”，中间只隔了两三厘米和十分之一秒。",
+        "en": "You are reading this line with your eyes. Between the screen and the moment you see it lie only a couple of centimetres and a tenth of a second."
+      },
+      "layer": 0.08,
+      "preset": "front",
+      "durationMs": 11000
+    },
+    {
+      "text": {
+        "zh": "眼球其实只露出前面一小块，剩下大半个埋在眼眶里，被一圈骨头兜着。真正被光穿过的，就是露出来的这一小片。",
+        "en": "Only a small patch at the front of the eyeball is ever exposed; the rest is buried in its bony socket. That little patch is the part light actually passes through."
+      },
+      "layer": 0.6,
+      "selected": "eyes",
+      "durationMs": 12500
+    },
+    {
+      "text": {
+        "zh": "光先撞上角膜。真正把光掰弯的不是里面那块透镜，而是这层最外面的透明弧面——三分之二的活儿都是它干的。",
+        "en": "Light strikes the cornea first. What really bends it is not the lens deeper in but this outermost transparent curve — two-thirds of the work is done right here."
+      },
+      "layer": 0.6,
+      "expand": "eyes",
+      "selected": "eye_cornea",
+      "durationMs": 12500
+    },
+    {
+      "text": {
+        "zh": "接着经过虹膜。你此刻看不出它在动，但屋里的灯一暗，它中间那个洞就会在一两秒内张大好几倍，你从来不用下这个命令。",
+        "en": "Next comes the iris. You cannot see it move, but dim the lights and the hole at its centre widens several times over within a second or two — and you never gave the order."
+      },
+      "layer": 0.6,
+      "selected": "eye_iris",
+      "durationMs": 13000
+    },
+    {
+      "text": {
+        "zh": "晶状体负责微调。看远看近不是靠它前后移动，而是靠周围的睫状肌一收一放：肌肉一收，吊着它的悬韧带就松了，它便自己鼓起来。",
+        "en": "The lens handles the fine-tuning. Shifting between far and near is not done by sliding it back and forth: the ciliary muscle tightens, the suspensory fibres slacken, and the lens rounds up by itself."
+      },
+      "layer": 0.6,
+      "expand": "eyes",
+      "selected": "eye_lens",
+      "durationMs": 13500,
+      "from": "left"
+    },
+    {
+      "text": {
+        "zh": "光最后落在视网膜上，而且是倒着的。整个世界在这里先被翻转一次，而大脑从出生起就照这个倒像认方向。",
+        "en": "Light finally lands on the retina — upside down. The whole world is flipped here first, and the brain has read it that way from the very start."
+      },
+      "layer": 0.6,
+      "expand": "eyes",
+      "selected": "eye_retina",
+      "durationMs": 10500
+    },
+    {
+      "text": {
+        "zh": "视神经把信号带出眼球。两条视神经在颅底碰头，各交换出去一半纤维——所以左边看到的东西，最后是由右脑来认的。",
+        "en": "The optic nerves carry the signal out of the eye. Half the fibres cross at the base of the skull, so the left half of what you see is handled by the right side of the brain."
+      },
+      "layer": 0.8,
+      "selected": "optic_nerves",
+      "durationMs": 13000
+    },
+    {
+      "text": {
+        "zh": "终点在大脑最后方。信号跑到离眼睛最远的那一端，才终于变成“看见”。",
+        "en": "The destination lies at the very back of the brain. Only after travelling to the point furthest from the eyes does the signal become sight."
+      },
+      "layer": 0.8,
+      "selected": "brain",
+      "durationMs": 9000
+    },
+    {
+      "text": {
+        "zh": "所以“看见”从来不只发生在眼睛里。眼睛收下的只是一片光斑，认出它是字、是脸、是谁，是在后脑那一端完成的。",
+        "en": "So seeing never happens in the eye alone. What the eye takes in is only a patch of light; recognising it as a word, a face, a person is finished at the far back of the brain."
+      },
+      "layer": 0.7,
+      "preset": "hero",
+      "durationMs": 13000
+    }
+  ]
+}

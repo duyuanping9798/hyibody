@@ -17,6 +17,10 @@ __pycache__/
 # (scripts/generate-placeholder.mjs); pipeline outputs in public/assets/ are committed.
 public/assets/placeholder.glb
 
+# 临时脚本与一次性产物（截图、测量、复现脚本）。放在仓库里是为了让 node
+# 能解析到 node_modules，但它们不是项目的一部分。
+scratch/
+
 # misc
 .DS_Store
 *.log

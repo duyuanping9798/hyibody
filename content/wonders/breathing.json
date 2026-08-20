@@ -1,0 +1,97 @@
+{
+  "schema": 1,
+  "id": "breathing",
+  "title": {
+    "zh": "一次呼吸走过的路",
+    "en": "The Path of a Single Breath"
+  },
+  "system": "organs",
+  "structures": [
+    "larynx_cartilages",
+    "trachea",
+    "tracheal_cartilages",
+    "bronchial_tree",
+    "lung_right",
+    "lung_left",
+    "diaphragm",
+    "intercostal_muscles"
+  ],
+  "steps": [
+    {
+      "text": {
+        "zh": "此刻你正在吸气。这口空气从鼻孔到血液，全程一两秒，沿途要过好几道门。",
+        "en": "You are breathing in right now. This breath travels from your nostrils to your blood in a second or two, passing through several gates on the way."
+      },
+      "layer": 0.05,
+      "preset": "hero",
+      "durationMs": 10500
+    },
+    {
+      "text": {
+        "zh": "第一道门是喉。整口气都得从这里挤过去，而这处通道最窄的地方，也就一根手指粗。",
+        "en": "The first gate is the larynx. The entire breath has to squeeze through here, and at its narrowest the passage is no wider than a finger."
+      },
+      "layer": 0.6,
+      "selected": "larynx_cartilages",
+      "durationMs": 11000
+    },
+    {
+      "text": {
+        "zh": "把气管打开看：一圈圈软骨环从上排到下，每一圈都缺了后面一小段。正是这些环撑着，躺下、低头、转脖子它都不会塌。",
+        "en": "Open the windpipe up: ring after ring of cartilage from top to bottom, each one missing a small section at the back. These rings are why it never collapses when you lie down, bow your head or turn your neck."
+      },
+      "layer": 0.6,
+      "selected": "tracheal_cartilages",
+      "durationMs": 13000,
+      "expand": "trachea"
+    },
+    {
+      "text": {
+        "zh": "到胸腔正中，气管一分为二，然后不停地分。这棵倒着长的树，每一级都比上一级细一点、多一倍。",
+        "en": "In mid-chest the airway forks in two, then keeps forking. This upside-down tree narrows a little and doubles its count at every level."
+      },
+      "layer": 0.6,
+      "selected": "bronchial_tree",
+      "durationMs": 11500,
+      "systems": {
+        "organs": 0.35
+      }
+    },
+    {
+      "text": {
+        "zh": "这口气有一多半分给了右肺。走到最细的末梢时，空气和血之间只剩一层膜——薄到氧气自己就能渗过去。",
+        "en": "More than half of this breath goes to the right lung. At the finest twigs, only one membrane separates air from blood — thin enough for oxygen to drift across on its own."
+      },
+      "layer": 0.6,
+      "selected": "lung_right",
+      "durationMs": 10500
+    },
+    {
+      "text": {
+        "zh": "但肺自己不会动。真正把这口气拽进来的在下面：膈肌一压平，胸腔就多出一截空间，空气是被这股负压吸进去的。",
+        "en": "Yet the lungs cannot move themselves. The pull comes from below: the diaphragm flattens, the chest gains a slice of space, and air is drawn in by the drop in pressure."
+      },
+      "layer": 0.26,
+      "selected": "diaphragm",
+      "durationMs": 11000
+    },
+    {
+      "text": {
+        "zh": "肋间肌同时把肋骨一根根撬起来，胸廓像手风琴一样张开。深呼吸时把手放在肋骨上，你摸到的正是这一下。",
+        "en": "At the same time the intercostal muscles lever the ribs up one by one, opening the chest like an accordion. Rest a hand on your ribs and breathe deeply — that is what you feel."
+      },
+      "layer": 0.24,
+      "selected": "intercostal_muscles",
+      "durationMs": 10500
+    },
+    {
+      "text": {
+        "zh": "然后膈肌一松，一切反着来一遍，这口气就还回去了。你从没下过命令，它也一次没漏。",
+        "en": "Then the diaphragm relaxes, the whole sequence runs backwards, and the breath is handed back. You never gave an order, and it has never missed one."
+      },
+      "layer": 0.26,
+      "preset": "hero",
+      "durationMs": 11000
+    }
+  ]
+}
