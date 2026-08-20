@@ -79,12 +79,23 @@ export function WonderPlayer() {
   const wonderNext = useUiStore((s) => s.wonderNext);
   const wonderPrev = useUiStore((s) => s.wonderPrev);
   const wonderToggle = useUiStore((s) => s.wonderToggle);
+  const canRecordVideo = useUiStore((s) => s.canRecordVideo);
+  const recording = useUiStore((s) => s.recording);
+  const recordElapsedMs = useUiStore((s) => s.recordElapsedMs);
+  const startRecording = useUiStore((s) => s.startRecording);
+  const stopRecording = useUiStore((s) => s.stopRecording);
 
   if (!wonder) return null;
   return (
     <div className="hyi-panel hyi-wonder" data-testid="wonder-player">
       <header>
         <strong>{wonder.title[lang]}</strong>
+        {recording && (
+          <span className="rec" data-testid="wonder-recording">
+            <i />
+            {`${t.wonderRecording} ${Math.floor(recordElapsedMs / 1000)}s`}
+          </span>
+        )}
         <span className="progress">
           {index + 1} / {wonder.steps.length}
         </span>
@@ -102,6 +113,17 @@ export function WonderPlayer() {
         <button className="hyi-btn" onClick={exitWonder}>
           {t.wonderExit}
         </button>
+        {/* 录不了就不摆按钮：Safari 17 之前没有 MediaRecorder 的 mp4 支持，
+            摆一个点了没反应的按钮比没有按钮更糟 */}
+        {canRecordVideo && (
+          <button
+            className={recording ? 'hyi-btn hyi-btn-rec' : 'hyi-btn'}
+            data-testid="wonder-record"
+            onClick={recording ? stopRecording : startRecording}
+          >
+            {recording ? t.wonderRecordStop : t.wonderRecord}
+          </button>
+        )}
       </div>
     </div>
   );

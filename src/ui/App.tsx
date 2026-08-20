@@ -21,6 +21,7 @@ import { Dock } from './Dock';
 import { InfoIcon, ShareIcon } from './Icon';
 import { WonderMenu, WonderPlayer } from './WonderPlayer';
 import { WonderStage } from './WonderStage';
+import { VideoExport } from './VideoExport';
 import './ui.css';
 
 /** Kiosk 参数：?kiosk=1（或分享状态里带 kiosk）开启；?idle=秒 调闲置阈值。 */
@@ -177,6 +178,7 @@ export function App() {
           <WonderStage />
           {wonder ? <WonderPlayer /> : <LayerSlider />}
           <Attribution />
+          <VideoExport />
           {shareOpen && <ShareDialog onClose={() => setShareOpen(false)} />}
           {helpOpen && <ShortcutHelp onClose={() => setHelpOpen(false)} />}
           {/* 点画布选中结构时读屏软件也要能听见，所以单独播一条 */}

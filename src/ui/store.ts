@@ -1,8 +1,10 @@
 import { create } from 'zustand';
-import type { Locale } from './i18n';
+import { STRINGS, type Locale } from './i18n';
 import { SYSTEM_IDS, type Manifest, type SystemId } from '../data/types';
 import type { ViewerUrlState } from '../data/urlState';
 import { WonderEngine, type Wonder, type WonderStep } from '../wonders/engine';
+import { splitClauses } from '../wonders/caption';
+import { canRecord, WonderRecorder, type RecorderOverlay } from '../wonders/recorder';
 import { computeSystemOpacity } from '../viewer/layers';
 import type { ClipAxis } from '../viewer/clipping';
 import type { ViewPresetId } from '../viewer/camera';
@@ -49,6 +51,17 @@ interface UiState {
   wonderPlaying: boolean;
   /** 刚讲完的那一则，用来放片尾卡；点掉或几秒后自动清空 */
   wonderOutro: Wonder | null;
+  /** 本步是什么时候开始的（performance.now），录像的逐句浮现按它算 */
+  wonderStepAt: number;
+  /** 这一则是什么时候开播的，片头卡的计时按它算 */
+  wonderStartedAt: number;
+  /** 这台设备能不能录视频；不能就别把按钮摆出来骗人 */
+  canRecordVideo: boolean;
+  recording: boolean;
+  /** 已录多久（毫秒），四分之一秒刷一次，只给界面看 */
+  recordElapsedMs: number;
+  /** 录完的成品。url 是 blob:，清掉时要 revoke */
+  videoExport: { url: string; ext: string; bytes: number; durationMs: number; name: string } | null;
 
   setLang(lang: Locale): void;
   setQuality(q: QualityTier): void;
@@ -77,6 +90,9 @@ interface UiState {
   startWonder(wonder: Wonder): void;
   exitWonder(): void;
   dismissOutro(): void;
+  startRecording(): void;
+  stopRecording(): void;
+  clearVideoExport(): void;
   wonderNext(): void;
   wonderPrev(): void;
   wonderToggle(): void;
@@ -85,6 +101,50 @@ interface UiState {
 
 let viewer: HyiViewer | null = null;
 const wonderEngine = new WonderEngine();
+const recorder = new WonderRecorder();
+/** 录制计时器：只为界面上那行秒数，四分之一秒刷一次就够。 */
+let recordTicker: ReturnType<typeof setInterval> | null = null;
+/** 录的是哪一则。停下来给文件起名时用——那会儿 store 里的 wonder 已经清空了。 */
+let recordingId = 'wonder';
+
+/**
+ * 每帧问一次「现在该往视频里画什么字」。
+ *
+ * 断句结果按（奥秘 + 第几步 + 语言）缓存：30 fps 下每帧重新切一遍字符串是白烧 CPU，
+ * 而这三者不变时结果必然一样。
+ */
+let clauseCache: { key: string; clauses: string[] } | null = null;
+
+function buildOverlay(credit: string, kicker: string, byLabel: string): RecorderOverlay {
+  const s = useUiStore.getState();
+  const wonder = s.wonder;
+  const now = performance.now();
+  if (!wonder) return { clauses: [], stepElapsedMs: 0, credit };
+  const step = wonder.steps[s.wonderIndex];
+  const key = `${wonder.id}/${s.wonderIndex}/${s.lang}`;
+  if (!clauseCache || clauseCache.key !== key) {
+    clauseCache = { key, clauses: step ? splitClauses(step.text[s.lang]) : [] };
+  }
+  const title = {
+    kicker,
+    title: wonder.title[s.lang],
+    ...(wonder.subtitle ? { subtitle: wonder.subtitle[s.lang] } : {}),
+    ...(wonder.author ? { by: `${byLabel} ${wonder.author}` } : {}),
+  };
+  return {
+    clauses: clauseCache.clauses,
+    stepElapsedMs: now - s.wonderStepAt,
+    title,
+    titleElapsedMs: now - s.wonderStartedAt,
+    chapter: {
+      index: s.wonderIndex,
+      total: wonder.steps.length,
+      elapsedMs: now - s.wonderStepAt,
+      durationMs: step?.durationMs ?? 1,
+    },
+    credit,
+  };
+}
 
 /** 把一步奥秘应用到画面：分层、显隐覆盖、选中与对准。 */
 function applyWonderStep(step: WonderStep): void {
@@ -119,7 +179,10 @@ function applyWonderStep(step: WonderStep): void {
 wonderEngine.addEventListener('step', (e) => {
   const { step } = (e as CustomEvent<{ index: number; step: WonderStep | null }>).detail;
   if (step) applyWonderStep(step);
-  useUiStore.setState({ wonderIndex: wonderEngine.currentIndex });
+  useUiStore.setState({
+    wonderIndex: wonderEngine.currentIndex,
+    wonderStepAt: performance.now(),
+  });
 });
 wonderEngine.addEventListener('play', () => useUiStore.setState({ wonderPlaying: true }));
 wonderEngine.addEventListener('pause', () => useUiStore.setState({ wonderPlaying: false }));
@@ -133,6 +196,11 @@ wonderEngine.addEventListener('end', (e) => {
     if (!st.systemsVisible[id]) st.toggleSystem(id);
     // 步骤可能把某个系统压暗过，退出时要还原，否则画面一直是灰的
     if (st.systemOpacity[id] !== 1) st.setSystemOpacity(id, 1);
+  }
+  if (recorder.recording) {
+    // 留 800 ms 尾巴：最后一句字幕刚浮完就切黑，看着像断片
+    if (completed) setTimeout(() => useUiStore.getState().stopRecording(), 800);
+    else useUiStore.getState().stopRecording();
   }
   useUiStore.setState({
     wonder: null,
@@ -240,6 +308,12 @@ export const useUiStore = create<UiState>((set, get) => ({
   wonderIndex: 0,
   wonderPlaying: false,
   wonderOutro: null,
+  wonderStepAt: 0,
+  wonderStartedAt: 0,
+  canRecordVideo: canRecord(),
+  recording: false,
+  recordElapsedMs: 0,
+  videoExport: null,
   lang: 'zh',
   progress: { loaded: 0, total: 0 },
   quality: 'medium',
@@ -349,11 +423,76 @@ export const useUiStore = create<UiState>((set, get) => ({
   togglePanel: (panel) => set((s) => ({ activePanel: s.activePanel === panel ? null : panel })),
 
   startWonder: (wonder) => {
-    set({ wonder, wonderIndex: 0, wonderPlaying: true, activePanel: null, wonderOutro: null });
+    const now = performance.now();
+    set({
+      wonder,
+      wonderIndex: 0,
+      wonderPlaying: true,
+      activePanel: null,
+      wonderOutro: null,
+      wonderStartedAt: now,
+      wonderStepAt: now,
+    });
     wonderEngine.start(wonder);
   },
   exitWonder: () => wonderEngine.stop(),
   dismissOutro: () => set({ wonderOutro: null }),
+
+  /**
+   * 开录。会**从头重播**这一则——录一段从中间开始的视频没有意义。
+   *
+   * 界面上的控制条、抽屉、信息卡不会进视频：合成画布上只有三维画面加我们自己
+   * 重画的字幕，DOM 从来没被画进去（见 wonders/recorder.ts）。
+   */
+  startRecording: () => {
+    const s = get();
+    const wonder = s.wonder;
+    const v = viewer;
+    if (!wonder || !v || s.recording || !s.canRecordVideo) return;
+    const strings = STRINGS[s.lang];
+    try {
+      recorder.start(
+        v.getCanvas(),
+        () => buildOverlay(strings.videoCredit, strings.wondersTitle, strings.wonderBy),
+        {},
+      );
+    } catch {
+      set({ canRecordVideo: false });
+      return;
+    }
+    recordingId = wonder.id;
+    v.setFrameTap((canvas) => recorder.captureFrame(canvas));
+    set({ recording: true, recordElapsedMs: 0, videoExport: null });
+    recordTicker = setInterval(() => set({ recordElapsedMs: recorder.elapsedMs }), 250);
+    get().startWonder(wonder);
+  },
+
+  stopRecording: () => {
+    if (!recorder.recording) return;
+    if (recordTicker) {
+      clearInterval(recordTicker);
+      recordTicker = null;
+    }
+    viewer?.setFrameTap(null);
+    const name = `hyibody-${recordingId}`;
+    void recorder
+      .stop()
+      .then(({ blob, ext, durationMs }) => {
+        set({
+          recording: false,
+          recordElapsedMs: 0,
+          videoExport: { url: URL.createObjectURL(blob), ext, bytes: blob.size, durationMs, name },
+        });
+      })
+      .catch(() => set({ recording: false, recordElapsedMs: 0 }));
+  },
+
+  clearVideoExport: () => {
+    const current = get().videoExport;
+    // blob: 的 URL 不 revoke，这段视频就一直占着内存直到刷新
+    if (current) URL.revokeObjectURL(current.url);
+    set({ videoExport: null });
+  },
   wonderNext: () => wonderEngine.next(),
   wonderPrev: () => wonderEngine.prev(),
   wonderToggle: () => {

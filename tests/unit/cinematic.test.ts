@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { PerspectiveCamera, Vector3 } from 'three';
-import { applyDrift, CINEMATIC_FLIGHT, DIRECT_FLIGHT, EASINGS } from '../../src/viewer/cinematic';
+import {
+  applyDrift,
+  CINEMATIC_FLIGHT,
+  DIRECT_FLIGHT,
+  EASINGS,
+  MAX_DRIFT_S,
+} from '../../src/viewer/cinematic';
 import { splitClauses } from '../../src/wonders/caption';
 
 const LIMITS = { minDistance: 25, maxDistance: 8000 };
@@ -103,6 +109,34 @@ describe('cinematic: 运镜微动作', () => {
   it('相机正好落在目标点上时不炸（除零）', () => {
     const cam = camAt(0, 0, 0);
     expect(applyDrift(cam, target, 'push', 1, LIMITS)).toBe(false);
+  });
+});
+
+describe('cinematic: 一步之内的运镜预算', () => {
+  const target = new Vector3(0, 0, 0);
+
+  // 这条是回归测试，不是风格偏好。第一版 push 给到 0.035/s、上限 10 s，
+  // 一步之内拉近 30%：录出来的样片里全身景到步末脑袋被切在画面外——
+  // 取景逻辑按安全区算出「整个人都在画面里」，微动作转手就把它推翻了。
+  it('推近一步最多改变 15% 的距离', () => {
+    const cam = camAt(0, -1000, 0);
+    for (let i = 0; i < MAX_DRIFT_S * 60; i += 1) applyDrift(cam, target, 'push', 1 / 60, LIMITS);
+    expect(cam.position.length()).toBeGreaterThan(1000 * 0.85);
+  });
+
+  it('推远同样有度', () => {
+    const cam = camAt(0, -1000, 0);
+    for (let i = 0; i < MAX_DRIFT_S * 60; i += 1) applyDrift(cam, target, 'pull', 1 / 60, LIMITS);
+    expect(cam.position.length()).toBeLessThan(1000 * 1.18);
+  });
+
+  it('环绕一步最多转 25°——再多就不是微动作，是换了个镜头', () => {
+    const cam = camAt(0, -1000, 0);
+    for (let i = 0; i < MAX_DRIFT_S * 60; i += 1) applyDrift(cam, target, 'orbit', 1 / 60, LIMITS);
+    const deg = (Math.abs(Math.atan2(cam.position.x, -cam.position.y)) * 180) / Math.PI;
+    expect(deg).toBeLessThan(25);
+    // 也不能小到看不出来
+    expect(deg).toBeGreaterThan(8);
   });
 });
 

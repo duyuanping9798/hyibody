@@ -37,6 +37,7 @@ import {
   CINEMATIC_FLIGHT,
   DIRECT_FLIGHT,
   EASINGS,
+  MAX_DRIFT_S,
   type EaseId,
   type FlightOptions,
   type MotionId,
@@ -209,6 +210,17 @@ export class HyiViewer extends EventTarget {
    * 那一刻镜头必须完全交给他。下一步开始（下一次 flyTo）自动恢复。
    */
   private driftSuspended = false;
+  /** 本步已经做了多久微动作。到 MAX_DRIFT_S 就停，免得一路推到贴脸。 */
+  private driftElapsed = 0;
+  /**
+   * 每帧画完之后同步调一次，参数是 WebGL 画布本身。录像用。
+   *
+   * 为什么非要在渲染循环里给一个钩子，而不是让录像器自己 `requestAnimationFrame`：
+   * 没开 `preserveDrawingBuffer` 时，WebGL 画布的内容在浏览器合成之后就作废了，
+   * 隔一个任务再 `drawImage` 只能拿到黑帧。必须在 `render()` 之后、
+   * 让出主线程之前把这一帧抄走。
+   */
+  private frameTap: ((canvas: HTMLCanvasElement) => void) | null = null;
   private pointerDownAt: { x: number; y: number } | null = null;
   private lastTap: { x: number; y: number; at: number } | null = null;
   /** 分层滑块缓动：大跳（奥秘、预设）平滑过渡，小步（拖滑块）立即跟手 */
@@ -695,13 +707,25 @@ export class HyiViewer extends EventTarget {
   setCinematic(motion: MotionId | null, opts?: { speed?: number; flight?: FlightOptions }): void {
     if (motion === null) {
       this.cinematic = null;
+      this.driftElapsed = 0;
       return;
     }
+    this.driftElapsed = 0;
     this.cinematic = {
       motion,
       speed: opts?.speed ?? 1,
       flight: { ...CINEMATIC_FLIGHT, ...opts?.flight },
     };
+  }
+
+  /** WebGL 画布本体。录像要按它的尺寸开合成画布。 */
+  getCanvas(): HTMLCanvasElement {
+    return this.renderer.domElement;
+  }
+
+  /** 注册/注销逐帧回调（录像）。传 `null` 取消。 */
+  setFrameTap(fn: ((canvas: HTMLCanvasElement) => void) | null): void {
+    this.frameTap = fn;
   }
 
   private flyTo(pos: Vector3, target: Vector3): void {
@@ -1079,7 +1103,13 @@ export class HyiViewer extends EventTarget {
         this.rig.camera.position.addScaledVector(f.lift, Math.sin(Math.PI * k));
       }
       if (f.t >= 1) this.flight = null;
-    } else if (this.cinematic && this.cinematic.motion !== 'still' && !this.driftSuspended) {
+    } else if (
+      this.cinematic &&
+      this.cinematic.motion !== 'still' &&
+      !this.driftSuspended &&
+      this.driftElapsed < MAX_DRIFT_S
+    ) {
+      this.driftElapsed += dt;
       applyDrift(
         this.rig.camera,
         this.rig.controls.target,
@@ -1094,6 +1124,8 @@ export class HyiViewer extends EventTarget {
     this.clipCaps.syncToPlane();
     if (this.pipeline) this.pipeline.render();
     else this.renderer.render(this.scene, this.rig.camera);
+    // 抄帧必须紧跟在 render 后面，见 frameTap 的注释
+    if (this.frameTap) this.frameTap(this.renderer.domElement);
   }
 
   dispose(): void {
@@ -1107,6 +1139,7 @@ export class HyiViewer extends EventTarget {
     dom.removeEventListener('wheel', this.onWheel);
     dom.removeEventListener('webglcontextlost', this.onContextLost);
     dom.removeEventListener('webglcontextrestored', this.onContextRestored);
+    this.frameTap = null;
     this.pipeline?.dispose();
     this.renderer.setAnimationLoop(null);
     this.resizeObserver.disconnect();
