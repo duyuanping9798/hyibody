@@ -18,8 +18,8 @@
   "steps": [
     {
       "text": {
-        "zh": "你正在用眼睛读这行字。光从屏幕出发到你「看见」，中间只隔了几个毫米和几毫秒。",
-        "en": "You are reading this line with your eyes. Between the screen and the moment you see it lie only a few millimetres and a few milliseconds."
+        "zh": "你正在用眼睛读这行字。光从屏幕出发到你「看见」，中间只隔了两三厘米和十分之一秒。",
+        "en": "You are reading this line with your eyes. Between the screen and the moment you see it lie only a couple of centimetres and a tenth of a second."
       },
       "layer": 0.08,
       "preset": "front",
@@ -55,28 +55,28 @@
     },
     {
       "text": {
-        "zh": "晶状体负责微调。看远看近不是靠它前后移动，而是靠周围的肌肉把它拉扁或放松。",
-        "en": "The lens handles fine tuning. Switching between far and near is not done by sliding it back and forth, but by muscles flattening it or letting it round up."
+        "zh": "晶状体负责微调。看远看近不是靠它前后移动，而是靠周围的睫状肌一收一放：肌肉一收，吊着它的悬韧带就松了，它便自己鼓起来。",
+        "en": "The lens handles the fine-tuning. Shifting between far and near is not done by sliding it back and forth: the ciliary muscle tightens, the suspensory fibres slacken, and the lens rounds up by itself."
       },
       "layer": 0.6,
       "expand": "eyes",
       "selected": "eye_lens",
-      "durationMs": 11000
+      "durationMs": 13500
     },
     {
       "text": {
-        "zh": "光最后落在视网膜上，而且是倒着的。整个世界在这里先被翻转一次，再由大脑翻回来。",
-        "en": "Light finally lands on the retina — upside down. The whole world is flipped here first, and the brain quietly flips it back."
+        "zh": "光最后落在视网膜上，而且是倒着的。整个世界在这里先被翻转一次，而大脑从出生起就照这个倒像认方向。",
+        "en": "Light finally lands on the retina — upside down. The whole world is flipped here first, and the brain has read it that way from the very start."
       },
       "layer": 0.6,
       "expand": "eyes",
       "selected": "eye_retina",
-      "durationMs": 9500
+      "durationMs": 10500
     },
     {
       "text": {
         "zh": "视神经把信号带出眼球。两侧视神经在颅底交叉一半，所以左边的视野最终交给右脑处理。",
-        "en": "The optic nerves carry the signal out. Half the fibres cross over at the base of the skull, so what you see on the left ends up handled on the right."
+        "en": "The optic nerves carry the signal out of the eye. Half the fibres cross at the base of the skull, so the left half of what you see is handled by the right side of the brain."
       },
       "layer": 0.8,
       "selected": "optic_nerves",

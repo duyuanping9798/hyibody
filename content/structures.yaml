@@ -107,7 +107,7 @@
   priority: 1
 - slug: intervertebral_disks
   zh: 椎间盘
-  en: Intervertebral disks
+  en: Intervertebral discs
   system: skeleton
   region: whole
   side: none
@@ -752,7 +752,7 @@
   priority: 3
 - slug: celiac_trunk
   zh: 腹腔干
-  en: Celiac trunk
+  en: Coeliac trunk
   system: vessels
   region: abdomen
   side: none

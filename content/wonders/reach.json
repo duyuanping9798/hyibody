@@ -28,7 +28,7 @@
     {
       "text": {
         "zh": "起点是肩胛骨。它没有牢牢长在躯干上，而是靠肌肉吊在背上，所以能跟着手臂一起转。",
-        "en": "It begins at the shoulder blade. Rather than being fixed to the trunk, it hangs on the back by muscle alone — which is why it can rotate along with the arm."
+        "en": "It begins at the shoulder blade. Rather than being fixed to the trunk, it is slung across the back by muscle alone — which is why it can rotate along with the arm."
       },
       "layer": 0.5,
       "selected": "scapula_left",
@@ -56,12 +56,12 @@
     },
     {
       "text": {
-        "zh": "接棒的是三角肌，包住整个肩头的那块。它一发力，手臂就一路举过肩膀。",
-        "en": "The deltoid takes over — the muscle wrapping the entire shoulder cap. Once it fires, the arm swings all the way past shoulder height."
+        "zh": "接棒的是三角肌，包住整个肩头的那块。它一发力手臂就抬到与肩齐平，再往上还得靠肩胛骨跟着转。",
+        "en": "The deltoid takes over — the muscle wrapping the entire shoulder cap. It lifts the arm to shoulder height; going any higher needs the shoulder blade to rotate as well."
       },
       "layer": 0.3,
       "selected": "deltoid",
-      "durationMs": 9000
+      "durationMs": 10500
     },
     {
       "text": {
@@ -75,7 +75,7 @@
     {
       "text": {
         "zh": "更显眼的那块是肱二头肌。它鼓起来最好看，但除了屈肘，它还负责把掌心翻向上。",
-        "en": "That famous one is the biceps brachii. It looks the best when it bulges, yet besides bending the elbow it also turns the palm face-up."
+        "en": "That famous one is the biceps brachii, the muscle everybody flexes. Besides bending the elbow, it is also what turns your palm face-up."
       },
       "layer": 0.3,
       "selected": "biceps_brachii",
@@ -94,7 +94,7 @@
     {
       "text": {
         "zh": "一次举手，肩胛骨转、肱骨滚、四五块肌肉按先后顺序接力。你只觉得「抬了一下」。",
-        "en": "One raised arm: the blade rotates, the humerus rolls, and four or five muscles hand off in strict order. All you felt was a lift."
+        "en": "One raised arm: the shoulder blade rotates, the humerus rolls, four or five muscles hand off in strict order. All you feel is a lift."
       },
       "layer": 0.25,
       "preset": "hero",

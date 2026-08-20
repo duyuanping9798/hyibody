@@ -19,7 +19,7 @@
     {
       "text": {
         "zh": "从背后看，腰的上方藏着两个拳头大的器官。它们每天要把你全身的血反复过滤几十遍。",
-        "en": "Seen from behind, two fist-sized organs sit just above the waist. Every day they filter the whole of your blood over and over."
+        "en": "Seen from behind, two fist-sized organs sit just above the waist. Every day they put the whole of your blood through the filter, dozens of times over."
       },
       "layer": 0.08,
       "preset": "back",
@@ -56,7 +56,7 @@
     {
       "text": {
         "zh": "再往里是一个个尖端朝内的肾锥体。液体穿过它们时被反复浓缩，越走越少、越走越浓。",
-        "en": "Deeper in stand the renal pyramids, their tips pointing inward. Fluid passing through them is concentrated again and again — less in volume, stronger in content."
+        "en": "Deeper in stand the renal pyramids, their tips pointing inwards. Fluid passing through them is concentrated again and again — less of it at every turn, and stronger."
       },
       "layer": 0.6,
       "expand": "kidneys",
@@ -76,7 +76,7 @@
     {
       "text": {
         "zh": "输尿管把液体一路送到骨盆。它不是靠重力，而是靠管壁一波波蠕动往下挤——躺着也照样走。",
-        "en": "The ureters carry the fluid down to the pelvis. Not by gravity but by waves of muscular squeezing along the wall — so it keeps moving even lying down."
+        "en": "The ureters carry the fluid all the way down into the pelvic cavity. Not by gravity but by waves of muscle squeezing along the wall — so it keeps flowing even when you lie down."
       },
       "layer": 0.6,
       "selected": "ureters",
@@ -94,7 +94,7 @@
     {
       "text": {
         "zh": "所以尿不是「废水」，而是筛剩下的那一点。真正的工作，是把该留的都留了下来。",
-        "en": "So urine is not simply waste water but the small remainder after sifting. The real work was keeping everything worth keeping."
+        "en": "So urine is not simply waste water but the small remainder after sifting. The real work lay in keeping everything worth keeping."
       },
       "layer": 0.55,
       "preset": "hero",

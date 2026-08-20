@@ -28,7 +28,7 @@
     {
       "text": {
         "zh": "12 对肋骨从脊柱向前包过来，一根根斜着向下。吸气时它们被提起，整圈就往外扩了一圈。",
-        "en": "Twelve pairs of ribs sweep forward from the spine, each slanting downward. Lift them as you breathe in, and the whole ring widens."
+        "en": "Twelve pairs of ribs sweep forward from the spine, each slanting downwards. Breathe in, and they swing up and out, widening the whole ring at once."
       },
       "layer": 0.5,
       "selected": "ribs",
@@ -36,26 +36,26 @@
     },
     {
       "text": {
-        "zh": "正前方是胸骨，一块扁平的长骨。心肺复苏按压的位置，就在它下半段。",
+        "zh": "正前方是胸骨，一块又长又扁的骨板。心肺复苏按压的位置，就在它下半段。",
         "en": "Straight in front lies the sternum, a flat blade of bone. The spot pressed during CPR is on its lower half."
       },
       "layer": 0.5,
       "selected": "sternum",
-      "durationMs": 8500
+      "durationMs": 9000
     },
     {
       "text": {
-        "zh": "肋骨并没有直接长到胸骨上，中间隔着一段肋软骨。这段软的，正是胸廓能张开的原因。",
-        "en": "The ribs never reach the sternum directly; a length of costal cartilage bridges the gap. That soft segment is exactly why the cage can open at all."
+        "zh": "上面几对肋骨并没有直接长到胸骨上，中间隔着一段肋软骨。这段软的，正是胸廓能张开的原因。",
+        "en": "The upper ribs never reach the sternum directly; a length of costal cartilage bridges the gap. That soft segment is exactly why the cage can open at all."
       },
       "layer": 0.5,
       "selected": "costal_cartilages",
-      "durationMs": 9500
+      "durationMs": 10000
     },
     {
       "text": {
-        "zh": "后方每一根肋骨都挂在一块胸椎上。12 对肋骨、12 块胸椎，一一对应，一个不多一个不少。",
-        "en": "At the back, every rib hangs from a thoracic vertebra. Twelve pairs of ribs, twelve vertebrae — matched one to one, with none left over."
+        "zh": "后方每一根肋骨都挂在胸椎上，肋头还同时搭住上面那一块。12 对肋骨、12 块胸椎，一一对应。",
+        "en": "At the back, every rib hangs from its own thoracic vertebra and catches the one above as well. Twelve pairs of ribs, twelve vertebrae, matched one to one."
       },
       "layer": 0.5,
       "selected": "thoracic_vertebrae",
@@ -92,7 +92,7 @@
     {
       "text": {
         "zh": "所以胸廓不是一副静止的盔甲，而是一只每天开合两万次、还要顺便护着心肺的笼子。",
-        "en": "So the ribcage is no static suit of armour, but a cage that opens and closes twenty thousand times a day while guarding the heart and lungs besides."
+        "en": "So the ribcage is no static suit of armour but a cage that opens and closes twenty thousand times a day — and guards the heart and lungs while it works."
       },
       "layer": 0.5,
       "preset": "hero",

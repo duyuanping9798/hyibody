@@ -19,7 +19,7 @@
     {
       "text": {
         "zh": "全身的动脉血都从同一根管子出发。它从心脏出来先向上，拐个弯，再一路向下穿过躯干。",
-        "en": "All the arterial blood in your body sets out from a single tube. It leaves the heart heading up, turns a bend, then runs down through the trunk."
+        "en": "All the arterial blood in your body sets out from a single tube. It leaves the heart heading up, arches over, then runs straight down through the torso."
       },
       "layer": 0.1,
       "preset": "front",
@@ -27,8 +27,8 @@
     },
     {
       "text": {
-        "zh": "这就是主动脉，全身最粗的血管。管壁里织着大量弹性纤维，心脏一停跳它还能靠回弹继续推血。",
-        "en": "This is the aorta, the widest vessel you have. Its wall is woven with elastic fibres, so between heartbeats it keeps blood moving by springing back."
+        "zh": "这就是主动脉，全身最粗的动脉。管壁里织着大量弹性纤维，两次心跳之间它靠回弹继续推血。",
+        "en": "This is the aorta, the widest artery you have. Its wall is woven with elastic fibres, so between heartbeats it keeps blood moving by springing back."
       },
       "layer": 0.8,
       "selected": "aorta",
@@ -37,7 +37,7 @@
     {
       "text": {
         "zh": "弓顶上的第一个岔口是头臂干，一根粗短的主干。它一出来立刻又分成两支，同时管右臂和右侧头颈。",
-        "en": "The first turning at the top of the arch is the brachiocephalic trunk, short and stout. It splits again at once, serving the right arm and the right side of the head."
+        "en": "The first turning at the top of the arch is the brachiocephalic trunk, short and stout. It splits again at once, serving the right arm and the right side of the head and neck."
       },
       "layer": 0.8,
       "selected": "brachiocephalic_trunk",
@@ -45,12 +45,12 @@
     },
     {
       "text": {
-        "zh": "颈总动脉沿着气管两侧笔直上行。你在下颌角下方按到的那阵搏动，就是它。",
-        "en": "The common carotid arteries run straight up either side of the windpipe. That pulse you can find just below the angle of the jaw is this vessel."
+        "zh": "颈总动脉沿着气管两侧笔直上行。把手指放在喉结外侧摸到的那阵强劲搏动，就是它。",
+        "en": "The common carotid arteries run straight up either side of the windpipe. That strong pulse you can find beside the Adam's apple is this vessel."
       },
       "layer": 0.8,
       "selected": "common_carotid_arteries",
-      "durationMs": 9000
+      "durationMs": 9500
     },
     {
       "text": {
@@ -72,21 +72,21 @@
     },
     {
       "text": {
-        "zh": "走到骨盆上缘，主动脉就此终止，一分为二成髂动脉。这里是整条干线的终点，也是双腿的起点。",
-        "en": "At the brim of the pelvis the aorta ends, splitting in two as the iliac arteries. This is where the main line stops and both legs begin."
+        "zh": "走到肚脐这个高度，主动脉就此终止，一分为二成髂动脉。这里是整条干线的终点，也是双腿的起点。",
+        "en": "At about the level of the navel the aorta ends, splitting in two as the iliac arteries. This is where the main line stops and both legs begin."
       },
       "layer": 0.8,
       "selected": "iliac_arteries",
-      "durationMs": 10000
+      "durationMs": 10500
     },
     {
       "text": {
-        "zh": "越过腹股沟，它换名叫股动脉。这根血管位置浅、口径大，急救时常从这里摸脉、也从这里穿刺。",
-        "en": "Crossing the groin, it takes a new name: the femoral artery. Shallow and wide, it is a vessel medics reach for both to feel a pulse and to puncture."
+        "zh": "越过腹股沟，它换名叫股动脉。这根血管位置浅、口径大，医生既在这里摸脉，做心导管时也从这里穿刺进去。",
+        "en": "Crossing the groin, it takes a new name: the femoral artery. Shallow and wide, it is a vessel medics reach for to feel a pulse, and the usual entry point for a cardiac catheter."
       },
       "layer": 0.8,
       "selected": "femoral_arteries",
-      "durationMs": 10000
+      "durationMs": 11000
     },
     {
       "text": {

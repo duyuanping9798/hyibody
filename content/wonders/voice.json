@@ -26,12 +26,12 @@
     },
     {
       "text": {
-        "zh": "改造发生在喉。这里的几块软骨搭成一个能开能合的框架，气流经过时被拨动成声。",
-        "en": "The reshaping happens in the larynx, where a handful of cartilages build a frame that can open and close, setting the passing air vibrating."
+        "zh": "改造发生在喉。几块软骨搭成一个框架，中间绷着两片声带；气流挤过它们之间的窄缝，就被拨动成声。",
+        "en": "The reshaping happens in the larynx, where a few cartilages frame two vocal folds. Air squeezing through the slit between them is set vibrating into sound."
       },
       "layer": 0.6,
       "selected": "larynx_cartilages",
-      "durationMs": 11000
+      "durationMs": 12000
     },
     {
       "text": {
@@ -46,7 +46,7 @@
     {
       "text": {
         "zh": "下面托着环状软骨，是整条气道里唯一一圈完整闭合的软骨环——别处都留着缺口。",
-        "en": "Beneath it sits the cricoid cartilage, the only complete closed ring of cartilage in the entire airway; everywhere else the ring is left open."
+        "en": "Beneath it sits the cricoid cartilage, the only complete closed ring of cartilage in the entire airway; everywhere else the rings are left open."
       },
       "layer": 0.6,
       "expand": "larynx_cartilages",
@@ -65,12 +65,12 @@
     },
     {
       "text": {
-        "zh": "声音的动力来自下面的气管。你能喊多久、喊多响，取决于这根管子里能推上来多少气。",
-        "en": "The power comes from the trachea below. How long and how loudly you can shout depends on how much air this tube can push upward."
+        "zh": "这股气从下面的肺里来，沿气管一路上行。你能喊多久、喊多响，取决于肺里存了多少气、呼气的肌肉能推多用力。",
+        "en": "The power comes from the lungs below, travelling up the trachea. How long and how loudly you can shout depends on the air you stored and the muscles driving it out."
       },
       "layer": 0.6,
       "selected": "trachea",
-      "durationMs": 11000
+      "durationMs": 12500
     },
     {
       "text": {

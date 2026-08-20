@@ -18,8 +18,8 @@
   "steps": [
     {
       "text": {
-        "zh": "此刻你正在吸气。这口空气从鼻孔到血液，全程不到一秒，沿途要过好几道门。",
-        "en": "You are breathing in right now. This mouthful of air reaches your blood in under a second, passing through several gates on the way."
+        "zh": "此刻你正在吸气。这口空气从鼻孔到血液，全程一两秒，沿途要过好几道门。",
+        "en": "You are breathing in right now. This breath travels from your nostrils to your blood in a second or two, passing through several gates on the way."
       },
       "layer": 0.05,
       "preset": "hero",
@@ -27,26 +27,26 @@
     },
     {
       "text": {
-        "zh": "第一道门是喉。空气从这里进去时，会厌像盖子一样翻开；吞咽时它又立刻盖住。",
-        "en": "The first gate is the larynx. As air passes through, the epiglottis flips open like a lid — and snaps shut the moment you swallow."
+        "zh": "第一道门是喉。呼吸时会厌像一片叶子立在门口给空气让路，吞咽时它才立刻倒下盖住。",
+        "en": "The first gate is the larynx. While you breathe, the epiglottis stands upright like a leaf, out of the air's way — and folds down the instant you swallow."
       },
       "layer": 0.6,
       "selected": "larynx_cartilages",
-      "durationMs": 10500
+      "durationMs": 11000
     },
     {
       "text": {
-        "zh": "往下是气管，一根被软骨环撑着的硬管子。躺着、低头、被人掐住，它都不会塌。",
-        "en": "Below runs the trachea, a tube held open by cartilage rings. Lie down, bow your head, take a chokehold — it will not collapse."
+        "zh": "往下是气管，一根被软骨环撑着的管子。躺下、低头、转脖子，管腔都照样开着，不会被自己压塌。",
+        "en": "Below runs the trachea, a tube held open by cartilage rings. Lie down, bow your head, turn your neck — the airway stays open all the same."
       },
       "layer": 0.6,
       "selected": "trachea",
-      "durationMs": 9000
+      "durationMs": 10000
     },
     {
       "text": {
         "zh": "到胸腔正中，气管一分为二，然后不停地分。这棵倒着长的树，每一级都比上一级细一点、多一倍。",
-        "en": "In mid-chest the airway forks in two, then keeps forking. This upside-down tree halves its width and doubles its count at every level."
+        "en": "In mid-chest the airway forks in two, then keeps forking. This upside-down tree narrows a little and doubles its count at every level."
       },
       "layer": 0.6,
       "selected": "bronchial_tree",
@@ -73,7 +73,7 @@
     {
       "text": {
         "zh": "肋间肌同时把肋骨一根根提起来，胸廓像手风琴一样张开。深呼吸时，你摸得到它们在动。",
-        "en": "At the same time the intercostals lift the ribs one by one, opening the chest like an accordion. Breathe deeply and you can feel them working."
+        "en": "At the same time the intercostal muscles lift the ribs one by one, opening the chest like an accordion. Breathe deeply and you can feel them working."
       },
       "layer": 0.28,
       "selected": "intercostal_muscles",

@@ -18,8 +18,8 @@
   "steps": [
     {
       "text": {
-        "zh": "摊开手掌看一眼。这只手上有 27 块骨头，占全身骨头总数的四分之一还多——两只手加起来一半有余。",
-        "en": "Open your palm and look. There are 27 bones in this one hand, more than a quarter of all the bones you own — both hands together, over half."
+        "zh": "摊开手掌看一眼。这只手上有 27 块骨头，两只手加起来 54 块，占全身 206 块骨头的四分之一还多。",
+        "en": "Open your palm and look. There are 27 bones in this one hand — 54 in the pair, more than a quarter of all 206 bones you own."
       },
       "layer": 0.08,
       "preset": "front",
@@ -55,7 +55,7 @@
     {
       "text": {
         "zh": "尺骨在小指这一侧，几乎不动，充当那根被绕着转的轴。两根骨头一动一静，才有了这个动作。",
-        "en": "The ulna sits on the little-finger side and barely moves, serving as the axle to be swung around. One bone turns, one holds still — that is the trick."
+        "en": "The ulna sits on the little-finger side and barely moves, serving as the axle the radius swings around. One bone turns, one holds still — that is the trick."
       },
       "layer": 0.5,
       "selected": "ulna_left",
@@ -63,17 +63,17 @@
     },
     {
       "text": {
-        "zh": "手指本身几乎没有肌肉。握拳的力气来自前臂的指浅屈肌，靠长长的肌腱远程拉动手指。",
-        "en": "The fingers themselves carry almost no muscle. The strength of a fist comes from the forearm, where flexor muscles pull the fingers by long remote tendons."
+        "zh": "手指本身几乎没有肌肉。握拳时前臂的指浅屈肌先出力，它弯的是手指中间那一节，靠长长的肌腱远程拉动。",
+        "en": "The fingers themselves carry almost no muscle. In a fist, flexor digitorum superficialis in the forearm pulls first, bending the middle joint of each finger through long, slender tendons."
       },
       "layer": 0.3,
       "selected": "flexor_digitorum_superficialis",
-      "durationMs": 9500
+      "durationMs": 10500
     },
     {
       "text": {
         "zh": "前臂背面的指伸肌负责把手指拉直。手指之所以细，正因为发动机全都装在了远处。",
-        "en": "On the back of the forearm, the extensor muscles straighten the fingers again. Fingers stay slim precisely because their engines were all installed elsewhere."
+        "en": "On the back of the forearm, extensor digitorum pulls the fingers straight again. Fingers stay slim precisely because their engines are installed so far away."
       },
       "layer": 0.3,
       "selected": "extensor_digitorum",
@@ -83,7 +83,7 @@
     {
       "text": {
         "zh": "再往上只剩肱骨一根。越靠近身体骨头越少越粗，越靠近指尖越多越细——手就是这样一路分岔出来的。",
-        "en": "Higher up, only the humerus remains. Bones grow fewer and thicker towards the body, more and finer towards the fingertips — the hand branches out along the way."
+        "en": "Higher up, only the humerus remains. Bones grow fewer and thicker towards the body, more numerous and finer towards the fingertips — the hand branches out along the way."
       },
       "layer": 0.5,
       "selected": "humerus_left",

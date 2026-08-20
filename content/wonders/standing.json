@@ -19,7 +19,7 @@
     {
       "text": {
         "zh": "你现在可能正站着或坐着，觉得自己没在用力。接下来看看有多少块肌肉正在替你顶着。",
-        "en": "Right now you are probably standing or sitting, feeling like you are doing nothing at all. Let us count the muscles holding you up anyway."
+        "en": "Right now you are probably standing or sitting, feeling like you are doing nothing at all. Let's count the muscles holding you up anyway."
       },
       "layer": 0.05,
       "preset": "hero",
@@ -27,13 +27,13 @@
     },
     {
       "text": {
-        "zh": "先看背后。竖脊肌沿脊柱两侧从骨盆一直排到后脑，只要你没趴下，它就没停过。",
-        "en": "Start at the back. The erector spinae run alongside the spine from pelvis to skull, and unless you are lying face down, they never stop."
+        "zh": "先看背后。竖脊肌沿脊柱两侧从骨盆一直排到后脑，只要你直着身子，它就一阵阵地在使劲。",
+        "en": "Start at the back. The erector spinae run alongside the spine from the pelvis to the base of the skull, and unless you are lying face down, they keep firing in bursts."
       },
       "layer": 0.3,
       "selected": "erector_spinae",
       "from": "back",
-      "durationMs": 10500
+      "durationMs": 11500
     },
     {
       "text": {
@@ -47,7 +47,7 @@
     {
       "text": {
         "zh": "大腿后面的腘绳肌跨过髋和膝两个关节，一头拉住骨盆，一头拉住小腿，两边同时管。",
-        "en": "Behind the thigh, the hamstrings span two joints at once — anchoring the pelvis at one end and the lower leg at the other, minding both."
+        "en": "Behind the thigh, the hamstrings cross both the hip and the knee — holding the pelvis at one end and the lower leg at the other, minding both at once."
       },
       "layer": 0.3,
       "selected": "hamstrings",
@@ -56,7 +56,7 @@
     {
       "text": {
         "zh": "小腿深处的比目鱼肌最不起眼却最要紧：站着时它一收一放，像挤海绵一样把血往上推。",
-        "en": "Deep in the calf, the soleus is the least conspicuous and the most essential: standing, it squeezes and releases, pushing blood upward like a sponge."
+        "en": "Deep in the calf, the soleus is the least conspicuous and the most essential: as you stand it tightens and lets go, squeezing blood back up the leg the way a hand squeezes a sponge."
       },
       "layer": 0.3,
       "selected": "soleus",
@@ -74,7 +74,7 @@
     {
       "text": {
         "zh": "两块肌肉的力都汇进跟腱，全身最粗的一根。每走一步，它都在把身体弹向前方。",
-        "en": "The force of both muscles funnels into the calcaneal tendon, the thickest in the body. With every step it springs you forward again."
+        "en": "The force of both muscles funnels into the calcaneal tendon — the Achilles — the thickest tendon in the body. With every step it springs you forward again."
       },
       "layer": 0.3,
       "selected": "calcaneal_tendon",

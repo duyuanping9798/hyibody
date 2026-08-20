@@ -18,8 +18,8 @@
   "steps": [
     {
       "text": {
-        "zh": "从背后看，脊柱不是一根直棍，而是一条侧看呈两道弯的曲线。这两道弯是它能扛住你的关键。",
-        "en": "Seen from behind, the spine is no straight rod. From the side it draws two opposing curves — and those curves are why it can carry you."
+        "zh": "从背后看，脊柱不是一根直棍，而是侧看前后交替的四道弯。这几道弯是它能扛住你的关键。",
+        "en": "Seen from behind, the spine is no straight rod. From the side it draws four curves alternating front and back — and those curves are why it can carry you."
       },
       "layer": 0.08,
       "preset": "back",
@@ -36,8 +36,8 @@
     },
     {
       "text": {
-        "zh": "往下 12 块胸椎，每一块都被一对肋骨拴住。稳固是代价，它是整条脊柱里最不能扭的一段。",
-        "en": "Next come twelve thoracic vertebrae, each tethered to a pair of ribs. Stability has a price: this is the least twistable stretch of the whole spine."
+        "zh": "往下 12 块胸椎，每一块都被一对肋骨拴住。稳固是代价，它是整条脊柱里活动幅度最小的一段。",
+        "en": "Next come twelve thoracic vertebrae, each tethered to a pair of ribs. Stability has a price: this is the least mobile stretch of the whole spine."
       },
       "layer": 0.5,
       "selected": "thoracic_vertebrae",
@@ -55,7 +55,7 @@
     {
       "text": {
         "zh": "重量最后交给骶骨，这块三角形的骨头嵌在两侧髋骨之间，把力分给骨盆和双腿。",
-        "en": "The load finally passes to the sacrum, a wedge of bone locked between the hip bones that splits the force out to the pelvis and both legs."
+        "en": "The load finally passes to the sacrum, a wedge of bone locked between the hip bones that spreads the force out to the pelvis and both legs."
       },
       "layer": 0.5,
       "selected": "sacrum",
@@ -63,17 +63,17 @@
     },
     {
       "text": {
-        "zh": "每两块椎骨之间都垫着一片椎间盘。它们加起来约占脊柱长度的四分之一，弯腰的角度全靠它们让出来。",
-        "en": "Between every two vertebrae sits a disc. Together they make up roughly a quarter of the spine's length, and every degree of bending is borrowed from them."
+        "zh": "从颈椎到腰椎，几乎每两块椎骨之间都垫着一片椎间盘。它们加起来约占脊柱长度的四分之一，弯腰的角度全靠它们让出来。",
+        "en": "From the neck down to the lower back, almost every two vertebrae have a disc between them. Together they make up roughly a quarter of the spine's length, and every degree of bending is borrowed from them."
       },
       "layer": 0.5,
       "selected": "intervertebral_disks",
-      "durationMs": 10500
+      "durationMs": 11500
     },
     {
       "text": {
         "zh": "这座塔是空心的。椎孔连成一条管道，脊髓就住在里面——脊柱的形状，本来就是为了护住它。",
-        "en": "The tower is hollow. The vertebral openings line up into a canal, and the spinal cord lives inside it — the spine is shaped the way it is to guard this."
+        "en": "The tower is hollow. The vertebral openings line up into a canal and the spinal cord lives inside it — the whole shape of the spine exists to protect that cord."
       },
       "layer": 0.75,
       "selected": "spinal_cord",
@@ -82,7 +82,7 @@
     {
       "text": {
         "zh": "光靠骨头它立不住。两侧的竖脊肌像帆船上的缆绳，一直在收着——久站腰酸，就是它们喊累。",
-        "en": "Bone alone cannot hold it upright. The erector spinae run down both sides like a sailboat's rigging, always pulling — and stand too long, and they will complain."
+        "en": "Bone alone cannot hold it upright. The erector spinae run down both sides like the rigging on a sailing boat, always pulling — stand too long and your lower back will let you know."
       },
       "layer": 0.3,
       "selected": "erector_spinae",
