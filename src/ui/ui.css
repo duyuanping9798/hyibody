@@ -348,6 +348,11 @@
   color: var(--hyi-text-dim);
   margin-bottom: 10px;
 }
+/* 「AI 交叉审校，未经医师签字」原来会在"医师"和"签字"之间折行。
+   整段当一个词处理，宽度不够时整段换到下一行。 */
+.hyi-info .meta .hyi-review-tag {
+  white-space: nowrap;
+}
 .hyi-info .actions {
   display: flex;
   flex-wrap: wrap;
@@ -383,6 +388,20 @@
   right: 12px;
   display: flex;
   gap: 6px;
+  /* 顶栏浮在三维之上，人体亮的时候（皮肤层、剖面）这几个图标按钮几乎认不出来。
+     给按钮本身垫一层不透明的深底，比给整条顶栏加渐变遮罩更省，也不挡画面。 */
+  --hyi-btn-scrim: rgba(9, 14, 26, 0.62);
+}
+.hyi-topbar .hyi-btn {
+  background: var(--hyi-btn-scrim);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.hyi-topbar .hyi-btn:hover {
+  background: rgba(79, 227, 224, 0.28);
+}
+.hyi-topbar .hyi-btn-warm {
+  background: rgba(120, 74, 24, 0.72);
 }
 
 .hyi-btn-warm {

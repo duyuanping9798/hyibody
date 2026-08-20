@@ -39,7 +39,7 @@ import { computeSystemOpacity, PICKABLE_OPACITY_THRESHOLD } from './layers';
 import {
   colorForStructure,
   createSystemMaterial,
-  createXRayMaterial,
+  createSkinMaterial,
   setMaterialOpacity,
 } from './materials';
 import { createRenderPipeline, type RenderPipeline } from './postprocess';
@@ -310,7 +310,7 @@ export class HyiViewer extends EventTarget {
       const slug = extras.slug ?? mesh.name;
       const color = colorForStructure(sys, extras.en ?? slug, slug);
       const material =
-        sys === 'skin' ? createXRayMaterial(color, 1) : createSystemMaterial(sys, color);
+        sys === 'skin' ? createSkinMaterial(color) : createSystemMaterial(sys, color);
       mesh.material = material;
       mesh.renderOrder = RENDER_ORDER[sys];
       mesh.castShadow = QUALITY_CAPS[this.quality].softShadows && sys !== 'skin';
@@ -524,7 +524,9 @@ export class HyiViewer extends EventTarget {
     if (!this.clipPlane) return;
     const candidates = [];
     for (const entry of this.structures.values()) {
-      if (entry.material instanceof ShaderMaterial) continue; // 皮肤/X-ray 壳没有断面可言
+      // 皮肤是一整张外壳：给它做封盖会把整个人体断面填成一片肤色，
+      // 里面刚剖开的器官全被盖住。壳没有断面可言，跳过。
+      if (entry.system === 'skin' || entry.material instanceof ShaderMaterial) continue;
       if (!entry.material.visible) continue;
       if (this.effectiveOpacity(entry) < CAP_MIN_OPACITY) continue;
       candidates.push({ slug: entry.slug, mesh: entry.mesh, color: entry.color });

@@ -3,6 +3,7 @@ import {
   BackSide,
   Color,
   DoubleSide,
+  FrontSide,
   MeshPhysicalMaterial,
   MeshStandardMaterial,
   ShaderMaterial,
@@ -16,7 +17,9 @@ const PALETTE = paletteRaw as Record<string, string | { note?: string }>;
 
 /** 各系统基色（深色舞台上的科普配色：动脉红/静脉蓝/神经黄/骨米白）。 */
 export const SYSTEM_COLORS: Record<SystemId, number> = {
-  skin: 0x4fc3d9,
+  // 皮肤改成真的肤色（原来是品牌青 0x4fc3d9）。青色壳看着像玻璃模特，
+  // 而这一层本来就该是"人"——X-ray 的身份交给边缘光，底色交还给皮肤。
+  skin: 0xd7a184,
   muscles: 0xc75948,
   skeleton: 0xd8d3c3,
   organs: 0xcf8a5b,
@@ -208,6 +211,151 @@ export function createSystemMaterial(
       alpha: rim.alpha,
     });
   }
+  return material;
+}
+
+/**
+ * 皮肤的微观细节：三平面程序噪声，不依赖 UV。
+ *
+ * 流水线导出的 glb 只有 POSITION 和 NORMAL，没有 UV（解剖网格本来也不带），
+ * 所以贴图这条路走不通。改成在片元里按**世界坐标**取噪声：两个八度，
+ * 粗的一层做皮下的起伏、细的一层做毛孔级的颗粒，再用有限差分求梯度扰动法线，
+ * 顺带让粗糙度不均匀——皮肤最不像皮肤的地方，就是它光滑得像塑料。
+ */
+function addSkinDetail(
+  material: MeshStandardMaterial,
+  options: { coarse: number; fine: number; strength: number; roughVariation: number },
+): void {
+  const previous = material.onBeforeCompile;
+  material.onBeforeCompile = (shader, renderer) => {
+    previous?.call(material, shader, renderer);
+    shader.uniforms.uSkinCoarse = { value: options.coarse };
+    shader.uniforms.uSkinFine = { value: options.fine };
+    shader.uniforms.uSkinStrength = { value: options.strength };
+    shader.uniforms.uSkinRough = { value: options.roughVariation };
+    shader.vertexShader = shader.vertexShader
+      .replace('void main() {', 'varying vec3 vSkinWorld;\nvoid main() {')
+      .replace(
+        '#include <project_vertex>',
+        '#include <project_vertex>\n  vSkinWorld = (modelMatrix * vec4(transformed, 1.0)).xyz;',
+      );
+    shader.fragmentShader = shader.fragmentShader
+      .replace(
+        'void main() {',
+        `varying vec3 vSkinWorld;
+         uniform float uSkinCoarse;
+         uniform float uSkinFine;
+         uniform float uSkinStrength;
+         uniform float uSkinRough;
+         float hyiHash(vec3 p) {
+           p = fract(p * 0.3183099 + vec3(0.71, 0.113, 0.419));
+           p *= 17.0;
+           return fract(p.x * p.y * p.z * (p.x + p.y + p.z));
+         }
+         float hyiNoise(vec3 x) {
+           vec3 i = floor(x);
+           vec3 f = fract(x);
+           f = f * f * (3.0 - 2.0 * f);
+           float n00 = mix(hyiHash(i), hyiHash(i + vec3(1.0, 0.0, 0.0)), f.x);
+           float n10 = mix(hyiHash(i + vec3(0.0, 1.0, 0.0)), hyiHash(i + vec3(1.0, 1.0, 0.0)), f.x);
+           float n01 = mix(hyiHash(i + vec3(0.0, 0.0, 1.0)), hyiHash(i + vec3(1.0, 0.0, 1.0)), f.x);
+           float n11 = mix(hyiHash(i + vec3(0.0, 1.0, 1.0)), hyiHash(i + vec3(1.0, 1.0, 1.0)), f.x);
+           return mix(mix(n00, n10, f.y), mix(n01, n11, f.y), f.z);
+         }
+         // 细的那一层要按距离淡出：一个像素跨过好几个噪声周期时，它只会变成沙粒噪点。
+         // fwidth 给出这个像素在世界坐标里跨了多少毫米，据此把细octave 关掉。
+         float hyiSkinFade(vec3 w) {
+           float mmPerPixel = fwidth(w.x) + fwidth(w.y) + fwidth(w.z);
+           return clamp(1.0 - mmPerPixel * uSkinFine * 3.0, 0.0, 1.0);
+         }
+         float hyiSkinField(vec3 w, float fade) {
+           return hyiNoise(w * uSkinCoarse) * 0.7 + hyiNoise(w * uSkinFine) * 0.3 * fade;
+         }
+         void main() {`,
+      )
+      .replace(
+        '#include <roughnessmap_fragment>',
+        `#include <roughnessmap_fragment>
+         float hyiSkinFadeV = hyiSkinFade(vSkinWorld);
+         float hyiSkinN = hyiSkinField(vSkinWorld, hyiSkinFadeV);
+         roughnessFactor = clamp(roughnessFactor + (hyiSkinN - 0.5) * uSkinRough, 0.04, 1.0);`,
+      )
+      // 肤色本身也不均匀：同一片皮肤有深有浅，纯色会立刻露出"这是个模型"
+      .replace(
+        '#include <color_fragment>',
+        `#include <color_fragment>
+         diffuseColor.rgb *= 0.93 + hyiSkinField(vSkinWorld, hyiSkinFade(vSkinWorld)) * 0.14;`,
+      )
+      .replace(
+        '#include <normal_fragment_begin>',
+        `#include <normal_fragment_begin>
+         {
+           // 世界坐标下求梯度，再用 viewMatrix 转到视图空间——normal 在这里是视图空间的
+           float fade = hyiSkinFade(vSkinWorld);
+           float e = 0.35 / max(uSkinFine, 0.0001);
+           float base = hyiSkinField(vSkinWorld, fade);
+           vec3 g = vec3(
+             hyiSkinField(vSkinWorld + vec3(e, 0.0, 0.0), fade),
+             hyiSkinField(vSkinWorld + vec3(0.0, e, 0.0), fade),
+             hyiSkinField(vSkinWorld + vec3(0.0, 0.0, e), fade)
+           ) - base;
+           normal = normalize(normal - mat3(viewMatrix) * g * uSkinStrength);
+         }`,
+      );
+  };
+  const key = `skin:${options.coarse}:${options.fine}:${options.strength}:${options.roughVariation}`;
+  const prevKey = material.customProgramCacheKey;
+  material.customProgramCacheKey = () => `${prevKey ? prevKey.call(material) : ''}|${key}`;
+}
+
+/**
+ * 皮肤材质：一层真的皮肤，而不是一只青色玻璃壳。
+ *
+ * 原来皮肤走 `createXRayMaterial`（加色混合的菲涅尔壳）。"透视"的身份是对的，
+ * 但代价是分层滑到最外层时看到的不是人，是模特道具。现在改成受光的物理材质：
+ * 暖调肤色 + 绒毛感 sheen + 一点点皮脂清漆 + 三平面噪声的毛孔，
+ * 而"透视"交给分层滑块本来就在做的事——不透明度一降，菲涅尔边缘光接管，
+ * 正对相机的部分透掉、只剩一圈青边，X-ray 的样子自己就回来了。
+ */
+export function createSkinMaterial(color: string | number): MeshPhysicalMaterial {
+  const material = new MeshPhysicalMaterial({
+    color: new Color(color),
+    // 0.74 → 0.82：实拍下胸口和大腿的高光直接打成白色，皮肤没有那么亮
+    roughness: 0.82,
+    metalness: 0,
+    // 绒毛：皮肤在掠射角下会有一层柔和的散射，缺了它怎么调都像塑料
+    sheen: 0.65,
+    sheenRoughness: 0.9,
+    sheenColor: new Color(0xffd8c4),
+    // 皮脂那一点点反光，多一分就成了汗
+    clearcoat: 0.05,
+    clearcoatRoughness: 0.9,
+    envMapIntensity: 0.72,
+    transparent: true,
+    side: FrontSide,
+    // 皮肤是一张 6 万面的减面外壳，精度不够：大隐静脉这类紧贴皮下的结构会从
+    // 壳外面冒出来，在腿上留下一道红印（实拍可见）。把皮肤朝相机方向偏一点，
+    // 让这类"只差零点几毫米"的穿模输掉深度测试。
+    polygonOffset: true,
+    polygonOffsetFactor: -1,
+    polygonOffsetUnits: -2,
+  });
+  addFresnelRim(material, {
+    color: new Color(0x6fe0ee),
+    strength: 0.42,
+    power: 3.0,
+    alpha: 0.55,
+  });
+  // 尺度按毫米给：粗的一层周期约 30 mm（皮下起伏），细的约 4 mm（颗粒感）。
+  // strength 是法线扰动的倍率——梯度本身只有 0.05 量级，0.35 的话肉眼根本看不出。
+  // 4.0 在全身远景下会糊成沙粒（实拍可见），所以细的那一层按 fwidth 淡出，
+  // 倍率降到 2.5：远看只剩皮下起伏，凑近才浮出颗粒。
+  addSkinDetail(material, {
+    coarse: 1 / 30,
+    fine: 1 / 4,
+    strength: 2.5,
+    roughVariation: 0.2,
+  });
   return material;
 }
 

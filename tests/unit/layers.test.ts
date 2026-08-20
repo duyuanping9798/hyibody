@@ -2,13 +2,20 @@ import { describe, expect, it } from 'vitest';
 import { computeAllOpacities, computeSystemOpacity } from '../../src/viewer/layers';
 
 describe('layers: 分层滑块 → 系统不透明度（KICKOFF 第 6 节）', () => {
-  it('layer=0 时只有皮肤外壳完全可见，内层是淡淡的底噪', () => {
+  it('layer=0 是一层干净的皮肤，滑一点点内层才开始透出来', () => {
+    // 皮肤 2026-08-20 换成不透明的物理材质之后，layer=0 本来就看不见里面。
+    // 底噪唯一的效果是让紧贴皮下的结构从减面外壳外面冒出来（实拍：腿上一道红印），
+    // 所以第一格留成纯皮肤。
     const o = computeAllOpacities(0);
     expect(o.skin).toBe(1);
-    // 六层同时全不透明会糊成一团白：内层此时只该隐约透出
     for (const system of ['muscles', 'skeleton', 'organs', 'vessels', 'nerves'] as const) {
-      expect(o[system]).toBeGreaterThan(0);
-      expect(o[system]).toBeLessThanOrEqual(0.3);
+      expect(o[system]).toBe(0);
+    }
+    // 滑块一动，底噪立刻到位——不是拖到主场才出现
+    const o2 = computeAllOpacities(0.04);
+    for (const system of ['muscles', 'skeleton', 'organs', 'vessels', 'nerves'] as const) {
+      expect(o2[system]).toBeGreaterThan(0);
+      expect(o2[system]).toBeLessThanOrEqual(0.3);
     }
   });
 
@@ -34,7 +41,7 @@ describe('layers: 分层滑块 → 系统不透明度（KICKOFF 第 6 节）', (
   });
 
   it('骨骼始终可见；主场之后淡化但不低于 0.35', () => {
-    for (const layer of [0, 0.3, 0.5, 0.7, 0.85, 1]) {
+    for (const layer of [0.04, 0.3, 0.5, 0.7, 0.85, 1]) {
       expect(computeSystemOpacity('skeleton', layer)).toBeGreaterThan(0);
     }
     for (const layer of [0.45, 0.5, 0.7, 0.85, 1]) {
