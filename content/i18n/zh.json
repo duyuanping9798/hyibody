@@ -72,7 +72,7 @@
   "qualityUnavailable": "当前设备用软件渲染，已自动降到基础画质",
   "infoFactTitle": "你知道吗",
   "relatedWonders": "关于它的 {n} 则奥秘",
-  "infoUnreviewed": "AI 初稿，待人工校对",
+  "infoUnreviewed": "AI 初稿，待审校",
   "infoTagSystem": "系统",
   "infoTagRegion": "部位",
   "loadingSystems": "{done}/{total} 个系统",
@@ -105,5 +105,7 @@
   "unsupportedWebgl": "这台设备的浏览器不支持 WebGL2，无法显示三维人体。请升级到 Chrome/Edge 105+、Safari 15.4+ 或 Firefox 121+；若用的是远程桌面或虚拟机，请确认已开启硬件加速。",
   "infoMore": "展开详情",
   "infoLess": "收起",
-  "infoAiReviewed": "AI 编写与审校"
+  "infoAiReviewed": "AI 交叉审校，未经医师签字",
+  "infoHumanReviewed": "已经医学审校",
+  "infoDisclaimer": "科普内容，不能替代医生诊断"
 }

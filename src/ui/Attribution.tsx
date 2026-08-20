@@ -26,6 +26,7 @@ export function Attribution() {
             BodyParts3D License (CC BY 4.0)
           </a>
         </p>
+        <p className="hyi-info-disclaimer">{t.infoDisclaimer}</p>
         <button className="hyi-btn" onClick={() => setOpen(false)}>
           {t.close}
         </button>

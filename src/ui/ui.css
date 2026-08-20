@@ -307,6 +307,17 @@
   line-height: 1.55;
   margin: 0 0 10px;
 }
+/*
+ * 免责声明常驻在 .hyi-info-details 之外——手机上卡片收起时也看得见。
+ * 放进 details 就等于「只有点开详情的人才被告知」，那不叫常驻。
+ */
+.hyi-info-disclaimer {
+  font-size: 11px;
+  line-height: 1.3;
+  color: var(--hyi-text-dim);
+  margin: -6px 0 8px;
+  opacity: 0.75;
+}
 .hyi-info .meta {
   font-size: 11px;
   color: var(--hyi-text-dim);

@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import {
   definitionsEn,
   definitionsFor,
-  definitionsReviewedFor,
+  reviewStageFor,
   definitionsZh,
   parseDefinitions,
 } from '../../src/data/definitions';
@@ -17,7 +17,7 @@ describe('definitions 解析', () => {
   it('跳过 _meta，读出 blurb 与 fact', () => {
     expect(
       parseDefinitions({
-        _meta: { reviewed: false },
+        _meta: { reviewed: false, aiReviewed: true },
         heart: { blurb: '心脏文案。', fact: '心脏小知识。' },
         skull: { blurb: '颅骨文案。' },
       }),
@@ -94,8 +94,19 @@ describe('definitions 内容契约（真实文件 × 真实 manifest）', () => 
     expect(dirty, `英文文案含中文：${dirty.join(', ')}`).toEqual([]);
   });
 
-  it('审校标记按语言各记各的', () => {
-    expect(typeof definitionsReviewedFor('zh')).toBe('boolean');
-    expect(typeof definitionsReviewedFor('en')).toBe('boolean');
+  it('审校标记按语言各记各的，且不能把 AI 审校说成医学审校', () => {
+    for (const lang of ['zh', 'en'] as const) {
+      expect(['draft', 'ai', 'human']).toContain(reviewStageFor(lang));
+    }
+    // 这一条是防线而不是快照：`reviewed` 的语义是执业医师签字。谁要把它改成
+    // true，必须同时改掉这里，改的时候就得先回答「签字的人是谁」。
+    for (const lang of ['zh', 'en'] as const) {
+      const meta = JSON.parse(
+        readFileSync(resolve(__dirname, `../../content/definitions/${lang}.json`), 'utf8'),
+      )._meta as { reviewed?: boolean; aiReviewed?: boolean };
+      expect(meta.aiReviewed, `${lang} 应标记为已过 AI 交叉审校`).toBe(true);
+      expect(meta.reviewed, `${lang} 尚无真人医学审校，reviewed 必须是 false`).toBe(false);
+      expect(reviewStageFor(lang)).toBe('ai');
+    }
   });
 });

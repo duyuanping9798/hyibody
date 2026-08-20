@@ -1,6 +1,6 @@
 import { STRINGS } from './i18n';
-import { definitionsFor, definitionsReviewedFor } from '../data/definitions';
-import type { DataSource, SystemId } from '../data/types';
+import { definitionsFor, reviewStageFor } from '../data/definitions';
+import type { DataSource, Lang, SystemId } from '../data/types';
 import { SYSTEM_COLORS } from '../viewer/materials';
 import { estimatedSeconds } from '../wonders/engine';
 import { wondersForStructure } from '../wonders';
@@ -12,6 +12,18 @@ function sourceLabel(source: DataSource, t: (typeof STRINGS)['zh']): string {
 }
 
 /** 系统色点：让信息卡一眼能对上左侧系统面板的配色。 */
+/**
+ * 文案审校到哪一步，卡片上就写哪一步。
+ *
+ * 不写「已审校」而写「AI 交叉审校，未经医师签字」，是因为这批文案确实过了
+ * 三轮 AI 交叉审校，但没有执业医师签字——两件事都要说，缺一件都是误导。
+ */
+function reviewLabel(lang: Lang, t: (typeof STRINGS)['zh']): string {
+  const stage = reviewStageFor(lang);
+  if (stage === 'human') return t.infoHumanReviewed;
+  return stage === 'ai' ? t.infoAiReviewed : t.infoUnreviewed;
+}
+
 function systemDot(system: SystemId): string {
   return `#${SYSTEM_COLORS[system].toString(16).padStart(6, '0')}`;
 }
@@ -81,6 +93,7 @@ export function InfoCard() {
       </div>
 
       <p className="blurb">{definition?.blurb ?? t.infoBlurbPending}</p>
+      {definition && <p className="hyi-info-disclaimer">{t.infoDisclaimer}</p>}
 
       <div className="hyi-info-details">
         {definition?.fact && (
@@ -92,9 +105,7 @@ export function InfoCard() {
 
         <p className="meta">
           {t.sourceLabel}: {sourceLabel(info.source, t)}
-          {definition
-            ? ` · ${definitionsReviewedFor(lang) ? t.infoAiReviewed : t.infoUnreviewed}`
-            : ''}
+          {definition ? ` · ${reviewLabel(lang, t)}` : ''}
         </p>
 
         {related.length > 0 && (

@@ -1,8 +1,10 @@
 {
   "_meta": {
-    "note": "HyiBody 一句话科普初稿（待审校）。blurb = 信息卡正文一句话；fact = “你知道吗”小知识。数字均为常见科普范围值，医学审校后请把 reviewed 改为 true。",
+    "note": "HyiBody 一句话科普。blurb = 信息卡正文一句话；fact = “你知道吗”小知识。aiReviewed=true 表示已经过多轮 AI 交叉审校（英文对照、中文文风、解剖学事实各一轮，结论见 docs/CONTENT-GUIDE.md）；reviewed 仍为 false，因为它的语义是执业医师签字，AI 审校不构成那个签字。真人医学审校完成后再把 reviewed 改为 true。",
+    "aiReviewed": true,
     "reviewed": false,
-    "generatedAt": "2026-08-17"
+    "generatedAt": "2026-08-17",
+    "aiReviewedAt": "2026-08-20"
   },
   "skin": {
     "blurb": "皮肤是人体最大的器官，覆盖全身、隔绝外界，同时负责触觉、体温调节和防御病菌。",

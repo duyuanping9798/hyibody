@@ -1,8 +1,10 @@
 {
   "_meta": {
-    "note": "HyiBody English one-liners (AI draft, pending review). blurb = the sentence in the info card; fact = the \"Did you know\" note. Figures are the usual popular-science ranges — set reviewed to true once a human has checked them.",
+    "note": "HyiBody one-line explainers. blurb = the sentence in the info card; fact = the \"Did you know\" note. aiReviewed=true means several rounds of AI cross-review have run (English parity, Chinese style, anatomical fact — see docs/CONTENT-GUIDE.md). reviewed stays false: it means sign-off by a qualified clinician, which AI review is not. Set reviewed to true once a human medical reviewer has been through it.",
+    "aiReviewed": true,
     "reviewed": false,
-    "generatedAt": "2026-08-18"
+    "generatedAt": "2026-08-18",
+    "aiReviewedAt": "2026-08-20"
   },
   "skin": {
     "blurb": "The body's largest organ: a waterproof wrapper that senses touch, helps control temperature and forms the first line of defence against germs.",
