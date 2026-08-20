@@ -84,6 +84,9 @@ export function WonderPlayer() {
   const recordElapsedMs = useUiStore((s) => s.recordElapsedMs);
   const startRecording = useUiStore((s) => s.startRecording);
   const stopRecording = useUiStore((s) => s.stopRecording);
+  const canNarrate = useUiStore((s) => s.canNarrate);
+  const narrating = useUiStore((s) => s.narrating);
+  const toggleNarration = useUiStore((s) => s.toggleNarration);
 
   if (!wonder) return null;
   return (
@@ -113,6 +116,16 @@ export function WonderPlayer() {
         <button className="hyi-btn" onClick={exitWonder}>
           {t.wonderExit}
         </button>
+        {canNarrate && (
+          <button
+            className={narrating ? 'hyi-btn hyi-btn-warm' : 'hyi-btn'}
+            data-testid="wonder-narrate"
+            aria-pressed={narrating}
+            onClick={toggleNarration}
+          >
+            {narrating ? t.wonderNarrateOff : t.wonderNarrate}
+          </button>
+        )}
         {/* 录不了就不摆按钮：Safari 17 之前没有 MediaRecorder 的 mp4 支持，
             摆一个点了没反应的按钮比没有按钮更糟 */}
         {canRecordVideo && (

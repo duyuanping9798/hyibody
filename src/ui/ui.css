@@ -244,7 +244,9 @@
   top: 64px;
   left: 12px;
   width: min(280px, calc(100% - 24px));
-  z-index: 8;
+  /* 比创作面板高一层：创作面板也在左上角，同为 z-index 8 时后渲染的它会盖住
+     搜索结果下拉——而"搜结构 → 选中 → 抓成一步"正是创作的主路径（实测撞车） */
+  z-index: 12;
 }
 .hyi-search-icon {
   position: absolute;
@@ -517,6 +519,186 @@
 .hyi-btn-rec {
   border-color: rgba(255, 77, 77, 0.55);
   color: #ff8080;
+}
+
+/* ---- 创作面板（UGC）----
+   放左列：右列被抽屉与信息卡占了，而创作时最需要同时看得见信息卡
+   （挑结构靠它）。高度封顶，底下留出三维给用户调画面——这个面板存在的
+   全部意义就是让人一边调画面一边抓。 */
+.hyi-editor {
+  position: absolute;
+  left: 12px;
+  top: 106px;
+  width: min(320px, calc(100% - 24px));
+  max-height: calc(100% - 240px);
+  overflow-y: auto;
+  padding: 12px 14px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 8;
+}
+.hyi-editor header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.hyi-editor header strong {
+  font-size: 13px;
+  color: #f0a046;
+}
+.hyi-editor header div {
+  display: flex;
+  gap: 5px;
+}
+.hyi-btn-tiny {
+  padding: 3px 8px;
+  font-size: 11px;
+}
+.hyi-editor .disclose {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 6px 0;
+  background: none;
+  border: 0;
+  border-top: 1px solid var(--hyi-line);
+  color: var(--hyi-text-dim);
+  font-size: 12px;
+  cursor: pointer;
+}
+.hyi-editor .basics,
+.hyi-editor .step-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.hyi-editor label {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 11px;
+  color: var(--hyi-text-dim);
+}
+.hyi-editor label.row {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.hyi-editor label.row input[type='range'] {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.hyi-editor input,
+.hyi-editor textarea,
+.hyi-editor select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--hyi-line);
+  background: rgba(4, 8, 16, 0.7);
+  color: var(--hyi-text);
+  font: inherit;
+  font-size: 12.5px;
+  resize: vertical;
+}
+.hyi-editor h4 {
+  margin: 4px 0 0;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--hyi-text-dim);
+  text-transform: uppercase;
+}
+.hyi-editor .empty {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--hyi-text-dim);
+}
+.hyi-editor .steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.hyi-editor .steps > li.open {
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 6px;
+}
+.hyi-editor .steps button.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 5px 6px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: var(--hyi-text);
+  font: inherit;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+}
+.hyi-editor .steps button.row:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+.hyi-editor .steps b {
+  flex: 0 0 auto;
+  width: 16px;
+  color: #f0a046;
+  font-variant-numeric: tabular-nums;
+}
+/* 一行摘要：文案太长就截断，列表要一眼扫得完 */
+.hyi-editor .steps .line {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.hyi-editor .steps .dur {
+  flex: 0 0 auto;
+  font-size: 10.5px;
+  color: var(--hyi-text-dim);
+  font-variant-numeric: tabular-nums;
+}
+.hyi-editor .step-editor {
+  padding: 6px 4px 2px;
+}
+.hyi-editor .acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.hyi-editor .capture {
+  width: 100%;
+  margin-top: 2px;
+}
+.hyi-editor .problems {
+  margin: 0;
+  padding-left: 16px;
+  font-size: 11px;
+  line-height: 1.7;
+  color: #f0a046;
+}
+.hyi-editor .notice {
+  margin: 0;
+  font-size: 11.5px;
+  color: var(--hyi-accent);
+}
+.hyi-editor .licence {
+  margin: 2px 0 0;
+  font-size: 10.5px;
+  line-height: 1.6;
+  color: var(--hyi-text-dim);
 }
 
 /* 录完的成品面板 */

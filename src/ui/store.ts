@@ -5,6 +5,17 @@ import type { ViewerUrlState } from '../data/urlState';
 import { WonderEngine, type Wonder, type WonderStep } from '../wonders/engine';
 import { splitClauses } from '../wonders/caption';
 import { canRecord, WonderRecorder, type RecorderOverlay } from '../wonders/recorder';
+import { canSpeak, WonderNarrator } from '../wonders/speech';
+import {
+  captureStep,
+  clampDuration,
+  emptyDraft,
+  loadDraft,
+  moveStep,
+  saveDraft,
+  type CaptureOptions,
+  type ViewSnapshot,
+} from '../wonders/draft';
 import { computeSystemOpacity } from '../viewer/layers';
 import type { ClipAxis } from '../viewer/clipping';
 import type { ViewPresetId } from '../viewer/camera';
@@ -62,6 +73,14 @@ interface UiState {
   recordElapsedMs: number;
   /** 录完的成品。url 是 blob:，清掉时要 revoke */
   videoExport: { url: string; ext: string; bytes: number; durationMs: number; name: string } | null;
+  /** 这台设备有没有语音合成 */
+  canNarrate: boolean;
+  /** 语音讲解开着没有（记在 localStorage，下次进来还是这个设置） */
+  narrating: boolean;
+  /** 正在编辑的自创奥秘草稿；null = 没开创作面板 */
+  draft: Wonder | null;
+  /** 创作面板里正在改哪一步（null = 只看列表） */
+  draftStep: number | null;
 
   setLang(lang: Locale): void;
   setQuality(q: QualityTier): void;
@@ -93,6 +112,17 @@ interface UiState {
   startRecording(): void;
   stopRecording(): void;
   clearVideoExport(): void;
+  toggleNarration(): void;
+  openEditor(): void;
+  closeEditor(): void;
+  newDraft(): void;
+  patchDraft(patch: Partial<Wonder>): void;
+  captureCurrentStep(opts?: CaptureOptions): void;
+  patchStep(index: number, patch: Partial<WonderStep>): void;
+  removeStep(index: number): void;
+  nudgeStep(index: number, delta: number): void;
+  setDraftStep(index: number | null): void;
+  loadWonderIntoDraft(wonder: Wonder): void;
   wonderNext(): void;
   wonderPrev(): void;
   wonderToggle(): void;
@@ -102,6 +132,19 @@ interface UiState {
 let viewer: HyiViewer | null = null;
 const wonderEngine = new WonderEngine();
 const recorder = new WonderRecorder();
+const narrator = new WonderNarrator();
+
+/** 语音开关记在本地。用户开了一次就是表达了偏好，下次不该再让他找一遍。 */
+const NARRATION_KEY = 'hyi.narration';
+
+function readNarrationPref(): boolean {
+  try {
+    return localStorage.getItem(NARRATION_KEY) === '1';
+  } catch {
+    // 隐私模式下 localStorage 可能直接抛异常，读不到就当没开
+    return false;
+  }
+}
 /** 录制计时器：只为界面上那行秒数，四分之一秒刷一次就够。 */
 let recordTicker: ReturnType<typeof setInterval> | null = null;
 /** 录的是哪一则。停下来给文件起名时用——那会儿 store 里的 wonder 已经清空了。 */
@@ -183,12 +226,22 @@ wonderEngine.addEventListener('step', (e) => {
     wonderIndex: wonderEngine.currentIndex,
     wonderStepAt: performance.now(),
   });
+  const st = useUiStore.getState();
+  if (st.narrating && step) narrator.speak(step.text[st.lang], st.lang);
 });
-wonderEngine.addEventListener('play', () => useUiStore.setState({ wonderPlaying: true }));
-wonderEngine.addEventListener('pause', () => useUiStore.setState({ wonderPlaying: false }));
+wonderEngine.addEventListener('play', () => {
+  narrator.resume();
+  useUiStore.setState({ wonderPlaying: true });
+});
+wonderEngine.addEventListener('pause', () => {
+  // 暂停画面就得暂停声音，不然人停在第 5 步、耳朵还在听第 6 步
+  narrator.pause();
+  useUiStore.setState({ wonderPlaying: false });
+});
 wonderEngine.addEventListener('end', (e) => {
   const completed = (e as CustomEvent<{ completed?: boolean }>).detail?.completed === true;
   const st = useUiStore.getState();
+  narrator.stop();
   viewer?.setCinematic(null);
   st.select(null);
   st.resetVisibility();
@@ -311,6 +364,10 @@ export const useUiStore = create<UiState>((set, get) => ({
   wonderStepAt: 0,
   wonderStartedAt: 0,
   canRecordVideo: canRecord(),
+  canNarrate: canSpeak(),
+  narrating: readNarrationPref(),
+  draft: null,
+  draftStep: null,
   recording: false,
   recordElapsedMs: 0,
   videoExport: null,
@@ -485,6 +542,117 @@ export const useUiStore = create<UiState>((set, get) => ({
         });
       })
       .catch(() => set({ recording: false, recordElapsedMs: 0 }));
+  },
+
+  toggleNarration: () => {
+    const next = !get().narrating;
+    set({ narrating: next });
+    try {
+      localStorage.setItem(NARRATION_KEY, next ? '1' : '0');
+    } catch {
+      // 存不下就只在这一次会话里生效，不值得打扰用户
+    }
+    if (!next) {
+      narrator.stop();
+      return;
+    }
+    // 开的这一下就是浏览器要的用户手势，顺手把当前这一步念出来
+    const s = get();
+    const step = s.wonder?.steps[s.wonderIndex];
+    if (step) narrator.speak(step.text[s.lang], s.lang);
+  },
+
+  /** 打开创作面板。上次的草稿还在就接着改，没有就开一份新的。 */
+  openEditor: () => {
+    if (get().draft) return;
+    set({ draft: loadDraft() ?? emptyDraft(Date.now()), draftStep: null, activePanel: null });
+  },
+  closeEditor: () => set({ draft: null, draftStep: null }),
+
+  newDraft: () => set({ draft: emptyDraft(Date.now()), draftStep: null }),
+
+  patchDraft: (patch) => {
+    const draft = get().draft;
+    if (!draft) return;
+    const next = { ...draft, ...patch };
+    saveDraft(next);
+    set({ draft: next });
+  },
+
+  /**
+   * 把"现在画面上是什么样"抓成一步，追加到末尾。
+   *
+   * 这是整套 UGC 的核心动作：用户不需要理解 layer / systems / clip 这些字段，
+   * 只需要把画面调成他想要的样子，然后按一下。
+   */
+  captureCurrentStep: (opts) => {
+    const s = get();
+    if (!s.draft) return;
+    const snapshot: ViewSnapshot = {
+      layer: s.layer,
+      selected: s.selected,
+      expanded: s.expanded,
+      clip: s.clip,
+      systemsVisible: s.systemsVisible,
+      systemOpacity: s.systemOpacity,
+    };
+    const step = captureStep(snapshot, opts ?? {});
+    const next = { ...s.draft, steps: [...s.draft.steps, step] };
+    saveDraft(next);
+    set({ draft: next, draftStep: next.steps.length - 1 });
+  },
+
+  patchStep: (index, patch) => {
+    const draft = get().draft;
+    if (!draft || !draft.steps[index]) return;
+    const steps = draft.steps.map((step, i) =>
+      i === index
+        ? {
+            ...step,
+            ...patch,
+            ...(patch.durationMs !== undefined
+              ? { durationMs: clampDuration(patch.durationMs) }
+              : {}),
+          }
+        : step,
+    );
+    const next = { ...draft, steps };
+    saveDraft(next);
+    set({ draft: next });
+  },
+
+  removeStep: (index) => {
+    const s = get();
+    if (!s.draft) return;
+    const steps = s.draft.steps.filter((_, i) => i !== index);
+    const next = { ...s.draft, steps };
+    saveDraft(next);
+    set({ draft: next, draftStep: null });
+  },
+
+  nudgeStep: (index, delta) => {
+    const draft = get().draft;
+    if (!draft) return;
+    const steps = moveStep(draft.steps, index, index + delta);
+    if (steps === draft.steps) return;
+    const next = { ...draft, steps };
+    saveDraft(next);
+    set({ draft: next, draftStep: index + delta });
+  },
+
+  setDraftStep: (index) => {
+    const s = get();
+    set({ draftStep: index });
+    // 点开一步就把画面还原成那一步的样子——不然改的是什么全靠脑补
+    const step = index === null ? null : s.draft?.steps[index];
+    if (step) applyWonderStep(step);
+  },
+
+  loadWonderIntoDraft: (wonder) => {
+    // 换个 id，免得改着改着覆盖掉内置内容的 id（分享链接会撞车）
+    const next = { ...wonder, id: `my_${Date.now().toString(36)}` };
+    saveDraft(next);
+    set({ draft: next, draftStep: null });
   },
 
   clearVideoExport: () => {
