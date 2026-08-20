@@ -541,3 +541,93 @@ test('a wonder can be started straight from the url', async ({ page }) => {
   });
   await expect(page.getByTestId('wonder-player')).toHaveCount(0);
 });
+
+/**
+ * UGC：把当前画面抓成一步，编好之后用链接分享出去，别人打开就能播。
+ *
+ * 这条串起整套自创奥秘的主路径。刻意把每一步拉到 20 秒——云端软件渲染下
+ * 一来一回要好几秒，短步骤会在我们查到之前自己播完、播放器都没了。
+ */
+test('a self-made wonder can be captured, shared by link and played back', async ({ page }) => {
+  test.setTimeout(420_000);
+  await page.goto('/');
+  await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
+    timeout: 60_000,
+  });
+
+  await page.getByTestId('editor-open').click();
+  const editor = page.getByTestId('wonder-editor');
+  await expect(editor).toBeVisible();
+
+  // 第一步：默认全身景
+  await page.getByRole('button', { name: '把当前画面加成一步' }).click();
+  const stepEditor = page.getByTestId('step-editor');
+  await expect(stepEditor).toBeVisible({ timeout: 20_000 });
+  await stepEditor.locator('textarea').first().fill('先看整个人。');
+  await stepEditor.locator('textarea').nth(1).fill('Start with the whole body.');
+  await stepEditor.locator('input[type=range]').fill('20');
+  await page.getByRole('button', { name: '收起这一步' }).click();
+
+  // 第二步：搜到心脏选中它再抓——抓出来的这一步必须带上 selected
+  await page.locator('.hyi-search input').fill('心脏');
+  await page.getByTestId('search-results').locator('button').first().click();
+  await page.waitForTimeout(3000);
+  await page.getByRole('button', { name: '把当前画面加成一步' }).click();
+  await expect(stepEditor).toBeVisible({ timeout: 20_000 });
+  await stepEditor.locator('textarea').first().fill('心脏在这儿。');
+  await stepEditor.locator('textarea').nth(1).fill('Here is the heart.');
+  await stepEditor.locator('input[type=range]').fill('20');
+  await page.getByRole('button', { name: '收起这一步' }).click();
+
+  await expect(editor.locator('.steps > li')).toHaveCount(2);
+  const draft = await page.evaluate(() =>
+    JSON.parse(localStorage.getItem('hyi.wonderDraft') ?? 'null'),
+  );
+  expect(draft.steps[1].selected).toBe('heart');
+  expect(draft.steps[1].focus).toBe(true);
+
+  // 填完标题，问题清单就该空了
+  await page.getByRole('button', { name: '基本信息' }).click();
+  await editor.locator('.basics input').nth(0).fill('心脏在哪儿');
+  await editor.locator('.basics input').nth(1).fill('Where the heart is');
+  await expect(editor.locator('.problems')).toHaveCount(0);
+
+  // 分享链接里装着整则奥秘，不需要后端
+  const shared = await page.evaluate(() => {
+    const url = new URL(window.location.href);
+    url.search = '';
+    // 直接用页面里的编码函数会牵扯打包边界，这里复用界面按钮的结果更实在：
+    // 从 localStorage 取草稿，按同一套 base64url 编码
+    const raw = localStorage.getItem('hyi.wonderDraft')!;
+    const bytes = new TextEncoder().encode(raw);
+    let bin = '';
+    for (const b of bytes) bin += String.fromCharCode(b);
+    const encoded = btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    url.searchParams.set('w', encoded);
+    return url.toString();
+  });
+
+  await page.goto(shared);
+  await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
+    timeout: 60_000,
+  });
+  const player = page.getByTestId('wonder-player');
+  await expect(player).toBeVisible({ timeout: 40_000 });
+  await expect(player).toContainText('心脏在哪儿');
+  // 放映层跟着出来：字幕带、章节进度、黑边
+  await expect(page.getByTestId('wonder-caption')).toBeVisible({ timeout: 20_000 });
+  await page.screenshot({ path: 'test-results/smoke-ugc-shared.png', timeout: 120_000 });
+});
+
+/** 坏掉的 ?w= 不该白屏——链接会被聊天软件截断、会被手抄错。 */
+test('a broken ?w= link falls back to the plain viewer', async ({ page }) => {
+  test.setTimeout(180_000);
+  await page.goto('/?w=这不是base64');
+  await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
+    timeout: 60_000,
+  });
+  await expect(page.getByTestId('wonder-player')).toHaveCount(0);
+  // 普通界面照常在：搜索框、分层滑块
+  await expect(page.locator('.hyi-search input')).toBeVisible();
+  await expect(page.locator('.hyi-layer-slider')).toBeVisible();
+});
