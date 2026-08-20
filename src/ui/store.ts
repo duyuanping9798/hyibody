@@ -4,7 +4,12 @@ import { SYSTEM_IDS, type Manifest, type SystemId } from '../data/types';
 import type { ViewerUrlState } from '../data/urlState';
 import { WonderEngine, type Wonder, type WonderStep } from '../wonders/engine';
 import { splitClauses } from '../wonders/caption';
-import { canRecord, WonderRecorder, type RecorderOverlay } from '../wonders/recorder';
+import {
+  canRecord,
+  MAX_RECORD_MS,
+  WonderRecorder,
+  type RecorderOverlay,
+} from '../wonders/recorder';
 import { canSpeak, WonderNarrator } from '../wonders/speech';
 import {
   captureStep,
@@ -520,7 +525,12 @@ export const useUiStore = create<UiState>((set, get) => ({
     recordingId = wonder.id;
     v.setFrameTap((canvas) => recorder.captureFrame(canvas));
     set({ recording: true, recordElapsedMs: 0, videoExport: null });
-    recordTicker = setInterval(() => set({ recordElapsedMs: recorder.elapsedMs }), 250);
+    recordTicker = setInterval(() => {
+      const elapsed = recorder.elapsedMs;
+      set({ recordElapsedMs: elapsed });
+      // 分片全攒在内存里，不封顶的话一则 20 分钟的自创奥秘能堆出几百 MB
+      if (elapsed > MAX_RECORD_MS) get().stopRecording();
+    }, 250);
     get().startWonder(wonder);
   },
 

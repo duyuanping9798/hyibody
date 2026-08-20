@@ -3,6 +3,7 @@ import {
   canRecord,
   clauseAlpha,
   layoutClauses,
+  MAX_RECORD_MS,
   outputSize,
   titleAlpha,
 } from '../../src/wonders/recorder';
@@ -118,5 +119,14 @@ describe('录像：能力检测', () => {
     // 这个函数会在 store 初始化时被调用，抛了整个应用都起不来。
     expect(() => canRecord()).not.toThrow();
     expect(canRecord()).toBe(false);
+  });
+});
+
+describe('录像：时长封顶', () => {
+  it('封顶要长过任何一则内置奥秘，又短到撑不爆内存', () => {
+    // 最长的内置奥秘约两分钟；自创的可以有 60 步 × 20 秒 = 20 分钟，
+    // 而编码分片全攒在内存里，停下来才拼成 Blob
+    expect(MAX_RECORD_MS).toBeGreaterThan(3 * 60 * 1000);
+    expect(MAX_RECORD_MS).toBeLessThanOrEqual(10 * 60 * 1000);
   });
 });

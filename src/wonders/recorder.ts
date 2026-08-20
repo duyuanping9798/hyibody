@@ -20,6 +20,22 @@
 /** 输出长边上限。再大对手机分享没有意义，编码还会掉帧。 */
 const MAX_EDGE = 1280;
 
+/**
+ * 录制时长硬上限。
+ *
+ * 编码出来的分片全部攒在内存里，停下来才拼成一个 Blob。内置奥秘最长两分钟，
+ * 但自创奥秘可以有 60 步 × 20 秒 = 20 分钟——按码率算就是几百 MB 堆在手机内存里。
+ * 五分钟封顶：够长到没人正常撞得到，又短到撞到了也不至于把页面撑爆。
+ */
+export const MAX_RECORD_MS = 5 * 60 * 1000;
+
+/**
+ * 码率。这类画面（大片平滑渐变、没有胶片颗粒）很好压，
+ * 3.5 Mbps 的 720p 已经看不出压缩痕迹，而两分钟的成品也就 50 MB 上下——
+ * 分享得出去比"更清楚一点"重要。
+ */
+const DEFAULT_BITRATE = 3_500_000;
+
 /** 候选封装格式，按偏好排。Safari 只认 mp4，Chrome/Firefox 走 webm。 */
 const MIME_CANDIDATES = [
   'video/mp4;codecs=avc1.42E01E',
@@ -216,7 +232,7 @@ export class WonderRecorder {
     const stream = canvas.captureStream(fps);
     const recorder = new MediaRecorder(stream, {
       mimeType: mime,
-      videoBitsPerSecond: opts.bitsPerSecond ?? 6_000_000,
+      videoBitsPerSecond: opts.bitsPerSecond ?? DEFAULT_BITRATE,
     });
     recorder.ondataavailable = (e) => {
       if (e.data.size) this.chunks.push(e.data);
