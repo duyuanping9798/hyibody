@@ -81,8 +81,26 @@ const DOUBLE_TAP_MOVE_PX = 24;
 const RECENTER_FACTOR = 0.55;
 const RECENTER_MIN_MM = 60;
 
-/** 首屏系统：先加载完这两个就派发 ready，其余后台补（KICKOFF 第 5 节 M1-6）。 */
-const FIRST_SCREEN_SYSTEMS: readonly SystemId[] = ['skin', 'skeleton'];
+/**
+ * 首屏系统：加载完就派发 ready，其余后台补（KICKOFF 第 5 节 M1-6）。
+ *
+ * 2026-08-20 从 `['skin', 'skeleton']` 缩到只剩皮肤。理由很直接：**分层滑块的
+ * 起点是 0，那一格是纯皮肤，骨骼在第一屏根本看不见**。让它挡在 ready 前面，
+ * 等于白等一份看不见的资产——冲全量时骨骼有 70 万面、四五 MB，首屏预算全被它吃掉。
+ */
+const FIRST_SCREEN_SYSTEMS: readonly SystemId[] = ['skin'];
+
+/**
+ * 后台补载的顺序。骨骼排第一：用户 ready 之后第一个动作大概率是拖滑块，
+ * 而滑块往里走第一个遇到的就是它。
+ */
+const BACKGROUND_ORDER: readonly SystemId[] = [
+  'skeleton',
+  'muscles',
+  'organs',
+  'vessels',
+  'nerves',
+];
 
 /** 分层缓动：跨度超过阈值才缓动（拖滑块要跟手，奥秘跳转要顺滑），时间常数秒。 */
 const LAYER_EASE_THRESHOLD = 0.08;
@@ -327,7 +345,13 @@ export class HyiViewer extends EventTarget {
       this.manifest = await loadManifest(this.options.base);
       const systems = this.manifest.systems;
       const first = systems.filter((s) => (FIRST_SCREEN_SYSTEMS as string[]).includes(s.id));
-      const rest = systems.filter((s) => !(FIRST_SCREEN_SYSTEMS as string[]).includes(s.id));
+      const rest = systems
+        .filter((s) => !(FIRST_SCREEN_SYSTEMS as string[]).includes(s.id))
+        .sort(
+          (a, b) =>
+            (BACKGROUND_ORDER as string[]).indexOf(a.id) -
+            (BACKGROUND_ORDER as string[]).indexOf(b.id),
+        );
       // 占位 manifest（无皮肤/骨骼）时退化为全量加载
       const firstBatch = first.length > 0 ? first : systems;
       let loaded = 0;

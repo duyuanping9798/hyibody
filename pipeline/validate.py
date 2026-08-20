@@ -34,20 +34,28 @@ from bp3d import ASSETS_DIR, FACES_MAX_LARGE, FACES_MIN, REGIONS, SIDES, SYSTEMS
 
 MAX_FILE_BYTES = 50_000_000  # 仓库单文件上限（CLAUDE.md）
 # 2026-08-18 数据质量升级后收紧到本次验收标准（CLAUDE.md 的硬上限是 40 MB / 5 MB）
-MAX_TOTAL_BYTES = 25_000_000  # 全部资产
-MAX_FIRST_SCREEN_BYTES = 4_000_000  # 首屏：皮肤 + 骨骼 + manifest
-MAX_TOTAL_TRIANGLES = 3_000_000
+# 全部资产。25 MB 是 Claude 自作主张收紧过的数（原始蓝图是 40 MB），
+# 冲全量时放回蓝图的值——见 DECISIONS.md 的来历审计。
+MAX_TOTAL_BYTES = 40_000_000
+# 首屏：皮肤 + manifest。
+# 2026-08-20：骨骼从首屏里拿掉——分层滑块起点是 0、那一格是纯皮肤，骨骼在第一屏
+# 根本看不见，让它挡在 ready 前面等于白等一份看不见的资产。这也是全量能成立的
+# 关键一步：骨骼原生 70 万面、四五 MB，留在首屏里会把预算全吃掉。
+MAX_FIRST_SCREEN_BYTES = 4_000_000
+MAX_TOTAL_TRIANGLES = 5_000_000
 # 面数目标区间：低于下限说明网格被压得太狠（观感粗糙），只警告不报错。
 #
 # 2026-08-18 修订（用户拍板"完整性和效果优先"）：100–180 万，硬上限 200 万。
-# 2026-08-20 修订（用户拍板走"B 计划"）：**150–290 万，硬上限 300 万**。
+# 2026-08-20 修订（用户拍板走"B 计划"）：150–290 万，硬上限 300 万。
+# 2026-08-20 再修（用户拍板"开始向全量冲刺"）：**350–490 万，硬上限 500 万**——
+# 不再减面，我们用到的 924 件 BP3D 元素网格原生共 410 万面全部上来，加 HRA 的 48 万。
 # 单结构上限同时从"一刀切 3 万"改成按可见性分系统（见 bp3d.FACES_MAX_BY_SYSTEM）。
 # 依据：我们用到的 924 件 BP3D 元素网格原生共 410 万面，而当时只保留 39%——
 # 人类的评价是"离想要的效果还差 2/3"，量出来几乎是字面精确的。
 # **代价照旧写在明处：中端安卓 30 fps 这条只能由人类真机复核，这一档正是为了让那次
 # 复核有意义——先把额度花对地方，再测，而不是一次跳到全量 458 万。**
-TARGET_TRIANGLES_MIN = 1_500_000
-TARGET_TRIANGLES_MAX = 2_900_000
+TARGET_TRIANGLES_MIN = 3_500_000
+TARGET_TRIANGLES_MAX = 4_900_000
 # 结构数上限。
 #
 # 2026-08-20 之前这里写的是 580，依据是"每结构一份材质一次绘制"的静态估算。
@@ -227,7 +235,7 @@ def validate_assets(manifest: dict, chk: Checker) -> None:
         if size > MAX_FILE_BYTES:
             chk.error(f"{glb.name}: {size / 1e6:.1f} MB 超过单文件 50 MB")
         total_bytes += size
-        if s["id"] in ("skin", "skeleton"):
+        if s["id"] == "skin":
             first_screen += size
         counts = glb_triangle_counts(glb)
         manifest_slugs = set(s["structures"])
@@ -247,9 +255,9 @@ def validate_assets(manifest: dict, chk: Checker) -> None:
         for slug in missing_extras:
             chk.error(f"{glb.name}: 节点 {slug} 丢失 extras（gltf-transform 配置问题？）")
     if total_bytes > MAX_TOTAL_BYTES:
-        chk.error(f"全部资产 {total_bytes / 1e6:.1f} MB 超过 40 MB 预算")
+        chk.error(f"全部资产 {total_bytes / 1e6:.1f} MB 超过 {MAX_TOTAL_BYTES // 1_000_000} MB 预算")
     if first_screen > MAX_FIRST_SCREEN_BYTES:
-        chk.error(f"首屏包 {first_screen / 1e6:.2f} MB 超过 5 MB 预算")
+        chk.error(f"首屏包 {first_screen / 1e6:.2f} MB 超过 {MAX_FIRST_SCREEN_BYTES // 1_000_000} MB 预算")
     if not TARGET_TRIANGLES_MIN <= total_tris <= TARGET_TRIANGLES_MAX:
         chk.warn(
             f"总三角面 {total_tris} 不在目标区间 "
