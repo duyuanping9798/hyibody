@@ -113,6 +113,16 @@ interface StructureEntry {
   parent: string | null;
 }
 
+/**
+ * 是不是"整具人体的外壳"。
+ *
+ * 目前只有皮肤：它是一张罩住全身的网格，描边就是给整个剪影镶一圈光，
+ * 自发光就是把人整个染色。其它任何结构都指得出具体位置，该高亮就高亮。
+ */
+function isWholeBody(entry: StructureEntry): boolean {
+  return entry.system === 'skin' && entry.parent === null;
+}
+
 export interface ViewerState {
   layer: number;
   systemsVisible: Record<SystemId, boolean>;
@@ -588,12 +598,14 @@ export class HyiViewer extends EventTarget {
     this.pendingSelect = null;
     if (this.state.selected === slug) return;
     const prev = this.state.selected ? this.structures.get(this.state.selected) : null;
-    if (prev) applyHighlight(prev.mesh, 'none');
+    if (prev) this.highlight(prev, 'none');
     this.state.selected = slug;
     const entry = slug ? this.structures.get(slug) : null;
     if (entry) {
-      applyHighlight(entry.mesh, 'selected');
-      this.setOutlineTarget([entry.mesh]);
+      this.highlight(entry, 'selected');
+      // 皮肤是整具人体的外壳：给它描边就是给整个剪影镶一圈青光，
+      // 手机实拍上那一圈"青色边框"就是这么来的。选中状态由信息卡表达就够了。
+      this.setOutlineTarget(isWholeBody(entry) ? [] : [entry.mesh]);
       this.aimAt(entry);
     } else {
       this.setOutlineTarget([]);
@@ -763,6 +775,17 @@ export class HyiViewer extends EventTarget {
     };
   }
 
+  /**
+   * 高亮，但整具外壳（皮肤）不吃这一套。
+   *
+   * 青色自发光铺在一整张人皮上不是"选中"，是把人染青了；配上 OutlinePass 的
+   * 剪影描边，就是人类在手机上看到的那一圈青边。选中皮肤这件事本来也不需要
+   * 视觉强调——它是唯一一个"选中了也还是它"的结构，信息卡已经说清楚了。
+   */
+  private highlight(entry: StructureEntry, level: 'none' | 'hover' | 'selected'): void {
+    applyHighlight(entry.mesh, isWholeBody(entry) ? 'none' : level);
+  }
+
   /** 当前不透明度够高、可以被射线打中的网格。 */
   private pickables(): Mesh[] {
     const candidates: Mesh[] = [];
@@ -905,7 +928,7 @@ export class HyiViewer extends EventTarget {
     const slug = entry?.slug ?? null;
     if (slug === this.hovered) return;
     const prev = this.hovered ? this.structures.get(this.hovered) : null;
-    if (prev && prev.slug !== this.state.selected) applyHighlight(prev.mesh, 'none');
+    if (prev && prev.slug !== this.state.selected) this.highlight(prev, 'none');
     this.hovered = slug;
     if (entry && entry.slug !== this.state.selected) applyHighlight(entry.mesh, 'hover');
     this.renderer.domElement.style.cursor = entry ? 'pointer' : '';

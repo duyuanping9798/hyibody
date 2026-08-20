@@ -109,6 +109,30 @@ export function InfoCard() {
       <p className="blurb">{definition?.blurb ?? t.infoBlurbPending}</p>
       {definition && <p className="hyi-info-disclaimer">{t.infoDisclaimer}</p>}
 
+      {/* 「这层皮下面是」放在收起态也看得见的位置：手机上 .hyi-info-details 收起时
+          是藏起来的，而对皮肤来说这一行恰恰是最有用的东西——把它藏进折叠里，
+          等于这个功能在手机上不存在。 */}
+      {beneath.length > 0 && (
+        <section className="hyi-beneath" data-testid="beneath-skin">
+          <h3>{t.beneathSkin}</h3>
+          <div className="chips">
+            {beneath.map((slug) => (
+              <button
+                key={slug}
+                onClick={() => {
+                  // 跟搜索结果同一套：选中 + 聚焦。focus 会顺手把分层挪到
+                  // 该系统的主场，否则相机飞进去只看到一团半透明组织
+                  select(slug);
+                  focus(slug);
+                }}
+              >
+                {lang === 'zh' ? manifest.structures[slug]!.zh : manifest.structures[slug]!.en}
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
+
       <div className="hyi-info-details">
         {definition?.fact && (
           <aside className="hyi-fact">
@@ -123,27 +147,6 @@ export function InfoCard() {
           </span>
           {definition && <span className="hyi-review-tag"> · {reviewLabel(lang, t)}</span>}
         </p>
-
-        {beneath.length > 0 && (
-          <section className="hyi-beneath" data-testid="beneath-skin">
-            <h3>{t.beneathSkin}</h3>
-            <div className="chips">
-              {beneath.map((slug) => (
-                <button
-                  key={slug}
-                  onClick={() => {
-                    // 跟搜索结果同一套：选中 + 聚焦。focus 会顺手把分层挪到
-                    // 该系统的主场，否则相机飞进去只看到一团半透明组织
-                    select(slug);
-                    focus(slug);
-                  }}
-                >
-                  {lang === 'zh' ? manifest.structures[slug]!.zh : manifest.structures[slug]!.en}
-                </button>
-              ))}
-            </div>
-          </section>
-        )}
 
         {related.length > 0 && (
           <section className="hyi-related">
