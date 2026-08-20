@@ -19,7 +19,7 @@ const PALETTE = paletteRaw as Record<string, string | { note?: string }>;
 export const SYSTEM_COLORS: Record<SystemId, number> = {
   // 皮肤改成真的肤色（原来是品牌青 0x4fc3d9）。青色壳看着像玻璃模特，
   // 而这一层本来就该是"人"——X-ray 的身份交给边缘光，底色交还给皮肤。
-  skin: 0xd7a184,
+  skin: 0xcd9673,
   muscles: 0xc75948,
   skeleton: 0xd8d3c3,
   organs: 0xcf8a5b,
@@ -265,8 +265,10 @@ function addSkinDetail(
          // 细的那一层要按距离淡出：一个像素跨过好几个噪声周期时，它只会变成沙粒噪点。
          // fwidth 给出这个像素在世界坐标里跨了多少毫米，据此把细octave 关掉。
          float hyiSkinFade(vec3 w) {
-           float mmPerPixel = fwidth(w.x) + fwidth(w.y) + fwidth(w.z);
-           return clamp(1.0 - mmPerPixel * uSkinFine * 3.0, 0.0, 1.0);
+           // 取三轴里最大的那个，不是求和：求和会把同一个像素的跨度算成三倍，
+           // 结果凑到脸上细节也还是被淡光（实拍近景仍然一片光滑）。
+           float mmPerPixel = max(max(fwidth(w.x), fwidth(w.y)), fwidth(w.z));
+           return clamp(1.0 - mmPerPixel * uSkinFine * 1.5, 0.0, 1.0);
          }
          float hyiSkinField(vec3 w, float fade) {
            return hyiNoise(w * uSkinCoarse) * 0.7 + hyiNoise(w * uSkinFine) * 0.3 * fade;
