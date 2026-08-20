@@ -205,7 +205,8 @@ export class HyiViewer extends EventTarget {
       preserveDrawingBuffer: true,
     });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    this.renderer.setClearColor(0x0b1020, 1);
+    // 清屏色跟着背景球一起压暗（背景球没盖到的角落用的是这个色）
+    this.renderer.setClearColor(0x03050b, 1);
     this.renderer.localClippingEnabled = true;
     // 电影级色调映射 + 程序化环境光照（观感升级，无外部 HDR 资源）
     this.renderer.toneMapping = ACESFilmicToneMapping;

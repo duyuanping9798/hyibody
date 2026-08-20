@@ -16,8 +16,6 @@ function hex(system: SystemId): string {
   return `#${SYSTEM_COLORS[system].toString(16).padStart(6, '0')}`;
 }
 
-/** 轨道底色：按刻度把六个系统色连成一条渐变，滑到哪一段就知道在看哪一层。 */
-const TRACK = `linear-gradient(90deg, ${STOPS.map((s) => `${hex(s.system)} ${Math.round(s.at * 100)}%`).join(', ')}, ${hex('nerves')} 100%)`;
 
 /** 分层滑块：0–1 连续值，各系统按 layers.ts 的映射淡入淡出（KICKOFF 第 6 节核心交互）。 */
 export function LayerSlider() {
@@ -26,7 +24,13 @@ export function LayerSlider() {
   const setLayer = useUiStore((s) => s.setLayer);
   return (
     <div className="hyi-panel hyi-layer-slider">
-      <div className="hyi-layer-track" style={{ ['--hyi-layer-track' as string]: TRACK }}>
+      {/* 轨道走"暗槽 + 发光进度"，进度位置交给 CSS 变量（见 ui.css）。
+          原来这里铺的是五个系统色连成的彩虹，皮肤换成真肤色之后起点一段米黄，
+          整条看着发脏，也不像仪器像玩具。系统色留在下面的圆点上。 */}
+      <div
+        className="hyi-layer-track"
+        style={{ ['--hyi-layer-pos' as string]: `${(layer * 100).toFixed(1)}%` }}
+      >
         <input
           className="hyi-range hyi-range-layer"
           type="range"

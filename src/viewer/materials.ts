@@ -406,9 +406,11 @@ export function createBackdropMaterial(): ShaderMaterial {
     side: BackSide,
     depthWrite: false,
     uniforms: {
-      uBottom: { value: new Color(0x070b16) },
-      uMid: { value: new Color(0x0b1020) },
-      uTop: { value: new Color(0x14223c) },
+      // 2026-08-20 按用户要求整体压暗：原来是 070b16 / 0b1020 / 14223c，
+      // 顶部那档亮到人体一进画面就"浮"在灰蓝里。深色底才衬得住内脏的配色。
+      uBottom: { value: new Color(0x02040a) },
+      uMid: { value: new Color(0x05080f) },
+      uTop: { value: new Color(0x0a1120) },
     },
     vertexShader: /* glsl */ `
       varying vec3 vPos;

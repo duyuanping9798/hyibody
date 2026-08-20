@@ -30,8 +30,10 @@
 /* HyiBody UI：深色舞台 + 玻璃拟态面板 + 青色强调（原型视觉基调，KICKOFF 第 6 节） */
 
 :root {
-  --hyi-bg: #0b1020;
-  --hyi-panel: rgba(16, 24, 44, 0.78);
+  /* 整体压暗（2026-08-20）：底色从 #0b1020 降到 #05080f，面板跟着降一档，
+     否则面板反而比背景亮，浮在画面上像贴纸。 */
+  --hyi-bg: #05080f;
+  --hyi-panel: rgba(10, 17, 33, 0.82);
   --hyi-panel-border: rgba(79, 227, 224, 0.18);
   --hyi-text: #e8ecf4;
   --hyi-text-dim: rgba(232, 236, 244, 0.62);
@@ -87,7 +89,7 @@
   height: 16px;
   border-radius: 50%;
   background: var(--hyi-accent);
-  border: 2px solid #0b1020;
+  border: 2px solid #05080f;
   cursor: pointer;
 }
 .hyi-range::-moz-range-thumb {
@@ -95,7 +97,7 @@
   height: 14px;
   border-radius: 50%;
   background: var(--hyi-accent);
-  border: 2px solid #0b1020;
+  border: 2px solid #05080f;
   cursor: pointer;
 }
 .hyi-range:focus-visible {
@@ -106,41 +108,43 @@
 .hyi-layer-slider {
   position: absolute;
   left: 50%;
-  bottom: 18px;
+  bottom: 14px;
   transform: translateX(-50%);
-  width: min(560px, calc(100% - 32px));
-  /* 收薄：原来 10/16/8 加上 4px gap 与 26px 标签行，整块 90 px 高。
-     刻度改成绝对定位之后行高固定，padding 可以压下来。 */
-  padding: 8px 18px 4px;
+  /* 再收一轮：560 → 460 宽、整块从约 70 px 压到约 52 px。
+     刻度绝对定位之后标签行高是固定的，剩下的全在 padding 上省。 */
+  width: min(460px, calc(100% - 24px));
+  padding: 7px 16px 2px;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 0;
 }
 /* 刻度按真实值绝对定位（见 LayerSlider.tsx 的注释），所以这里不能再用 flex 等距排 */
 .hyi-layer-labels {
   position: relative;
-  height: 32px;
-  font-size: 11px;
+  height: 27px;
+  font-size: 10.5px;
   color: var(--hyi-text-dim);
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
 }
 
 /* 工具抽屉（界面减负）：右上角三条标题栏，一次只展开一格，默认全收起。
    原来这里是两块常驻大面板，六行滑块 + 十个按钮 + 一段画质说明常年挂在画面上。 */
-/* 工具抽屉跟搜索框排在左边一列：右下角让给信息卡（2026-08-20）。
-   这一条最早是为了不挡住剖切按钮才把信息卡赶到左边的——现在两者分居左右，
-   那个冲突从根上没有了。 */
+/* 抽屉和信息卡同在右边一列（2026-08-20 按用户要求）。
+   历史上这两个正是因为会互相压住才被拆到左右两边的——「沿此结构半剖」点不到。
+   同列的解法不是靠运气，是把右侧竖着切开：抽屉占上 45%、信息卡占下 45%，
+   中间那 10% 是谁也不许进的缓冲区，两边各自 overflow-y: auto。 */
 .hyi-dock {
   position: absolute;
-  top: 116px;
-  left: 12px;
+  top: 58px;
+  right: 12px;
   /* 216 → 240：剖切那一格是四个轴向按钮并排，216 px 下「关闭」「前后」会折成两行 */
   width: 240px;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  /* 底部要给分层滑块（18 + 高约 90）留出地方，不然展开三格会压上去 */
-  max-height: calc(100% - 240px);
+  max-height: calc(45% - 58px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
   z-index: 4;
 }
 .hyi-drawer {
@@ -308,16 +312,15 @@
   color: var(--hyi-text-dim);
 }
 
-/* 桌面端信息卡放右下（2026-08-20 按用户要求）。
-   原来在左下，是因为当时右侧上方是系统/视角面板，卡片压上去会挡住剖切按钮
-   （实测"沿此结构半剖"点不到）。现在抽屉整体搬到了左边一列，右侧空出来了。 */
+/* 桌面端信息卡放右下，和抽屉同列（见 .hyi-dock 上面那段）。
+   高度卡在 45%，与抽屉的 45% 之间留出 10% 缓冲——两个面板都能长，但永远碰不到。 */
 .hyi-info {
   position: absolute;
   right: 12px;
-  bottom: 96px;
+  bottom: 84px;
   width: min(320px, calc(100% - 24px));
   padding: 14px 16px;
-  max-height: calc(100% - 220px);
+  max-height: calc(45% - 84px);
   overflow-y: auto;
 }
 .hyi-info h2 {
@@ -748,7 +751,7 @@ body.hyi-kiosk .hyi-info .blurb {
   inset: 0;
   display: grid;
   place-items: center;
-  background: radial-gradient(60% 60% at 50% 45%, #0e1730f2, #070b16fa);
+  background: radial-gradient(60% 60% at 50% 45%, #0a1120f2, #03050bfa);
   z-index: 6;
 }
 .hyi-loading-inner {
@@ -801,28 +804,65 @@ body.hyi-kiosk .hyi-info .blurb {
   position: relative;
   padding: 2px 0 6px;
 }
-.hyi-range-layer {
-  --hyi-track-image: var(--hyi-layer-track);
-}
+/*
+ * 轨道：暗槽 + 一段发光的进度，而不是一条五色渐变。
+ *
+ * 原来轨道直接按系统色铺成彩虹（肤色 → 肌红 → 骨白 → 器官橙 → 血管红）。
+ * 皮肤换成真肤色之后起点是一段米黄，整条看着发脏，也不像仪器像玩具。
+ * 现在：槽是暗的，走过的一段亮起来（青 → 蓝紫），刻度点仍用系统色——
+ * 语义留在点上，轨道只负责"走到哪儿了"。进度位置由 --hyi-layer-pos 给。
+ */
 .hyi-range-layer::-webkit-slider-runnable-track {
-  background: var(--hyi-layer-track);
-  opacity: 0.85;
-  height: 6px;
+  background:
+    linear-gradient(
+      90deg,
+      #2de0ff 0%,
+      #59a8ff calc(var(--hyi-layer-pos, 0%) * 0.6),
+      #9a7bff var(--hyi-layer-pos, 0%),
+      rgba(150, 170, 210, 0.16) var(--hyi-layer-pos, 0%),
+      rgba(150, 170, 210, 0.16) 100%
+    );
+  height: 5px;
   border-radius: 999px;
+  box-shadow: inset 0 0 0 1px rgba(140, 190, 255, 0.14);
 }
 .hyi-range-layer::-moz-range-track {
-  background: var(--hyi-layer-track);
-  opacity: 0.85;
-  height: 6px;
+  background:
+    linear-gradient(
+      90deg,
+      #2de0ff 0%,
+      #59a8ff calc(var(--hyi-layer-pos, 0%) * 0.6),
+      #9a7bff var(--hyi-layer-pos, 0%),
+      rgba(150, 170, 210, 0.16) var(--hyi-layer-pos, 0%),
+      rgba(150, 170, 210, 0.16) 100%
+    );
+  height: 5px;
   border-radius: 999px;
 }
+.hyi-range-layer::-webkit-slider-thumb {
+  width: 13px;
+  height: 13px;
+  margin-top: -4px;
+  background: #d8f6ff;
+  border: 2px solid #10203a;
+  box-shadow: 0 0 8px rgba(45, 224, 255, 0.75);
+}
+.hyi-range-layer::-moz-range-thumb {
+  width: 13px;
+  height: 13px;
+  background: #d8f6ff;
+  border: 2px solid #10203a;
+  box-shadow: 0 0 8px rgba(45, 224, 255, 0.75);
+}
+/* 这里本来想加一排等距刻线。没加：五个主场在 0/20/45/62/85%，等距刻线
+   又会画在错的地方——正是刚修掉的那个毛病。刻度由下面的圆点负责，槽保持干净。 */
 .hyi-layer-stop {
   appearance: none;
   border: 0;
   background: none;
-  padding: 12px 4px 3px;
+  padding: 11px 3px 2px;
   font: inherit;
-  font-size: 11.5px;
+  font-size: 10.5px;
   color: var(--hyi-text-dim);
   cursor: pointer;
   position: absolute;
