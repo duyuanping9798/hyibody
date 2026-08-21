@@ -526,6 +526,14 @@ export class HyiViewer extends EventTarget {
     this.rig.camera.position.set(...pos);
     this.rig.controls.target.set(...target);
     this.rig.controls.update();
+    // 明确记下"这个机位是人定的，不是自动全身取景"。
+    //
+    // 漏了这一行的后果是**每条分享链接都丢机位**：`toUrlState` 无条件把相机位姿
+    // 写进 ?v=，恢复时走到这里；可紧接着 UI 量完面板高度会调 `setSafeInsets`，
+    // 它看见 `autoFramed` 还是 true，就"好心"重新框一次全身，把刚恢复的机位顶掉。
+    // 带 selected 的链接因为随后还会 aimAt 到那个结构，症状被盖住了一半——
+    // 纯粹分享一个角度（转过身、推近了、没选中任何结构）的链接则是整个失效。
+    this.autoFramed = false;
   }
 
   // ---- 分层与显隐 ----------------------------------------------------------
