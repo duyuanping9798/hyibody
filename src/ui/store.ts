@@ -121,7 +121,7 @@ interface UiState {
   setClip(clip: { axis: ClipAxis; pos: number; flip?: boolean } | null): void;
   clipThroughSelected(): void;
   applyPreset(id: ViewPresetId): void;
-  focus(slug: string, from?: ViewPresetId): void;
+  focus(slug: string, from?: ViewPresetId, zoomOut?: number): void;
   setAttributionOpen(open: boolean): void;
   togglePanel(panel: PanelId): void;
   setInfoExpanded(open: boolean): void;
@@ -244,7 +244,7 @@ function applyScene(step: AtlasScene): void {
   if (step.selected) {
     st.select(step.selected);
     // from 只定方向、focus 定距离；preset 是整具人体宽景，给了就不再特写
-    if (step.focus !== false && !step.preset) st.focus(step.selected, step.from);
+    if (step.focus !== false && !step.preset) st.focus(step.selected, step.from, step.zoomOut);
   } else {
     st.select(null);
   }
@@ -519,9 +519,9 @@ export const useUiStore = create<UiState>((set, get) => ({
   applyPreset: (id) => {
     viewer?.applyPreset(id);
   },
-  focus: (slug, from) => {
+  focus: (slug, from, zoomOut) => {
     revealLayerFor(slug);
-    viewer?.focus(slug, from);
+    viewer?.focus(slug, from, zoomOut);
   },
   setAttributionOpen: (attributionOpen) => set({ attributionOpen }),
 

@@ -17,6 +17,7 @@
       "organs": false,
       "vessels": false,
       "nerves": false
-    }
+    },
+    "zoomOut": 4.0
   }
 }

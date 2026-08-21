@@ -28,11 +28,23 @@ function readJsonDir(dir) {
     .map((f) => JSON.parse(readFileSync(join(dir, f), 'utf8')));
 }
 
-/** 奥秘的封面用第一步——那一步本来就是作者选的"开场画面"。 */
+/**
+ * 奥秘的封面挑哪一步？**不能用第一步**。
+ *
+ * 实测：29 则里绝大多数的第一步是"全身宽景"开场（`preset: front|hero` + 很低的
+ * layer），当片头很好，当封面则是 29 张几乎一模一样的全身图——卡片墙上完全
+ * 分不出哪则讲什么。改挑**第一个真正对着某个结构的特写**（有 selected、没有
+ * preset），它就是这一则的主角。
+ */
+function coverScene(w) {
+  const step = w.steps.find((s) => s.selected && !s.preset) ?? w.steps[0];
+  return { ...step, text: undefined, durationMs: undefined };
+}
+
 const jobs = [
   ...readJsonDir('content/wonders').map((w) => ({
     name: `wonder-${w.id}`,
-    scene: { ...w.steps[0], text: undefined, durationMs: undefined },
+    scene: coverScene(w),
   })),
   ...readJsonDir('content/views').map((v) => ({ name: `view-${v.id}`, scene: v.view })),
 ].filter((j) => (ONLY ? j.name.includes(ONLY) : true));

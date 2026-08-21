@@ -22,7 +22,18 @@ export default tseslint.config(
   {
     files: ['scripts/**/*.mjs'],
     languageOptions: {
-      globals: { console: 'readonly', process: 'readonly', URL: 'readonly' },
+      // Buffer / document / window / Image：thumbs.mjs 是 node 脚本，但里面有几段
+      // 跑在 page.evaluate 里的浏览器代码——同一个文件里两种运行环境，
+      // eslint 看不出边界，只能把两边的全局都放进来。
+      globals: {
+        console: 'readonly',
+        process: 'readonly',
+        URL: 'readonly',
+        Buffer: 'readonly',
+        document: 'readonly',
+        window: 'readonly',
+        Image: 'readonly',
+      },
     },
   },
   {

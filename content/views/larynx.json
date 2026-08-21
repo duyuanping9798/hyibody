@@ -17,6 +17,7 @@
       "skeleton": 0.12,
       "vessels": 0.2,
       "nerves": false
-    }
+    },
+    "zoomOut": 3.0
   }
 }

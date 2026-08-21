@@ -41,9 +41,7 @@ export function AtlasGallery() {
     ...REGION_ORDER.map((region) => ({
       id: region,
       label: t.regions[region],
-      items: ATLAS_VIEWS.filter((v) => v.region === region).map((v) =>
-        itemOf(v, lang, label(v)),
-      ),
+      items: ATLAS_VIEWS.filter((v) => v.region === region).map((v) => itemOf(v, lang, label(v))),
     })),
   ];
 

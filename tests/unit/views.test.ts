@@ -52,7 +52,10 @@ describe('局部细剖视图（content/views）', () => {
       for (const key of ['selected', 'expand'] as const) {
         const slug = v.view[key];
         if (!slug) continue;
-        expect(MANIFEST.structures[slug], `${v.id} 的 ${key}=${slug} 不在 manifest 里`).toBeTruthy();
+        expect(
+          MANIFEST.structures[slug],
+          `${v.id} 的 ${key}=${slug} 不在 manifest 里`,
+        ).toBeTruthy();
       }
     }
   });
