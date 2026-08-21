@@ -40,7 +40,7 @@ docs/           KICKOFF.md STATUS.md DECISIONS.md ATTRIBUTION.md
 
 ## 编码与协作规范
 
-一个 issue 一个分支一个 PR，PR 保持小而完整（含测试与文档更新）。TypeScript strict，无 any 逃逸；渲染核心用类 + 事件而非全局变量；所有用户可见文字走 `content/i18n/{zh,en}.json`，中文优先，品牌名统一写 "HyiBody"。提交信息用 Conventional Commits（feat/fix/data/docs/chore）。每次改动流水线要能一条命令重跑（`pnpm pipeline:all`），并跑 `pipeline/validate.py`（结构完整性、面数、体积、命名重复检查）。云端会话无 GPU：用 Playwright 无头 Chromium 截图做冒烟检查（`pnpm test:e2e`），真机观感由人类确认。遇到需要"接受条款/付费/账号"的操作，停下来在 STATUS.md 写明并请人类处理。若推送 `.github/workflows/` 被拒绝，把文件内容写进 PR 描述请人类通过 GitHub 网页添加。
+一个 issue 一个分支一个 PR，PR 保持小而完整（含测试与文档更新）。TypeScript strict，无 any 逃逸；渲染核心用类 + 事件而非全局变量；所有用户可见文字走 `content/i18n/{zh,en}.json`，中文优先，品牌名统一写 "HyiBody"。提交信息用 Conventional Commits（feat/fix/data/docs/chore）。每次改动流水线要能一条命令重跑（`pnpm pipeline:all`），并跑 `pipeline/validate.py`（结构完整性、面数、体积、命名重复检查）。云端会话无 GPU：用 Playwright 无头 Chromium 截图做冒烟检查（`pnpm test:e2e`），真机观感由人类确认。**杀进程一律按端口或 PID，绝不按命令行匹配**——`pkill -f "vite preview"` / `pkill -f "playwright test"` 会匹配到发出这条命令的 shell 自己，把当前会话一起杀掉（已踩五次，见 DECISIONS.md）。用 `fuser -k -n tcp 4173`，或先 `pgrep -af` 看清再按 PID 杀。**长任务跑到一半不要重建 `dist/`**：预览服务器是同一份目录，等于把资产从正在跑的 e2e 脚下换掉。遇到需要"接受条款/付费/账号"的操作，停下来在 STATUS.md 写明并请人类处理。若推送 `.github/workflows/` 被拒绝，把文件内容写进 PR 描述请人类通过 GitHub 网页添加。
 
 ## 会话流程
 
