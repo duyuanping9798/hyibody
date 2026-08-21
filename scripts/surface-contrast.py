@@ -64,15 +64,22 @@ def read_png(path: str):
     return w, h, ch, rows
 
 
-def contrast(rows, w, h, ch, box) -> float:
+def contrast(rows, w, h, ch, box, stride: int = 1) -> float:
+    """步长 `stride` 个像素的亮度差均值。
+
+    **必须多尺度量**：这个指标对空间频率敏感——一处 12 像素周期的起伏，
+    用步长 1 去量几乎读不出来，用步长 6 才读得到。2026-08-21 就在这上面
+    绕过一次：把噪声频率调低（让它在真实观看距离下更像"骨面起伏"）之后，
+    步长 1 的读数反而没怎么涨，差点据此判定"参数还是太弱"。
+    """
     x0, x1, y0, y1 = box
     total = 0.0
     n = 0
-    for y in range(int(h * y0), min(int(h * y1), h - 1)):
-        r, r2 = rows[y], rows[y + 1]
-        for x in range(int(w * x0), int(w * x1) - 1):
+    for y in range(int(h * y0), min(int(h * y1), h - stride)):
+        r, r2 = rows[y], rows[y + stride]
+        for x in range(int(w * x0), int(w * x1) - stride):
             lum = (r[x * ch] + r[x * ch + 1] + r[x * ch + 2]) / 3
-            right = (r[(x + 1) * ch] + r[(x + 1) * ch + 1] + r[(x + 1) * ch + 2]) / 3
+            right = (r[(x + stride) * ch] + r[(x + stride) * ch + 1] + r[(x + stride) * ch + 2]) / 3
             down = (r2[x * ch] + r2[x * ch + 1] + r2[x * ch + 2]) / 3
             total += abs(lum - right) + abs(lum - down)
             n += 2
@@ -83,13 +90,16 @@ def main() -> int:
     a_path, b_path = sys.argv[1], sys.argv[2]
     a = read_png(a_path)
     b = read_png(b_path)
-    print(f"{'区域':6} {'关':>8} {'开':>8}   倍数")
+    strides = [1, 3, 6, 12]
+    print(f"{'区域':6} {'步长':>4} {'关':>8} {'开':>8}   倍数")
     ratios = []
     for name, box in REGIONS.items():
-        ca = contrast(a[3], a[0], a[1], a[2], box)
-        cb = contrast(b[3], b[0], b[1], b[2], box)
-        ratios.append(cb / ca if ca else 0)
-        print(f"{name:6} {ca:8.2f} {cb:8.2f}   {ratios[-1]:.2f}×")
+        for st in strides:
+            ca = contrast(a[3], a[0], a[1], a[2], box, st)
+            cb = contrast(b[3], b[0], b[1], b[2], box, st)
+            r = cb / ca if ca else 0
+            ratios.append(r)
+            print(f"{name:6} {st:>4} {ca:8.2f} {cb:8.2f}   {r:.2f}×")
     best = max(ratios)
     print(f"\n最大 {best:.2f}× —— 验收线是 1.5×：{'过' if best >= 1.5 else '不过，参数还是太弱'}")
     return 0
