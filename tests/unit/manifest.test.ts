@@ -2,6 +2,7 @@ import { readFileSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { assertManifest } from '../../src/data/manifest';
+import { BACKGROUND_ORDER, FIRST_SCREEN_SYSTEMS } from '../../src/viewer/loadOrder';
 import type { Manifest } from '../../src/data/types';
 import { SYSTEM_IDS } from '../../src/data/types';
 
@@ -71,11 +72,22 @@ describe('流水线产物契约', () => {
   it.runIf(isPipeline)('体积预算：首屏 ≤ 5 MB，全部 ≤ 40 MB', () => {
     const manifestBytes = statSync(resolve(assetsDir, 'manifest.json')).size;
     const total = manifest.systems.reduce((sum, s) => sum + s.bytes, manifestBytes);
+    // 首屏是哪些系统，只认 loadOrder.ts 那一份。这里以前硬编码 skin+skeleton，
+    // 2026-08-21 把骨骼挪出首屏时忘了改，于是这条测试继续按"皮肤+骨骼"量，
+    // 量的是另一回事——它当时确实红了，但红的理由是"多算了 4.9 MB"。
     const firstScreen = manifest.systems
-      .filter((s) => s.id === 'skin' || s.id === 'skeleton')
+      .filter((s) => (FIRST_SCREEN_SYSTEMS as readonly string[]).includes(s.id))
       .reduce((sum, s) => sum + s.bytes, manifestBytes);
     expect(firstScreen).toBeLessThanOrEqual(5_000_000);
     expect(total).toBeLessThanOrEqual(40_000_000);
+  });
+
+  it.runIf(isPipeline)('后台补载顺序覆盖了除首屏之外的每一个系统', () => {
+    // 漏一个系统不会报错，只会让它排到队尾——是那种"慢一点但看不出错"的 bug
+    const rest = manifest.systems
+      .map((s) => s.id)
+      .filter((id) => !(FIRST_SCREEN_SYSTEMS as readonly string[]).includes(id));
+    for (const id of rest) expect(BACKGROUND_ORDER as readonly string[], id).toContain(id);
   });
 
   it.runIf(isPipeline)('attribution 含 BodyParts3D 署名', () => {

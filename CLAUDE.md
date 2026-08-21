@@ -36,11 +36,11 @@ docs/           KICKOFF.md STATUS.md DECISIONS.md ATTRIBUTION.md
 
 ## 性能与体积预算（PR 若突破需说明）
 
-首屏包（皮肤 + 骨骼 + manifest）≤ 5 MB（当前收紧到 4 MB）；全部资产 ≤ 40 MB（当前收紧到 25 MB）；桌面 Chrome 60 fps、中端安卓 30 fps；同屏 draw call ≤ 600（2026-08-20 按系统合批之后，235 个结构在高画质档实测 **41** 次；合批前是 629 次、已越线。结构数不再驱动这个数，见 DECISIONS.md）；单结构面数上限**按可见性分系统**（肌肉 75,000 / 骨骼 60,000 / 器官 45,000 / 神经 35,000 / 血管 25,000 / 皮肤 30,000），另有 per-slug 放宽（皮肤整张外壳 200,000、脑 85,000、颅骨 70,000、大脑 50,000、肋骨 50,000）——见 `pipeline/bp3d.py` 的 `FACES_MAX_BY_SYSTEM` / `FACES_MAX_BY_SLUG`；总三角面目标 150–290 万，硬上限 300 万（2026-08-20 修订：原一刀切 3 万把脸、肋骨与铺满整屏的浅层肌一起摁住，实测只保留了 BP3D 原生 410 万面的 39%，用户拍板走"B 计划"按可见性重排；来历审计见 DECISIONS.md。**中端安卓 30 fps 仍需人类真机复核，这一档正是为了让那次复核有意义**）。所有 glb 经 gltf-transform 去重、焊接、量化、meshopt 压缩。
+首屏包（**皮肤 + manifest**，2026-08-20 起骨骼不再挡在 ready 前面——分层 0 那一格本来就只有皮肤）≤ 4 MB；全部资产 ≤ 40 MB；桌面 Chrome 60 fps、中端安卓 30 fps；同屏 draw call ≤ 600（2026-08-20 按系统合批之后，235 个结构在高画质档实测 **41** 次；合批前是 629 次、已越线。结构数不再驱动这个数，见 DECISIONS.md）；单结构面数上限**按可见性分系统**（肌肉 75,000 / 骨骼 60,000 / 器官 45,000 / 神经 35,000 / 血管 25,000 / 皮肤 30,000），另有 per-slug 放宽（皮肤整张外壳 200,000、脑 85,000、颅骨 70,000、大脑 50,000、肋骨 50,000）——见 `pipeline/bp3d.py` 的 `FACES_MAX_BY_SYSTEM` / `FACES_MAX_BY_SLUG`；总三角面目标 350–490 万，硬上限 500 万（2026-08-20 两次修订：先按可见性重排到 236 万：原一刀切 3 万把脸、肋骨与铺满整屏的浅层肌一起摁住，实测只保留了 BP3D 原生 410 万面的 39%，再由用户拍板"向全量冲刺"——不再减面，我们用到的 924 件 BP3D 元素网格原生 410 万面全部上来，加 HRA 的 48 万；来历审计见 DECISIONS.md。**中端安卓 30 fps 仍需人类真机复核，这一档正是为了让那次复核有意义**）。所有 glb 经 gltf-transform 去重、焊接、量化、meshopt 压缩。
 
 ## 编码与协作规范
 
-一个 issue 一个分支一个 PR，PR 保持小而完整（含测试与文档更新）。TypeScript strict，无 any 逃逸；渲染核心用类 + 事件而非全局变量；所有用户可见文字走 `content/i18n/{zh,en}.json`，中文优先，品牌名统一写 "HyiBody"。提交信息用 Conventional Commits（feat/fix/data/docs/chore）。每次改动流水线要能一条命令重跑（`pnpm pipeline:all`），并跑 `pipeline/validate.py`（结构完整性、面数、体积、命名重复检查）。云端会话无 GPU：用 Playwright 无头 Chromium 截图做冒烟检查（`pnpm test:e2e`），真机观感由人类确认。遇到需要"接受条款/付费/账号"的操作，停下来在 STATUS.md 写明并请人类处理。若推送 `.github/workflows/` 被拒绝，把文件内容写进 PR 描述请人类通过 GitHub 网页添加。
+一个 issue 一个分支一个 PR，PR 保持小而完整（含测试与文档更新）。TypeScript strict，无 any 逃逸；渲染核心用类 + 事件而非全局变量；所有用户可见文字走 `content/i18n/{zh,en}.json`，中文优先，品牌名统一写 "HyiBody"。提交信息用 Conventional Commits（feat/fix/data/docs/chore）。每次改动流水线要能一条命令重跑（`pnpm pipeline:all`），并跑 `pipeline/validate.py`（结构完整性、面数、体积、命名重复检查）。云端会话无 GPU：用 Playwright 无头 Chromium 截图做冒烟检查（`pnpm test:e2e`），真机观感由人类确认。**杀进程一律按端口或 PID，绝不按命令行匹配**——`pkill -f "vite preview"` / `pkill -f "playwright test"` 会匹配到发出这条命令的 shell 自己，把当前会话一起杀掉（已踩五次，见 DECISIONS.md）。用 `fuser -k -n tcp 4173`，或先 `pgrep -af` 看清再按 PID 杀。**长任务跑到一半不要重建 `dist/`**：预览服务器是同一份目录，等于把资产从正在跑的 e2e 脚下换掉。遇到需要"接受条款/付费/账号"的操作，停下来在 STATUS.md 写明并请人类处理。若推送 `.github/workflows/` 被拒绝，把文件内容写进 PR 描述请人类通过 GitHub 网页添加。
 
 ## 会话流程
 

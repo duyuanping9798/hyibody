@@ -97,8 +97,11 @@ export function App() {
       quality: readQualityParam(),
     });
     bindViewer(viewer);
+    // ?v= 要在 load 之前先解一次：后台补载的顺序得知道用户点名了哪个结构。
+    // 下面 then 里那次解码保留——那是"把状态套到已经就绪的场景上"，是另一件事。
+    const initialState = decodeUrlState(new URLSearchParams(window.location.search).get('v'));
     viewer
-      .load()
+      .load(initialState.selected ? { prioritizeStructure: initialState.selected } : {})
       .then(() => {
         const m = viewer.getManifest();
         if (m) useUiStore.getState().setManifest(m);

@@ -158,7 +158,7 @@ class TestGroupTargetFaces:
 
 
 class TestParentValidation:
-    """内部件（parent）校验：只支持一层、必须同系统、父结构必须存在。"""
+    """内部件（parent）校验：最多三层、必须同系统、父结构必须存在。"""
 
     @staticmethod
     def _entries(**overrides):
@@ -195,8 +195,29 @@ class TestParentValidation:
         errors = self._check(self._entries(system="vessels"))
         assert any("同一系统" in e for e in errors)
 
-    def test_two_levels_error(self):
+    def test_three_levels_ok(self):
+        """脑 → 大脑 → 额叶：三层是允许的（2026-08-19 拆脑叶时放开的）。"""
+        brain, cerebrum = self._entries()
+        cerebrum.update(slug="cerebrum", zh="大脑", en="Cerebrum", parent="brain")
+        brain.update(slug="brain", zh="脑", en="Brain")
+        lobe = {**cerebrum, "slug": "frontal_lobe", "zh": "额叶", "en": "Frontal lobe",
+                "parent": "cerebrum"}
+        assert self._check([brain, cerebrum, lobe]) == []
+
+    def test_four_levels_error(self):
+        brain, cerebrum = self._entries()
+        cerebrum.update(slug="cerebrum", zh="大脑", en="Cerebrum", parent="brain")
+        brain.update(slug="brain", zh="脑", en="Brain")
+        lobe = {**cerebrum, "slug": "frontal_lobe", "zh": "额叶", "en": "Frontal lobe",
+                "parent": "cerebrum"}
+        gyrus = {**cerebrum, "slug": "precentral_gyrus", "zh": "中央前回",
+                 "en": "Precentral gyrus", "parent": "frontal_lobe"}
+        errors = self._check([brain, cerebrum, lobe, gyrus])
+        assert any("超过三层" in e for e in errors)
+
+    def test_missing_ancestor_does_not_crash(self):
+        """父结构存在、但**祖父**不在清单里——以前这里是 KeyError 而不是一条错误。"""
         entries = self._entries()
-        entries[0]["parent"] = "something"  # 让父结构自己也成为内部件
+        entries[0]["parent"] = "something"
         errors = self._check(entries)
-        assert any("只支持一层" in e for e in errors)
+        assert any("something" in e for e in errors)

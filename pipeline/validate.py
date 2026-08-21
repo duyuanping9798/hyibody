@@ -2,10 +2,10 @@
 
 检查项：
 - 结构清单（structures.yaml 或候选清单）：字段齐全、slug/名称唯一、枚举合法、
-  target_faces 在 500–8000、fma 非空
+  target_faces 在 500 至 bp3d.max_faces_for（按系统分档）之间、fma 非空
 - manifest.json：schema（对齐 src/data/types.ts）、系统文件存在、结构互相对应
-- glb：单文件 < 50 MB；全部资产 ≤ 40 MB；首屏（皮肤+骨骼+manifest）≤ 5 MB；
-  单结构面数上限见 bp3d.max_faces_for；总三角面 ≤ 200 万；节点名与 manifest 一致、extras 保留
+- glb：单文件 < 50 MB；全部资产 ≤ 40 MB；首屏（皮肤+manifest）≤ 5 MB；
+  单结构面数上限见 bp3d.max_faces_for；总三角面 ≤ 500 万；节点名与 manifest 一致、extras 保留
 
 用法：
     python3 pipeline/validate.py [--require-manifest]
@@ -26,6 +26,7 @@ if sys.path and sys.path[0] == _DIR:
 import argparse
 import json
 import math
+import re
 import sys
 from pathlib import Path
 
@@ -33,21 +34,26 @@ import bp3d
 from bp3d import ASSETS_DIR, FACES_MAX_LARGE, FACES_MIN, REGIONS, SIDES, SYSTEMS, max_faces_for
 
 MAX_FILE_BYTES = 50_000_000  # 仓库单文件上限（CLAUDE.md）
-# 2026-08-18 数据质量升级后收紧到本次验收标准（CLAUDE.md 的硬上限是 40 MB / 5 MB）
-MAX_TOTAL_BYTES = 25_000_000  # 全部资产
-MAX_FIRST_SCREEN_BYTES = 4_000_000  # 首屏：皮肤 + 骨骼 + manifest
-MAX_TOTAL_TRIANGLES = 3_000_000
+# 2026-08-20 全量：放到 CLAUDE.md 的硬上限本身（40 MB / 5 MB），不再另设收紧值——
+# 这一档就是"把 BP3D 用满"，收紧值已经没有意义。
+MAX_TOTAL_BYTES = 40_000_000  # 全部资产
+# 首屏：皮肤 + manifest。硬顶是 5 MB，这里留 4 MB 的收紧值——全量之后首屏实测
+# 只有 1.29 MB，余量大到没有放开的理由；哪天它逼近 4 MB，说明有东西又挤进首屏了。
+MAX_FIRST_SCREEN_BYTES = 4_000_000
+MAX_TOTAL_TRIANGLES = 5_000_000
 # 面数目标区间：低于下限说明网格被压得太狠（观感粗糙），只警告不报错。
 #
 # 2026-08-18 修订（用户拍板"完整性和效果优先"）：100–180 万，硬上限 200 万。
-# 2026-08-20 修订（用户拍板走"B 计划"）：**150–290 万，硬上限 300 万**。
-# 单结构上限同时从"一刀切 3 万"改成按可见性分系统（见 bp3d.FACES_MAX_BY_SYSTEM）。
-# 依据：我们用到的 924 件 BP3D 元素网格原生共 410 万面，而当时只保留 39%——
-# 人类的评价是"离想要的效果还差 2/3"，量出来几乎是字面精确的。
-# **代价照旧写在明处：中端安卓 30 fps 这条只能由人类真机复核，这一档正是为了让那次
-# 复核有意义——先把额度花对地方，再测，而不是一次跳到全量 458 万。**
-TARGET_TRIANGLES_MIN = 1_500_000
-TARGET_TRIANGLES_MAX = 2_900_000
+# 2026-08-20 修订（用户拍板走"B 计划"）：150–290 万，硬上限 300 万。
+# 2026-08-20 再修订（用户拍板"开始向全量冲刺"）：**350–490 万，硬上限 500 万**。
+# 单结构上限同时抬到"比该系统最大结构的原生面数高一点"——上限只剩护栏作用，
+# 235 个 BP3D 结构全部原样导出，一个都不减面（见 bp3d.FACES_MAX_BY_SYSTEM）。
+# 依据：我们用到的 BP3D 元素网格原生共 406 万面，B 计划保留 58%，
+# 人类的评价是"离想要的效果还差 2/3"。这一档把剩下的 42% 全部拿回来。
+# **代价照旧写在明处：全部资产 15.4 → 29.1 MB；中端安卓 30 fps 只能由人类真机
+# 复核，这一档正是为了让那次复核有意义。**
+TARGET_TRIANGLES_MIN = 3_500_000
+TARGET_TRIANGLES_MAX = 4_900_000
 # 结构数上限。
 #
 # 2026-08-20 之前这里写的是 580，依据是"每结构一份材质一次绘制"的静态估算。
@@ -62,6 +68,8 @@ TARGET_TRIANGLES_MAX = 2_900_000
 # 真正该盯的是总面数与体积。**要再动这个数，先用 `?stats=1` 量，别再拍脑袋。**
 MAX_STRUCTURES_FOR_DRAWCALLS = 2000
 VALID_SOURCES = ("bp3d", "bp3d_partof", "hra", "cc0")
+# 与 src/viewer/loadOrder.ts 的 FIRST_SCREEN_SYSTEMS 对齐（下面有一致性检查）
+FIRST_SCREEN_SYSTEMS = ("skin",)
 
 
 class Checker:
@@ -137,7 +145,12 @@ def validate_structures(entries: list[dict], chk: Checker, list_name: str = "str
             if depth > 2:
                 chk.error(f"{list_name}: {entry['slug']} 的父结构链超过三层（最多 脑 → 大脑 → 额叶）")
                 break
+            # 祖先本身不在清单里就停：那条错误由它自己那轮的
+            # "parent 不存在"报，这里再往上走只会 KeyError
+            if cursor not in by_slug:
+                break
             cursor = by_slug[cursor].get("parent")
+
 
 def validate_manifest_schema(manifest: dict, chk: Checker) -> None:
     for key in ("version", "generatedAt", "systems", "structures", "attribution"):
@@ -227,7 +240,10 @@ def validate_assets(manifest: dict, chk: Checker) -> None:
         if size > MAX_FILE_BYTES:
             chk.error(f"{glb.name}: {size / 1e6:.1f} MB 超过单文件 50 MB")
         total_bytes += size
-        if s["id"] in ("skin", "skeleton"):
+        # 首屏 = 派发 ready 之前必须下完的东西。2026-08-20 全量之后骨骼
+        # （4.7 MB）挪去后台补载，这里的口径必须跟着改，否则量的是别的东西。
+        # 单一事实来源是 src/viewer/loadOrder.ts 的 FIRST_SCREEN_SYSTEMS。
+        if s["id"] in FIRST_SCREEN_SYSTEMS:
             first_screen += size
         counts = glb_triangle_counts(glb)
         manifest_slugs = set(s["structures"])
@@ -247,9 +263,15 @@ def validate_assets(manifest: dict, chk: Checker) -> None:
         for slug in missing_extras:
             chk.error(f"{glb.name}: 节点 {slug} 丢失 extras（gltf-transform 配置问题？）")
     if total_bytes > MAX_TOTAL_BYTES:
-        chk.error(f"全部资产 {total_bytes / 1e6:.1f} MB 超过 40 MB 预算")
+        chk.error(
+            f"全部资产 {total_bytes / 1e6:.1f} MB 超过 "
+            f"{MAX_TOTAL_BYTES / 1e6:.0f} MB 预算"
+        )
     if first_screen > MAX_FIRST_SCREEN_BYTES:
-        chk.error(f"首屏包 {first_screen / 1e6:.2f} MB 超过 5 MB 预算")
+        chk.error(
+            f"首屏包 {first_screen / 1e6:.2f} MB 超过 "
+            f"{MAX_FIRST_SCREEN_BYTES / 1e6:.0f} MB 预算"
+        )
     if not TARGET_TRIANGLES_MIN <= total_tris <= TARGET_TRIANGLES_MAX:
         chk.warn(
             f"总三角面 {total_tris} 不在目标区间 "
@@ -302,6 +324,34 @@ def validate_processed_meta(chk: Checker) -> None:
         print(f"网格长边检查：{checked} 个结构")
 
 
+def validate_first_screen_agreement(chk: Checker) -> None:
+    """首屏系统这件事写在 TypeScript 那边，这里得跟它对上，否则量的是另一回事。
+
+    validate.py 报的"首屏 X MB"是用来卡 5 MB 预算的，而真正决定首屏下什么的是
+    `src/viewer/loadOrder.ts` 的 `FIRST_SCREEN_SYSTEMS`。2026-08-21 把骨骼挪去
+    后台时，这个口径一共写在**三处**（这里、查看器、单测），只改了一处——
+    校验会继续把骨骼算进首屏，虚报 4.9 MB 却看不出错在哪。
+    TS 那边现在只剩 loadOrder.ts 一份，单测直接 import 它；这里读源码核对。
+    """
+    source = bp3d.ROOT / "src" / "viewer" / "loadOrder.ts"
+    if not source.exists():
+        chk.warn("找不到 src/viewer/loadOrder.ts，无法核对首屏口径")
+        return
+    m = re.search(
+        r"export const FIRST_SCREEN_SYSTEMS: readonly SystemId\[\] = \[([^\]]*)\]",
+        source.read_text(encoding="utf-8"),
+    )
+    if not m:
+        chk.warn("loadOrder.ts 里找不到 FIRST_SCREEN_SYSTEMS，无法核对首屏口径")
+        return
+    in_viewer = tuple(re.findall(r"'([^']+)'", m.group(1)))
+    if in_viewer != FIRST_SCREEN_SYSTEMS:
+        chk.error(
+            f"首屏口径不一致：validate.py {FIRST_SCREEN_SYSTEMS} vs "
+            f"loadOrder.ts {in_viewer}"
+        )
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--require-manifest", action="store_true", help="manifest.json 缺失时报错")
@@ -316,6 +366,7 @@ def main(argv: list[str] | None = None) -> int:
         chk.error(str(e))
 
     validate_processed_meta(chk)
+    validate_first_screen_agreement(chk)
 
     manifest_path = ASSETS_DIR / "manifest.json"
     if manifest_path.exists():
