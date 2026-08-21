@@ -963,6 +963,19 @@ export function createXRayMaterial(color: string | number, opacity = 1): MeshBas
   return material;
 }
 
+/**
+ * 够不够实到可以写深度。
+ *
+ * 半透明又写深度时，同一个结构的正面片元会互相遮挡——只留下赢了深度测试的那些，
+ * 看着像碎的。颅骨（21 块骨头的并集，表面互相重叠）最明显。
+ * 合批之后这条判据由 `HyiViewer.syncDepthWrite` 按整批的峰值不透明度执行。
+ */
+export const DEPTH_WRITE_MIN_OPACITY = 0.55;
+
+export function shouldWriteDepth(opacity: number): boolean {
+  return opacity > DEPTH_WRITE_MIN_OPACITY;
+}
+
 /** 统一设置材质整体不透明度（分层滑块用）。 */
 export function setMaterialOpacity(material: Material, opacity: number): void {
   if (material instanceof ShaderMaterial && material.uniforms.uOpacity) {
@@ -970,7 +983,7 @@ export function setMaterialOpacity(material: Material, opacity: number): void {
   } else if ('opacity' in material) {
     material.opacity = opacity;
     // 半透明叠加时关闭深度写入，减少互相遮挡的闪面
-    material.depthWrite = opacity > 0.55;
+    material.depthWrite = shouldWriteDepth(opacity);
     // 完全不透明时关掉混合：留着 transparent 的话，选中的器官后面会透出肋骨，
     // 看着像磨砂玻璃而不是实体
     const solid = opacity >= 0.999;

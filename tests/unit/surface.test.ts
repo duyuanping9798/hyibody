@@ -3,8 +3,10 @@ import { ShaderLib, MeshStandardMaterial, type Material } from 'three';
 import {
   createSystemMaterial,
   createXRayMaterial,
+  DEPTH_WRITE_MIN_OPACITY,
   setMaterialOpacity,
   setSurfaceDetail,
+  shouldWriteDepth,
   SYSTEM_COLORS,
 } from '../../src/viewer/materials';
 import { QUALITY_CAPS } from '../../src/viewer/quality';
@@ -199,11 +201,17 @@ describe('半透明的层不写深度', () => {
   // 改成一系统一份材质后 depthWrite 被写死 true，那个函数也再没人调用——
   // 静默失效。人类实拍看到的是"许多断裂的地方"：颅骨是 21 块骨头的并集、
   // 表面互相重叠，半透明又写深度时只留下赢了深度测试的片，碎成一片。
-  it('setMaterialOpacity 仍然按不透明度切 depthWrite（合批那条走 HyiViewer.syncDepthWrite）', () => {
+  it('判据本身：半透明不写、够实才写', () => {
+    expect(shouldWriteDepth(0.35), '半透明时应关掉深度写入').toBe(false);
+    expect(shouldWriteDepth(0.9), '够实时应恢复深度写入').toBe(true);
+    expect(shouldWriteDepth(DEPTH_WRITE_MIN_OPACITY), '阈值本身不算实').toBe(false);
+  });
+
+  it('materials 与 viewer 走同一条判据，不是各写一个魔数', () => {
     const m = new MeshStandardMaterial({ transparent: true });
     setMaterialOpacity(m, 0.35);
-    expect(m.depthWrite, '半透明时应关掉深度写入').toBe(false);
+    expect(m.depthWrite).toBe(shouldWriteDepth(0.35));
     setMaterialOpacity(m, 0.9);
-    expect(m.depthWrite, '够实时应恢复深度写入').toBe(true);
+    expect(m.depthWrite).toBe(shouldWriteDepth(0.9));
   });
 });

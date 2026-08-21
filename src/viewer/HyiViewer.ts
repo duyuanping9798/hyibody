@@ -54,6 +54,7 @@ import {
   createSystemMaterial,
   createXRayMaterial,
   setSurfaceDetail,
+  shouldWriteDepth,
   type SurfaceDetailLevel,
 } from './materials';
 import { createRenderPipeline, type RenderPipeline } from './postprocess';
@@ -697,7 +698,7 @@ export class HyiViewer extends EventTarget {
   private syncDepthWrite(peak: ReadonlyMap<SystemId, number>): void {
     for (const [sys, batch] of this.batches) {
       const material = batch.mesh.material as Material & { depthWrite: boolean };
-      const solid = (peak.get(sys) ?? 0) > 0.55;
+      const solid = shouldWriteDepth(peak.get(sys) ?? 0);
       if (material.depthWrite !== solid) material.depthWrite = solid;
     }
   }
