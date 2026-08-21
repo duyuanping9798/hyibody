@@ -428,7 +428,24 @@ export const useUiStore = create<UiState>((set, get) => ({
     set((s) => ({ systemOpacity: { ...s.systemOpacity, [id]: v } }));
   },
   select: (slug) => {
-    viewer?.select(slug); // viewer 的 select 事件会回写 store
+    // 先把 store 里的选中写上，再交给 viewer。
+    //
+    // 为什么不能只等 viewer 回写：`HyiViewer.select()` 遇到还没加载的结构会
+    // 挂起（pendingSelect）**并且不派发 select 事件**——2026-08-21 首屏缩到只剩
+    // 皮肤之后，这意味着"?v=…selected=heart"打开时 store 的 selected 一直是 null，
+    // **信息卡压根不渲染**，用户对着一具没有任何提示的身体等十几秒。
+    // 信息卡的内容（中英文名、一句话科普、你知道吗、标签）全部来自 manifest，
+    // 而 manifest 在 ready 之前就到手了——没有任何理由把它压在几何体后面。
+    // 三维高亮与标签仍然等几何体，那本来就只能等。
+    const manifest = get().manifest;
+    if (slug === null || manifest?.structures[slug]) {
+      set({
+        selected: slug,
+        infoExpanded: false,
+        ...(slug === 'skin' ? {} : { skinProbe: null }),
+      });
+    }
+    viewer?.select(slug); // 几何体到位后 viewer 的 select 事件会再回写一次（同值）
   },
   isolate: (slug) => {
     viewer?.isolate(slug);
