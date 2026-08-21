@@ -21,7 +21,7 @@
         "zh": "皮质在外面，负责想。可\"怕不怕\"\"记不记得住\"\"动不动得起来\"这几件事，主事的都不在表面，得切进去才看得见。",
         "en": "The cortex sits on the outside and does the thinking. But being afraid, remembering, and getting moving at all are decided deeper in — you have to cut inside to see who is in charge."
       },
-      "layer": 0.8,
+      "layer": 1.0,
       "selected": "brain",
       "from": "left",
       "systems": {
@@ -36,7 +36,7 @@
         "zh": "先看这几团。皮质想做的动作太多，得有人挑一个放行、把其余按住。多巴胺变少时，放行这一步就卡住了。",
         "en": "These masses come first. The cortex proposes far more movements than you need; something has to wave one through and hold the rest down. When dopamine runs short, the waving-through is what jams."
       },
-      "layer": 0.8,
+      "layer": 1.0,
       "selected": "basal_ganglia",
       "expand": "brain",
       "from": "left",
@@ -56,7 +56,7 @@
         "zh": "再往前下一点，藏着一对杏仁大的核团。它的活是给每一个感觉贴标签：这件事危险吗？贴完再交给皮质细看。",
         "en": "A little further down and forward hides a pair of almond-sized nuclei. Their job is to label every incoming sensation — is this dangerous? — and only then pass it up for a proper look."
       },
-      "layer": 0.8,
+      "layer": 1.0,
       "selected": "amygdala",
       "expand": "brain",
       "from": "left",
@@ -76,7 +76,7 @@
         "zh": "紧挨着它的是一对弯钩。刚才那一秒发生的事，要变成明年还想得起来的事，必须先在这里过一道。",
         "en": "Right beside them lies a pair of curved hooks. For the last second of your life to become something you can still call up next year, it has to pass through here first."
       },
-      "layer": 0.8,
+      "layer": 1.0,
       "selected": "hippocampus",
       "expand": "brain",
       "from": "left",
@@ -96,7 +96,7 @@
         "zh": "从弯钩伸出来一束白色的缆绳，拱过脑室往前走。记忆不是存在一个点上，是沿着这条环路跑起来的。",
         "en": "A white cable runs out of those hooks, vaulting forward over the ventricles. Memory is not filed at a point; it circulates around a loop, and this is the loop’s main line."
       },
-      "layer": 0.8,
+      "layer": 1.0,
       "selected": "fornix",
       "expand": "brain",
       "from": "left",
@@ -116,7 +116,7 @@
         "zh": "这些结构都泡在液体里。液体的产地就在脑室里——垂着的这几丛毛茸茸的东西，一天能造出换三四遍的量。",
         "en": "All of this floats in fluid, and the fluid is made right here in the ventricles by these dangling fringes — enough in a day to replace the whole volume three or four times over."
       },
-      "layer": 0.8,
+      "layer": 1.0,
       "selected": "choroid_plexus",
       "expand": "brain",
       "from": "left",
@@ -136,7 +136,7 @@
         "zh": "最后是这颗米粒。天黑了它就往血里放褪黑素，天亮了停——脑子里那只跟着日光走的表，走的是它的时。",
         "en": "Last, this grain of a gland. When it goes dark it releases melatonin into the blood, and when it gets light it stops — the clock in your head that follows the sun keeps its time."
       },
-      "layer": 0.8,
+      "layer": 1.0,
       "selected": "pineal_gland",
       "expand": "brain",
       "from": "left",

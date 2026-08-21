@@ -80,7 +80,7 @@
         "zh": "视神经把信号带出眼球。两条视神经在颅底碰头，各交换出去一半纤维——所以左边看到的东西，最后是由右脑来认的。",
         "en": "The optic nerves carry the signal out of the eye. Half the fibres cross at the base of the skull, so the left half of what you see is handled by the right side of the brain."
       },
-      "layer": 0.8,
+      "layer": 1.0,
       "selected": "optic_nerves",
       "durationMs": 13000
     },
@@ -89,7 +89,7 @@
         "zh": "终点在大脑最后方。信号跑到离眼睛最远的那一端，才终于变成“看见”。",
         "en": "The destination lies at the very back of the brain. Only after travelling to the point furthest from the eyes does the signal become sight."
       },
-      "layer": 0.8,
+      "layer": 1.0,
       "selected": "brain",
       "durationMs": 9000
     },
@@ -98,7 +98,7 @@
         "zh": "两根神经在脑底下碰了个头，一部分纤维趁机换了道。这一换，左边的脑从此负责右半个世界。",
         "en": "The two optic nerves meet just in front of the pituitary, and some of their fibres take the chance to switch lanes. After that swap, the left side of the brain is in charge of the right half of the world."
       },
-      "layer": 0.8,
+      "layer": 1.0,
       "selected": "optic_chiasm",
       "from": "left",
       "durationMs": 10000

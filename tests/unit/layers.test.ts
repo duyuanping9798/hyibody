@@ -1,13 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { computeAllOpacities, computeSystemOpacity } from '../../src/viewer/layers';
 
-/** 滑块上五个刻度的真实值（与 src/ui/LayerSlider.tsx 的 STOPS 一致）。 */
+/** 滑块上六个刻度的真实值（与 src/ui/LayerSlider.tsx 的 STOPS 一致）。 */
 const STOPS = {
   skin: 0,
   muscles: 0.2,
   skeleton: 0.45,
   organs: 0.62,
-  vessels: 0.85,
+  vessels: 0.8,
+  nerves: 1,
 } as const;
 
 describe('layers: 分层滑块 → 系统不透明度（KICKOFF 第 6 节）', () => {
@@ -46,14 +47,25 @@ describe('layers: 分层滑块 → 系统不透明度（KICKOFF 第 6 节）', (
       const mine = computeSystemOpacity(lead, at);
       for (const other of systems) {
         if (other === lead) continue;
-        // 血管与神经共用一个刻度，互为平手
-        if (lead === 'vessels' && other === 'nerves') continue;
         expect(
           computeSystemOpacity(other, at),
           `在「${lead}」刻度上 ${other} 不该比主角更实`,
         ).toBeLessThan(mine);
       }
     }
+  });
+
+  // 血管与神经原来共用 0.85、曲线一模一样：拖到那儿两层一起满档，
+  // 而滑块上再没有一个位置能单独看神经。人类："要细化控制效果"。
+  it('血管与神经各有各的刻度，互不遮挡', () => {
+    expect(computeSystemOpacity('vessels', STOPS.vessels)).toBe(1);
+    expect(computeSystemOpacity('nerves', STOPS.nerves)).toBe(1);
+    // 在对方的主场上都要让到拾取阈值以下，否则点神经会命中伴行的动脉
+    expect(computeSystemOpacity('nerves', STOPS.vessels)).toBeLessThan(0.15);
+    expect(computeSystemOpacity('vessels', STOPS.nerves)).toBeLessThan(0.15);
+    // 但都不是 0——神经血管束本来就走在一起，留一点当伴行参照
+    expect(computeSystemOpacity('nerves', STOPS.vessels)).toBeGreaterThan(0);
+    expect(computeSystemOpacity('vessels', STOPS.nerves)).toBeGreaterThan(0);
   });
 
   // 真 bug 的回归锁。原来这条测试写的是"骨骼始终可见；主场之后淡化但**不低于 0.35**"
@@ -63,7 +75,7 @@ describe('layers: 分层滑块 → 系统不透明度（KICKOFF 第 6 节）', (
   it('每一层轮完之后都要回到 0——包括骨骼', () => {
     expect(computeSystemOpacity('skin', 0.2)).toBe(0);
     expect(computeSystemOpacity('muscles', 0.45)).toBe(0);
-    expect(computeSystemOpacity('skeleton', 0.85)).toBe(0);
+    expect(computeSystemOpacity('skeleton', 0.8)).toBe(0);
     expect(computeSystemOpacity('skeleton', 1)).toBe(0);
     expect(computeSystemOpacity('organs', 1)).toBe(0);
   });
@@ -73,7 +85,9 @@ describe('layers: 分层滑块 → 系统不透明度（KICKOFF 第 6 节）', (
     for (let i = 1; i < rising.length; i += 1) {
       expect(rising[i]!).toBeGreaterThanOrEqual(rising[i - 1]!);
     }
-    const falling = [0.45, 0.55, 0.62, 0.75, 0.85].map((l) => computeSystemOpacity('skeleton', l));
+    const falling = [0.45, 0.55, 0.62, 0.75, 0.8, 1].map((l) =>
+      computeSystemOpacity('skeleton', l),
+    );
     for (let i = 1; i < falling.length; i += 1) {
       expect(falling[i]!).toBeLessThanOrEqual(falling[i - 1]!);
     }
@@ -88,9 +102,14 @@ describe('layers: 分层滑块 → 系统不透明度（KICKOFF 第 6 节）', (
     expect(ribsAtOrgans).toBeLessThan(0.15);
   });
 
-  it('血管与神经在滑块末段保持可见', () => {
-    expect(computeSystemOpacity('vessels', 1)).toBe(1);
-    expect(computeSystemOpacity('nerves', 0.85)).toBe(1);
+  // 拖到任何位置都得有东西看。两个刻度中间是交叉淡入淡出，没有哪一层是满的，
+  // 但主角必须明显高过拾取阈值，否则那一段既看不清也点不中。
+  it('整条滑块上都有一个明确的主角，不存在"哪儿都不是"的空档', () => {
+    for (let l = 0; l <= 1.0001; l += 0.02) {
+      const o = computeAllOpacities(Math.min(1, l));
+      const max = Math.max(...Object.values(o));
+      expect(max, `layer=${l.toFixed(2)} 时最实的一层只有 ${max.toFixed(2)}`).toBeGreaterThan(0.45);
+    }
   });
 
   it('滑块越界值被钳制', () => {

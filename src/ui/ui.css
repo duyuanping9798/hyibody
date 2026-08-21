@@ -1315,36 +1315,35 @@ body.hyi-kiosk .hyi-info .blurb {
   margin: 0;
 }
 /*
- * 轨道：暗槽 + 一段发光的进度，而不是一条五色渐变。
+ * 轨道退回"按系统色铺的渐变"（020c6c1 之前的设计）。
  *
- * 原来轨道直接按系统色铺成彩虹（肤色 → 肌红 → 骨白 → 器官橙 → 血管红）。
- * 皮肤换成真肤色之后起点是一段米黄，整条看着发脏，也不像仪器像玩具。
- * 现在：槽是暗的，走过的一段亮起来（青 → 蓝紫），刻度点仍用系统色——
- * 语义留在点上，轨道只负责"走到哪儿了"。进度位置由 --hyi-layer-pos 给。
+ * 当初换成暗槽 + 青紫发光进度，理由是皮肤刚换成真肤色、渐变起点一段米黄看着发脏。
+ * 皮肤已经退回 X-ray 青壳，那个理由不成立了，而系统色轨道有暗槽给不了的东西：
+ * **一眼看得出这条槽从哪一层通向哪一层**。渐变由 LayerSlider.tsx 按真实刻度生成。
+ *
+ * 还没走到的一段压暗（--hyi-layer-pos 之后盖一层黑），"走到哪儿了"这个信息不丢。
  */
 .hyi-range-layer::-webkit-slider-runnable-track {
-  background: linear-gradient(
-    90deg,
-    #2de0ff 0%,
-    #59a8ff calc(var(--hyi-layer-pos, 0%) * 0.6),
-    #9a7bff var(--hyi-layer-pos, 0%),
-    rgba(150, 170, 210, 0.16) var(--hyi-layer-pos, 0%),
-    rgba(150, 170, 210, 0.16) 100%
-  );
+  background:
+    linear-gradient(
+      90deg,
+      transparent var(--hyi-layer-pos, 0%),
+      rgba(6, 10, 20, 0.62) var(--hyi-layer-pos, 0%)
+    ),
+    var(--hyi-layer-track);
   height: 7px;
   border-radius: 999px;
   box-shadow: inset 0 0 0 1px rgba(140, 190, 255, 0.14);
 }
 .hyi-range-layer::-moz-range-track {
-  background: linear-gradient(
-    90deg,
-    #2de0ff 0%,
-    #59a8ff calc(var(--hyi-layer-pos, 0%) * 0.6),
-    #9a7bff var(--hyi-layer-pos, 0%),
-    rgba(150, 170, 210, 0.16) var(--hyi-layer-pos, 0%),
-    rgba(150, 170, 210, 0.16) 100%
-  );
-  height: 5px;
+  background:
+    linear-gradient(
+      90deg,
+      transparent var(--hyi-layer-pos, 0%),
+      rgba(6, 10, 20, 0.62) var(--hyi-layer-pos, 0%)
+    ),
+    var(--hyi-layer-track);
+  height: 7px;
   border-radius: 999px;
 }
 /* 手柄 13 → 20 px：分层是全站唯一一个要"拖到精确位置"的控件（0–1 连续值，
