@@ -408,45 +408,44 @@ ${HYI_NOISE_GLSL}
          }
          void main() {`,
       )
-      .replace(
-        '#include <roughnessmap_fragment>',
-        `#include <roughnessmap_fragment>
-         vec3 hyiSurfN = normalize(vHyiSurfN);
-         vec3 hyiFiber = hyiFiberDir(hyiSurfN);
-         float hyiFade = hyiSurfFade(vHyiSurf);
-         float hyiField = hyiSurfField(vHyiSurf, hyiFiber, hyiFade);
-         roughnessFactor = clamp(roughnessFactor + (hyiField - 0.5) * uSurfRough, 0.04, 1.0);`,
-      )
+      // 噪声场只算**一次**，颜色、粗糙度、法线三处共用。
+      //
+      // three 的片元 main 里顺序是 color_fragment → roughnessmap_fragment →
+      // normal_fragment_begin，所以在第一处声明、后两处直接用就行（别加花括号，
+      // 加了变量就出不了作用域）。第一版三处各算各的：完整档一个片元 12 次噪声
+      // 取样、约 96 次 hash——而这是全量之后手机上每帧 724 万三角面要摊的成本。
       .replace(
         '#include <color_fragment>',
         `#include <color_fragment>
-         {
-           vec3 n0 = normalize(vHyiSurfN);
-           float f = hyiSurfField(vHyiSurf, hyiFiberDir(n0), hyiSurfFade(vHyiSurf));
-           diffuseColor.rgb *= mix(uSurfLo, uSurfHi, f);
-         }`,
+         vec3 hyiNrm = normalize(vHyiSurfN);
+         vec3 hyiDir = hyiFiberDir(hyiNrm);
+         float hyiFade = hyiSurfFade(vHyiSurf);
+         float hyiField = hyiSurfField(vHyiSurf, hyiDir, hyiFade);
+         diffuseColor.rgb *= mix(uSurfLo, uSurfHi, hyiField);`,
+      )
+      .replace(
+        '#include <roughnessmap_fragment>',
+        `#include <roughnessmap_fragment>
+         roughnessFactor = clamp(roughnessFactor + (hyiField - 0.5) * uSurfRough, 0.04, 1.0);`,
       )
       .replace(
         '#include <normal_fragment_begin>',
         `#include <normal_fragment_begin>
          {
-           vec3 nRef = normalize(vHyiSurfN);
-           vec3 dir = hyiFiberDir(nRef);
-           float fade = hyiSurfFade(vHyiSurf);
+           // hyiNrm / hyiDir / hyiFade / hyiField 在 color_fragment 那处已经算好
            float e = 0.4 / max(uSurfFreq, 0.0001);
-           float base = hyiSurfField(vHyiSurf, dir, fade);
            vec3 g;
            if (uSurfFull > 0.5) {
              g = vec3(
-               hyiSurfField(vHyiSurf + vec3(e, 0.0, 0.0), dir, fade),
-               hyiSurfField(vHyiSurf + vec3(0.0, e, 0.0), dir, fade),
-               hyiSurfField(vHyiSurf + vec3(0.0, 0.0, e), dir, fade)
-             ) - base;
+               hyiSurfField(vHyiSurf + vec3(e, 0.0, 0.0), hyiDir, hyiFade),
+               hyiSurfField(vHyiSurf + vec3(0.0, e, 0.0), hyiDir, hyiFade),
+               hyiSurfField(vHyiSurf + vec3(0.0, 0.0, e), hyiDir, hyiFade)
+             ) - hyiField;
            } else {
              // 便宜档只沿"横过纹理"的那个方向取一次差分：沟的观感几乎全部来自
              // 垂直纹路方向的起伏，另外两轴的贡献小得多。省两次噪声取样。
-             vec3 across = normalize(cross(nRef, dir));
-             g = across * (hyiSurfField(vHyiSurf + across * e, dir, fade) - base);
+             vec3 across = normalize(cross(hyiNrm, hyiDir));
+             g = across * (hyiSurfField(vHyiSurf + across * e, hyiDir, hyiFade) - hyiField);
            }
            // 世界空间求梯度，normal 在这里是视图空间的，所以要过 viewMatrix
            normal = normalize(normal - mat3(viewMatrix) * g * uSurfBump * hyiBumpFade(vHyiSurf));
