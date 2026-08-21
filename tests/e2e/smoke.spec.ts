@@ -68,9 +68,15 @@ test('layer state and selection restore from share URL', async ({ page }) => {
 
 /** M2-1 奥秘冒烟：从菜单启动"心跳"之旅，第一步文案出现，可下一步。 */
 test('heartbeat wonder plays from the menu', async ({ page }) => {
-  // 第二步会"打开心脏"（展开内部 + 隔离 + 相机飞行），软件渲染下这一帧很重
-  // 结构涨到 170 个之后软件渲染更慢了，上一轮首跑卡在退出那一步、重试才过
-  test.setTimeout(360_000);
+  // 第二步会"打开心脏"（展开内部 + 隔离 + 相机飞行），软件渲染下这一帧很重。
+  //
+  // 2026-08-21 全量之后又翻了一倍（478 万面，软件渲染约 1.2 秒一帧），实测首跑
+  // 6.1 分钟、重试 4.0 分钟——360 秒正好卡在中间，于是每轮都判一次"首跑失败、
+  // 重试通过"。这不是产品不稳，是预算没跟上资产。
+  //
+  // 别的选心脏用例能靠 `?v=…selected=heart` 让器官排后台第一位而快十几倍，
+  // **这条不行**：它是从菜单点开的，链接里没有点名任何结构，只能老老实实等。
+  test.setTimeout(600_000);
   await page.goto('/');
   await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
     timeout: 60_000,
