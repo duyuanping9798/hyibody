@@ -52,7 +52,7 @@ import { probeBody, type Bbox, type ProbeResult, type ProbeTarget } from './regi
 import {
   colorForStructure,
   createSystemMaterial,
-  createSkinMaterial,
+  createXRayMaterial,
   setSurfaceDetail,
   type SurfaceDetailLevel,
 } from './materials';
@@ -414,7 +414,9 @@ export class HyiViewer extends EventTarget {
     // 分层滑块的逐结构不透明度就没了（见 batching.ts 的长注释）。
     const shared =
       sys === 'skin'
-        ? createSkinMaterial(0xffffff)
+        ? // 皮肤走 X-ray 壳（2026-08-21 人类拍板退回）：颜色与逐实例不透明度
+          // 照旧由 setColorAt 乘进来，所以这里跟别的系统一样给白色
+          createXRayMaterial(0xffffff, 1)
         : createSystemMaterial(sys, 0xffffff, this.surfaceDetailLevel());
     shared.vertexColors = true;
     // 合批之后没法逐结构切换 transparent：整批共用一份材质状态。

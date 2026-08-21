@@ -1,15 +1,20 @@
 import { describe, expect, it } from 'vitest';
 import { ShaderLib, MeshStandardMaterial, type Material } from 'three';
-import { createSystemMaterial, setSurfaceDetail } from '../../src/viewer/materials';
+import {
+  createSystemMaterial,
+  createXRayMaterial,
+  setSurfaceDetail,
+  SYSTEM_COLORS,
+} from '../../src/viewer/materials';
 import { QUALITY_CAPS } from '../../src/viewer/quality';
 import type { SystemId } from '../../src/data/types';
 
 /** 造一份和 three 真实来源一致的 shader 对象喂给 onBeforeCompile。 */
-function compile(material: Material) {
+function compile(material: Material, lib: 'standard' | 'basic' = 'standard') {
   const shader = {
     uniforms: {} as Record<string, { value: unknown }>,
-    vertexShader: ShaderLib.standard.vertexShader,
-    fragmentShader: ShaderLib.standard.fragmentShader,
+    vertexShader: ShaderLib[lib].vertexShader,
+    fragmentShader: ShaderLib[lib].fragmentShader,
   };
   (material as MeshStandardMaterial).onBeforeCompile?.call(
     material,
@@ -133,5 +138,43 @@ describe('画质档与表面质感的对应', () => {
   it('medium 走便宜档、high 走完整档', () => {
     expect(QUALITY_CAPS.medium.surfaceDetail).toBe(1);
     expect(QUALITY_CAPS.high.surfaceDetail).toBe(2);
+  });
+});
+
+describe('X-ray 皮肤壳', () => {
+  // 2026-08-21 人类拍板把皮肤退回 X-ray 壳。**不能直接用回旧实现**：旧版是裸
+  // ShaderMaterial，顶点写死 `modelMatrix * vec4(position, 1.0)`，不认合批矩阵；
+  // 而皮肤自 v1.1 起走 BatchedMesh，glb 顶点又是量化过的（局部坐标在 ±1 附近），
+  // 直接用回去皮肤会缩成原点附近的一小团。这几条就是锁这个。
+  it('认合批矩阵——世界坐标与世界法线两处都要乘', () => {
+    const s = compile(createXRayMaterial(0xffffff, 1), 'basic');
+    expect(s.vertexShader).toContain('#ifdef USE_BATCHING');
+    const world = s.vertexShader.match(/vXrayW = [^;]+;/g) ?? [];
+    const normal = s.vertexShader.match(/vXrayN = [^;]+;/g) ?? [];
+    expect(world.some((l) => l.includes('batchingMatrix'))).toBe(true);
+    expect(normal.some((l) => l.includes('batchingMatrix'))).toBe(true);
+  });
+
+  it('菲涅尔与逐实例不透明度都进了最终输出', () => {
+    const s = compile(createXRayMaterial(0xffffff, 1), 'basic');
+    // 颜色和不透明度由 setColorAt 经 vColor 乘进 diffuseColor，这里只叠菲涅尔
+    expect(s.fragmentShader).toContain('uXrayPower');
+    expect(s.fragmentShader).toMatch(
+      /gl_FragColor = vec4\(diffuseColor\.rgb,[^)]*diffuseColor\.a\)/,
+    );
+  });
+
+  it('开了顶点色——否则每实例的 alpha 到不了片元，分层滑块就推不动皮肤', () => {
+    expect(createXRayMaterial(0xffffff, 1).vertexColors).toBe(true);
+  });
+
+  it('加色混合且不写深度——透视壳不该挡住里面的结构', () => {
+    const m = createXRayMaterial(0xffffff, 1);
+    expect(m.depthWrite).toBe(false);
+    expect(m.transparent).toBe(true);
+  });
+
+  it('皮肤配色退回品牌青', () => {
+    expect(SYSTEM_COLORS.skin).toBe(0x4fc3d9);
   });
 });

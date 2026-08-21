@@ -4,6 +4,7 @@ import {
   Color,
   DoubleSide,
   FrontSide,
+  MeshBasicMaterial,
   MeshPhysicalMaterial,
   MeshStandardMaterial,
   ShaderMaterial,
@@ -17,9 +18,11 @@ const PALETTE = paletteRaw as Record<string, string | { note?: string }>;
 
 /** 各系统基色（深色舞台上的科普配色：动脉红/静脉蓝/神经黄/骨米白）。 */
 export const SYSTEM_COLORS: Record<SystemId, number> = {
-  // 皮肤改成真的肤色（原来是品牌青 0x4fc3d9）。青色壳看着像玻璃模特，
-  // 而这一层本来就该是"人"——X-ray 的身份交给边缘光，底色交还给皮肤。
-  skin: 0xcd9673,
+  // 2026-08-21 退回品牌青：BP3D 的皮肤已经到顶（203,382 面就是原生全部，
+  // 且没有 UV、贴不了图），再细化只能换数据源。人类拍板"无法升级细化就直接去掉，
+  // 回到原来的皮肤设计"——与其留一层想像人却不像人的塑料壳，
+  // 不如退回一个不假装写实的抽象表达。肤色版是 0xcd9673，要恢复改这一行 + HyiViewer 的材质选择。
+  skin: 0x4fc3d9,
   muscles: 0xc75948,
   skeleton: 0xd8d3c3,
   organs: 0xcf8a5b,
@@ -869,47 +872,77 @@ export function createBackdropMaterial(): ShaderMaterial {
  * 菲涅尔 X-ray 材质：边缘亮、正对相机处透明，呈现"透视"外壳效果。
  * 迁移自 prototype/index.html 已验证的思路，供皮肤/肌肉层使用。
  */
-export function createXRayMaterial(color: string | number, opacity = 1): ShaderMaterial {
-  return new ShaderMaterial({
+/**
+ * X-ray 壳：加色混合的菲涅尔外壳，"透视"这个身份的视觉签名。
+ *
+ * 2026-08-21 人类拍板把皮肤退回这个设计：**"皮肤功能无法升级细化，就直接去掉，
+ * 回到原来的皮肤设计。"** 起因是 BP3D 的皮肤已经到顶——203,382 面就是原生全部，
+ * 而且没有 UV、贴不了图，再细化只能换数据源（CC0 体表，人类已暂停）。
+ * 与其留一层"努力想像人却不像人"的塑料壳，不如退回一个不假装写实的抽象表达。
+ *
+ * **不能直接用回旧实现**：旧版是裸 `ShaderMaterial`，顶点着色器写死
+ * `modelMatrix * vec4(position, 1.0)`，不认合批矩阵；而皮肤自 v1.1 起走
+ * `BatchedMesh`，glb 顶点又是量化过的（局部坐标在 ±1 附近，真实尺寸全在节点 TRS 里）
+ * ——直接用回去皮肤会缩成原点附近的一小团。
+ *
+ * 所以改挂在 `MeshBasicMaterial` 上：它自带 `batching_vertex`，
+ * 每实例的颜色与不透明度也照旧走 `setColorAt` → `vColor`（`diffuseColor` 里
+ * 已经乘好了），而且没有光照计算——这一层铺满整屏，省下的是实打实的片元开销。
+ */
+export function createXRayMaterial(color: string | number, opacity = 1): MeshBasicMaterial {
+  const material = new MeshBasicMaterial({
+    color: new Color(color),
     transparent: true,
     depthWrite: false,
     side: DoubleSide,
     blending: AdditiveBlending,
-    uniforms: {
-      uColor: { value: new Color(color) },
-      uOpacity: { value: opacity },
-      // 边缘收窄（2.2 → 2.7）：叠在 109 万面的内脏之上时，宽边缘会把画面糊白
-      uPower: { value: 2.7 },
-      // 加色混合的总强度，低一点才压得住内层的高光
-      uIntensity: { value: 0.85 },
-      uHighlight: { value: 0 },
-    },
-    vertexShader: /* glsl */ `
-      varying vec3 vNormalW;
-      varying vec3 vViewDirW;
-      void main() {
-        vec4 worldPos = modelMatrix * vec4(position, 1.0);
-        vNormalW = normalize(mat3(modelMatrix) * normal);
-        vViewDirW = normalize(cameraPosition - worldPos.xyz);
-        gl_Position = projectionMatrix * viewMatrix * worldPos;
-      }
-    `,
-    fragmentShader: /* glsl */ `
-      uniform vec3 uColor;
-      uniform float uOpacity;
-      uniform float uPower;
-      uniform float uIntensity;
-      uniform float uHighlight;
-      varying vec3 vNormalW;
-      varying vec3 vViewDirW;
-      void main() {
-        float fresnel = pow(1.0 - abs(dot(normalize(vNormalW), normalize(vViewDirW))), uPower);
-        vec3 color = mix(uColor, vec3(1.0), uHighlight);
-        float alpha = (fresnel * uIntensity + uHighlight * 0.22) * uOpacity;
-        gl_FragColor = vec4(color, alpha);
-      }
-    `,
+    opacity,
+    vertexColors: true,
   });
+  material.onBeforeCompile = (shader) => {
+    // 边缘收窄（2.2 → 2.7）：叠在百万面的内脏之上时，宽边缘会把画面糊白
+    shader.uniforms.uXrayPower = { value: 2.7 };
+    // 加色混合的总强度，低一点才压得住内层的高光
+    shader.uniforms.uXrayIntensity = { value: 0.85 };
+    shader.vertexShader = shader.vertexShader
+      .replace('void main() {', 'varying vec3 vXrayW;\nvarying vec3 vXrayN;\nvoid main() {')
+      .replace(
+        '#include <project_vertex>',
+        `#include <project_vertex>${worldVaryingGlsl('vXrayW')}`,
+      )
+      // 世界法线自己算：basic 材质的片元里没有现成的法线 varying
+      .replace(
+        '#include <beginnormal_vertex>',
+        `#include <beginnormal_vertex>
+         #ifdef USE_BATCHING
+           vXrayN = normalize(mat3(modelMatrix) * mat3(batchingMatrix) * objectNormal);
+         #else
+           vXrayN = normalize(mat3(modelMatrix) * objectNormal);
+         #endif`,
+      );
+    shader.fragmentShader = shader.fragmentShader
+      .replace(
+        'void main() {',
+        `varying vec3 vXrayW;
+         varying vec3 vXrayN;
+         uniform float uXrayPower;
+         uniform float uXrayIntensity;
+         void main() {`,
+      )
+      // 最后一步整个改写输出：颜色与逐实例不透明度都已经在 diffuseColor 里
+      //（材质本体给白色，真正的颜色由 setColorAt 乘进来），这里只叠菲涅尔
+      .replace(
+        '#include <dithering_fragment>',
+        `#include <dithering_fragment>
+         {
+           vec3 viewDirW = normalize(cameraPosition - vXrayW);
+           float fresnel = pow(1.0 - abs(dot(normalize(vXrayN), viewDirW)), uXrayPower);
+           gl_FragColor = vec4(diffuseColor.rgb, fresnel * uXrayIntensity * diffuseColor.a);
+         }`,
+      );
+  };
+  material.customProgramCacheKey = () => 'xray';
+  return material;
 }
 
 /** 统一设置材质整体不透明度（分层滑块用）。 */
