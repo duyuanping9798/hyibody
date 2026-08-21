@@ -22,6 +22,7 @@ import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { loadManifest } from '../data/manifest';
 import type { Manifest, SystemId } from '../data/types';
+import { backgroundOrder, FIRST_SCREEN_SYSTEMS } from './loadOrder';
 import { ANIMATED_STRUCTURES, pulseTransform, type PulseBase } from './animation';
 import { BufferGeometry, MeshBasicMaterial } from 'three';
 import {
@@ -81,26 +82,13 @@ const DOUBLE_TAP_MOVE_PX = 24;
 const RECENTER_FACTOR = 0.55;
 const RECENTER_MIN_MM = 60;
 
-/**
- * 首屏系统：加载完就派发 ready，其余后台补（KICKOFF 第 5 节 M1-6）。
- *
- * 2026-08-20 从 `['skin', 'skeleton']` 缩到只剩皮肤。理由很直接：**分层滑块的
- * 起点是 0，那一格是纯皮肤，骨骼在第一屏根本看不见**。让它挡在 ready 前面，
- * 等于白等一份看不见的资产——冲全量时骨骼有 70 万面、四五 MB，首屏预算全被它吃掉。
- */
-const FIRST_SCREEN_SYSTEMS: readonly SystemId[] = ['skin'];
-
-/**
- * 后台补载的顺序。骨骼排第一：用户 ready 之后第一个动作大概率是拖滑块，
- * 而滑块往里走第一个遇到的就是它。
- */
-const BACKGROUND_ORDER: readonly SystemId[] = [
-  'skeleton',
-  'muscles',
-  'organs',
-  'vessels',
-  'nerves',
-];
+export interface LoadOptions {
+  /**
+   * 分享链接点名的结构（`?v=` 里的 selected）。它所在的系统插到后台补载最前面。
+   * 传 slug 而不是系统名：调用方在 manifest 到手之前并不知道结构属于哪个系统。
+   */
+  prioritizeStructure?: string;
+}
 
 /** 分层缓动：跨度超过阈值才缓动（拖滑块要跟手，奥秘跳转要顺滑），时间常数秒。 */
 const LAYER_EASE_THRESHOLD = 0.08;
@@ -340,20 +328,20 @@ export class HyiViewer extends EventTarget {
    * 加载 manifest → 首屏系统（皮肤+骨骼）就绪即派发 'ready'，
    * 其余系统后台逐个加载并派发 'systemloaded'。
    */
-  async load(): Promise<void> {
+  async load(opts: LoadOptions = {}): Promise<void> {
     try {
       this.manifest = await loadManifest(this.options.base);
       const systems = this.manifest.systems;
       const first = systems.filter((s) => (FIRST_SCREEN_SYSTEMS as string[]).includes(s.id));
       // 表里没有的系统排到最后：indexOf 找不到会返回 -1，直接拿去比大小
       // 等于把陌生系统排到骨骼**前面**——将来加个系统就会莫名其妙插队到首位
-      const order = (id: string) => {
-        const i = (BACKGROUND_ORDER as string[]).indexOf(id);
-        return i < 0 ? BACKGROUND_ORDER.length : i;
-      };
-      const rest = systems
-        .filter((s) => !(FIRST_SCREEN_SYSTEMS as string[]).includes(s.id))
-        .sort((a, b) => order(a.id) - order(b.id));
+      // 分享链接点名了某个结构，就让它所在的系统排后台第一位。
+      // 不这么做的话："?v=…selected=heart" 要等骨骼(4.9)+肌肉(9.5)共 14 MB 下完
+      // 才轮到器官(4.5)：信息卡早就写着"心脏"，画面里却什么都没高亮，标签也不来。
+      const wantedSystem = opts.prioritizeStructure
+        ? this.manifest.structures[opts.prioritizeStructure]?.system
+        : undefined;
+      const rest = backgroundOrder(systems, wantedSystem);
       // 占位 manifest（无皮肤/骨骼）时退化为全量加载
       const firstBatch = first.length > 0 ? first : systems;
       let loaded = 0;

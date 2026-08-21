@@ -68,7 +68,7 @@ TARGET_TRIANGLES_MAX = 4_900_000
 # 真正该盯的是总面数与体积。**要再动这个数，先用 `?stats=1` 量，别再拍脑袋。**
 MAX_STRUCTURES_FOR_DRAWCALLS = 2000
 VALID_SOURCES = ("bp3d", "bp3d_partof", "hra", "cc0")
-# 与 src/viewer/HyiViewer.ts 的 FIRST_SCREEN_SYSTEMS 对齐（下面有一致性检查）
+# 与 src/viewer/loadOrder.ts 的 FIRST_SCREEN_SYSTEMS 对齐（下面有一致性检查）
 FIRST_SCREEN_SYSTEMS = ("skin",)
 
 
@@ -242,7 +242,7 @@ def validate_assets(manifest: dict, chk: Checker) -> None:
         total_bytes += size
         # 首屏 = 派发 ready 之前必须下完的东西。2026-08-20 全量之后骨骼
         # （4.7 MB）挪去后台补载，这里的口径必须跟着改，否则量的是别的东西。
-        # 单一事实来源是 src/viewer/HyiViewer.ts 的 FIRST_SCREEN_SYSTEMS。
+        # 单一事实来源是 src/viewer/loadOrder.ts 的 FIRST_SCREEN_SYSTEMS。
         if s["id"] in FIRST_SCREEN_SYSTEMS:
             first_screen += size
         counts = glb_triangle_counts(glb)
@@ -325,26 +325,30 @@ def validate_processed_meta(chk: Checker) -> None:
 
 
 def validate_first_screen_agreement(chk: Checker) -> None:
-    """首屏系统这件事在两处写着（这里与查看器），漂了就是量错了东西。
+    """首屏系统这件事写在 TypeScript 那边，这里得跟它对上，否则量的是另一回事。
 
     validate.py 报的"首屏 X MB"是用来卡 5 MB 预算的，而真正决定首屏下什么的是
-    `HyiViewer.FIRST_SCREEN_SYSTEMS`。2026-08-20 把骨骼挪去后台时，这两处差点
-    只改了一处——那样校验会继续把骨骼算进首屏，虚报 4.7 MB 却看不出错在哪。
+    `src/viewer/loadOrder.ts` 的 `FIRST_SCREEN_SYSTEMS`。2026-08-21 把骨骼挪去
+    后台时，这个口径一共写在**三处**（这里、查看器、单测），只改了一处——
+    校验会继续把骨骼算进首屏，虚报 4.9 MB 却看不出错在哪。
+    TS 那边现在只剩 loadOrder.ts 一份，单测直接 import 它；这里读源码核对。
     """
-    viewer = bp3d.ROOT / "src" / "viewer" / "HyiViewer.ts"
-    if not viewer.exists():
+    source = bp3d.ROOT / "src" / "viewer" / "loadOrder.ts"
+    if not source.exists():
+        chk.warn("找不到 src/viewer/loadOrder.ts，无法核对首屏口径")
         return
     m = re.search(
-        r"const FIRST_SCREEN_SYSTEMS: readonly SystemId\[\] = \[([^\]]*)\]", viewer.read_text()
+        r"export const FIRST_SCREEN_SYSTEMS: readonly SystemId\[\] = \[([^\]]*)\]",
+        source.read_text(encoding="utf-8"),
     )
     if not m:
-        chk.warn("HyiViewer.ts 里找不到 FIRST_SCREEN_SYSTEMS，无法核对首屏口径")
+        chk.warn("loadOrder.ts 里找不到 FIRST_SCREEN_SYSTEMS，无法核对首屏口径")
         return
     in_viewer = tuple(re.findall(r"'([^']+)'", m.group(1)))
     if in_viewer != FIRST_SCREEN_SYSTEMS:
         chk.error(
             f"首屏口径不一致：validate.py {FIRST_SCREEN_SYSTEMS} vs "
-            f"HyiViewer.ts {in_viewer}"
+            f"loadOrder.ts {in_viewer}"
         )
 
 
