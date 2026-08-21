@@ -110,10 +110,13 @@
   left: 50%;
   bottom: 14px;
   transform: translateX(-50%);
-  /* 再收一轮：560 → 460 宽、整块从约 70 px 压到约 52 px。
-     刻度绝对定位之后标签行高是固定的，剩下的全在 padding 上省。 */
-  width: min(460px, calc(100% - 24px));
-  padding: 5px 14px 1px;
+  /* 2026-08-21 人类反馈"控制条回到更改前的设计，并且要细化控制效果"：
+     宽度与内边距退回瘦身前（460 → 560，约 52 → 66 px 高）。
+     **这不是审美问题是精度问题**：分层是 0–1 连续值，滑块越短，同样一像素的
+     拖动跨过的层数越多——460 px 宽时一像素约合 0.0022，拖不出想要的那一档。
+     560 px 下降到 0.0018，再加上下面把滑块手柄放大，按得准也拖得准。 */
+  width: min(560px, calc(100% - 24px));
+  padding: 9px 18px 3px;
   display: flex;
   flex-direction: column;
   gap: 0;
@@ -121,7 +124,7 @@
 /* 刻度按真实值绝对定位（见 LayerSlider.tsx 的注释），所以这里不能再用 flex 等距排 */
 .hyi-layer-labels {
   position: relative;
-  height: 23px;
+  height: 26px;
   font-size: 10.5px;
   color: var(--hyi-text-dim);
   letter-spacing: 0.06em;
@@ -1312,49 +1315,51 @@ body.hyi-kiosk .hyi-info .blurb {
   margin: 0;
 }
 /*
- * 轨道：暗槽 + 一段发光的进度，而不是一条五色渐变。
+ * 轨道退回"按系统色铺的渐变"（020c6c1 之前的设计）。
  *
- * 原来轨道直接按系统色铺成彩虹（肤色 → 肌红 → 骨白 → 器官橙 → 血管红）。
- * 皮肤换成真肤色之后起点是一段米黄，整条看着发脏，也不像仪器像玩具。
- * 现在：槽是暗的，走过的一段亮起来（青 → 蓝紫），刻度点仍用系统色——
- * 语义留在点上，轨道只负责"走到哪儿了"。进度位置由 --hyi-layer-pos 给。
+ * 当初换成暗槽 + 青紫发光进度，理由是皮肤刚换成真肤色、渐变起点一段米黄看着发脏。
+ * 皮肤已经退回 X-ray 青壳，那个理由不成立了，而系统色轨道有暗槽给不了的东西：
+ * **一眼看得出这条槽从哪一层通向哪一层**。渐变由 LayerSlider.tsx 按真实刻度生成。
+ *
+ * 还没走到的一段压暗（--hyi-layer-pos 之后盖一层黑），"走到哪儿了"这个信息不丢。
  */
 .hyi-range-layer::-webkit-slider-runnable-track {
-  background: linear-gradient(
-    90deg,
-    #2de0ff 0%,
-    #59a8ff calc(var(--hyi-layer-pos, 0%) * 0.6),
-    #9a7bff var(--hyi-layer-pos, 0%),
-    rgba(150, 170, 210, 0.16) var(--hyi-layer-pos, 0%),
-    rgba(150, 170, 210, 0.16) 100%
-  );
-  height: 5px;
+  background:
+    linear-gradient(
+      90deg,
+      transparent var(--hyi-layer-pos, 0%),
+      rgba(6, 10, 20, 0.62) var(--hyi-layer-pos, 0%)
+    ),
+    var(--hyi-layer-track);
+  height: 7px;
   border-radius: 999px;
   box-shadow: inset 0 0 0 1px rgba(140, 190, 255, 0.14);
 }
 .hyi-range-layer::-moz-range-track {
-  background: linear-gradient(
-    90deg,
-    #2de0ff 0%,
-    #59a8ff calc(var(--hyi-layer-pos, 0%) * 0.6),
-    #9a7bff var(--hyi-layer-pos, 0%),
-    rgba(150, 170, 210, 0.16) var(--hyi-layer-pos, 0%),
-    rgba(150, 170, 210, 0.16) 100%
-  );
-  height: 5px;
+  background:
+    linear-gradient(
+      90deg,
+      transparent var(--hyi-layer-pos, 0%),
+      rgba(6, 10, 20, 0.62) var(--hyi-layer-pos, 0%)
+    ),
+    var(--hyi-layer-track);
+  height: 7px;
   border-radius: 999px;
 }
+/* 手柄 13 → 20 px：分层是全站唯一一个要"拖到精确位置"的控件（0–1 连续值，
+   五个主场挤在一条 560 px 的轨道上），手柄越小越难落在想要的那一档。
+   别的滑块（各系统不透明度）拖个大概就行，所以只放大这一个。 */
 .hyi-range-layer::-webkit-slider-thumb {
-  width: 13px;
-  height: 13px;
-  margin-top: -4px;
+  width: 20px;
+  height: 20px;
+  margin-top: -7px;
   background: #d8f6ff;
   border: 2px solid #10203a;
   box-shadow: 0 0 8px rgba(45, 224, 255, 0.75);
 }
 .hyi-range-layer::-moz-range-thumb {
-  width: 13px;
-  height: 13px;
+  width: 20px;
+  height: 20px;
   background: #d8f6ff;
   border: 2px solid #10203a;
   box-shadow: 0 0 8px rgba(45, 224, 255, 0.75);

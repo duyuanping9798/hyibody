@@ -266,15 +266,21 @@ const SURFACE: Partial<
     lo: [1.06, 1.01, 0.96],
     hi: [0.94, 0.92, 0.95],
   },
-  // 骨：孔隙是各向同性的，不能有方向
+  // 骨：孔隙是各向同性的，不能有方向。
+  //
+  // **特征尺寸要按真实视距定，不是按近景。** 第一版 freq=1/6 毫米、bump=5.0，
+  // 我在 240 毫米的极近景验收——那里 6 毫米约合 26 像素，读作"骨面起伏"，很好看。
+  // 但人类在桌面端正常视距（躯干占满屏，约 0.6 毫米/像素）下同样的特征只有
+  // 10 像素，变成一片高对比的灰斑——实拍反馈是"像发霉"。
+  // 改成 14 毫米（正常视距约 23 像素，仍读作起伏）并把幅度压下来。
   skeleton: {
-    freq: 1 / 6,
+    freq: 1 / 14,
     stretch: 1,
     fineMul: 4.0,
-    bump: 5.0,
-    rough: 0.35,
-    lo: [1.07, 1.05, 0.96],
-    hi: [0.92, 0.92, 0.98],
+    bump: 2.0,
+    rough: 0.18,
+    lo: [1.04, 1.03, 0.98],
+    hi: [0.95, 0.95, 0.99],
   },
   // 器官：湿润、光滑，大尺度色斑为主，起伏要**很轻**。
   //
@@ -469,12 +475,16 @@ ${HYI_NOISE_GLSL}
          vec3 hyiDir = hyiFiberDir(hyiNrm);
          float hyiFade = hyiSurfFade(vHyiSurf);
          float hyiField = hyiSurfField(vHyiSurf, hyiDir, hyiFade);
-         diffuseColor.rgb *= mix(uSurfLo, uSurfHi, hyiField);`,
+         // 颜色与粗糙度也要按距离淡出。原来只有法线扰动淡出，这两项是满幅的——
+         // 远看时几毫米的色斑挤进一两个像素，混叠成噪点。
+         float hyiAmp = hyiBumpFade(vHyiSurf);
+         diffuseColor.rgb *= mix(uSurfLo, uSurfHi, mix(0.5, hyiField, hyiAmp));`,
       )
       .replace(
         '#include <roughnessmap_fragment>',
         `#include <roughnessmap_fragment>
-         roughnessFactor = clamp(roughnessFactor + (hyiField - 0.5) * uSurfRough, 0.04, 1.0);`,
+         roughnessFactor = clamp(
+           roughnessFactor + (hyiField - 0.5) * uSurfRough * hyiAmp, 0.04, 1.0);`,
       )
       .replace(
         '#include <normal_fragment_begin>',
@@ -496,7 +506,7 @@ ${HYI_NOISE_GLSL}
              g = across * (hyiSurfField(vHyiSurf + across * e, hyiDir, hyiFade) - hyiField);
            }
            // 世界空间求梯度，normal 在这里是视图空间的，所以要过 viewMatrix
-           normal = normalize(normal - mat3(viewMatrix) * g * uSurfBump * hyiBumpFade(vHyiSurf));
+           normal = normalize(normal - mat3(viewMatrix) * g * uSurfBump * hyiAmp);
          }`,
       );
   };
@@ -953,6 +963,19 @@ export function createXRayMaterial(color: string | number, opacity = 1): MeshBas
   return material;
 }
 
+/**
+ * 够不够实到可以写深度。
+ *
+ * 半透明又写深度时，同一个结构的正面片元会互相遮挡——只留下赢了深度测试的那些，
+ * 看着像碎的。颅骨（21 块骨头的并集，表面互相重叠）最明显。
+ * 合批之后这条判据由 `HyiViewer.syncDepthWrite` 按整批的峰值不透明度执行。
+ */
+export const DEPTH_WRITE_MIN_OPACITY = 0.55;
+
+export function shouldWriteDepth(opacity: number): boolean {
+  return opacity > DEPTH_WRITE_MIN_OPACITY;
+}
+
 /** 统一设置材质整体不透明度（分层滑块用）。 */
 export function setMaterialOpacity(material: Material, opacity: number): void {
   if (material instanceof ShaderMaterial && material.uniforms.uOpacity) {
@@ -960,7 +983,7 @@ export function setMaterialOpacity(material: Material, opacity: number): void {
   } else if ('opacity' in material) {
     material.opacity = opacity;
     // 半透明叠加时关闭深度写入，减少互相遮挡的闪面
-    material.depthWrite = opacity > 0.55;
+    material.depthWrite = shouldWriteDepth(opacity);
     // 完全不透明时关掉混合：留着 transparent 的话，选中的器官后面会透出肋骨，
     // 看着像磨砂玻璃而不是实体
     const solid = opacity >= 0.999;

@@ -62,7 +62,7 @@
         "zh": "脊髓也不是一根均质的电缆：颈段管手臂、胸段管躯干、腰段管腿、骶段管盆底——信号从哪一节离开，就决定了它落在身体的哪一块。",
         "en": "The cord is not one uniform cable: the cervical segment serves the arms, the thoracic the trunk, the lumbar the legs, the sacral the pelvic floor — where a signal leaves decides where in the body it lands."
       },
-      "layer": 0.85,
+      "layer": 1.0,
       "selected": "spinal_cord_cervical",
       "durationMs": 12000,
       "expand": "spinal_cord"

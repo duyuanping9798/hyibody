@@ -54,6 +54,7 @@ import {
   createSystemMaterial,
   createXRayMaterial,
   setSurfaceDetail,
+  shouldWriteDepth,
   type SurfaceDetailLevel,
 } from './materials';
 import { createRenderPipeline, type RenderPipeline } from './postprocess';
@@ -423,6 +424,8 @@ export class HyiViewer extends EventTarget {
     // 保留混合、同时**写深度**——完全不透明的实例照样正确遮挡，
     // 半透明的靠 renderOrder 与逐实例排序，和以前一样。
     shared.transparent = true;
+    // depthWrite 由 syncDepthWrite 按这一层当前的不透明度动态切——
+    // 写死 true 会让半透明的层碎成一片（见那个方法的注释）
     shared.depthWrite = true;
 
     const inputs: BatchInput[] = [];
@@ -666,11 +669,38 @@ export class HyiViewer extends EventTarget {
   }
 
   private applyVisibility(): void {
+    const peak = new Map<SystemId, number>();
     for (const entry of this.structures.values()) {
       entry.opacity = this.effectiveOpacity(entry);
       this.paint(entry);
+      const cur = peak.get(entry.system) ?? 0;
+      if (entry.opacity > cur) peak.set(entry.system, entry.opacity);
     }
+    this.syncDepthWrite(peak);
     this.updateClipCaps();
+  }
+
+  /**
+   * 半透明的那一层不要写深度，否则同一个结构的正面片元互相遮挡，看着像碎的。
+   *
+   * **这是合批改造时弄丢的一条老修复**。合批之前每个结构一份材质，
+   * `setMaterialOpacity` 里有 `material.depthWrite = opacity > 0.55`，
+   * 注释写得很清楚："半透明叠加时关闭深度写入，减少互相遮挡的闪面"。
+   * 改成一个系统一份材质之后，`depthWrite` 在建材质时被写死成 true，
+   * 而 `setMaterialOpacity` 从此一个调用者都没有了——那条修复静默失效。
+   *
+   * 后果人类实拍看到了："似乎还看到了许多断裂的地方"。颅骨是 21 块骨头的并集、
+   * 表面互相重叠，半透明又写深度时只留下赢了深度测试的那些片，于是碎成一片。
+   *
+   * 按**整批的峰值不透明度**决定：一个批共用一份材质状态，逐结构切不了。
+   * 峰值而不是均值——只要这一层里还有实心的结构，就该正常参与遮挡。
+   */
+  private syncDepthWrite(peak: ReadonlyMap<SystemId, number>): void {
+    for (const [sys, batch] of this.batches) {
+      const material = batch.mesh.material as Material & { depthWrite: boolean };
+      const solid = shouldWriteDepth(peak.get(sys) ?? 0);
+      if (material.depthWrite !== solid) material.depthWrite = solid;
+    }
   }
 
   /**

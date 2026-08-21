@@ -75,7 +75,7 @@
         "zh": "这座塔是空心的。椎孔连成一条管道，脊髓就住在里面——脊柱的形状，本来就是为了护住它。",
         "en": "The tower is hollow. The vertebral openings line up into a canal and the spinal cord lives inside it — the whole shape of the spine exists to protect that cord."
       },
-      "layer": 0.75,
+      "layer": 1.0,
       "selected": "spinal_cord",
       "durationMs": 10000
     },

@@ -21,7 +21,7 @@
         "zh": "大脑表面看着是一整片皱褶，其实按几条固定的大沟被分成了几块。哪块管什么，一百多年前就靠外伤病例一点点问出来了。",
         "en": "The folded surface of the cerebrum looks like one continuous sheet, but a few constant grooves carve it into territories. What each one does was pieced together, case by case, from head injuries more than a century ago."
       },
-      "layer": 0.8,
+      "layer": 1.0,
       "selected": "cerebrum",
       "expand": "brain",
       "from": "left",
@@ -37,7 +37,7 @@
         "zh": "最前面这一片管的是\"接下来做什么\"：发出动作指令、组织语言、按住那些当下不该做的事。",
         "en": "The territory at the front handles what happens next: issuing movements, assembling speech, and holding back the things you should not do just now."
       },
-      "layer": 0.8,
+      "layer": 1.0,
       "selected": "frontal_lobe",
       "expand": "cerebrum",
       "from": "left",
@@ -53,7 +53,7 @@
         "zh": "它后面这一片接的是身体传上来的消息——皮肤的触感、关节的角度，拼在一起你才知道手在哪儿，闭着眼也知道。",
         "en": "The territory behind it receives what the body reports — pressure on skin, the angle of every joint — and assembles it into knowing where your hand is, even with your eyes shut."
       },
-      "layer": 0.8,
+      "layer": 1.0,
       "selected": "parietal_lobe",
       "expand": "cerebrum",
       "from": "left",
@@ -69,7 +69,7 @@
         "zh": "耳朵上方这一片先把声音变成能听懂的话，再把今天发生的事收进记忆。听和记，在这里是邻居。",
         "en": "The territory above the ear turns sound into language you understand, then files the day away as memory. Hearing and remembering are neighbours here."
       },
-      "layer": 0.8,
+      "layer": 1.0,
       "selected": "temporal_lobe",
       "expand": "cerebrum",
       "from": "left",
@@ -85,7 +85,7 @@
         "zh": "最后这一片挤在后脑勺，专做一件事。眼睛长在脸上，认出画面的地方却在脑袋另一头，中间隔着整个大脑。",
         "en": "The last territory is crammed at the back of the head and does one job only. The eyes are on your face, yet the place that makes sense of the picture is at the opposite end of your head, with the whole cerebrum in between."
       },
-      "layer": 0.8,
+      "layer": 1.0,
       "selected": "occipital_lobe",
       "expand": "cerebrum",
       "from": "back",
@@ -101,7 +101,7 @@
         "zh": "切开正中还有一圈，绕着中间那束白质转一整圈。它不管看和听，管的是\"这件事对我要紧吗\"。",
         "en": "Cut down the midline and one more ring appears, curling right around the central bundle of white matter. It is not about seeing or hearing; it is about whether a thing matters to you."
       },
-      "layer": 0.8,
+      "layer": 1.0,
       "selected": "limbic_lobe",
       "expand": "cerebrum",
       "from": "left",

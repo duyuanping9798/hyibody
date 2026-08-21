@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "note": "逐结构配色（十六进制）。没写在这里的结构走 src/viewer/materials.ts 的系统色 + 微抖动。取色参考解剖图谱的习惯：心脏深红、肝红褐、肺粉、胆汁绿、软骨蓝灰、脑灰粉。人可直接改，改完刷新即生效。",
+    "note": "逐结构配色（十六进制）。没写在这里的结构走 src/viewer/materials.ts 的系统色 + 微抖动。取色参考解剖图谱的习惯：心脏深红、肝红褐、肺粉、胆汁绿、软骨蓝灰、脑灰粉。人可直接改，改完刷新即生效。 一条例外：肋软骨（costal_cartilages）用的是**比骨头更亮**的珠光蓝白，不是别处软骨那种偏暗的蓝灰。它是唯一一处软骨与骨头端对端接在一起的地方，暗一档就会被读成'肋骨在这儿断了'（2026-08-21 人类实测反馈）——真软骨本来也比干骨更亮更透。 椎间盘（intervertebral_disks）同理但走的是另一半：它与椎体终板互相穿插最深 1.8 mm，光靠内缩要削掉两成盘高才压得干净，所以只内缩 0.5 mm（见 pipeline/process.py 的 SEAM_INSET_MM），剩下的锯齿靠把它调到接近骨色来压——明度差从 16 降到 7。",
     "reviewed": false
   },
   "heart": "#a83f3d",
@@ -29,8 +29,8 @@
   "brain": "#cfc0bd",
   "spinal_cord": "#e2d5bd",
   "diaphragm": "#c96f5e",
-  "intervertebral_disks": "#c9c3ae",
-  "costal_cartilages": "#c8cfd6",
+  "intervertebral_disks": "#d2ccb9",
+  "costal_cartilages": "#dfe6ec",
   "calcaneal_tendon": "#ddd6c4",
   "heart_left_ventricle": "#9c3a38",
   "heart_right_ventricle": "#a8443f",
