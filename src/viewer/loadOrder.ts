@@ -52,11 +52,13 @@ export function backgroundOrder<T extends { id: string }>(
     const i = (BACKGROUND_ORDER as readonly string[]).indexOf(id);
     return i < 0 ? BACKGROUND_ORDER.length : i;
   };
-  return systems
-    .filter((s) => !(FIRST_SCREEN_SYSTEMS as readonly string[]).includes(s.id))
-    .map((s, i) => [s, i] as const)
-    // 同名次时保持原顺序：Array.prototype.sort 在 V8 上虽然稳定，但别把正确性
-    // 押在引擎实现上——尤其这里"表外系统"全都并列最后一名
-    .sort((a, b) => rank(a[0].id) - rank(b[0].id) || a[1] - b[1])
-    .map(([s]) => s);
+  return (
+    systems
+      .filter((s) => !(FIRST_SCREEN_SYSTEMS as readonly string[]).includes(s.id))
+      .map((s, i) => [s, i] as const)
+      // 同名次时保持原顺序：Array.prototype.sort 在 V8 上虽然稳定，但别把正确性
+      // 押在引擎实现上——尤其这里"表外系统"全都并列最后一名
+      .sort((a, b) => rank(a[0].id) - rank(b[0].id) || a[1] - b[1])
+      .map(([s]) => s)
+  );
 }
