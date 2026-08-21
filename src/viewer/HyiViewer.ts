@@ -49,7 +49,13 @@ import { HIGHLIGHT_COLOR, HIGHLIGHT_TINT, type HighlightLevel } from './highligh
 import { SystemBatch, type BatchInput } from './batching';
 import { computeSystemOpacity, PICKABLE_OPACITY_THRESHOLD } from './layers';
 import { probeBody, type Bbox, type ProbeResult, type ProbeTarget } from './regions';
-import { colorForStructure, createSystemMaterial, createSkinMaterial } from './materials';
+import {
+  colorForStructure,
+  createSystemMaterial,
+  createXRayMaterial,
+  setSurfaceDetail,
+  type SurfaceDetailLevel,
+} from './materials';
 import { createRenderPipeline, type RenderPipeline } from './postprocess';
 import {
   canToggleHighQuality,
@@ -407,7 +413,11 @@ export class HyiViewer extends EventTarget {
     // vertexColors 必须开——否则 three 不定义 USE_COLOR_ALPHA，片元里拿不到 alpha，
     // 分层滑块的逐结构不透明度就没了（见 batching.ts 的长注释）。
     const shared =
-      sys === 'skin' ? createSkinMaterial(0xffffff) : createSystemMaterial(sys, 0xffffff);
+      sys === 'skin'
+        ? // 皮肤走 X-ray 壳（2026-08-21 人类拍板退回）：颜色与逐实例不透明度
+          // 照旧由 setColorAt 乘进来，所以这里跟别的系统一样给白色
+          createXRayMaterial(0xffffff, 1)
+        : createSystemMaterial(sys, 0xffffff, this.surfaceDetailLevel());
     shared.vertexColors = true;
     // 合批之后没法逐结构切换 transparent：整批共用一份材质状态。
     // 保留混合、同时**写深度**——完全不透明的实例照样正确遮挡，
@@ -518,6 +528,14 @@ export class HyiViewer extends EventTarget {
     this.rig.camera.position.set(...pos);
     this.rig.controls.target.set(...target);
     this.rig.controls.update();
+    // 明确记下"这个机位是人定的，不是自动全身取景"。
+    //
+    // 漏了这一行的后果是**每条分享链接都丢机位**：`toUrlState` 无条件把相机位姿
+    // 写进 ?v=，恢复时走到这里；可紧接着 UI 量完面板高度会调 `setSafeInsets`，
+    // 它看见 `autoFramed` 还是 true，就"好心"重新框一次全身，把刚恢复的机位顶掉。
+    // 带 selected 的链接因为随后还会 aimAt 到那个结构，症状被盖住了一半——
+    // 纯粹分享一个角度（转过身、推近了、没选中任何结构）的链接则是整个失效。
+    this.autoFramed = false;
   }
 
   // ---- 分层与显隐 ----------------------------------------------------------
@@ -1258,10 +1276,30 @@ export class HyiViewer extends EventTarget {
       entry.mesh.castShadow = false;
       entry.mesh.receiveShadow = false;
     }
+    // 表面质感的档位也要跟着拨过去。材质是系统加载时建的，不跟着改的话
+    // 用户拨了高画质开关，阴影和 AO 变了、表面纹理却停在原档——只有看像素才发现。
+    for (const batch of this.batches.values()) {
+      setSurfaceDetail(batch.mesh.material as Material, this.surfaceDetailLevel());
+    }
 
     const w = this.container.clientWidth || 1;
     const h = this.container.clientHeight || 1;
     this.pipeline?.setSize(w, h, this.renderer.getPixelRatio());
+  }
+
+  /**
+   * 表面质感档位：默认跟画质档走，`?surf=0|1|2` 可以强制覆盖。
+   *
+   * 这个开关是给**同机位 A/B** 用的：着色器改动只能看像素验证，而"看起来好像
+   * 更细了"是最不可靠的一种判断。有了它就能拍两张只差这一个变量的图。
+   * 跟 `?stats=1`、`?aodebug=` 是同一类调试钩子。
+   */
+  private surfaceDetailLevel(): SurfaceDetailLevel {
+    const raw = new URLSearchParams(location.search).get('surf');
+    if (raw === '0') return 0;
+    if (raw === '1') return 1;
+    if (raw === '2') return 2;
+    return QUALITY_CAPS[this.quality].surfaceDetail;
   }
 
   /** 把描边目标换成某个结构（传 null 清空）。 */

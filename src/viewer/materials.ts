@@ -4,6 +4,7 @@ import {
   Color,
   DoubleSide,
   FrontSide,
+  MeshBasicMaterial,
   MeshPhysicalMaterial,
   MeshStandardMaterial,
   ShaderMaterial,
@@ -17,15 +18,67 @@ const PALETTE = paletteRaw as Record<string, string | { note?: string }>;
 
 /** 各系统基色（深色舞台上的科普配色：动脉红/静脉蓝/神经黄/骨米白）。 */
 export const SYSTEM_COLORS: Record<SystemId, number> = {
-  // 皮肤改成真的肤色（原来是品牌青 0x4fc3d9）。青色壳看着像玻璃模特，
-  // 而这一层本来就该是"人"——X-ray 的身份交给边缘光，底色交还给皮肤。
-  skin: 0xcd9673,
+  // 2026-08-21 退回品牌青：BP3D 的皮肤已经到顶（203,382 面就是原生全部，
+  // 且没有 UV、贴不了图），再细化只能换数据源。人类拍板"无法升级细化就直接去掉，
+  // 回到原来的皮肤设计"——与其留一层想像人却不像人的塑料壳，
+  // 不如退回一个不假装写实的抽象表达。肤色版是 0xcd9673，要恢复改这一行 + HyiViewer 的材质选择。
+  skin: 0x4fc3d9,
   muscles: 0xc75948,
   skeleton: 0xd8d3c3,
   organs: 0xcf8a5b,
   vessels: 0xd64541,
   nerves: 0xe6cf4e,
 };
+
+/**
+ * 值噪声（GLSL），皮肤与各系统表面共用一份。
+ *
+ * 流水线导出的 glb 只有 POSITION 和 NORMAL——**没有 UV，也没有任何贴图**
+ * （解剖网格本来就不带 UV，2026-08-21 查过 muscles.glb 确认）。所以"给表面加质感"
+ * 这件事只有一条路：在片元里按**世界坐标**取程序噪声。这段是那条路的地基。
+ */
+const HYI_NOISE_GLSL = `
+         float hyiHash(vec3 p) {
+           p = fract(p * 0.3183099 + vec3(0.71, 0.113, 0.419));
+           p *= 17.0;
+           return fract(p.x * p.y * p.z * (p.x + p.y + p.z));
+         }
+         float hyiNoise(vec3 x) {
+           vec3 i = floor(x);
+           vec3 f = fract(x);
+           f = f * f * (3.0 - 2.0 * f);
+           float n00 = mix(hyiHash(i), hyiHash(i + vec3(1.0, 0.0, 0.0)), f.x);
+           float n10 = mix(hyiHash(i + vec3(0.0, 1.0, 0.0)), hyiHash(i + vec3(1.0, 1.0, 0.0)), f.x);
+           float n01 = mix(hyiHash(i + vec3(0.0, 0.0, 1.0)), hyiHash(i + vec3(1.0, 0.0, 1.0)), f.x);
+           float n11 = mix(hyiHash(i + vec3(0.0, 1.0, 1.0)), hyiHash(i + vec3(1.0, 1.0, 1.0)), f.x);
+           return mix(mix(n00, n10, f.y), mix(n01, n11, f.y), f.z);
+         }
+         // 第二个八度换个朝向再采样。两层用同一套轴对齐格子时，凑近看是一片
+         // 规整的方格纹——像布，不像组织。转一个不对称的角度就散开了。
+         const mat3 HYI_TWIST = mat3(
+           0.80, 0.36, -0.48,
+           -0.48, 0.86, -0.16,
+           0.36, 0.36, 0.86
+         );
+`;
+
+/**
+ * 世界坐标 varying 的注入片段（顶点着色器）。
+ *
+ * 合批时 `transformed` 留在几何体的**局部**空间——批矩阵是在 `project_vertex`
+ * 里加到 `mvPosition` 上的，不是加到 `transformed` 上。漏掉它的后果不是"偏一点"：
+ * glb 顶点是量化过的（局部坐标在 ±1 附近、真实尺寸全在节点 TRS 里），
+ * 噪声的采样域会从 ±800 毫米塌成 ±1，按毫米调的频率在那个域上几乎是常数
+ * ——皮肤直接变成一片光滑（合批改造后实拍出来的，见 DECISIONS.md）。
+ */
+function worldVaryingGlsl(name: string): string {
+  return `
+         #ifdef USE_BATCHING
+           ${name} = (modelMatrix * batchingMatrix * vec4(transformed, 1.0)).xyz;
+         #else
+           ${name} = (modelMatrix * vec4(transformed, 1.0)).xyz;
+         #endif`;
+}
 
 /** slug → [0,1) 的确定性伪随机（FNV-1a），保证同一结构每次配色一致。 */
 function hash01(key: string): number {
@@ -109,7 +162,12 @@ function addFresnelRim(
   },
 ): void {
   const xrayOnly = options.xrayOnly === true;
-  material.onBeforeCompile = (shader) => {
+  // 链式追加而不是直接赋值：这个函数原来是 `material.onBeforeCompile = ...`，
+  // 一旦有第二个装饰器（比如下面的表面质感）加到同一个材质上，先加的那个会被
+  // 整个吞掉——而且吞得无声无息，只有看像素才发现。cacheKey 同理。
+  const previous = material.onBeforeCompile;
+  material.onBeforeCompile = (shader, renderer) => {
+    previous?.call(material, shader, renderer);
     shader.uniforms.uRimColor = { value: options.color };
     shader.uniforms.uRimStrength = { value: options.strength };
     shader.uniforms.uRimPower = { value: options.power };
@@ -134,8 +192,9 @@ function addFresnelRim(
       );
   };
   // onBeforeCompile 变了要让 three 重新编译
-  material.customProgramCacheKey = () =>
-    `rim:${options.strength}:${options.power}:${options.alpha}:${xrayOnly ? 'x' : 'o'}`;
+  const rimKey = `rim:${options.strength}:${options.power}:${options.alpha}:${xrayOnly ? 'x' : 'o'}`;
+  const prevKey = material.customProgramCacheKey;
+  material.customProgramCacheKey = () => `${prevKey ? prevKey.call(material) : ''}|${rimKey}`;
 }
 
 /**
@@ -154,9 +213,317 @@ const RIM: Partial<
   nerves: { color: 0xfff0a6, strength: 0.4, power: 2.4, alpha: 0.34 },
 };
 
+/**
+ * 表面质感的档位：0 不注入（零成本）、1 便宜档、2 完整档。
+ *
+ * 这不是"锦上添花可以随便加"的东西——它是**每个片元**的开销，而全量之后
+ * 手机默认档在肌肉层已经是 724 万三角面/帧。所以它跟画质档绑定：
+ * `low`（软件渲染兜底、也是 e2e 用的档）完全不注入，e2e 因此不会变慢。
+ */
+export type SurfaceDetailLevel = 0 | 1 | 2;
+
+/**
+ * 各系统的表面参数。频率的单位是 1/毫米（世界坐标就是毫米）。
+ *
+ * `stretch` 是沿"纤维方向"的拉伸倍数：噪声沿这个方向变化慢、垂直方向变化快，
+ * 于是出来的是**顺纹的沟**而不是一团麻点。肌肉最需要它，骨骼不需要（骨面是孔隙，
+ * 各向同性），血管几乎不要（管子上出现顺纹会像波纹管）。
+ *
+ * `lo`/`hi` 是噪声两端的颜色乘子。刻意让**亮度基本不动、只动冷暖与饱和**——
+ * 皮肤那一轮的教训：直接乘亮度系数出来的不是质感，是脏点（手机实拍一片灰斑）。
+ */
+const SURFACE: Partial<
+  Record<
+    SystemId,
+    {
+      freq: number;
+      stretch: number;
+      /** 第二个八度的频率倍数（只有档位 2 用） */
+      fineMul: number;
+      bump: number;
+      rough: number;
+      lo: [number, number, number];
+      hi: [number, number, number];
+    }
+  >
+> = {
+  // 肌肉：顺纹方向取世界 Z（BP3D 的长轴——皮肤包围盒 Z 跨 ±865 毫米、X 只有 ±333，
+  // 相机的 up 也设成 (0,0,1)）。腱膜偏白偏亮、肌腹偏深偏红。
+  //
+  // **这是"表面纹理"的近似，不是解剖学的肌纤维走向**，别在文案里说成后者：
+  // 腹外斜肌、肋间肌的纤维本来就是斜行的，这里一律按长轴出纹。真要做对，
+  // 得给每个结构存一个方向向量——而合批下每实例的通道已经被"颜色 + 不透明度"
+  // 占满了，那是另一轮改造（记在 DECISIONS 待定）。
+  muscles: {
+    freq: 1 / 8,
+    stretch: 9,
+    fineMul: 3.4,
+    bump: 1.2,
+    rough: 0.3,
+    // 明度摆幅收一半（原来 0.9↔1.1 共 22%）：那一档在近景里把几何自带的肌纤维沟
+    // 盖住了，肌肉看着发闷、像有淤斑。冷暖差保留——真肌肉的不匀本来就是
+    // 腱膜偏白偏黄、肌腹偏深偏红，不是忽明忽暗。
+    lo: [1.06, 1.01, 0.96],
+    hi: [0.94, 0.92, 0.95],
+  },
+  // 骨：孔隙是各向同性的，不能有方向
+  skeleton: {
+    freq: 1 / 6,
+    stretch: 1,
+    fineMul: 4.0,
+    bump: 5.0,
+    rough: 0.35,
+    lo: [1.07, 1.05, 0.96],
+    hi: [0.92, 0.92, 0.98],
+  },
+  // 器官：湿润、光滑，大尺度色斑为主，起伏要**很轻**。
+  //
+  // 1/√stretch 那条经验规则在这里失灵了：按它算器官该给 4.0（stretch 只有 1.6），
+  // 实拍出来是油腻的团块和夸张的高光，像融化的塑料。原因是**规则漏了材质光泽度**——
+  // 器官挂着 clearcoat 0.28 + sheen，镜面反射会把法线扰动放大好几倍，
+  // 而骨骼那种半哑光材质不会。所以带清漆/高光的材质要另外往下压。
+  organs: {
+    freq: 1 / 16,
+    stretch: 1.6,
+    fineMul: 3.0,
+    bump: 1.2,
+    rough: 0.22,
+    lo: [1.05, 0.99, 0.97],
+    hi: [0.95, 0.97, 1.01],
+  },
+  // 血管：几乎不要纹路，只让高光碎——湿的管子靠的是高光的碎，不是表面的花
+  vessels: {
+    freq: 1 / 9,
+    stretch: 2.5,
+    fineMul: 2.5,
+    bump: 2.5,
+    rough: 0.34,
+    lo: [1.06, 0.97, 0.97],
+    hi: [0.94, 0.98, 1.04],
+  },
+  // 神经：细密顺纹（神经束），比肌肉细、比肌肉弱
+  nerves: {
+    freq: 1 / 5,
+    stretch: 7,
+    fineMul: 3.0,
+    bump: 1.5,
+    rough: 0.22,
+    lo: [1.07, 1.04, 0.92],
+    hi: [0.93, 0.94, 1.02],
+  },
+};
+
+/**
+ * 参数是量出来的，不是调出来的（2026-08-21）。
+ *
+ * 第一版全都订得很保守——怕重蹈皮肤那次"噪声变脏点"的覆辙。结果是**弱到不存在**：
+ * 同机位 A/B 拍完，量相邻像素亮度差（局部对比度，纹理的直接度量），
+ * 前景肋骨只有 1.06 倍、椎体反而 0.93 倍。眼睛以为看见了起伏，数字说没有。
+ *
+ * 算清了为什么：`e = 0.4 / freq` 是按周期取的差分，所以梯度大小与频率无关、
+ * 幅度全在 `bump` 上。原来 bump = 0.32 只把法线偏了 3–5°，在柔和光照下
+ * 就是几个百分点的明暗差——低于可辨阈值。现在 bump 抬到 2.0 量级（原始约 30–45°，
+ * 过完距离淡出还剩 15–25°），颜色幅度从 ±3% 抬到 ±8%。
+ *
+ * 频率同时**降低**（骨 1/1.6 → 1/6 毫米、肌肉 1/3.2 → 1/8）。两个理由：
+ * 一是人实际的观看距离下，读得出的是"骨面起伏""肌束"这一档尺度，不是亚毫米的孔隙；
+ * 二是 `hyiBumpFade` 按频率淡出，频率越高淡得越狠——骨在 0.5 毫米/像素时
+ * 原来只剩 0.53，现在是 0.88。
+ *
+ * **怎么定幅度（这一条我先写错过一次，改正记在这里）**：
+ * 一开始定的标准是"同机位 A/B 的局部对比度要到 1.5 倍"。标定之后发现它是错的——
+ * bump 从 2 抬到 20（十倍），指标只从 1.27× 走到 1.65×，而画面已经从"几乎看不出"
+ * 变成"揉皱的锡纸"。局部对比度在这里被几何边缘和半透明叠加主导，比值被严重压缩。
+ *
+ * 所以：`scripts/surface-contrast.py` 用来回答**"这层效果到底有没有生效"**
+ * （1.0× 就是没生效，第一版 1.06× 就是这么抓出来的），**不用来定幅度**。
+ * 幅度靠同机位 A/B 的图判断，落点是"看得出骨面/肌束的起伏，但不到噪点"。
+ * 骨骼那一档是在 2（太弱）与 20（太强，成了锡纸）之间取的 5.0。
+ *
+ * **`bump` 要跟着 `stretch` 反着走**（这条是拿肌肉撞出来的）：拉伸把噪声在
+ * "横过纹理"方向压扁，等于把那个方向的有效频率放大了 stretch 倍，梯度跟着陡峭。
+ * 骨骼 stretch=1 时 5.0 正好，肌肉 stretch=9 时同样的 5.0 直接糊成揉皱的玻璃纸。
+ * 所以下面大致按 1/√stretch 缩。**但这条规则漏了材质光泽度**：器官挂着
+ * clearcoat + sheen，镜面反射会把法线扰动再放大几倍，按规则算的 4.0 拍出来是
+ * 融化的塑料，实测要压到 1.2。血管虽然更亮（clearcoat 0.6），但管子太细、
+ * 噪声铺不开，2.5 反而没事——所以这一档只能一个个看图定，规则只用来起头。
+ * 定稿：骨 5.0、血管 2.5、神经 1.5、肌肉 1.2、器官 1.2。
+ * 肌肉本来也最不需要——BP3D 的网格自带肌纤维沟。
+ */
+/**
+ * 按世界坐标给每个系统加一层程序化表面质感。
+ *
+ * **为什么非做不可**：2026-08-21 把 BP3D 拉到全量（236 万 → 478 万面）之后，
+ * 人类的反馈是"似乎没有什么明显的区别"。量下来他也说对了——那一屏里腹外斜肌
+ * 面数翻了三倍（74,990 → 223,584）、肋间肌 5.5 倍，肉眼分不出。原因是那个视距下
+ * 三角形早就小于一个像素，**面数不再是瓶颈**。真正的瓶颈是：glb 只有
+ * POSITION + NORMAL，一个系统一个材质一个颜色，除皮肤外没有任何表面变化——
+ * 整片腹肌是同一个三文鱼粉，肌腱不反光、筋膜没明暗、骨面没质地。
+ *
+ * 所以这一层加的不是几何，是**着色**：零字节、不碰流水线、不动体积预算，
+ * 代价只在片元开销上，并且按画质档分级。
+ */
+function addSurfaceDetail(
+  material: MeshStandardMaterial,
+  system: SystemId,
+  level: SurfaceDetailLevel,
+): void {
+  const cfg = SURFACE[system];
+  if (!cfg || level === 0) return;
+  const previous = material.onBeforeCompile;
+  material.onBeforeCompile = (shader, renderer) => {
+    previous?.call(material, shader, renderer);
+    shader.uniforms.uSurfFreq = { value: cfg.freq };
+    shader.uniforms.uSurfStretch = { value: cfg.stretch };
+    shader.uniforms.uSurfFine = { value: cfg.freq * cfg.fineMul };
+    shader.uniforms.uSurfBump = { value: cfg.bump };
+    shader.uniforms.uSurfRough = { value: cfg.rough };
+    shader.uniforms.uSurfLo = { value: new Color(...cfg.lo) };
+    shader.uniforms.uSurfHi = { value: new Color(...cfg.hi) };
+    // 便宜档 / 完整档用 uniform 分支而不是编译期分支：高画质开关能在
+    // medium ⇄ high 之间来回切，而材质是系统加载时就建好的——编译期分支意味着
+    // 切了不生效，用户拨了开关却什么都没变。uniform 上的分支在 GPU 上不会发散
+    //（整个 draw 走同一条路），代价可以忽略。
+    shader.uniforms.uSurfFull = { value: level >= 2 ? 1 : 0 };
+    material.userData.hyiSurfaceShader = shader;
+    shader.vertexShader = shader.vertexShader
+      .replace('void main() {', 'varying vec3 vHyiSurf;\nvarying vec3 vHyiSurfN;\nvoid main() {')
+      .replace(
+        '#include <project_vertex>',
+        `#include <project_vertex>${worldVaryingGlsl('vHyiSurf')}`,
+      )
+      // 世界法线要自己算：片元里现成的 `vNormal` 是**视图空间**的，拿它去投影
+      // 世界长轴，方向会跟着相机转——纹路会在转动时爬行。这里取 beginnormal_vertex
+      // 之后、normalMatrix 之前的 objectNormal，只乘 model（与批）矩阵。
+      .replace(
+        '#include <beginnormal_vertex>',
+        `#include <beginnormal_vertex>
+         #ifdef USE_BATCHING
+           vHyiSurfN = normalize(mat3(modelMatrix) * mat3(batchingMatrix) * objectNormal);
+         #else
+           vHyiSurfN = normalize(mat3(modelMatrix) * objectNormal);
+         #endif`,
+      );
+    shader.fragmentShader = shader.fragmentShader
+      .replace(
+        'void main() {',
+        `varying vec3 vHyiSurf;
+         varying vec3 vHyiSurfN;
+         uniform float uSurfFreq;
+         uniform float uSurfStretch;
+         uniform float uSurfFine;
+         uniform float uSurfBump;
+         uniform float uSurfRough;
+         uniform vec3 uSurfLo;
+         uniform vec3 uSurfHi;
+         uniform float uSurfFull;
+${HYI_NOISE_GLSL}
+         // 一个像素跨过好几个噪声周期时，细节只会退化成沙粒噪点。fwidth 给出
+         // 这个像素在世界坐标里跨了多少毫米，据此把细节淡出。取三轴最大值而不是
+         // 求和——求和会把同一个像素的跨度算成三倍，近景细节也跟着被淡光。
+         float hyiFadeFor(vec3 w, float freq) {
+           float mmPerPixel = max(max(fwidth(w.x), fwidth(w.y)), fwidth(w.z));
+           return clamp(1.0 - mmPerPixel * freq * 1.5, 0.0, 1.0);
+         }
+         // 细八度按**细八度自己的频率**淡出（它先到 Nyquist）
+         float hyiSurfFade(vec3 w) { return hyiFadeFor(w, uSurfFine); }
+         // 法线扰动按**基础频率**淡出。这两个分开是必须的：骨骼的细八度是
+         // 0.36 毫米，近景 0.23 毫米/像素时它的淡出系数已经只剩 0.03，而基础八度
+         // （1.6 毫米的骨面起伏）还有 0.78。原来整个凹凸乘的是前者——于是骨头在
+         // 近景下**一点起伏都没有**，正是"加了质感看不出变化"的原因。
+         // medium 档更纯粹：它压根不算细八度，那个系数在那里只剩副作用。
+         float hyiBumpFade(vec3 w) { return hyiFadeFor(w, uSurfFreq); }
+         // 顺纹方向：把身体长轴（世界 Z）投影到当前切平面。
+         // 法线几乎与长轴平行的地方（肌肉的起止端、骨骺）投影会退化，换个参考轴兜底。
+         vec3 hyiFiberDir(vec3 n) {
+           vec3 axis = vec3(0.0, 0.0, 1.0);
+           vec3 t = axis - n * dot(n, axis);
+           float len = length(t);
+           return len > 1e-3 ? t / len : normalize(cross(n, vec3(1.0, 0.0, 0.0)));
+         }
+         // 沿 dir 把采样坐标压扁 → 噪声沿这个方向变化慢，出来的是顺纹的沟。
+         // stretch = 1 时这一步是恒等变换（骨骼要的各向同性）。
+         vec3 hyiStretch(vec3 w, vec3 dir) {
+           return w - dir * dot(w, dir) * (1.0 - 1.0 / uSurfStretch);
+         }
+         float hyiSurfField(vec3 w, vec3 dir, float fade) {
+           vec3 q = hyiStretch(w, dir);
+           float n = hyiNoise(q * uSurfFreq);
+           if (uSurfFull > 0.5) {
+             n = n * 0.72 + hyiNoise(HYI_TWIST * q * uSurfFine) * 0.28 * fade;
+           }
+           return n;
+         }
+         void main() {`,
+      )
+      // 噪声场只算**一次**，颜色、粗糙度、法线三处共用。
+      //
+      // three 的片元 main 里顺序是 color_fragment → roughnessmap_fragment →
+      // normal_fragment_begin，所以在第一处声明、后两处直接用就行（别加花括号，
+      // 加了变量就出不了作用域）。第一版三处各算各的：完整档一个片元 12 次噪声
+      // 取样、约 96 次 hash——而这是全量之后手机上每帧 724 万三角面要摊的成本。
+      .replace(
+        '#include <color_fragment>',
+        `#include <color_fragment>
+         vec3 hyiNrm = normalize(vHyiSurfN);
+         vec3 hyiDir = hyiFiberDir(hyiNrm);
+         float hyiFade = hyiSurfFade(vHyiSurf);
+         float hyiField = hyiSurfField(vHyiSurf, hyiDir, hyiFade);
+         diffuseColor.rgb *= mix(uSurfLo, uSurfHi, hyiField);`,
+      )
+      .replace(
+        '#include <roughnessmap_fragment>',
+        `#include <roughnessmap_fragment>
+         roughnessFactor = clamp(roughnessFactor + (hyiField - 0.5) * uSurfRough, 0.04, 1.0);`,
+      )
+      .replace(
+        '#include <normal_fragment_begin>',
+        `#include <normal_fragment_begin>
+         {
+           // hyiNrm / hyiDir / hyiFade / hyiField 在 color_fragment 那处已经算好
+           float e = 0.4 / max(uSurfFreq, 0.0001);
+           vec3 g;
+           if (uSurfFull > 0.5) {
+             g = vec3(
+               hyiSurfField(vHyiSurf + vec3(e, 0.0, 0.0), hyiDir, hyiFade),
+               hyiSurfField(vHyiSurf + vec3(0.0, e, 0.0), hyiDir, hyiFade),
+               hyiSurfField(vHyiSurf + vec3(0.0, 0.0, e), hyiDir, hyiFade)
+             ) - hyiField;
+           } else {
+             // 便宜档只沿"横过纹理"的那个方向取一次差分：沟的观感几乎全部来自
+             // 垂直纹路方向的起伏，另外两轴的贡献小得多。省两次噪声取样。
+             vec3 across = normalize(cross(hyiNrm, hyiDir));
+             g = across * (hyiSurfField(vHyiSurf + across * e, hyiDir, hyiFade) - hyiField);
+           }
+           // 世界空间求梯度，normal 在这里是视图空间的，所以要过 viewMatrix
+           normal = normalize(normal - mat3(viewMatrix) * g * uSurfBump * hyiBumpFade(vHyiSurf));
+         }`,
+      );
+  };
+  const key = `surf:${system}`;
+  const prevKey = material.customProgramCacheKey;
+  material.customProgramCacheKey = () => `${prevKey ? prevKey.call(material) : ''}|${key}`;
+}
+
+/**
+ * 切换已建好的材质的表面质感档位（便宜 ⇄ 完整），不重新编译。
+ *
+ * 材质是系统加载时建的，而高画质开关随时能拨——所以档位必须能事后改。
+ * `low` 档（level 0）压根没注入着色器，这里对它是空操作，也**不能**被拨上来：
+ * `canToggleHighQuality` 不让 low 切档，那是"这台机器跑不动"的兜底。
+ */
+export function setSurfaceDetail(material: Material, level: SurfaceDetailLevel): void {
+  const shader = (material as MeshStandardMaterial).userData?.hyiSurfaceShader as
+    { uniforms?: Record<string, { value: unknown }> } | undefined;
+  const u = shader?.uniforms?.uSurfFull;
+  if (u) u.value = level >= 2 ? 1 : 0;
+}
+
 export function createSystemMaterial(
   system: SystemId,
   color: string | number,
+  /** 表面质感档位，默认完整档；`low` 画质档传 0（见 QUALITY_CAPS.surfaceDetail） */
+  surfaceDetail: SurfaceDetailLevel = 2,
 ): MeshStandardMaterial {
   const c = new Color(color);
   let material: MeshStandardMaterial;
@@ -218,6 +585,9 @@ export function createSystemMaterial(
     default:
       return createStructureMaterial(color);
   }
+  // 顺序无所谓（两个装饰器都是链式的），但表面质感放在边缘光之后更好读：
+  // 先定材质本体 → 再加表面 → 最后那圈"透视"签名
+  addSurfaceDetail(material, system, surfaceDetail);
   const rim = RIM[system];
   if (rim) {
     addFresnelRim(material, {
@@ -297,17 +667,7 @@ function addSkinDetail(
       .replace('void main() {', 'varying vec3 vSkinWorld;\nvoid main() {')
       .replace(
         '#include <project_vertex>',
-        `#include <project_vertex>
-         // 合批时 transformed 留在几何体的**局部**空间——批矩阵是在 project_vertex
-         // 里加到 mvPosition 上的，不是加到 transformed 上。漏掉它的后果不是"偏一点"：
-         // glb 的顶点是量化过的，局部坐标在 ±1 附近、真实尺寸全在节点 TRS 里，
-         // 于是噪声的采样域从 ±800 毫米塌成 ±1，按毫米调的频率在那个域上几乎是常数
-         // ——皮肤直接变成一片光滑（合批改造后实拍出来的）。
-         #ifdef USE_BATCHING
-           vSkinWorld = (modelMatrix * batchingMatrix * vec4(transformed, 1.0)).xyz;
-         #else
-           vSkinWorld = (modelMatrix * vec4(transformed, 1.0)).xyz;
-         #endif`,
+        `#include <project_vertex>${worldVaryingGlsl('vSkinWorld')}`,
       );
     shader.fragmentShader = shader.fragmentShader
       .replace(
@@ -317,21 +677,7 @@ function addSkinDetail(
          uniform float uSkinFine;
          uniform float uSkinStrength;
          uniform float uSkinRough;
-         float hyiHash(vec3 p) {
-           p = fract(p * 0.3183099 + vec3(0.71, 0.113, 0.419));
-           p *= 17.0;
-           return fract(p.x * p.y * p.z * (p.x + p.y + p.z));
-         }
-         float hyiNoise(vec3 x) {
-           vec3 i = floor(x);
-           vec3 f = fract(x);
-           f = f * f * (3.0 - 2.0 * f);
-           float n00 = mix(hyiHash(i), hyiHash(i + vec3(1.0, 0.0, 0.0)), f.x);
-           float n10 = mix(hyiHash(i + vec3(0.0, 1.0, 0.0)), hyiHash(i + vec3(1.0, 1.0, 0.0)), f.x);
-           float n01 = mix(hyiHash(i + vec3(0.0, 0.0, 1.0)), hyiHash(i + vec3(1.0, 0.0, 1.0)), f.x);
-           float n11 = mix(hyiHash(i + vec3(0.0, 1.0, 1.0)), hyiHash(i + vec3(1.0, 1.0, 1.0)), f.x);
-           return mix(mix(n00, n10, f.y), mix(n01, n11, f.y), f.z);
-         }
+${HYI_NOISE_GLSL}
          // 细的那一层要按距离淡出：一个像素跨过好几个噪声周期时，它只会变成沙粒噪点。
          // fwidth 给出这个像素在世界坐标里跨了多少毫米，据此把细octave 关掉。
          float hyiSkinFade(vec3 w) {
@@ -340,13 +686,6 @@ function addSkinDetail(
            float mmPerPixel = max(max(fwidth(w.x), fwidth(w.y)), fwidth(w.z));
            return clamp(1.0 - mmPerPixel * uSkinFine * 1.5, 0.0, 1.0);
          }
-         // 细的那一层换个朝向再采样。两层用同一套轴对齐格子时，凑近看是一片
-         // 规整的方格纹——像布，不像皮肤。转一个不对称的角度就散开了。
-         const mat3 HYI_TWIST = mat3(
-           0.80, 0.36, -0.48,
-           -0.48, 0.86, -0.16,
-           0.36, 0.36, 0.86
-         );
          float hyiSkinField(vec3 w, float fade) {
            return hyiNoise(w * uSkinCoarse) * 0.7 + hyiNoise(HYI_TWIST * w * uSkinFine) * 0.3 * fade;
          }
@@ -533,47 +872,85 @@ export function createBackdropMaterial(): ShaderMaterial {
  * 菲涅尔 X-ray 材质：边缘亮、正对相机处透明，呈现"透视"外壳效果。
  * 迁移自 prototype/index.html 已验证的思路，供皮肤/肌肉层使用。
  */
-export function createXRayMaterial(color: string | number, opacity = 1): ShaderMaterial {
-  return new ShaderMaterial({
+/**
+ * X-ray 壳：加色混合的菲涅尔外壳，"透视"这个身份的视觉签名。
+ *
+ * 2026-08-21 人类拍板把皮肤退回这个设计：**"皮肤功能无法升级细化，就直接去掉，
+ * 回到原来的皮肤设计。"** 起因是 BP3D 的皮肤已经到顶——203,382 面就是原生全部，
+ * 而且没有 UV、贴不了图，再细化只能换数据源（CC0 体表，人类已暂停）。
+ * 与其留一层"努力想像人却不像人"的塑料壳，不如退回一个不假装写实的抽象表达。
+ *
+ * **不能直接用回旧实现**：旧版是裸 `ShaderMaterial`，顶点着色器写死
+ * `modelMatrix * vec4(position, 1.0)`，不认合批矩阵；而皮肤自 v1.1 起走
+ * `BatchedMesh`，glb 顶点又是量化过的（局部坐标在 ±1 附近，真实尺寸全在节点 TRS 里）
+ * ——直接用回去皮肤会缩成原点附近的一小团。
+ *
+ * 所以改挂在 `MeshBasicMaterial` 上：它自带 `batching_vertex`，
+ * 每实例的颜色与不透明度也照旧走 `setColorAt` → `vColor`（`diffuseColor` 里
+ * 已经乘好了），而且没有光照计算——这一层铺满整屏，省下的是实打实的片元开销。
+ */
+export function createXRayMaterial(color: string | number, opacity = 1): MeshBasicMaterial {
+  const material = new MeshBasicMaterial({
+    color: new Color(color),
     transparent: true,
     depthWrite: false,
     side: DoubleSide,
     blending: AdditiveBlending,
-    uniforms: {
-      uColor: { value: new Color(color) },
-      uOpacity: { value: opacity },
-      // 边缘收窄（2.2 → 2.7）：叠在 109 万面的内脏之上时，宽边缘会把画面糊白
-      uPower: { value: 2.7 },
-      // 加色混合的总强度，低一点才压得住内层的高光
-      uIntensity: { value: 0.85 },
-      uHighlight: { value: 0 },
-    },
-    vertexShader: /* glsl */ `
-      varying vec3 vNormalW;
-      varying vec3 vViewDirW;
-      void main() {
-        vec4 worldPos = modelMatrix * vec4(position, 1.0);
-        vNormalW = normalize(mat3(modelMatrix) * normal);
-        vViewDirW = normalize(cameraPosition - worldPos.xyz);
-        gl_Position = projectionMatrix * viewMatrix * worldPos;
-      }
-    `,
-    fragmentShader: /* glsl */ `
-      uniform vec3 uColor;
-      uniform float uOpacity;
-      uniform float uPower;
-      uniform float uIntensity;
-      uniform float uHighlight;
-      varying vec3 vNormalW;
-      varying vec3 vViewDirW;
-      void main() {
-        float fresnel = pow(1.0 - abs(dot(normalize(vNormalW), normalize(vViewDirW))), uPower);
-        vec3 color = mix(uColor, vec3(1.0), uHighlight);
-        float alpha = (fresnel * uIntensity + uHighlight * 0.22) * uOpacity;
-        gl_FragColor = vec4(color, alpha);
-      }
-    `,
+    opacity,
+    vertexColors: true,
   });
+  material.onBeforeCompile = (shader) => {
+    // 边缘收窄（2.2 → 2.7）：叠在百万面的内脏之上时，宽边缘会把画面糊白
+    shader.uniforms.uXrayPower = { value: 2.7 };
+    // 加色混合的总强度，低一点才压得住内层的高光
+    shader.uniforms.uXrayIntensity = { value: 0.85 };
+    shader.vertexShader = shader.vertexShader
+      .replace('void main() {', 'varying vec3 vXrayW;\nvarying vec3 vXrayN;\nvoid main() {')
+      .replace(
+        '#include <project_vertex>',
+        `#include <project_vertex>${worldVaryingGlsl('vXrayW')}`,
+      )
+      // 世界法线自己算：basic 材质的片元里没有现成的法线 varying。
+      //
+      // **注意注入点**：不能挂在 `<beginnormal_vertex>` 之后——在 basic 的顶点
+      // 着色器里那一句被包在 `#if defined(USE_ENVMAP) || defined(USE_SKINNING)`
+      // 里，而我们两个都没有，整段会被预处理器编译掉，`vXrayN` 永远不被赋值。
+      // 后果不是报错而是**静默失效**：normalize(未初始化) 得到 NaN，片元 alpha
+      // 也成 NaN，皮肤一个像素都画不出来，而着色器编译得好好的。
+      // 挂在 `<batching_vertex>` 之后（无条件执行），并直接用 `normal` 属性——
+      // 它在 three 的顶点前缀里是无条件声明的。
+      .replace(
+        '#include <batching_vertex>',
+        `#include <batching_vertex>
+         #ifdef USE_BATCHING
+           vXrayN = normalize(mat3(modelMatrix) * mat3(batchingMatrix) * normal);
+         #else
+           vXrayN = normalize(mat3(modelMatrix) * normal);
+         #endif`,
+      );
+    shader.fragmentShader = shader.fragmentShader
+      .replace(
+        'void main() {',
+        `varying vec3 vXrayW;
+         varying vec3 vXrayN;
+         uniform float uXrayPower;
+         uniform float uXrayIntensity;
+         void main() {`,
+      )
+      // 最后一步整个改写输出：颜色与逐实例不透明度都已经在 diffuseColor 里
+      //（材质本体给白色，真正的颜色由 setColorAt 乘进来），这里只叠菲涅尔
+      .replace(
+        '#include <dithering_fragment>',
+        `#include <dithering_fragment>
+         {
+           vec3 viewDirW = normalize(cameraPosition - vXrayW);
+           float fresnel = pow(1.0 - abs(dot(normalize(vXrayN), viewDirW)), uXrayPower);
+           gl_FragColor = vec4(diffuseColor.rgb, fresnel * uXrayIntensity * diffuseColor.a);
+         }`,
+      );
+  };
+  material.customProgramCacheKey = () => 'xray';
+  return material;
 }
 
 /** 统一设置材质整体不透明度（分层滑块用）。 */

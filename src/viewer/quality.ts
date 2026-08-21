@@ -28,6 +28,14 @@ export interface QualityCaps {
   aoScale: number;
   /** 平行光软阴影 + 地面接影 */
   softShadows: boolean;
+  /**
+   * 程序化表面质感的档位（0 关 / 1 便宜 / 2 完整），见 materials.addSurfaceDetail。
+   *
+   * 它是**逐片元**开销，而全量之后手机默认档在肌肉层已经是 724 万三角面/帧，
+   * 所以必须分级而不是一刀切开。`low` 给 0 有两个好处：软件渲染的机器一点不受影响，
+   * 而 e2e 正好跑在这一档——加了质感也不会把测试拖得更慢。
+   */
+  surfaceDetail: 0 | 1 | 2;
 }
 
 export const QUALITY_CAPS: Record<QualityTier, QualityCaps> = {
@@ -40,6 +48,7 @@ export const QUALITY_CAPS: Record<QualityTier, QualityCaps> = {
     aoSamples: 8,
     aoScale: 0.5,
     softShadows: false,
+    surfaceDetail: 0,
   },
   medium: {
     postprocessing: true,
@@ -53,6 +62,7 @@ export const QUALITY_CAPS: Record<QualityTier, QualityCaps> = {
     aoSamples: 8,
     aoScale: 0.5,
     softShadows: false,
+    surfaceDetail: 1,
   },
   high: {
     postprocessing: true,
@@ -63,6 +73,7 @@ export const QUALITY_CAPS: Record<QualityTier, QualityCaps> = {
     aoSamples: 16,
     aoScale: 1,
     softShadows: true,
+    surfaceDetail: 2,
   },
 };
 

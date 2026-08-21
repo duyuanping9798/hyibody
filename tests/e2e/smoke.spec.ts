@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { encodeUrlState } from '../../src/data/urlState';
+import { decodeUrlState, encodeUrlState } from '../../src/data/urlState';
 
 /**
  * 渲染截图冒烟测试（无 GPU 软件渲染，只做粗检，真机观感由人类确认 — CLAUDE.md）。
@@ -626,6 +626,59 @@ test('a self-made wonder can be captured, shared by link and played back', async
 });
 
 /** 坏掉的 ?w= 不该白屏——链接会被聊天软件截断、会被手抄错。 */
+/**
+ * 分享链接里的相机机位要活下来。
+ *
+ * 2026-08-21 修掉的 bug：`setCameraPose` 没清 `autoFramed`，界面量完面板高度
+ * 后 `setSafeInsets` 会"好心"重新框一次全身，把恢复的机位顶掉。**每条分享链接
+ * 都中招**，只是带 selected 的链接随后会 aimAt 到那个结构，症状被盖掉一半。
+ * 所以这条故意**不选中任何结构**——纯粹分享一个角度，那才是完全失效的情形。
+ */
+test('share link keeps its camera angle instead of snapping back to full body', async ({
+  page,
+}) => {
+  test.setTimeout(240_000);
+  // 一个明显偏离默认全身取景的机位：贴到胸廓跟前、从左前方看
+  const cam = {
+    pos: [-240, -320, 430] as [number, number, number],
+    target: [0, 0, 402] as [number, number, number],
+  };
+  const state = encodeUrlState({ layer: 0.62, cam });
+  await page.goto(`/?v=${state}`);
+  await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
+    timeout: 60_000,
+  });
+  await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-loaded', '1', {
+    timeout: 180_000,
+  });
+  // setSafeInsets 是界面量完真实高度才推进来的，等它跑过
+  await page.waitForTimeout(4000);
+
+  // 地址栏的 ?v= 只在分层/显隐/剖切/选中变化时才回写，所以拨一下分层触发它，
+  // 回写时带的是**当前**相机位姿——机位被顶掉的话这里就能读出来
+  await page.evaluate(() => {
+    const el = document.querySelector('.hyi-range-layer') as HTMLInputElement;
+    const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!;
+    setter.call(el, '0.63');
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+  });
+  await expect
+    .poll(() => new URL(page.url()).searchParams.get('v'), { timeout: 30_000 })
+    .not.toBe(state);
+
+  const after = decodeUrlState(new URL(page.url()).searchParams.get('v'));
+  expect(after.cam, '回写的状态里应该有相机位姿').toBeTruthy();
+  const dist = Math.hypot(
+    after.cam!.pos[0] - cam.pos[0],
+    after.cam!.pos[1] - cam.pos[1],
+    after.cam!.pos[2] - cam.pos[2],
+  );
+  // 默认全身取景在 1000 毫米开外，被顶掉的话这个距离是几百毫米量级；
+  // 留 60 毫米余量给分层缓动带来的细微移动
+  expect(dist, `相机被挪了 ${Math.round(dist)} 毫米，机位没保住`).toBeLessThan(60);
+});
+
 test('a broken ?w= link falls back to the plain viewer', async ({ page }) => {
   test.setTimeout(180_000);
   await page.goto('/?w=这不是base64');
