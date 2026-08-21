@@ -25,6 +25,7 @@ import json
 import sys
 
 import numpy as np
+import trimesh
 
 import bp3d
 import hra
@@ -83,6 +84,26 @@ def _umbrella(vertices: np.ndarray, a: np.ndarray, b: np.ndarray, degree: np.nda
     has = degree > 0
     delta[has] = acc[has] / degree[has, None] - vertices[has]
     return delta
+
+
+# 与邻居**共面**的结构：沿法线往里缩一点再导出。
+#
+# BP3D 的相邻结构是各自独立重建的，交界处并不是严丝合缝地贴着，而是互相穿插。
+# 实测椎间盘：靠近椎骨 2 mm 以内的顶点里 **44% 落在椎骨内部**，中位穿插 0.11 mm、
+# 最深 1.76 mm。两张面在同一处来回穿，深度测试没有稳定的赢家，交界就闪成一圈锯齿
+# ——放大看就是"骨头崩了口"，正是人类反馈的"许多断裂的地方"。
+#
+# 0.5 mm 是按分布挑的：能盖住 93% 的穿插（0.2mm 只盖 69%，0.8mm 盖 98% 但已经
+# 吃掉椎间盘 8% 的高度）。椎间盘约 10 mm 高，缩 0.5 mm 是 5%，看不出来，
+# 换来的是一条干净的凹缝而不是一圈闪烁。
+SEAM_INSET_MM: dict[str, float] = {"intervertebral_disks": 0.5}
+
+
+def inset_mesh(vertices: np.ndarray, faces: np.ndarray, mm: float) -> np.ndarray:
+    """沿顶点法线向内缩 mm 毫米（法线朝外，所以是减）。"""
+    mesh = trimesh.Trimesh(vertices=vertices.astype(np.float64), faces=faces, process=False)
+    moved = mesh.vertices - mesh.vertex_normals * float(mm)
+    return moved.astype(np.float32)
 
 
 def smooth_mesh(vertices: np.ndarray, faces: np.ndarray) -> np.ndarray:
@@ -396,6 +417,10 @@ def process_structure(entry: dict, center: np.ndarray) -> dict | None:
                 f"{entry['slug']}: 平滑后包围盒对角线 {diag_before:.1f} → {diag_after:.1f} mm，疑似发散"
             )
     v, f = simplify_mesh(v, f, int(entry["target_faces"]))
+    # 内缩放在减面**之后**：减面会重排顶点与法线，先缩再减等于白缩
+    inset = SEAM_INSET_MM.get(entry["slug"])
+    if inset:
+        v = inset_mesh(v, f, inset)
     v = v - center.astype(np.float32)
     bbox = np.concatenate([v.min(axis=0), v.max(axis=0)]).astype(float)
 

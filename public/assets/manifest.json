@@ -1,6 +1,6 @@
 {
   "version": "0.0.1",
-  "generatedAt": "2026-08-20T23:30:19+00:00",
+  "generatedAt": "2026-08-21T11:22:23+00:00",
   "systems": [
     {
       "id": "skin",
@@ -65,7 +65,7 @@
     {
       "id": "skeleton",
       "file": "assets/skeleton.glb",
-      "bytes": 4855584,
+      "bytes": 4856032,
       "structures": [
         "skull",
         "mandible",
@@ -1335,12 +1335,12 @@
       ],
       "source": "bp3d",
       "bbox": [
-        -24.61,
-        -15.22,
-        108.07,
-        24.55,
-        70.16,
-        664.18
+        -24.19,
+        -14.88,
+        108.3,
+        24.14,
+        69.85,
+        663.7
       ]
     },
     "ribs": {
