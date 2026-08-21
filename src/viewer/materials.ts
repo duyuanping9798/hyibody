@@ -910,14 +910,22 @@ export function createXRayMaterial(color: string | number, opacity = 1): MeshBas
         '#include <project_vertex>',
         `#include <project_vertex>${worldVaryingGlsl('vXrayW')}`,
       )
-      // 世界法线自己算：basic 材质的片元里没有现成的法线 varying
+      // 世界法线自己算：basic 材质的片元里没有现成的法线 varying。
+      //
+      // **注意注入点**：不能挂在 `<beginnormal_vertex>` 之后——在 basic 的顶点
+      // 着色器里那一句被包在 `#if defined(USE_ENVMAP) || defined(USE_SKINNING)`
+      // 里，而我们两个都没有，整段会被预处理器编译掉，`vXrayN` 永远不被赋值。
+      // 后果不是报错而是**静默失效**：normalize(未初始化) 得到 NaN，片元 alpha
+      // 也成 NaN，皮肤一个像素都画不出来，而着色器编译得好好的。
+      // 挂在 `<batching_vertex>` 之后（无条件执行），并直接用 `normal` 属性——
+      // 它在 three 的顶点前缀里是无条件声明的。
       .replace(
-        '#include <beginnormal_vertex>',
-        `#include <beginnormal_vertex>
+        '#include <batching_vertex>',
+        `#include <batching_vertex>
          #ifdef USE_BATCHING
-           vXrayN = normalize(mat3(modelMatrix) * mat3(batchingMatrix) * objectNormal);
+           vXrayN = normalize(mat3(modelMatrix) * mat3(batchingMatrix) * normal);
          #else
-           vXrayN = normalize(mat3(modelMatrix) * objectNormal);
+           vXrayN = normalize(mat3(modelMatrix) * normal);
          #endif`,
       );
     shader.fragmentShader = shader.fragmentShader

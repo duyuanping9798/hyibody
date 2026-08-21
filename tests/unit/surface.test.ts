@@ -146,6 +146,19 @@ describe('X-ray 皮肤壳', () => {
   // ShaderMaterial，顶点写死 `modelMatrix * vec4(position, 1.0)`，不认合批矩阵；
   // 而皮肤自 v1.1 起走 BatchedMesh，glb 顶点又是量化过的（局部坐标在 ±1 附近），
   // 直接用回去皮肤会缩成原点附近的一小团。这几条就是锁这个。
+  it('世界法线的注入点必须是无条件执行的那一段', () => {
+    // 真踩过：原来挂在 <beginnormal_vertex> 之后，而 basic 的顶点着色器里那一句
+    // 被 `#if defined(USE_ENVMAP) || defined(USE_SKINNING)` 包着——我们两个都没有，
+    // 整段被预处理器编译掉，vXrayN 永远不被赋值。normalize(未初始化) 得到 NaN，
+    // 皮肤一个像素都画不出来，**而着色器编译得好好的、控制台一声不吭**。
+    const v = compile(createXRayMaterial(0xffffff, 1), 'basic').vertexShader;
+    const guard = v.indexOf('USE_ENVMAP');
+    const assign = v.indexOf('vXrayN =');
+    expect(assign).toBeGreaterThan(0);
+    expect(guard).toBeGreaterThan(0);
+    expect(assign, '法线赋值落在 USE_ENVMAP 守卫之后 = 会被编译掉').toBeLessThan(guard);
+  });
+
   it('认合批矩阵——世界坐标与世界法线两处都要乘', () => {
     const s = compile(createXRayMaterial(0xffffff, 1), 'basic');
     expect(s.vertexShader).toContain('#ifdef USE_BATCHING');
