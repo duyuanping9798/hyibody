@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "id": "back_muscles",
+  "title": {
+    "zh": "背部肌：后面观",
+    "en": "Back muscles: posterior view"
+  },
+  "region": "thorax",
+  "system": "muscles",
+  "view": {
+    "layer": 0.2,
+    "selected": "trapezius",
+    "from": "back",
+    "systems": {
+      "skin": false,
+      "skeleton": 0.25,
+      "organs": false,
+      "vessels": false,
+      "nerves": false
+    }
+  }
+}

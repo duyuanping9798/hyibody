@@ -177,5 +177,10 @@
       "stepDuration": "Step {n} is outside the 3–20s range"
     },
     "licence": "Your wonder builds on BodyParts3D / HuBMAP HRA (CC BY 4.0). Keep the attribution when you share it."
-  }
+  },
+  "atlasTitle": "Regional Views",
+  "galleryAll": "All",
+  "galleryClose": "Close",
+  "galleryEmpty": "Nothing here yet",
+  "atlasOpen": "Views"
 }

@@ -40,8 +40,10 @@ export default defineConfig({
         ],
       },
       workbox: {
-        // glb 里只预缓存皮肤（首屏那一份），其余五个系统交给下面的运行时缓存
-        globPatterns: ['**/*.{js,css,html,json,png,woff2}', '**/assets/skin.glb'],
+        // glb 里只预缓存皮肤（首屏那一份），其余五个系统交给下面的运行时缓存。
+        // webp 是画廊卡片的缩略图，63 张合起来不到 0.5 MB——预缓存掉，
+        // 展厅那台机器离线时"奥秘/细剖"两页才不会是一墙空卡片。
+        globPatterns: ['**/*.{js,css,html,json,png,webp,woff2}', '**/assets/skin.glb'],
         maximumFileSizeToCacheInBytes: 4_000_000,
         runtimeCaching: [
           {

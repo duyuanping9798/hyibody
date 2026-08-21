@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "id": "thorax_organs",
+  "title": {
+    "zh": "胸腔：心与肺",
+    "en": "Thorax: heart and lungs"
+  },
+  "region": "thorax",
+  "system": "organs",
+  "view": {
+    "layer": 0.62,
+    "selected": "heart",
+    "from": "front",
+    "systems": {
+      "skin": false,
+      "muscles": false,
+      "skeleton": 0.22,
+      "vessels": 0.25,
+      "nerves": false
+    }
+  }
+}

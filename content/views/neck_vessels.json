@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "id": "neck_vessels",
+  "title": {
+    "zh": "颈部血管",
+    "en": "Vessels of the neck"
+  },
+  "region": "neck",
+  "system": "vessels",
+  "view": {
+    "layer": 0.8,
+    "selected": "common_carotid_arteries",
+    "from": "front",
+    "systems": {
+      "skin": false,
+      "muscles": false,
+      "skeleton": 0.14,
+      "organs": 0.18,
+      "nerves": false
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "id": "spine_cord",
+  "title": {
+    "zh": "脊柱与脊髓：剖开",
+    "en": "Spine and cord: sectioned"
+  },
+  "region": "whole",
+  "system": "nerves",
+  "view": {
+    "layer": 1,
+    "selected": "spinal_cord",
+    "from": "left",
+    "clip": {
+      "axis": "x",
+      "pos": 0
+    },
+    "systems": {
+      "skin": false,
+      "muscles": false,
+      "organs": false,
+      "vessels": false,
+      "skeleton": 0.35
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "id": "larynx",
+  "title": {
+    "zh": "喉与气管软骨",
+    "en": "Larynx and tracheal cartilages"
+  },
+  "region": "neck",
+  "system": "organs",
+  "view": {
+    "layer": 0.62,
+    "selected": "larynx_cartilages",
+    "from": "front",
+    "systems": {
+      "skin": false,
+      "muscles": false,
+      "skeleton": 0.12,
+      "vessels": 0.2,
+      "nerves": false
+    }
+  }
+}

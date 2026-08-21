@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "id": "hip_femur",
+  "title": {
+    "zh": "髋与股骨",
+    "en": "Hip and femur"
+  },
+  "region": "lower_limb",
+  "system": "skeleton",
+  "view": {
+    "layer": 0.45,
+    "selected": "femur_left",
+    "from": "front",
+    "systems": {
+      "skin": false,
+      "muscles": false,
+      "organs": false,
+      "vessels": false,
+      "nerves": false
+    }
+  }
+}

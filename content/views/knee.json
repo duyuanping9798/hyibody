@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "id": "knee",
+  "title": {
+    "zh": "膝关节",
+    "en": "Knee joint"
+  },
+  "region": "lower_limb",
+  "system": "skeleton",
+  "view": {
+    "layer": 0.45,
+    "selected": "patella_left",
+    "from": "front",
+    "systems": {
+      "skin": false,
+      "muscles": false,
+      "organs": false,
+      "vessels": false,
+      "nerves": false
+    }
+  }
+}

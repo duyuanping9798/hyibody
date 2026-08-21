@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "id": "shoulder_muscles",
+  "title": {
+    "zh": "肩部肌",
+    "en": "Muscles of the shoulder"
+  },
+  "region": "upper_limb",
+  "system": "muscles",
+  "view": {
+    "layer": 0.2,
+    "selected": "deltoid",
+    "from": "front",
+    "systems": {
+      "skin": false,
+      "skeleton": 0.25,
+      "organs": false,
+      "vessels": false,
+      "nerves": false
+    }
+  }
+}

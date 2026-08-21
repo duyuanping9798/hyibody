@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "id": "abdomen_front",
+  "title": {
+    "zh": "腹腔：前面观",
+    "en": "Abdomen: anterior view"
+  },
+  "region": "abdomen",
+  "system": "organs",
+  "view": {
+    "layer": 0.62,
+    "selected": "large_intestine",
+    "from": "front",
+    "systems": {
+      "skin": false,
+      "muscles": false,
+      "skeleton": 0.12,
+      "vessels": 0.2,
+      "nerves": false
+    }
+  }
+}

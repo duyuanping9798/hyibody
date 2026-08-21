@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "id": "brain_lateral",
+  "title": {
+    "zh": "脑：外侧面观",
+    "en": "Brain: lateral view"
+  },
+  "region": "head",
+  "system": "nerves",
+  "view": {
+    "layer": 1,
+    "selected": "brain",
+    "from": "left",
+    "systems": {
+      "skin": false,
+      "muscles": false,
+      "skeleton": 0.14,
+      "organs": false,
+      "vessels": 0.18
+    }
+  }
+}

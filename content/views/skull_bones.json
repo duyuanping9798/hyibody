@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "id": "skull_bones",
+  "title": {
+    "zh": "颅骨：分块着色",
+    "en": "Skull: bones colour-coded"
+  },
+  "region": "head",
+  "system": "skeleton",
+  "view": {
+    "layer": 0.45,
+    "selected": "skull",
+    "expand": "skull",
+    "from": "left",
+    "systems": {
+      "skin": false,
+      "muscles": false,
+      "organs": false,
+      "vessels": false,
+      "nerves": false
+    }
+  }
+}

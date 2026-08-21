@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "id": "liver_biliary",
+  "title": {
+    "zh": "肝、胆囊与门静脉",
+    "en": "Liver, gallbladder and portal vein"
+  },
+  "region": "abdomen",
+  "system": "organs",
+  "view": {
+    "layer": 0.62,
+    "selected": "liver",
+    "expand": "liver",
+    "from": "front",
+    "systems": {
+      "skin": false,
+      "muscles": false,
+      "skeleton": 0.12,
+      "vessels": 0.2,
+      "nerves": false
+    }
+  }
+}

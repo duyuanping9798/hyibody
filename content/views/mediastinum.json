@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "id": "mediastinum",
+  "title": {
+    "zh": "纵隔大血管",
+    "en": "Great vessels of the mediastinum"
+  },
+  "region": "thorax",
+  "system": "vessels",
+  "view": {
+    "layer": 0.8,
+    "selected": "aorta",
+    "from": "front",
+    "systems": {
+      "skin": false,
+      "muscles": false,
+      "skeleton": 0.14,
+      "organs": 0.18,
+      "nerves": false
+    }
+  }
+}

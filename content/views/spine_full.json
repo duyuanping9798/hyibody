@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "id": "spine_full",
+  "title": {
+    "zh": "脊柱：全长外侧观",
+    "en": "Spine: full lateral view"
+  },
+  "region": "whole",
+  "system": "skeleton",
+  "view": {
+    "layer": 0.45,
+    "selected": "thoracic_vertebrae",
+    "from": "left",
+    "systems": {
+      "skin": false,
+      "muscles": false,
+      "organs": false,
+      "vessels": false,
+      "nerves": false
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "id": "skull_front",
+  "title": {
+    "zh": "颅骨：前面观",
+    "en": "Skull: anterior view"
+  },
+  "region": "head",
+  "system": "skeleton",
+  "view": {
+    "layer": 0.45,
+    "selected": "skull",
+    "from": "front",
+    "systems": {
+      "skin": false,
+      "muscles": false,
+      "organs": false,
+      "vessels": false,
+      "nerves": false
+    }
+  }
+}

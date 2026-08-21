@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "id": "skull_lateral",
+  "title": {
+    "zh": "颅骨：外侧面观",
+    "en": "Skull: lateral view"
+  },
+  "region": "head",
+  "system": "skeleton",
+  "view": {
+    "layer": 0.45,
+    "selected": "skull",
+    "from": "left",
+    "systems": {
+      "skin": false,
+      "muscles": false,
+      "organs": false,
+      "vessels": false,
+      "nerves": false
+    }
+  }
+}

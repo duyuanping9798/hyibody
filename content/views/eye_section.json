@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "id": "eye_section",
+  "title": {
+    "zh": "眼球：内部结构",
+    "en": "Eyeball: internal structures"
+  },
+  "region": "head",
+  "system": "organs",
+  "view": {
+    "layer": 0.62,
+    "selected": "eyes",
+    "expand": "eyes",
+    "from": "left",
+    "clip": {
+      "axis": "x",
+      "pos": 0
+    },
+    "systems": {
+      "skin": false,
+      "muscles": false,
+      "skeleton": 0.12,
+      "vessels": 0.2,
+      "nerves": false
+    }
+  }
+}

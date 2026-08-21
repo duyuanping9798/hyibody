@@ -177,5 +177,10 @@
       "stepDuration": "第 {n} 步的时长超出 3–20 秒"
     },
     "licence": "你创作的内容基于 BodyParts3D / HuBMAP HRA（CC BY 4.0）。分享出去时请保留署名。"
-  }
+  },
+  "atlasTitle": "局部细剖",
+  "galleryAll": "全部",
+  "galleryClose": "关闭",
+  "galleryEmpty": "这里还没有内容",
+  "atlasOpen": "细剖"
 }
