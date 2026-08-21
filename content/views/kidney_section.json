@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "id": "kidney_section",
+  "title": {
+    "zh": "肾：皮质与髓质剖面",
+    "en": "Kidney: cortex and medulla section"
+  },
+  "region": "abdomen",
+  "system": "organs",
+  "view": {
+    "layer": 0.62,
+    "selected": "kidneys",
+    "expand": "kidneys",
+    "from": "front",
+    "clip": {
+      "axis": "y",
+      "pos": 0.1
+    },
+    "systems": {
+      "skin": false,
+      "muscles": false,
+      "skeleton": 0.12,
+      "vessels": 0.2,
+      "nerves": false
+    }
+  }
+}

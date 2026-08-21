@@ -21,6 +21,7 @@ import {
   type CaptureOptions,
   type ViewSnapshot,
 } from '../wonders/draft';
+import type { AtlasScene, AtlasView } from '../data/views';
 import { computeSystemOpacity } from '../viewer/layers';
 import type { ClipAxis } from '../viewer/clipping';
 import type { ViewPresetId } from '../viewer/camera';
@@ -34,6 +35,9 @@ const REVEAL_MIN_OPACITY = 0.6;
 
 /** 工具抽屉里的三格。 */
 export type PanelId = 'systems' | 'views' | 'clip';
+
+/** 整页画廊有两种：奥秘（会播）与局部细剖（只摆一个画面）。 */
+export type GalleryKind = 'wonders' | 'atlas';
 
 /** UI 状态（Zustand）。viewer 实例不进 store，动作经 bindViewer 的引用转发。 */
 interface UiState {
@@ -52,6 +56,11 @@ interface UiState {
   attributionOpen: boolean;
   /** 工具抽屉：当前展开的那一格，null = 全收起（桌面与小屏同一套，见 Dock.tsx） */
   activePanel: PanelId | null;
+  /**
+   * 整页画廊：'wonders' = 奥秘、'atlas' = 局部细剖，null = 不开。
+   * 两者共用一套卡片网格（Gallery.tsx），差别只在数据源与点开之后做什么。
+   */
+  gallery: GalleryKind | null;
   /** 信息卡是否展开全文。小屏上默认收起成「名字 + 一句话 + 操作」的窄条 */
   infoExpanded: boolean;
   /** 界面语言（M2-5，默认中文） */
@@ -112,10 +121,16 @@ interface UiState {
   setClip(clip: { axis: ClipAxis; pos: number; flip?: boolean } | null): void;
   clipThroughSelected(): void;
   applyPreset(id: ViewPresetId): void;
-  focus(slug: string, from?: ViewPresetId): void;
+  focus(slug: string, from?: ViewPresetId, zoomOut?: number): void;
   setAttributionOpen(open: boolean): void;
   togglePanel(panel: PanelId): void;
   setInfoExpanded(open: boolean): void;
+  openGallery(kind: GalleryKind): void;
+  closeGallery(): void;
+  /** 应用一条局部细剖视图（画面摆好、画廊关掉） */
+  applyAtlasView(view: AtlasView): void;
+  /** 只摆画面、不碰界面状态。缩略图脚本用（?thumbs=1，见 App.tsx） */
+  poseScene(scene: AtlasScene): void;
   startWonder(wonder: Wonder): void;
   exitWonder(): void;
   dismissOutro(): void;
@@ -199,8 +214,14 @@ function buildOverlay(credit: string, kicker: string, byLabel: string): Recorder
   };
 }
 
-/** 把一步奥秘应用到画面：分层、显隐覆盖、选中与对准。 */
-function applyWonderStep(step: WonderStep): void {
+/**
+ * 把一步奥秘应用到画面：分层、显隐覆盖、选中与对准。
+ *
+ * 参数收窄到 `AtlasScene`（= WonderStep 去掉 text/durationMs），因为这个函数
+ * 从来只读画面相关的字段。收窄之后局部细剖视图能直接复用它——**画面怎么摆
+ * 只该有一处实现**，否则"奥秘里对、细剖里不对"这种 bug 迟早会出现。
+ */
+function applyScene(step: AtlasScene): void {
   const st = useUiStore.getState();
   // 运镜先定：本步之后触发的每一次相机飞行都用这个手感（慢、两头软、绕开人体），
   // 飞到位之后继续做微动作。缺省 push——静止的画面在视频里是死的。
@@ -223,7 +244,7 @@ function applyWonderStep(step: WonderStep): void {
   if (step.selected) {
     st.select(step.selected);
     // from 只定方向、focus 定距离；preset 是整具人体宽景，给了就不再特写
-    if (step.focus !== false && !step.preset) st.focus(step.selected, step.from);
+    if (step.focus !== false && !step.preset) st.focus(step.selected, step.from, step.zoomOut);
   } else {
     st.select(null);
   }
@@ -231,7 +252,7 @@ function applyWonderStep(step: WonderStep): void {
 
 wonderEngine.addEventListener('step', (e) => {
   const { step } = (e as CustomEvent<{ index: number; step: WonderStep | null }>).detail;
-  if (step) applyWonderStep(step);
+  if (step) applyScene(step);
   useUiStore.setState({
     wonderIndex: wonderEngine.currentIndex,
     wonderStepAt: performance.now(),
@@ -377,6 +398,7 @@ export const useUiStore = create<UiState>((set, get) => ({
   clip: null,
   attributionOpen: false,
   activePanel: null,
+  gallery: null,
   infoExpanded: false,
   wonder: null,
   wonderIndex: 0,
@@ -497,9 +519,9 @@ export const useUiStore = create<UiState>((set, get) => ({
   applyPreset: (id) => {
     viewer?.applyPreset(id);
   },
-  focus: (slug, from) => {
+  focus: (slug, from, zoomOut) => {
     revealLayerFor(slug);
-    viewer?.focus(slug, from);
+    viewer?.focus(slug, from, zoomOut);
   },
   setAttributionOpen: (attributionOpen) => set({ attributionOpen }),
 
@@ -518,6 +540,21 @@ export const useUiStore = create<UiState>((set, get) => ({
   },
   togglePanel: (panel) => set((s) => ({ activePanel: s.activePanel === panel ? null : panel })),
 
+  // 画廊是整页的，开的时候把工具抽屉收掉，免得关掉画廊之后底下多出一个没人开过的面板
+  openGallery: (kind) => set({ gallery: kind, activePanel: null }),
+  closeGallery: () => set({ gallery: null }),
+
+  applyAtlasView: (view) => {
+    set({ gallery: null });
+    // 细剖视图是"直接给你摆好一个画面"，不是运镜——切过去要干脆。
+    // 不覆盖 motion 的话会沿用上一则奥秘留下的慢速推镜，点一下要等好几秒。
+    applyScene({ motion: 'still', transitionMs: 700, ...view.view });
+  },
+
+  // 缩略图要的是"到位就停"的定格：不要运镜、不要飞行插值，
+  // 否则截图时相机还在半路上，六十张图各停在各自的中途。
+  poseScene: (scene) => applyScene({ ...scene, motion: 'still', transitionMs: 0 }),
+
   startWonder: (wonder) => {
     const now = performance.now();
     set({
@@ -525,6 +562,10 @@ export const useUiStore = create<UiState>((set, get) => ({
       wonderIndex: 0,
       wonderPlaying: true,
       activePanel: null,
+      // 画廊必须一起关掉。不关的话它整页盖在上面，奥秘在底下开演，
+      // 而画廊里那些缩略图会吃掉所有点击——播放器的按钮一个都按不到。
+      // （e2e 逮到的：`<img src=".../wonder-nerve.webp"> intercepts pointer events`）
+      gallery: null,
       wonderOutro: null,
       wonderStartedAt: now,
       wonderStepAt: now,
@@ -689,7 +730,7 @@ export const useUiStore = create<UiState>((set, get) => ({
     set({ draftStep: index });
     // 点开一步就把画面还原成那一步的样子——不然改的是什么全靠脑补
     const step = index === null ? null : s.draft?.steps[index];
-    if (step) applyWonderStep(step);
+    if (step) applyScene(step);
   },
 
   loadWonderIntoDraft: (wonder) => {

@@ -40,6 +40,11 @@ MAX_TOTAL_BYTES = 40_000_000  # 全部资产
 # 首屏：皮肤 + manifest。硬顶是 5 MB，这里留 4 MB 的收紧值——全量之后首屏实测
 # 只有 1.29 MB，余量大到没有放开的理由；哪天它逼近 4 MB，说明有东西又挤进首屏了。
 MAX_FIRST_SCREEN_BYTES = 4_000_000
+# 画廊卡片的缩略图（scripts/thumbs.mjs 渲的 320×320 webp）。它们也算"发出去的资产"，
+# 所以要计进 40 MB 预算。单张上限 40 KB：实测 3–10 KB，一张真上到 40 KB
+# 说明画面里挤进了不该有的东西（界面没藏干净、或者截到了满屏噪点）。
+MAX_THUMB_BYTES = 40_000
+THUMBS_DIR = ASSETS_DIR.parent / "thumbs"
 MAX_TOTAL_TRIANGLES = 5_000_000
 # 面数目标区间：低于下限说明网格被压得太狠（观感粗糙），只警告不报错。
 #
@@ -245,6 +250,9 @@ def validate_assets(manifest: dict, chk: Checker) -> None:
         # 单一事实来源是 src/viewer/loadOrder.ts 的 FIRST_SCREEN_SYSTEMS。
         if s["id"] in FIRST_SCREEN_SYSTEMS:
             first_screen += size
+        # 缩略图也是要发出去的资产，得算进 40 MB 预算里。
+        # 它们不在 manifest 里（manifest 描述的是三维资产），所以单独扫一遍目录——
+        # 不扫的话预算就成了"只管我们记得的那部分"，那不算预算。
         counts = glb_triangle_counts(glb)
         manifest_slugs = set(s["structures"])
         node_slugs = set(counts.keys())
@@ -262,6 +270,20 @@ def validate_assets(manifest: dict, chk: Checker) -> None:
         missing_extras = glb_extras_ok(glb)
         for slug in missing_extras:
             chk.error(f"{glb.name}: 节点 {slug} 丢失 extras（gltf-transform 配置问题？）")
+    thumbs = sorted(THUMBS_DIR.glob("*.webp")) if THUMBS_DIR.exists() else []
+    thumb_bytes = sum(p.stat().st_size for p in thumbs)
+    total_bytes += thumb_bytes
+    if thumbs:
+        biggest = max(thumbs, key=lambda p: p.stat().st_size)
+        print(
+            f"缩略图：{len(thumbs)} 张 / {thumb_bytes / 1e6:.2f} MB"
+            f"（最大 {biggest.name} {biggest.stat().st_size / 1024:.0f} KB）"
+        )
+        if biggest.stat().st_size > MAX_THUMB_BYTES:
+            chk.error(
+                f"{biggest.name}: {biggest.stat().st_size / 1024:.0f} KB "
+                f"超过单张缩略图 {MAX_THUMB_BYTES / 1024:.0f} KB 上限"
+            )
     if total_bytes > MAX_TOTAL_BYTES:
         chk.error(
             f"全部资产 {total_bytes / 1e6:.1f} MB 超过 "

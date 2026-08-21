@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "id": "thorax_front",
+  "title": {
+    "zh": "胸廓：前面观",
+    "en": "Thoracic cage: anterior view"
+  },
+  "region": "thorax",
+  "system": "skeleton",
+  "view": {
+    "layer": 0.45,
+    "selected": "ribs",
+    "from": "front",
+    "systems": {
+      "skin": false,
+      "muscles": false,
+      "organs": false,
+      "vessels": false,
+      "nerves": false
+    }
+  }
+}

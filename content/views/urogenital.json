@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "id": "urogenital",
+  "title": {
+    "zh": "泌尿与生殖器官",
+    "en": "Urinary and reproductive organs"
+  },
+  "region": "pelvis",
+  "system": "organs",
+  "view": {
+    "layer": 0.62,
+    "selected": "urinary_bladder",
+    "from": "front",
+    "systems": {
+      "skin": false,
+      "muscles": false,
+      "skeleton": 0.12,
+      "vessels": 0.2,
+      "nerves": false
+    },
+    "zoomOut": 2.5
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "id": "thorax_back",
+  "title": {
+    "zh": "胸廓：后面观",
+    "en": "Thoracic cage: posterior view"
+  },
+  "region": "thorax",
+  "system": "skeleton",
+  "view": {
+    "layer": 0.45,
+    "selected": "ribs",
+    "from": "back",
+    "systems": {
+      "skin": false,
+      "muscles": false,
+      "organs": false,
+      "vessels": false,
+      "nerves": false
+    }
+  }
+}

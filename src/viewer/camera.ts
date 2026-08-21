@@ -199,12 +199,18 @@ export function poseForFocus(
   fovDeg: number,
   from?: ViewPresetId,
   safe?: SafeInsets,
+  /**
+   * 取景余量倍数（1 = 刚好框住）。默认 1.6 对大多数结构合适，
+   * 但**小结构需要更大的值才看得懂**：髌骨只有 40 毫米，撑满一帧就是一团白，
+   * 认不出那是膝盖。给 3 左右能把股骨下端与胫骨上端一起带进画面。
+   */
+  zoomOut = 1.6,
 ): CameraPose {
   const center = box.getCenter(new Vector3());
   const size = box.getSize(new Vector3());
   const radius = Math.max(size.x, size.y, size.z, FOCUS_MIN_SIZE_MM) * 0.5;
   const halfFov = ((fovDeg / 2) * Math.PI) / 180;
-  let dist = (radius / Math.tan(halfFov)) * 1.6;
+  let dist = (radius / Math.tan(halfFov)) * zoomOut;
   const dir = from
     ? VIEW_PRESETS[from].dir.clone().normalize()
     : cameraPos.clone().sub(currentTarget).normalize();

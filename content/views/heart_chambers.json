@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "id": "heart_chambers",
+  "title": {
+    "zh": "心脏：四腔剖面",
+    "en": "Heart: four-chamber section"
+  },
+  "region": "thorax",
+  "system": "organs",
+  "view": {
+    "layer": 0.62,
+    "selected": "heart",
+    "expand": "heart",
+    "from": "front",
+    "clip": {
+      "axis": "y",
+      "pos": 0.1
+    },
+    "systems": {
+      "skin": false,
+      "muscles": false,
+      "skeleton": 0.12,
+      "vessels": 0.2,
+      "nerves": false
+    }
+  }
+}

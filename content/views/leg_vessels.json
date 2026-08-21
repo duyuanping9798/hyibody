@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "id": "leg_vessels",
+  "title": {
+    "zh": "下肢血管",
+    "en": "Vessels of the lower limb"
+  },
+  "region": "lower_limb",
+  "system": "vessels",
+  "view": {
+    "layer": 0.8,
+    "selected": "femoral_arteries",
+    "from": "front",
+    "systems": {
+      "skin": false,
+      "muscles": false,
+      "skeleton": 0.14,
+      "organs": 0.18,
+      "nerves": false
+    }
+  }
+}

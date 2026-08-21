@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "id": "foot_bones",
+  "title": {
+    "zh": "足骨",
+    "en": "Bones of the foot"
+  },
+  "region": "lower_limb",
+  "system": "skeleton",
+  "view": {
+    "layer": 0.45,
+    "selected": "foot_bones",
+    "from": "left",
+    "systems": {
+      "skin": false,
+      "muscles": false,
+      "organs": false,
+      "vessels": false,
+      "nerves": false
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "id": "stomach_pancreas",
+  "title": {
+    "zh": "胃与胰",
+    "en": "Stomach and pancreas"
+  },
+  "region": "abdomen",
+  "system": "organs",
+  "view": {
+    "layer": 0.62,
+    "selected": "pancreas",
+    "expand": "pancreas",
+    "from": "front",
+    "systems": {
+      "skin": false,
+      "muscles": false,
+      "skeleton": 0.12,
+      "vessels": 0.2,
+      "nerves": false
+    },
+    "zoomOut": 2.2
+  }
+}

@@ -775,7 +775,7 @@ export class HyiViewer extends EventTarget {
    * 这样奥秘脚本能说"从左侧凑近看"，而不必在 preset（整具人体宽景）与
    * focus（当前角度特写）之间二选一。
    */
-  focus(slug: string, from?: ViewPresetId): void {
+  focus(slug: string, from?: ViewPresetId, zoomOut?: number): void {
     const entry = this.structures.get(slug);
     if (!entry?.mesh.geometry.boundingBox) return;
     const box = entry.mesh.geometry.boundingBox.clone().applyMatrix4(entry.mesh.matrixWorld);
@@ -786,6 +786,7 @@ export class HyiViewer extends EventTarget {
       this.rig.camera.fov,
       from,
       this.safeArea(),
+      zoomOut,
     );
     this.flyTo(pose.pos, pose.target);
   }

@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "id": "shoulder",
+  "title": {
+    "zh": "肩关节",
+    "en": "Shoulder joint"
+  },
+  "region": "upper_limb",
+  "system": "skeleton",
+  "view": {
+    "layer": 0.45,
+    "selected": "scapula_left",
+    "from": "front",
+    "systems": {
+      "skin": false,
+      "muscles": false,
+      "organs": false,
+      "vessels": false,
+      "nerves": false
+    },
+    "zoomOut": 2.2
+  }
+}

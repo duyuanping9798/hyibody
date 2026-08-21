@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "id": "thigh_muscles",
+  "title": {
+    "zh": "大腿肌：前面观",
+    "en": "Thigh muscles: anterior view"
+  },
+  "region": "lower_limb",
+  "system": "muscles",
+  "view": {
+    "layer": 0.2,
+    "selected": "rectus_femoris",
+    "from": "front",
+    "systems": {
+      "skin": false,
+      "skeleton": 0.25,
+      "organs": false,
+      "vessels": false,
+      "nerves": false
+    }
+  }
+}

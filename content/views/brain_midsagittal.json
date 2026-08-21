@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "id": "brain_midsagittal",
+  "title": {
+    "zh": "脑：正中矢状剖面",
+    "en": "Brain: midsagittal section"
+  },
+  "region": "head",
+  "system": "nerves",
+  "view": {
+    "layer": 1,
+    "selected": "brain",
+    "expand": "brain",
+    "from": "left",
+    "clip": {
+      "axis": "x",
+      "pos": 0
+    },
+    "systems": {
+      "skin": false,
+      "muscles": false,
+      "skeleton": 0.14,
+      "organs": false,
+      "vessels": 0.18
+    }
+  }
+}

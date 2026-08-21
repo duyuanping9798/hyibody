@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "id": "chest_muscles",
+  "title": {
+    "zh": "胸壁肌：前面观",
+    "en": "Chest wall muscles: anterior view"
+  },
+  "region": "thorax",
+  "system": "muscles",
+  "view": {
+    "layer": 0.2,
+    "selected": "pectoralis_major",
+    "from": "front",
+    "systems": {
+      "skin": false,
+      "skeleton": 0.25,
+      "organs": false,
+      "vessels": false,
+      "nerves": false
+    }
+  }
+}

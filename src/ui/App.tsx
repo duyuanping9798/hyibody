@@ -20,6 +20,9 @@ import { bindViewer, toUrlState, useUiStore } from './store';
 import { Dock } from './Dock';
 import { InfoIcon, ShareIcon } from './Icon';
 import { WonderMenu, WonderPlayer } from './WonderPlayer';
+import type { AtlasScene } from '../data/views';
+import { WonderGallery } from './WonderGallery';
+import { AtlasGallery } from './AtlasGallery';
 import { WonderStage } from './WonderStage';
 import { VideoExport } from './VideoExport';
 import { EditorButton, WonderEditor } from './WonderEditor';
@@ -120,6 +123,14 @@ export function App() {
         // decodeWonder 对坏链接返回 null 而不是抛——链接会被聊天软件截断
         const shared = decodeWonder(params.get('w'));
         if (shared) useUiStore.getState().startWonder(shared);
+        // ?thumbs=1 给缩略图脚本开一个后门：一次加载、逐个摆画面、逐个截图。
+        // 没有它就只能每张图重开一次页面——软件渲染下一次加载就是一分钟，
+        // 六十多张要跑一小时。和 ?stats=1 / ?surf= 一样是调试开关，
+        // 不给这个参数时 window 上什么都不会多出来。
+        if (params.get('thumbs') === '1') {
+          (window as unknown as Record<string, unknown>).__hyiPose = (scene: AtlasScene) =>
+            useUiStore.getState().poseScene(scene);
+        }
       })
       .catch(() => useUiStore.getState().setLoadState('error'));
     return () => {
@@ -189,6 +200,9 @@ export function App() {
           {!wonder && <InfoCard />}
           {/* 放映层在控制条之下渲染、在层级上盖住画面：黑边、片头、字幕、片尾 */}
           <WonderStage />
+          {/* 整页画廊盖在最上层：开着的时候它就是整块屏幕 */}
+          <WonderGallery />
+          <AtlasGallery />
           {wonder ? <WonderPlayer /> : <LayerSlider />}
           <Attribution />
           <WonderEditor />
