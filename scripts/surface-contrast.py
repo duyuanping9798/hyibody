@@ -101,7 +101,12 @@ def main() -> int:
             ratios.append(r)
             print(f"{name:6} {st:>4} {ca:8.2f} {cb:8.2f}   {r:.2f}×")
     best = max(ratios)
-    print(f"\n最大 {best:.2f}× —— 验收线是 1.5×：{'过' if best >= 1.5 else '不过，参数还是太弱'}")
+    # 这个数**只回答"有没有生效"，不用来定幅度**。标定过：bump 从 2 抬到 20
+    # （十倍，画面从"几乎看不出"变成"揉皱的锡纸"），读数只从 1.27× 走到 1.65×——
+    # 局部对比度在这类场景被几何边缘和半透明叠加主导，比值被严重压缩。
+    # 幅度请看同机位 A/B 的图。
+    verdict = "没生效" if best < 1.1 else "生效了（幅度请看图，别看这个数）"
+    print(f"\n最大 {best:.2f}× —— {verdict}")
     return 0
 
 
