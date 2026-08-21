@@ -74,10 +74,13 @@ test('heartbeat wonder plays from the menu', async ({ page }) => {
   // 6.1 分钟、重试 4.0 分钟——360 秒正好卡在中间，于是每轮都判一次"首跑失败、
   // 重试通过"。这不是产品不稳，是预算没跟上资产。
   //
-  // 别的选心脏用例能靠 `?v=…selected=heart` 让器官排后台第一位而快十几倍，
-  // **这条不行**：它是从菜单点开的，链接里没有点名任何结构，只能老老实实等。
+  // 上面那段注释原来还写着"这条不行：它是从菜单点开的，只能老老实实等"。
+  // **那个理由站不住**：`?v=…selected=heart` 影响的只是后台补载的**顺序**
+  // （器官排第一位），不影响"从菜单点开"这条路径本身——这个用例真正要覆盖的
+  // 是画廊 → 播放器那一段，不是"冷启动要等多久"。改成带上它之后不再卡预算。
+  // （2026-08-21 换成整页画廊之后又多了 29 张卡片要渲，606 秒越过了 600 秒的线。）
   test.setTimeout(600_000);
-  await page.goto('/');
+  await page.goto(`/?v=${encodeUrlState({ layer: 0, selected: 'heart' })}`);
   await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
     timeout: 60_000,
   });
@@ -751,4 +754,18 @@ test('奥秘画廊：整页卡片墙，按系统分标签', async ({ page }) => 
   await gallery.getByRole('button', { name: '关闭' }).click();
   await expect(gallery).toHaveCount(0);
   await expect(page.locator('.hyi-layer-slider')).toBeVisible();
+
+  // 点一张卡：奥秘开演，**画廊必须一起消失**。
+  // 这条是真 bug 的回归锁：startWonder 原来只清 activePanel、不清 gallery，
+  // 于是画廊整页盖在播放器上，里面的缩略图吃掉所有点击，播放器一个按钮都按不到。
+  // 放在这条快用例里而不是「心跳」那条十分钟的用例里——它值得早点红。
+  await page.getByRole('button', { name: '奥秘' }).click();
+  await expect(page.getByTestId('wonder-gallery')).toBeVisible();
+  await page.getByTestId('wonder-gallery').locator('.hyi-card').first().click();
+  await expect(page.getByTestId('wonder-gallery')).toHaveCount(0);
+  const player = page.getByTestId('wonder-player');
+  await expect(player).toBeVisible();
+  // 按得到才算真的没被盖住
+  await player.getByRole('button', { name: '暂停' }).click();
+  await expect(player.getByRole('button', { name: '播放' })).toBeVisible();
 });

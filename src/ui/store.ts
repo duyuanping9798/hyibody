@@ -562,6 +562,10 @@ export const useUiStore = create<UiState>((set, get) => ({
       wonderIndex: 0,
       wonderPlaying: true,
       activePanel: null,
+      // 画廊必须一起关掉。不关的话它整页盖在上面，奥秘在底下开演，
+      // 而画廊里那些缩略图会吃掉所有点击——播放器的按钮一个都按不到。
+      // （e2e 逮到的：`<img src=".../wonder-nerve.webp"> intercepts pointer events`）
+      gallery: null,
       wonderOutro: null,
       wonderStartedAt: now,
       wonderStepAt: now,
