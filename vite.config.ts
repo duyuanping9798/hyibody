@@ -9,8 +9,17 @@ export default defineConfig({
   base: process.env.VITE_BASE ?? '/',
   plugins: [
     react(),
-    // PWA 离线（M2-3）：预缓存全部资产（六系统 glb 共约 4 MB，远低于预算），
-    // autoUpdate 静默换新版本
+    // PWA 离线（M2-3）：**首屏预缓存 + 其余运行时缓存**，autoUpdate 静默换新版本。
+    //
+    // 2026-08-20 全量之后资产是 30 MB，muscles.glb 一个就 9.45 MB。原来那份配置
+    // 是"预缓存全部 glb、单文件上限 8 MB"，直接把构建挂掉了。把上限抬到 10 MB
+    // 是错的解法：那等于每个访客一进门就得在 Service Worker 安装期吞完 30 MB，
+    // 手机流量和弱网上尤其恶劣，而且装到一半断了整个 SW 都装不上。
+    //
+    // 现在的分法跟加载架构对齐：**预缓存 = 首屏**（应用外壳 + manifest + 皮肤，
+    // 约 2 MB），**其余五个系统走 CacheFirst 运行时缓存**——用过一次就存下来，
+    // 之后离线可用。代价说清楚：**冷启动就断网时只有皮肤**，要完整离线得先在线
+    // 完整看过一遍。
     VitePWA({
       // 单文件预览构建（scripts/build-preview.mjs）里没有 Service Worker 环境，
       // 用 HYI_NO_PWA=1 关掉，免得控制台一片红
@@ -31,8 +40,21 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,glb,json,png,woff2}'],
-        maximumFileSizeToCacheInBytes: 8_000_000,
+        // glb 里只预缓存皮肤（首屏那一份），其余五个系统交给下面的运行时缓存
+        globPatterns: ['**/*.{js,css,html,json,png,woff2}', '**/assets/skin.glb'],
+        maximumFileSizeToCacheInBytes: 4_000_000,
+        runtimeCaching: [
+          {
+            urlPattern: /\/assets\/[^/]+\.glb$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'hyi-systems',
+              // 6 个系统 + 换版本时的新旧并存，留一倍余量
+              expiration: { maxEntries: 12, maxAgeSeconds: 60 * 60 * 24 * 90 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+        ],
       },
     }),
   ],
