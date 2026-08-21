@@ -3,6 +3,7 @@ import { ShaderLib, MeshStandardMaterial, type Material } from 'three';
 import {
   createSystemMaterial,
   createXRayMaterial,
+  setMaterialOpacity,
   setSurfaceDetail,
   SYSTEM_COLORS,
 } from '../../src/viewer/materials';
@@ -189,5 +190,20 @@ describe('X-ray 皮肤壳', () => {
 
   it('皮肤配色退回品牌青', () => {
     expect(SYSTEM_COLORS.skin).toBe(0x4fc3d9);
+  });
+});
+
+describe('半透明的层不写深度', () => {
+  // 合批改造时弄丢的一条老修复：合批前每结构一份材质，setMaterialOpacity 里有
+  // `depthWrite = opacity > 0.55`（"半透明叠加时关闭深度写入，减少互相遮挡的闪面"）。
+  // 改成一系统一份材质后 depthWrite 被写死 true，那个函数也再没人调用——
+  // 静默失效。人类实拍看到的是"许多断裂的地方"：颅骨是 21 块骨头的并集、
+  // 表面互相重叠，半透明又写深度时只留下赢了深度测试的片，碎成一片。
+  it('setMaterialOpacity 仍然按不透明度切 depthWrite（合批那条走 HyiViewer.syncDepthWrite）', () => {
+    const m = new MeshStandardMaterial({ transparent: true });
+    setMaterialOpacity(m, 0.35);
+    expect(m.depthWrite, '半透明时应关掉深度写入').toBe(false);
+    setMaterialOpacity(m, 0.9);
+    expect(m.depthWrite, '够实时应恢复深度写入').toBe(true);
   });
 });
