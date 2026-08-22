@@ -30,6 +30,8 @@ from pathlib import Path
 
 import numpy as np
 
+from shade import bake_vertex_shade, shade_to_color0
+
 import bp3d
 from bp3d import ASSETS_DIR, ROOT, SYSTEMS, WORK_DIR
 
@@ -46,6 +48,7 @@ def build_glb(metas: list[dict], npz_dir: Path, out_path: Path) -> None:
         ELEMENT_ARRAY_BUFFER,
         FLOAT,
         GLTF2,
+        UNSIGNED_BYTE,
         UNSIGNED_INT,
         Accessor,
         Attributes,
@@ -89,8 +92,15 @@ def build_glb(metas: list[dict], npz_dir: Path, out_path: Path) -> None:
         meta["vertices"] = int(len(v))
         idx = f.reshape(-1)
 
+        # 逐顶点腔隙烘焙（见 shade.py 模块注释）。皮肤跳过：它走 X-ray 加色壳，
+        # 顶点色压暗会把整张壳弄脏，而那个设计本来就不打算写实。
+        color0 = None if meta["system"] == "skin" else shade_to_color0(bake_vertex_shade(v, f))
+
         views = []
-        for arr, target in ((v, ARRAY_BUFFER), (normals, ARRAY_BUFFER), (idx, ELEMENT_ARRAY_BUFFER)):
+        arrays = [(v, ARRAY_BUFFER), (normals, ARRAY_BUFFER), (idx, ELEMENT_ARRAY_BUFFER)]
+        if color0 is not None:
+            arrays.append((color0, ARRAY_BUFFER))
+        for arr, target in arrays:
             raw = _pad4(arr.tobytes())
             views.append(len(gltf.bufferViews))
             gltf.bufferViews.append(
@@ -112,12 +122,25 @@ def build_glb(metas: list[dict], npz_dir: Path, out_path: Path) -> None:
                 Accessor(bufferView=views[2], componentType=UNSIGNED_INT, count=len(idx), type="SCALAR"),
             ]
         )
+        if color0 is not None:
+            gltf.accessors.append(
+                Accessor(
+                    bufferView=views[3],
+                    componentType=UNSIGNED_BYTE,
+                    count=len(color0),
+                    type="VEC4",
+                    normalized=True,
+                )
+            )
+        attributes = Attributes(POSITION=base, NORMAL=base + 1)
+        if color0 is not None:
+            attributes.COLOR_0 = base + 3
         gltf.meshes.append(
             Mesh(
                 name=meta["slug"],
                 primitives=[
                     Primitive(
-                        attributes=Attributes(POSITION=base, NORMAL=base + 1),
+                        attributes=attributes,
                         indices=base + 2,
                         material=0,
                     )
