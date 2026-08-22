@@ -945,5 +945,9 @@
   "nasal_septum": {
     "blurb": "Divides the nasal cavity into left and right halves — cartilage at the front, bone behind.",
     "fact": "Most people’s septum leans slightly to one side; a perfectly central one is the exception rather than the rule."
+  },
+  "cerebral_arteries": {
+    "blurb": "Continuations of the internal carotid and vertebral arteries: they first join into a ring at the base of the brain (the circle of Willis), then branch out to supply the whole brain.",
+    "fact": "The brain is about 2% of body weight yet takes roughly 15% of the heart's output; the arterial ring at its base is a built-in detour, letting blood flow around a blocked side."
   }
 }

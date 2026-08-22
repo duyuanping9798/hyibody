@@ -438,6 +438,12 @@
       - FMA7088
   target_faces: 24000
   priority: 1
+# 肺实质（2026-08-22 换 HRA）：BP3D 两个集都没有肺实质——isa 集连 lung 条目都
+# 没有，partof 的"右肺"156 件元素全是肺内支气管与血管（总共 87 cm³），上线以来
+# 肺一直只是两棵树，用户推近才看出来。HRA lung-male 里的 20 个
+# bronchopulmonary segment 是真正的肺段实体（合计 3,931 cm³）——2026-08-18 的
+# 记录把它们误判成"标记小球"，翻案见 DECISIONS。与支气管树同用气管的变换，
+# 树天然长在自己的肺里（顺带修掉"树梢探出肺外 2cm"的旧疤）。
 - slug: lung_right
   zh: 右肺
   en: Right lung
@@ -446,8 +452,23 @@
   side: right
   fma:
     - FMA7309
-  source: bp3d_partof
-  target_faces: 79500
+  uberon: UBERON:0002167
+  source: hra
+  hra:
+    asset: 3d-vh-m-lung.glb
+    meshes:
+      - VH_M_right_apical_bronchopulmonary_segment
+      - VH_M_right_posterior_bronchopulmonary_segment
+      - VH_M_right_anterior_bronchopulmonary_segment
+      - VH_M_right_lateral_bronchopulmonary_segment
+      - VH_M_right_medial_bronchopulmonary_segment
+      - VH_M_right_superior_bronchopulmonary_segment
+      - VH_M_right_anterior_basal_bronchopulmonary_segment
+      - VH_M_right_lateral_basal_bronchopulmonary_segment
+      - VH_M_right_medial_basal_bronchopulmonary_segment
+      - VH_M_right_posterior_basal_bronchopulmonary_segment
+    fit_from: 3d-vh-m-trachea.glb
+  target_faces: 12000
   priority: 1
 - slug: lung_left
   zh: 左肺
@@ -457,8 +478,24 @@
   side: left
   fma:
     - FMA7310
-  source: bp3d_partof
-  target_faces: 46000
+  uberon: UBERON:0002168
+  source: hra
+  hra:
+    asset: 3d-vh-m-lung.glb
+    meshes:
+      - VH_M_left_apical_bronchopulmonary_segment
+      - VH_M_left_posterior_bronchopulmonary_segment
+      - VH_M_left_anterior_bronchopulmonary_segment
+      - VH_M_left_lingula_superior_bronchopulmonary_segment
+      - VH_M_left_lingula_inferior_bronchopulmonary_segment
+      - VH_M_left_superior_bronchopulmonary_segment
+      - VH_M_left_anterior_basal_bronchopulmonary_segment
+      - VH_M_left_lateral_basal_bronchopulmonary_segment
+      - VH_M_left_medial_basal_bronchopulmonary_segment
+      # HRA 源文件里就是这个拼写（posetrior），照抄才取得到
+      - VH_M_left_posetrior_basal_bronchopulmonary_segment
+    fit_from: 3d-vh-m-trachea.glb
+  target_faces: 12000
   priority: 1
 - slug: esophagus
   zh: 食管
@@ -681,6 +718,29 @@
     - FMA3956
   source: bp3d
   target_faces: 3600
+  priority: 2
+# 脑动脉（2026-08-22 补，用户实拍"血管到脖子就断了"）：颈内动脉与椎动脉的
+# 颅内延续——基底动脉、大脑前动脉、大脑中动脉（蝶骨段+岛叶段）、大脑后动脉
+# （交通前段+交通后段）、前/后交通动脉，合起来就是脑底动脉环（Willis 环）。
+# BP3D isa 集这些概念齐全（17 件元素）；颈外动脉/面动脉/颞浅动脉与颅内静脉窦
+# 两个集都没有，脸部浅表血管与静脉侧仍缺（见 DECISIONS 数据缺口）。
+- slug: cerebral_arteries
+  zh: 脑动脉
+  en: Cerebral arteries
+  system: vessels
+  region: head
+  side: both
+  fma:
+    - FMA50542
+    - FMA50028
+    - FMA50365
+    - FMA50368
+    - FMA50590
+    - FMA50591
+    - FMA50169
+    - FMA50084
+  source: bp3d
+  target_faces: 9000
   priority: 2
 - slug: brachiocephalic_trunk
   zh: 头臂干
