@@ -211,17 +211,18 @@ test.describe('mobile viewport', () => {
     await expect(page.getByTestId('info-card')).toBeVisible({ timeout: 20_000 });
     await expect(page.getByTestId('info-card')).toContainText('颅骨');
 
-    // 六格调音台：六个推子都在（390px 宽也得一行放下），器官层主场上器官满档
+    // 紧凑控制条（二稿）：六格一行放得下，收起态高度显著小于一稿的 104px
     const bar = page.getByTestId('layer-bar');
     await expect(bar).toBeVisible();
-    await expect(bar.getByRole('slider')).toHaveCount(6);
-    await expect(bar.locator('[data-system="organs"] .hyi-chip-fader')).toHaveAttribute(
-      'aria-valuenow',
-      '100',
-    );
-    // 一行放得下：条宽不超过视口
+    await expect(bar.locator('.hyi-chip')).toHaveCount(6);
     const box = await bar.boundingBox();
     expect(box!.width).toBeLessThanOrEqual(390);
+    expect(box!.height, '收起态必须只有一行').toBeLessThan(64);
+
+    // 点「器官」弹出横向滑杆：器官层主场上器官满档
+    await bar.locator('[data-system="organs"]').click({ force: true });
+    await expect(page.getByTestId('mix-slider')).toBeVisible();
+    await expect(page.getByTestId('mix-slider').locator('input')).toHaveValue('100');
 
     await page.screenshot({ path: 'test-results/smoke-mobile.png' });
   });
@@ -770,13 +771,12 @@ test('局部细剖：卡片墙点一张，画面就摆成那个视角', async ({
 });
 
 /**
- * 六格调音台（2026-08-22 控制条重做）的主路径：
- * 点名字跳主场（扫描模式）→ 拖/键一个推子进入混合模式 → 独立值不受曲线钳制
- * → 链接带 mix → 重开链接还原。混合是这轮改造的全部新行为，值得一条完整链路。
+ * 控制条二稿的主链路：
+ * 点名字跳层（扫描）→ 弹出的横向滑杆调该层进混合 → 混合态点别的名字**只切换
+ * 调节对象**（已调好的层不许被冲掉）→ 独立值不受曲线钳制 → 链接带 mix →
+ * 重开链接还原。混合是这轮改造的全部新行为，值得一条完整链路。
  */
-test('layer mixer: individual faders, mix in the share url, restore on reload', async ({
-  page,
-}) => {
+test('layer mixer: per-layer slider, mix in the share url, restore on reload', async ({ page }) => {
   test.setTimeout(300_000);
   await page.goto(`/?v=${encodeUrlState({ layer: 0.45 })}`);
   await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
@@ -784,20 +784,20 @@ test('layer mixer: individual faders, mix in the share url, restore on reload', 
   });
 
   const bar = page.getByTestId('layer-bar');
-  const skeleton = bar.locator('[data-system="skeleton"] .hyi-chip-fader');
-  const organs = bar.locator('[data-system="organs"] .hyi-chip-fader');
-  // 骨骼主场：骨骼满档，器官只有曲线给的 8% 底噪
-  await expect(skeleton).toHaveAttribute('aria-valuenow', '100');
-  await expect(organs).toHaveAttribute('aria-valuenow', '8');
+  const slider = page.getByTestId('mix-slider').locator('input');
+  // 点骨骼：跳它的主场（本来就在 0.45）+ 滑杆指向骨骼，满档
+  await bar.locator('[data-system="skeleton"]').click();
+  await expect(slider).toHaveValue('100');
 
-  // 键盘压骨骼三档：100 → 85（KEY_STEP 5%），首次触碰即固化进混合模式
-  await skeleton.focus();
-  for (let i = 0; i < 3; i += 1) await page.keyboard.press('ArrowDown');
-  await expect(skeleton).toHaveAttribute('aria-valuenow', '85');
-  // 器官独立拉满——扫描曲线在这一档只肯给 8%，混合模式下不受它钳制
-  await organs.focus();
-  await page.keyboard.press('End');
-  await expect(organs).toHaveAttribute('aria-valuenow', '100');
+  // 拉到 85：首次触碰即固化进混合模式
+  await slider.fill('85');
+  await expect(slider).toHaveValue('85');
+  // 混合态点器官：只切换调节对象、不跳层——骨骼的 85 不能被冲掉。
+  // 器官此刻是曲线在 0.45 档固化下来的 8% 底噪，独立拉满不受曲线钳制。
+  await bar.locator('[data-system="organs"]').click();
+  await expect(slider).toHaveValue('8');
+  await slider.fill('100');
+  await expect(slider).toHaveValue('100');
 
   // 回写的 ?v= 带 mix；等防抖落地
   await expect
@@ -813,19 +813,15 @@ test('layer mixer: individual faders, mix in the share url, restore on reload', 
   );
   await page.screenshot({ path: 'test-results/smoke-mixer.png', timeout: 120_000 });
 
-  // 重开这条链接：混合原样还原
+  // 重开这条链接：混合原样还原（恢复即混合态，点名字只选中、读滑杆值）
   await page.goto(`/?v=${encoded}`);
   await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
     timeout: 60_000,
   });
-  await expect(bar.locator('[data-system="organs"] .hyi-chip-fader')).toHaveAttribute(
-    'aria-valuenow',
-    '100',
-  );
-  await expect(bar.locator('[data-system="skeleton"] .hyi-chip-fader')).toHaveAttribute(
-    'aria-valuenow',
-    '85',
-  );
+  await bar.locator('[data-system="skeleton"]').click();
+  await expect(slider).toHaveValue('85');
+  await bar.locator('[data-system="organs"]').click();
+  await expect(slider).toHaveValue('100');
 });
 
 test('奥秘画廊：整页卡片墙，按系统分标签', async ({ page }) => {

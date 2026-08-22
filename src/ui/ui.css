@@ -105,111 +105,136 @@
   outline-offset: 3px;
 }
 
-/* 底部控制条：六格调音台（2026-08-22，替代单条分层滑块 + 右侧系统面板）。
-   一格一个系统：竖推子调透明度、名字按钮跳主场。参考 Complete Anatomy 的
-   分层控制，但每层独立可调——任意混合都摆得出来。 */
+/* 底部控制条二稿（2026-08-22 当天返工）：紧凑单行 + 弹出横向滑杆。
+   一稿的六根竖推子被人类否定（难调、占屏大）——现在"看"交给每格底下的
+   3px 刻度线，"调"交给弹出的大行程横向滑杆，收起态整条只有一行。 */
 .hyi-layerbar {
   position: absolute;
   left: 50%;
   bottom: calc(10px + env(safe-area-inset-bottom, 0px));
   transform: translateX(-50%);
   display: flex;
-  gap: 10px;
-  padding: 10px 14px 6px;
+  flex-direction: column;
+  gap: 6px;
+  padding: 7px 10px;
+  width: min(420px, calc(100% - 16px));
+  box-sizing: border-box;
+}
+.hyi-chiprow {
+  display: flex;
+  gap: 4px;
 }
 .hyi-chip {
+  appearance: none;
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
-  width: 52px;
-}
-.hyi-chip-fader {
-  position: relative;
-  width: 30px;
-  height: 64px;
-  border-radius: 8px;
-  background: rgba(6, 10, 20, 0.62);
-  box-shadow: inset 0 0 0 1px rgba(140, 190, 255, 0.14);
-  overflow: hidden;
-  cursor: ns-resize;
-  /* 竖向拖动就是这个控件的本职，别让浏览器拿去滚页面 */
-  touch-action: none;
-}
-.hyi-chip-fader:focus-visible {
-  outline: 2px solid var(--hyi-accent);
-  outline-offset: 2px;
-}
-.hyi-chip-fill {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  /* 顶端一道白光当"液面"；color-mix 在目标下限（Chrome 105/Safari 15.4）
-     还不可用，整条声明会作废，所以用叠加渐变做同样的事 */
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.35), transparent 7px), var(--hyi-chip-color);
-  opacity: 0.92;
-  pointer-events: none;
-}
-.hyi-chip-pct {
-  position: absolute;
-  top: 3px;
-  left: 0;
-  right: 0;
-  text-align: center;
-  font-size: 9px;
-  font-variant-numeric: tabular-nums;
-  color: var(--hyi-text-dim);
-  pointer-events: none;
-  /* 推子填满时数字压在色块上，描一圈深底保证读得出来 */
-  text-shadow: 0 0 4px rgba(5, 8, 15, 0.9);
-}
-.hyi-chip-label {
-  appearance: none;
+  gap: 4px;
+  padding: 5px 2px 4px;
   border: 0;
-  background: none;
-  padding: 2px 4px;
+  border-radius: 7px;
+  background: transparent;
   font: inherit;
-  font-size: 10.5px;
+  font-size: 11.5px;
   letter-spacing: 0.04em;
   color: var(--hyi-text-dim);
   cursor: pointer;
-  white-space: nowrap;
-  transition: color 0.15s;
+  transition:
+    color 0.15s,
+    background 0.15s;
 }
-.hyi-chip-label:hover,
-.hyi-chip-label.active {
+.hyi-chip:hover {
   color: var(--hyi-text);
+  background: rgba(79, 227, 224, 0.08);
 }
-.hyi-chip-label.active {
-  text-shadow: 0 0 8px rgba(79, 227, 224, 0.6);
+.hyi-chip.active {
+  color: var(--hyi-text);
+  background: rgba(79, 227, 224, 0.14);
 }
-.hyi-chip-label:focus-visible {
+.hyi-chip:focus-visible {
   outline: 2px solid var(--hyi-accent);
-  outline-offset: 2px;
-  border-radius: 6px;
+  outline-offset: -2px;
 }
-.hyi-chip.muted .hyi-chip-fader {
-  opacity: 0.45;
+.hyi-chip-name {
+  white-space: nowrap;
 }
-.hyi-chip.muted .hyi-chip-label {
+/* 刻度线：当前透明度的一眼读数。深槽 + 系统色填充，宽度 = 百分比 */
+.hyi-chip-gauge {
+  width: 100%;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(6, 10, 20, 0.7);
+  overflow: hidden;
+}
+.hyi-chip-gauge i {
+  display: block;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--hyi-chip-color);
+}
+.hyi-chip.muted {
+  opacity: 0.5;
+}
+.hyi-chip.muted .hyi-chip-name {
   text-decoration: line-through;
-  opacity: 0.6;
 }
 /* 该系统的 glb 还在后台补载：能调，但先打个待机的样子 */
-.hyi-chip.loading .hyi-chip-fader {
+.hyi-chip.loading .hyi-chip-gauge {
   animation: hyi-chip-loading 1.6s ease-in-out infinite;
 }
 @keyframes hyi-chip-loading {
   50% {
-    box-shadow: inset 0 0 0 1px rgba(140, 190, 255, 0.4);
+    background: rgba(140, 190, 255, 0.35);
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .hyi-chip.loading .hyi-chip-fader {
+  .hyi-chip.loading .hyi-chip-gauge {
     animation: none;
   }
+}
+
+/* 弹出的调节行：一次只调一层，行程给足 */
+.hyi-mixrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 2px 0;
+}
+.hyi-mix-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex: none;
+}
+.hyi-mixrow .hyi-range {
+  flex: 1;
+}
+.hyi-mix-pct {
+  min-width: 36px;
+  text-align: right;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: var(--hyi-text-dim);
+}
+.hyi-mix-close {
+  appearance: none;
+  border: 0;
+  background: none;
+  padding: 2px 5px;
+  font: inherit;
+  font-size: 12px;
+  color: var(--hyi-text-dim);
+  cursor: pointer;
+}
+.hyi-mix-close:hover {
+  color: var(--hyi-text);
+}
+.hyi-mix-close:focus-visible {
+  outline: 2px solid var(--hyi-accent);
+  outline-offset: 1px;
+  border-radius: 5px;
 }
 
 /* 右侧只剩两个逃生按钮（2026-08-22 三格工具抽屉砍掉之后）：
@@ -1079,18 +1104,19 @@ body.hyi-kiosk .hyi-btn {
   border-radius: 10px;
 }
 /* 展厅：控制条与菜单全部放大到 ≥56px（KICKOFF 第 6 节的硬规则，
-   demo.spec 的点按目标扫描现在把 chip-label / fader / 菜单项都算在内） */
+   demo.spec 的点按目标扫描把 chip / 菜单项都算在内） */
+body.hyi-kiosk .hyi-layerbar {
+  width: min(600px, calc(100% - 32px));
+}
 body.hyi-kiosk .hyi-chip {
-  width: 76px;
-}
-body.hyi-kiosk .hyi-chip-fader {
-  width: 56px;
-  height: 110px;
-}
-body.hyi-kiosk .hyi-chip-label {
+  min-height: 56px;
   font-size: 15px;
+  justify-content: center;
+}
+body.hyi-kiosk .hyi-mix-close {
   min-width: 56px;
   min-height: 56px;
+  font-size: 16px;
 }
 body.hyi-kiosk .hyi-popover button {
   min-height: 56px;
@@ -1182,18 +1208,16 @@ body.hyi-kiosk .hyi-info .blurb {
     right: 8px;
     width: auto;
   }
-  /* 六格挤 402 px 宽的屏：格距收紧、推子稍窄，一行放得下 */
+  /* 六格挤 390px 宽的屏：格距收紧，一行放得下 */
   .hyi-layerbar {
-    gap: 5px;
-    padding: 8px 10px 5px;
-    max-width: calc(100% - 12px);
+    width: calc(100% - 12px);
+  }
+  .hyi-chiprow {
+    gap: 2px;
   }
   .hyi-chip {
-    width: 46px;
-  }
-  .hyi-chip-fader {
-    width: 32px;
-    height: 58px;
+    font-size: 10.5px;
+    letter-spacing: 0;
   }
 }
 

@@ -1,121 +1,102 @@
 import { STRINGS } from './i18n';
-import { useRef, type PointerEvent as ReactPointerEvent, type KeyboardEvent } from 'react';
+import { useState } from 'react';
 import { SYSTEM_IDS, type SystemId } from '../data/types';
 import { SYSTEM_COLORS } from '../viewer/materials';
-import { HOME_STOPS } from '../viewer/layers';
 import { effectiveSystemOpacity, useUiStore } from './store';
 
 function hex(system: SystemId): string {
   return `#${SYSTEM_COLORS[system].toString(16).padStart(6, '0')}`;
 }
 
-/** 键盘一步走 5%——0.01 一步要按一百下，纯摆设。 */
-const KEY_STEP = 0.05;
-
 /**
- * 一格 = 一个系统：竖向推子（独立透明度）+ 下面的名字按钮（跳主场）。
- *
- * 推子是自绘的 div 而不是 `<input type=range>`：竖向的原生 range 至今要靠
- * writing-mode 的浏览器私货，iOS Safari 与 Chrome 的触摸行为还不一致。
- * 自绘 + role="slider" + 方向键，无障碍语义反而更干净。
+ * 一格 = 一个系统：名字 + 底下 3px 的刻度线（宽度 = 当前透明度）。
+ * 刻度线是纯视觉（aria-hidden）——精确数值由弹出的滑杆行承担。
  */
-function Chip({ system }: { system: SystemId }) {
+function Chip({ system, active, onTap }: { system: SystemId; active: boolean; onTap(): void }) {
   const t = STRINGS[useUiStore((s) => s.lang)];
-  const value = useUiStore((s) => effectiveSystemOpacity(s, system));
-  const mixMode = useUiStore((s) => s.mixMode);
-  const layer = useUiStore((s) => s.layer);
+  const pct = Math.round(useUiStore((s) => effectiveSystemOpacity(s, system)) * 100);
   const muted = useUiStore((s) => !s.systemsVisible[system]);
   const loaded = useUiStore((s) => s.loadedSystems.includes(system));
-  const setMix = useUiStore((s) => s.setMix);
-  const jumpToSystem = useUiStore((s) => s.jumpToSystem);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const dragging = useRef(false);
-
-  const fromPointer = (e: ReactPointerEvent) => {
-    const rect = trackRef.current?.getBoundingClientRect();
-    if (!rect || rect.height === 0) return;
-    setMix(system, Math.min(1, Math.max(0, 1 - (e.clientY - rect.top) / rect.height)));
-  };
-  const onKeyDown = (e: KeyboardEvent) => {
-    let next: number | null = null;
-    if (e.key === 'ArrowUp' || e.key === 'ArrowRight') next = value + KEY_STEP;
-    else if (e.key === 'ArrowDown' || e.key === 'ArrowLeft') next = value - KEY_STEP;
-    else if (e.key === 'Home') next = 0;
-    else if (e.key === 'End') next = 1;
-    if (next === null) return;
-    e.preventDefault();
-    // 奥秘播放时全局 ← → 是翻页；推子拿到焦点时方向键归推子
-    e.stopPropagation();
-    setMix(system, Math.min(1, Math.max(0, next)));
-  };
-
-  const pct = Math.round(value * 100);
-  // 扫描模式下"当前主要在看的那层"点亮名字，和旧滑块的刻度高亮一个意思
-  const active = !mixMode && Math.abs(layer - HOME_STOPS[system]) < 0.05;
   return (
-    <div
-      className={`hyi-chip${muted ? ' muted' : ''}${loaded ? '' : ' loading'}`}
+    <button
+      type="button"
+      className={`hyi-chip${active ? ' active' : ''}${muted ? ' muted' : ''}${loaded ? '' : ' loading'}`}
       data-system={system}
       style={{ ['--hyi-chip-color' as string]: hex(system) }}
+      title={t.layerJump.replace('{system}', t.systems[system])}
+      aria-label={t.layerJump.replace('{system}', t.systems[system])}
+      onClick={onTap}
     >
-      <div
-        ref={trackRef}
-        className="hyi-chip-fader"
-        role="slider"
-        tabIndex={0}
-        aria-orientation="vertical"
+      <span className="hyi-chip-name">{t.systems[system]}</span>
+      <span className="hyi-chip-gauge" aria-hidden>
+        <i style={{ width: `${pct}%` }} />
+      </span>
+    </button>
+  );
+}
+
+/** 弹出的调节行：色点 + 横向滑杆（大行程，这是精确调节的主体）+ 数值 + 收起。 */
+function MixSlider({ system, onClose }: { system: SystemId; onClose(): void }) {
+  const t = STRINGS[useUiStore((s) => s.lang)];
+  const value = Math.round(useUiStore((s) => effectiveSystemOpacity(s, system)) * 100);
+  const setMix = useUiStore((s) => s.setMix);
+  return (
+    <div className="hyi-mixrow" data-testid="mix-slider">
+      <span className="hyi-mix-dot" style={{ background: hex(system) }} aria-hidden />
+      <input
+        className="hyi-range"
+        type="range"
+        min={0}
+        max={100}
+        step={1}
+        value={value}
         aria-label={t.opacityOf.replace('{system}', t.systems[system])}
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-valuenow={pct}
-        aria-valuetext={`${pct}%`}
-        onKeyDown={onKeyDown}
-        onPointerDown={(e) => {
-          dragging.current = true;
-          (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
-          fromPointer(e);
-        }}
-        onPointerMove={(e) => {
-          if (dragging.current) fromPointer(e);
-        }}
-        onPointerUp={() => {
-          dragging.current = false;
-        }}
-        onPointerCancel={() => {
-          dragging.current = false;
-        }}
-      >
-        <div className="hyi-chip-fill" style={{ height: `${pct}%` }} aria-hidden />
-        <span className="hyi-chip-pct" aria-hidden>
-          {pct}
-        </span>
-      </div>
-      <button
-        type="button"
-        className={`hyi-chip-label${active ? ' active' : ''}`}
-        title={t.layerJump.replace('{system}', t.systems[system])}
-        aria-label={t.layerJump.replace('{system}', t.systems[system])}
-        onClick={() => jumpToSystem(system)}
-      >
-        {t.systems[system]}
+        onChange={(e) => setMix(system, Number(e.target.value) / 100)}
+      />
+      <span className="hyi-mix-pct">{value}%</span>
+      <button type="button" className="hyi-mix-close" aria-label={t.close} onClick={onClose}>
+        ✕
       </button>
     </div>
   );
 }
 
 /**
- * 底部控制条（2026-08-22，替代单条分层滑块 + 右侧系统面板）：
- * 六格调音台，一格一个系统。参考 Complete Anatomy 的分层控制再往前一步——
- * CA 是"逐层剥掉"，这里每层各有一个推子，任意混合都摆得出来；
- * 点名字仍然一步跳到那层的策展视图（复用校准过的曲线与缓动），
- * 老"拖到哪层看哪层"的心智模型没丢。
+ * 底部控制条二稿（2026-08-22 当天返工）：紧凑单行 + 弹出横向滑杆。
+ *
+ * 一稿是六根竖推子的"调音台"——人类实测两条否定：百分比难调（拖动行程只有
+ * 64px）、占屏太大（104px 高）。二稿把两件事分开：**看**用每格底下的刻度线
+ * （一行 44px 全交代），**调**用弹出的横向滑杆（行程 300px+，一次只调一层——
+ * 本来也没人同时拖两根推子）。
+ *
+ * 点按规则（Chip.onTap 的三个分支）：
+ * 1. 点当前激活的那格 → 跳回这层的标准视图（扫描曲线；等于"重置回只看这层"）；
+ * 2. 浏览态（扫描模式）点任意格 → 跳那层 + 滑杆指向它（老"点名字跳层"不变）；
+ * 3. 混合态点别的格 → **只切换滑杆的调节对象**，已调好的层不许被冲掉——
+ *    否则"器官满 + 骨骼 40%"这类组合永远摆不出来。
  */
 export function LayerBar() {
+  const [active, setActive] = useState<SystemId | null>(null);
+  const mixMode = useUiStore((s) => s.mixMode);
+  const jumpToSystem = useUiStore((s) => s.jumpToSystem);
+
+  const tap = (system: SystemId) => {
+    if (active === system) {
+      jumpToSystem(system);
+      return;
+    }
+    setActive(system);
+    if (!mixMode) jumpToSystem(system);
+  };
+
   return (
     <div className="hyi-panel hyi-layerbar" data-testid="layer-bar">
-      {SYSTEM_IDS.map((system) => (
-        <Chip key={system} system={system} />
-      ))}
+      {active && <MixSlider system={active} onClose={() => setActive(null)} />}
+      <div className="hyi-chiprow">
+        {SYSTEM_IDS.map((system) => (
+          <Chip key={system} system={system} active={active === system} onTap={() => tap(system)} />
+        ))}
+      </div>
     </div>
   );
 }
