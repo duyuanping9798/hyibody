@@ -127,5 +127,6 @@ for (const job of todo) {
 
 await ctx.close();
 await browser.close();
-if (failed.length) console.log(`失败 ${failed.length} 张（重跑本脚本只补缺的）: ${failed.join(' ')}`);
+if (failed.length)
+  console.log(`失败 ${failed.length} 张（重跑本脚本只补缺的）: ${failed.join(' ')}`);
 console.log(`完成 ${el()}`);
