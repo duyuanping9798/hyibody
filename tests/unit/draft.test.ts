@@ -98,6 +98,34 @@ describe('UGC：抓一步', () => {
     expect(captureStep(snapshot({ layer: 3 })).layer).toBe(1);
     expect(captureStep(snapshot({ layer: -2 })).layer).toBe(0);
   });
+
+  // 2026-08-22 控制条改六个独立推子：混合模式抓出来的一步说的是 mix 语言
+  it('混合模式抓成 mix：最终值直录，隐藏折叠成缺席，不再写 layer/systems', () => {
+    const step = captureStep(
+      snapshot({
+        mixMode: true,
+        layer: 0.62, // 上次扫描留下的旧值，不该进 JSON
+        systemsVisible: { ...ALL_VISIBLE, muscles: false },
+        systemOpacity: { ...FULL, skin: 0.256, organs: 0 },
+      }),
+    );
+    expect(step.mix).toEqual({ skin: 0.26, skeleton: 1, vessels: 1, nerves: 1 });
+    expect(step.layer).toBe(0);
+    expect(step.systems).toBeUndefined();
+  });
+
+  it('全零混合（作者要一帧全黑）保留一个显式 0 键——空 mix 会被清洗当坏数据丢掉', () => {
+    const zero = { skin: 0, muscles: 0, skeleton: 0, organs: 0, vessels: 0, nerves: 0 };
+    const step = captureStep(snapshot({ mixMode: true, systemOpacity: zero }));
+    expect(step.mix).toEqual({ skin: 0 });
+    // 且它能原样活过 sanitize（localStorage / ?w= 往返）
+    const w = sanitizeWonder({
+      id: 'ok',
+      title: { zh: 'a', en: 'b' },
+      steps: [{ text: { zh: 'a', en: 'b' }, layer: 0, durationMs: 8000, mix: { skin: 0 } }],
+    });
+    expect(w?.steps[0]!.mix).toEqual({ skin: 0 });
+  });
 });
 
 describe('UGC：校验', () => {
@@ -210,6 +238,25 @@ describe('UGC：编码与解码', () => {
       steps: [{ text: { zh: '正文' }, layer: 0, durationMs: 8000 }],
     });
     expect(w?.title.en).toBe('标题');
+  });
+
+  it('mix 逐键收窄：越界夹回、野键丢掉、空对象整个不要（那等于黑屏）', () => {
+    const w = sanitizeWonder({
+      id: 'ok',
+      title: { zh: 'a', en: 'b' },
+      steps: [
+        {
+          text: { zh: 'a', en: 'b' },
+          layer: 0,
+          durationMs: 8000,
+          mix: { skeleton: 5, bogus: 1, organs: 0.4 },
+        },
+        { text: { zh: 'a', en: 'b' }, layer: 0.3, durationMs: 8000, mix: { bogus: 1 } },
+      ],
+    });
+    expect(w?.steps[0]!.mix).toEqual({ skeleton: 1, organs: 0.4 });
+    expect(w?.steps[1]!.mix).toBeUndefined();
+    expect(w?.steps[1]!.layer).toBe(0.3);
   });
 });
 

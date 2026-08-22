@@ -115,9 +115,13 @@ test.describe('演示前自检 · 手机（Retina）', () => {
 
     const band = await bodyBand(page);
     expect(band.lit).toBeGreaterThan(200);
-    // 头顶让开顶栏、脚让开底部工具条，且不能小到看不清
+    // 头顶让开顶栏、脚让开底部控制条，且不能小到看不清。
+    // "让开控制条"直接对着控制条的真实上沿比，不写死常数——v1.7 控制条从
+    // 39px 长到约 100px，旧的 `height - 100` 阈值已允许脚压进条里 3-4px
+    // 而不报（审查逮到的）。
     expect(band.top).toBeGreaterThan(40);
-    expect(band.bottom).toBeLessThan(band.height - 100);
+    const bar = await page.getByTestId('layer-bar').boundingBox();
+    expect(band.bottom).toBeLessThanOrEqual(Math.round(bar!.y) + 1);
     expect(band.bottom - band.top).toBeGreaterThan(band.height * 0.45);
   });
 
@@ -196,15 +200,26 @@ test.describe('演示前自检 · 展厅与分享', () => {
     await page.mouse.click(540, 900);
     await expect(page.locator('.hyi-attract')).toHaveCount(0, { timeout: 30_000 });
 
-    // KICKOFF 第 6 节：展厅无键鼠，所有按钮 ≥ 56 px
+    // KICKOFF 第 6 节：展厅无键鼠，所有点按目标 ≥ 56 px。
+    // 2026-08-22 起控制条的主要触摸目标（跳主场的名字、推子）和个人中心菜单项
+    // 都不是 .hyi-btn——只扫 .hyi-btn 的话这条检查对新控制条完全空转（审查逮到：
+    // 当时 chip-label 只有 32px 高照样绿灯）。按**短边**判：宽或高任一低于 56 都算小。
     const tooSmall = await page.evaluate(() =>
-      [...document.querySelectorAll('.hyi-btn')]
-        .map((b) => ({
-          t: b.textContent?.trim().slice(0, 8) ?? '',
-          h: b.getBoundingClientRect().height,
-        }))
-        .filter((b) => b.h > 0 && b.h < 56)
-        .map((b) => `${b.t}:${Math.round(b.h)}`),
+      [
+        ...document.querySelectorAll(
+          '.hyi-btn, .hyi-chip-label, .hyi-chip-fader, .hyi-popover button',
+        ),
+      ]
+        .map((b) => {
+          const r = b.getBoundingClientRect();
+          return {
+            t: (b.textContent?.trim() || b.getAttribute('aria-label') || '').slice(0, 8),
+            s: Math.min(r.width, r.height),
+            visible: r.width > 0 && r.height > 0,
+          };
+        })
+        .filter((b) => b.visible && b.s < 56)
+        .map((b) => `${b.t}:${Math.round(b.s)}`),
     );
     expect(tooSmall).toEqual([]);
   });
@@ -215,7 +230,9 @@ test.describe('演示前自检 · 展厅与分享', () => {
     await ready(page);
     await page.waitForTimeout(4000);
 
-    await page.getByRole('button', { name: '分享' }).click({ force: true });
+    // 分享收进了个人中心（👤）菜单
+    await page.getByRole('button', { name: '个人中心' }).click({ force: true });
+    await page.getByRole('menuitem', { name: '分享' }).click({ force: true });
     const qr = page.locator('.hyi-share canvas');
     await expect(qr).toBeVisible();
     const box = await qr.boundingBox();

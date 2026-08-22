@@ -42,3 +42,12 @@ export function InfoIcon() {
     </svg>
   );
 }
+
+export function UserIcon() {
+  return (
+    <svg {...COMMON}>
+      <circle cx="8" cy="5.4" r="2.9" />
+      <path d="M2.8 13.6c1-2.6 2.9-3.9 5.2-3.9s4.2 1.3 5.2 3.9" />
+    </svg>
+  );
+}

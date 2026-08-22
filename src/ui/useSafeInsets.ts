@@ -8,13 +8,7 @@ const TOP = ['.hyi-header', '.hyi-topbar', '.hyi-search'];
 // 信息卡在小屏上是底部抽屉，一弹出就吃掉半屏——它必须算进来，
 // 否则点选一个结构后相机把它居中到画布中心，正好藏在卡片后面（用户实拍复现）
 // 奥秘字幕带比控制条更高，取景要按它的上沿让位，不然人体的脚会压在字幕下面
-const BOTTOM = [
-  '.hyi-layer-slider',
-  '.hyi-wonder',
-  '.hyi-cinema-caption',
-  '.hyi-dock',
-  '.hyi-info',
-];
+const BOTTOM = ['.hyi-layerbar', '.hyi-wonder', '.hyi-cinema-caption', '.hyi-dock', '.hyi-info'];
 
 /**
  * 元素在画布坐标系里的上下边（不可见、或者根本没压在人体那一列上，就当没有）。
@@ -82,8 +76,7 @@ export function useSafeInsets(): void {
       // 两者高度差一截。手机上抽屉要叠在它上面，写死常数迟早对不上——
       // 事实上就对不上了：v0.8 把滑块从 90 px 压到 39 px，而这里的偏移量
       // 一直还按 90 算，于是每块手机屏上白白空出约 60 px（人类截图里那道缝）。
-      const bar =
-        document.querySelector('.hyi-wonder') ?? document.querySelector('.hyi-layer-slider');
+      const bar = document.querySelector('.hyi-wonder') ?? document.querySelector('.hyi-layerbar');
       const barH = bar ? Math.round(bar.getBoundingClientRect().height) : 0;
       document.documentElement.style.setProperty('--hyi-bottombar-h', `${barH}px`);
     };

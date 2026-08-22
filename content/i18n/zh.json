@@ -23,7 +23,8 @@
     "lower_limb": "下肢",
     "whole": "全身"
   },
-  "layerSlider": "透视深度",
+  "opacityOf": "{system}透明度",
+  "layerJump": "看{system}层",
   "searchPlaceholder": "搜索结构（中/英文）…",
   "searchNoResult": "没有匹配的结构",
   "infoBlurbPending": "一句话科普整理中——欢迎在 content/definitions 里补充。",
@@ -36,24 +37,10 @@
   "actionFocus": "聚焦",
   "actionRestore": "恢复全部",
   "hiddenCount": "已隐藏 {n} 个结构",
-  "presetsTitle": "视角",
-  "presets": {
-    "front": "正面",
-    "back": "背面",
-    "left": "左侧",
-    "right": "右侧",
-    "top": "顶部",
-    "hero": "透视位"
-  },
-  "clipTitle": "剖切",
-  "clipOff": "关闭",
-  "clipAxis": {
-    "x": "左右",
-    "y": "前后",
-    "z": "上下"
-  },
-  "systemsTitle": "系统",
-  "systemLoading": "加载中…",
+  "aboutTitle": "关于",
+  "aboutIntro": "HyiBody 是一个纯网页的三维人体科普：几百个核心解剖结构从皮肤到神经分层透视，六层各自调节，点哪儿认哪儿；「奥秘」用一步步的镜头带你看懂身体里正在发生的事。数据全部来自公开的 BodyParts3D 与 HuBMAP HRA。",
+  "languageLabel": "界面语言 / Language",
+  "personalTitle": "个人中心",
   "close": "关闭",
   "wondersTitle": "奥秘",
   "wonderPrev": "上一步",
@@ -101,8 +88,6 @@
     "none": "—",
     "both": "双侧"
   },
-  "clipThroughSelected": "沿此结构半剖",
-  "clipFlip": "反向",
   "expandParts": "展开内部（{n}）",
   "collapseParts": "收起内部",
   "backToBody": "返回全身",
@@ -110,7 +95,6 @@
   "shortcuts": {
     "search": "搜索结构",
     "help": "打开 / 关闭这一页",
-    "layer": "透视深度 减 / 加",
     "systems": "显示 / 隐藏第 1–6 层系统",
     "focusSelected": "把镜头对准当前选中的结构",
     "backToBody": "返回全身（清掉隔离、展开、剖切与隐藏）",
@@ -118,8 +102,6 @@
     "wonderToggle": "奥秘播放 / 暂停",
     "escape": "逐层退出：弹窗 → 奥秘 → 取消选中 → 返回全身"
   },
-  "searchTitle": "搜索",
-  "toolsTitle": "工具",
   "helpTitle": "帮助",
   "unsupportedWebgl": "这台设备的浏览器不支持 WebGL2，无法显示三维人体。请升级到 Chrome/Edge 105+、Safari 15.4+ 或 Firefox 121+；若用的是远程桌面或虚拟机，请确认已开启硬件加速。",
   "infoMore": "展开详情",

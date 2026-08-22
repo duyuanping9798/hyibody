@@ -4,10 +4,10 @@ import { decodeUrlState, encodeUrlState } from '../data/urlState';
 import { HyiViewer } from '../viewer/HyiViewer';
 import type { QualityTier } from '../viewer/quality';
 import { hasWebGL2 } from '../viewer/support';
-import { Attribution } from './Attribution';
+import { AboutDialog } from './AboutDialog';
 import { InfoCard } from './InfoCard';
 import { Kiosk } from './Kiosk';
-import { LayerSlider } from './LayerSlider';
+import { LayerBar } from './LayerBar';
 import { LoadingOverlay } from './LoadingOverlay';
 import { StructureLabel } from './StructureLabel';
 import { SearchBox } from './SearchBox';
@@ -18,14 +18,15 @@ import { useSafeInsets } from './useSafeInsets';
 import { WONDERS } from '../wonders';
 import { bindViewer, toUrlState, useUiStore } from './store';
 import { Dock } from './Dock';
-import { InfoIcon, ShareIcon } from './Icon';
+import { InfoIcon } from './Icon';
+import { PersonalMenu } from './PersonalMenu';
 import { WonderMenu, WonderPlayer } from './WonderPlayer';
 import type { AtlasScene } from '../data/views';
 import { WonderGallery } from './WonderGallery';
 import { AtlasGallery } from './AtlasGallery';
 import { WonderStage } from './WonderStage';
 import { VideoExport } from './VideoExport';
-import { EditorButton, WonderEditor } from './WonderEditor';
+import { WonderEditor } from './WonderEditor';
 import { decodeWonder } from '../wonders/draft';
 import './ui.css';
 
@@ -51,6 +52,8 @@ function useUrlSync(): void {
       if (s.loadState !== 'ready') return;
       if (
         s.layer === prev.layer &&
+        s.mixMode === prev.mixMode &&
+        s.systemOpacity === prev.systemOpacity &&
         s.systemsVisible === prev.systemsVisible &&
         s.clip === prev.clip &&
         s.selected === prev.selected
@@ -75,13 +78,12 @@ export function App() {
   const containerRef = useRef<HTMLDivElement>(null);
   const loadState = useUiStore((s) => s.loadState);
   const manifest = useUiStore((s) => s.manifest);
-  const setAttributionOpen = useUiStore((s) => s.setAttributionOpen);
+  const setAboutOpen = useUiStore((s) => s.setAboutOpen);
   const wonder = useUiStore((s) => s.wonder);
   const [shareOpen, setShareOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
   const selected = useUiStore((s) => s.selected);
   const lang = useUiStore((s) => s.lang);
-  const setLang = useUiStore((s) => s.setLang);
   const [{ kiosk, idleSeconds }] = useState(readKioskParams);
   useUrlSync();
   useSafeInsets();
@@ -156,40 +158,19 @@ export function App() {
       )}
       {loadState === 'ready' && !isPlaceholder && (
         <>
+          {/* 顶栏（2026-08-22 收拢）：内容入口（奥秘/细剖）+ 两个图标——
+              ℹ 关于（简介/语言/署名/快捷键）、👤 个人中心（分享/创作） */}
           <div className="hyi-topbar">
             <WonderMenu />
-            <EditorButton />
             <button
               className="hyi-btn hyi-btn-icon"
-              aria-label={t.shareTitle}
-              title={t.shareTitle}
-              onClick={() => setShareOpen(true)}
-            >
-              <ShareIcon />
-            </button>
-            <button
-              className="hyi-btn hyi-btn-icon"
-              aria-label={t.attribution}
-              title={t.attribution}
-              onClick={() => setAttributionOpen(true)}
+              aria-label={t.aboutTitle}
+              title={t.aboutTitle}
+              onClick={() => setAboutOpen(true)}
             >
               <InfoIcon />
             </button>
-            <button
-              className="hyi-btn hyi-btn-icon hyi-btn-help"
-              aria-label={t.helpTitle}
-              title={`${t.helpTitle}（?）`}
-              onClick={() => setHelpOpen(true)}
-            >
-              ?
-            </button>
-            <button
-              className="hyi-btn hyi-btn-lang"
-              aria-label="切换语言 / Switch language"
-              onClick={() => setLang(lang === 'zh' ? 'en' : 'zh')}
-            >
-              {lang === 'zh' ? 'EN' : '中文'}
-            </button>
+            <PersonalMenu onShare={() => setShareOpen(true)} />
           </div>
           {/* 播放时屏幕归内容：搜索框、工具抽屉、结构标签、信息卡一起让位。
               这不违反「界面元素不许无解释地消失」——奥秘是一个用户自己进、
@@ -203,8 +184,8 @@ export function App() {
           {/* 整页画廊盖在最上层：开着的时候它就是整块屏幕 */}
           <WonderGallery />
           <AtlasGallery />
-          {wonder ? <WonderPlayer /> : <LayerSlider />}
-          <Attribution />
+          {wonder ? <WonderPlayer /> : <LayerBar />}
+          <AboutDialog onOpenHelp={() => setHelpOpen(true)} />
           <WonderEditor />
           <VideoExport />
           {shareOpen && <ShareDialog onClose={() => setShareOpen(false)} />}

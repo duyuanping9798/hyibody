@@ -47,7 +47,7 @@ import {
   type MotionId,
 } from './cinematic';
 import { CAP_MIN_OPACITY, ClipCaps } from './clipCaps';
-import { clipPlaneFor, clipPosForCoordinate, type ClipAxis } from './clipping';
+import { clipPlaneFor, type ClipAxis } from './clipping';
 import { HIGHLIGHT_COLOR, HIGHLIGHT_TINT, type HighlightLevel } from './highlight';
 import { SystemBatch, type BatchInput } from './batching';
 import { computeSystemOpacity, PICKABLE_OPACITY_THRESHOLD } from './layers';
@@ -287,6 +287,19 @@ export class HyiViewer extends EventTarget {
   /** 分层滑块缓动：大跳（奥秘、预设）平滑过渡，小步（拖滑块）立即跟手 */
   private layerTarget = 0;
   private layerEasing = false;
+  /**
+   * 扫描/混合两种模式（2026-08-22 控制条改独立推子）。
+   * null = 扫描：不透明度 = 曲线(layer) × systemOpacity（倍率）——奥秘、展厅
+   * 吸引动画、主场跳转与旧分享链接都走这条老路，行为一个字没改。
+   * 非 null = 混合：这份六维向量就是每系统的最终不透明度，曲线与倍率都不参与。
+   * **倍率（state.systemOpacity）在混合期间原样保留**——首版把混合值直接写进
+   * 倍率字段，退出混合时两边就对不上了（奥秘压暗过的倍率被混合值顶掉）。
+   */
+  private mixCurrent: Record<SystemId, number> | null = null;
+  /** 混合缓动目标（奥秘 mix 步骤、混合→扫描的交叉淡入用；拖推子是立即的） */
+  private mixTarget: Record<SystemId, number> | null = null;
+  /** 混合→扫描的过渡：先在混合空间缓动到目标扫描画面，落地那帧再交还曲线 */
+  private scanAfterMix = false;
 
   constructor(
     container: HTMLElement,
@@ -556,9 +569,45 @@ export class HyiViewer extends EventTarget {
 
   // ---- 分层与显隐 ----------------------------------------------------------
 
+  /** 目标扫描画面：曲线(layer) × 当前倍率，逐系统。 */
+  private scanMixAt(layer: number): Record<SystemId, number> {
+    const out = {} as Record<SystemId, number>;
+    for (const system of Object.keys(this.state.systemOpacity) as SystemId[]) {
+      out[system] = computeSystemOpacity(system, layer) * this.state.systemOpacity[system];
+    }
+    return out;
+  }
+
+  /**
+   * 屏幕上此刻每个系统的实际不透明度（不含隐藏/隔离等结构级覆盖）。
+   * 混合/过渡中给缓动向量；扫描中按**正在渲染的** layer 值算——store 里的
+   * layer 是缓动终点，缓动进行时两者不同，推子首触的固化必须用这份真值，
+   * 否则"固化那一帧画面纹丝不动"的契约会被打破（审查逮到的跳变）。
+   */
+  getDisplayMix(): Record<SystemId, number> {
+    return this.mixCurrent ? { ...this.mixCurrent } : this.scanMixAt(this.state.layer);
+  }
+
   setLayer(value: number, immediate = false): void {
     const next = Math.min(1, Math.max(0, value));
     this.layerTarget = next;
+    if (this.mixCurrent) {
+      // 混合 → 扫描。不能瞬间把画面拍成 曲线×倍率（那是从任意混合硬切），
+      // 也没法把混合反推成一个扫描标量——所以先在**混合空间**缓动到目标
+      // 扫描画面，落地那一帧再交还曲线。观感是一次干净的交叉淡入。
+      this.state.layer = next;
+      this.layerEasing = false;
+      if (immediate) {
+        this.mixCurrent = null;
+        this.mixTarget = null;
+        this.scanAfterMix = false;
+        this.applyVisibility();
+        return;
+      }
+      this.mixTarget = this.scanMixAt(next);
+      this.scanAfterMix = true;
+      return;
+    }
     // 拖滑块时每帧都在小步变化，缓动会拖泥带水；奥秘/预设是大跳，缓动才有意义
     if (immediate || Math.abs(next - this.state.layer) < LAYER_EASE_THRESHOLD) {
       this.layerEasing = false;
@@ -569,8 +618,35 @@ export class HyiViewer extends EventTarget {
     this.layerEasing = true;
   }
 
+  /**
+   * 手动混合：六个系统各给一个 0–1 的最终不透明度，曲线与倍率不再参与。
+   * 拖推子传 immediate（要跟手）；奥秘 mix 步骤不传，沿用分层同款的指数缓动。
+   * 从扫描进来时缓动起点是**当前画面**（getDisplayMix 固化）——首版从"倍率
+   * 全 1"起步，每个 mix 步开场都闪一帧六层全亮的白（审查逮到的）。
+   */
+  setMix(mix: Record<SystemId, number>, immediate = false): void {
+    this.layerEasing = false;
+    this.scanAfterMix = false;
+    if (!this.mixCurrent) this.mixCurrent = this.scanMixAt(this.state.layer);
+    const target = {} as Record<SystemId, number>;
+    for (const [system, value] of Object.entries(mix) as [SystemId, number][]) {
+      target[system] = Math.min(1, Math.max(0, value));
+    }
+    if (immediate) {
+      this.mixTarget = null;
+      this.mixCurrent = target;
+      this.applyVisibility();
+      return;
+    }
+    this.mixTarget = target;
+  }
+
   /** 每帧把当前分层值指数逼近目标值。 */
   private tickLayer(dt: number): void {
+    if (this.mixTarget) {
+      this.tickMix(dt);
+      return;
+    }
     if (!this.layerEasing) return;
     const k = 1 - Math.exp(-dt / LAYER_EASE_TAU);
     const next = this.state.layer + (this.layerTarget - this.state.layer) * k;
@@ -583,6 +659,34 @@ export class HyiViewer extends EventTarget {
     this.applyVisibility();
   }
 
+  /** 混合空间的缓动：对六维向量做同一款指数逼近。 */
+  private tickMix(dt: number): void {
+    const target = this.mixTarget;
+    const current = this.mixCurrent;
+    if (!target || !current) return;
+    const k = 1 - Math.exp(-dt / LAYER_EASE_TAU);
+    let settled = true;
+    for (const system of Object.keys(target) as SystemId[]) {
+      const cur = current[system] ?? 0;
+      const next = cur + (target[system] - cur) * k;
+      if (Math.abs(target[system] - next) < 0.002) {
+        current[system] = target[system];
+      } else {
+        current[system] = next;
+        settled = false;
+      }
+    }
+    if (settled) {
+      this.mixTarget = null;
+      if (this.scanAfterMix) {
+        // 混合 → 扫描的过渡落地：画面正好等于 曲线×倍率，交还曲线不会跳
+        this.scanAfterMix = false;
+        this.mixCurrent = null;
+      }
+    }
+    this.applyVisibility();
+  }
+
   setSystemVisible(system: SystemId, visible: boolean): void {
     this.state.systemsVisible[system] = visible;
     this.applyVisibility();
@@ -590,6 +694,9 @@ export class HyiViewer extends EventTarget {
 
   setSystemOpacity(system: SystemId, opacity: number): void {
     this.state.systemOpacity[system] = Math.min(1, Math.max(0, opacity));
+    // 正在做混合→扫描的过渡时，倍率（奥秘的 systems 压暗）要反映进过渡目标，
+    // 否则缓动落地那帧才突然生效
+    if (this.scanAfterMix) this.mixTarget = this.scanMixAt(this.state.layer);
     this.applyVisibility();
   }
 
@@ -668,7 +775,9 @@ export class HyiViewer extends EventTarget {
     // 层级现在有三层（颅骨 → 额骨、脑 → 大脑 → 额叶）：只让位一级的话，
     // 钻进「大脑」时外面那层「脑」会重新冒出来，把刚露出的脑叶又罩住。
     if (s.expanded !== null && this.coversExpanded(entry.slug, s.expanded)) return 0;
-    let opacity = computeSystemOpacity(entry.system, s.layer) * s.systemOpacity[entry.system];
+    let opacity = this.mixCurrent
+      ? this.mixCurrent[entry.system]
+      : computeSystemOpacity(entry.system, s.layer) * s.systemOpacity[entry.system];
     if (s.isolated) {
       // 隔离 = 只看这一个。其他结构压到只剩一点点轮廓做参照——
       // 0.06 × 130 个结构叠起来仍是一团糊，主角照样看不清
@@ -1245,27 +1354,8 @@ export class HyiViewer extends EventTarget {
   }
 
   // ---- 剖切 ----------------------------------------------------------------
-
-  /**
-   * 沿某个结构半剖：把剖切面移到该结构的中心，正好把它切成两半。
-   * "想看心脏内部"最短的一条路——否则要手动拖滑块试半天。
-   */
-  clipThroughStructure(slug: string, axis: ClipAxis = 'y'): boolean {
-    const entry = this.structures.get(slug);
-    const box = entry?.mesh.geometry.boundingBox;
-    if (!entry || !box || this.contentBox.isEmpty()) return false;
-    const center = box.getCenter(new Vector3());
-    entry.mesh.localToWorld(center);
-    const pos = clipPosForCoordinate(
-      center[axis],
-      this.contentBox.min[axis],
-      this.contentBox.max[axis],
-    );
-    // 切掉朝向相机的那一半，否则剖开了也只看到完整的外表面
-    const flip = this.rig.camera.position[axis] < center[axis];
-    this.setClip({ axis, pos, flip });
-    return true;
-  }
+  // （2026-08-22 界面上的剖切面板随「沿此结构半剖」一起砍掉了；剖切能力保留，
+  // 由奥秘步骤与旧分享链接经 setClip 使用。）
 
   setClip(clip: { axis: ClipAxis; pos: number; flip?: boolean } | null): void {
     this.state.clip = clip;

@@ -1,7 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { computeAllOpacities, computeSystemOpacity } from '../../src/viewer/layers';
+import {
+  computeAllOpacities,
+  computeSystemOpacity,
+  HOME_STOPS,
+  materializeMix,
+} from '../../src/viewer/layers';
 
-/** 滑块上六个刻度的真实值（与 src/ui/LayerSlider.tsx 的 STOPS 一致）。 */
+/** 六个主场的真实值。独立于 HOME_STOPS 手抄一份作交叉校验（实现抄错任何一边都会红）。 */
 const STOPS = {
   skin: 0,
   muscles: 0.2,
@@ -115,5 +120,23 @@ describe('layers: 分层滑块 → 系统不透明度（KICKOFF 第 6 节）', (
   it('滑块越界值被钳制', () => {
     expect(computeSystemOpacity('skin', -1)).toBe(1);
     expect(computeSystemOpacity('skin', 2)).toBe(0);
+  });
+
+  // 2026-08-22 控制条改六个独立推子之后，这张表成了"点名字跳主场"的跳转目标，
+  // 也是搜索选中后"挪到看得清的位置"的落点——它必须与曲线峰值严格一致。
+  // store.ts 里那份手抄的 HOME_LAYER 正是因为抄旧了（nerves 0.8 上神经只有 0.1）
+  // 才合并到这里的。
+  it('HOME_STOPS 的每个主场上曲线都是满档 1', () => {
+    for (const [system, at] of Object.entries(HOME_STOPS) as [keyof typeof HOME_STOPS, number][]) {
+      expect(computeSystemOpacity(system, at), `${system} 的主场不在曲线峰值上`).toBe(1);
+    }
+  });
+
+  it('materializeMix 把"曲线 × 倍率"原样固化——切换瞬间画面不许动', () => {
+    const manual = { skin: 1, muscles: 0.5, skeleton: 1, organs: 1, vessels: 1, nerves: 1 };
+    const mix = materializeMix(0.45, manual);
+    for (const system of ['skin', 'muscles', 'skeleton', 'organs', 'vessels', 'nerves'] as const) {
+      expect(mix[system]).toBeCloseTo(computeSystemOpacity(system, 0.45) * manual[system], 10);
+    }
   });
 });
