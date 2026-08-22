@@ -547,7 +547,8 @@ test('a wonder can be started straight from the url', async ({ page }) => {
   });
   const player = page.getByTestId('wonder-player');
   await expect(player).toBeVisible({ timeout: 30_000 });
-  await expect(player).toContainText('1 /');
+  // 2026-08-22：进度挪进了字幕带的 kicker（播放器 header 已删）
+  await expect(page.getByTestId('wonder-caption')).toContainText('1 /');
   // 不存在的 id 不该炸，安安静静回到普通视图
   await page.goto('/?wonder=nope');
   await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
@@ -627,7 +628,8 @@ test('a self-made wonder can be captured, shared by link and played back', async
   });
   const player = page.getByTestId('wonder-player');
   await expect(player).toBeVisible({ timeout: 40_000 });
-  await expect(player).toContainText('心脏在哪儿');
+  // 2026-08-22：标题在字幕带的 kicker 里（播放器 header 已删）
+  await expect(page.getByTestId('wonder-caption')).toContainText('心脏在哪儿');
   // 放映层跟着出来：字幕带、章节进度、黑边
   await expect(page.getByTestId('wonder-caption')).toBeVisible({ timeout: 20_000 });
   await page.screenshot({ path: 'test-results/smoke-ugc-shared.png', timeout: 120_000 });

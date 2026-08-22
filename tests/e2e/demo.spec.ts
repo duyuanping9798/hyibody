@@ -142,8 +142,10 @@ test.describe('演示前自检 · 手机（Retina）', () => {
 
   test('奥秘：深链开播并能一路讲到最后一步，末帧不空', async ({ page }) => {
     // 十步逐一走完，每步都要重新出图；云端软件渲染约 1 fps，且全量套件同时
-    // 跑的时候机器更忙，预算要按最坏情况给
-    test.setTimeout(600_000);
+    // 跑的时候机器更忙，预算要按最坏情况给。
+    // 600 → 900（2026-08-22）：600 时代它就是 10.0 分钟贴线过的；顶点腔隙
+    // 烘焙让资产大了 15%（解码 + 上传变慢），10.1 分钟直接压线爆掉。
+    test.setTimeout(900_000);
     await page.setViewportSize(PHONE);
     await page.goto('/?wonder=heartbeat');
     await ready(page);
