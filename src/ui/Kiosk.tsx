@@ -30,12 +30,16 @@ export function Kiosk({ idleSeconds }: { idleSeconds: number }) {
   useEffect(() => {
     if (loadState !== 'ready') return;
     let timer = setTimeout(() => setAttract(true), idleSeconds * 1000);
-    const reset = () => {
+    const reset = (e: Event) => {
       clearTimeout(timer);
       if (attractRef.current) {
         setAttract(false);
         getViewer()?.setAutoRotate(false);
-        useUiStore.getState().setLayer(0);
+        // 触摸落在推子上就是"我要调这层"：React 的 setMix 已经先固化了
+        // 扫到一半的画面，这里再 setLayer(0) 会把刚建立的混合拍回皮肤层，
+        // 第一下按压完全无效（审查逮到的）。落在别处才归零。
+        const onBar = e.target instanceof Element && e.target.closest('.hyi-layerbar') !== null;
+        if (!onBar) useUiStore.getState().setLayer(0);
       }
       timer = setTimeout(() => setAttract(true), idleSeconds * 1000);
     };

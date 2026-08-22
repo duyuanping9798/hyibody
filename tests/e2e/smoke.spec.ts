@@ -123,8 +123,10 @@ test('language toggle switches UI to English and back', async ({ page }) => {
   await page.getByRole('button', { name: '关于' }).click();
   const about = page.getByTestId('about-dialog');
   await expect(about).toBeVisible();
-  // 简介与署名合在同一层里：CC BY 的署名义务不能因为收拢顶栏而丢
-  await expect(about).toContainText('BodyParts3D');
+  // 简介与署名合在同一层里：CC BY 的署名义务不能因为收拢顶栏而丢。
+  // 断言的是 manifest.attribution 里官方署名句独有的字样——弹层里另有一个
+  // 写死的许可证链接也含 "BodyParts3D"，拿它当断言词会守护错对象（审查逮到的）
+  await expect(about).toContainText('The Database Center for Life Science');
   const toggle = page.getByRole('button', { name: '切换语言 / Switch language' });
   await expect(page.locator('header')).toContainText('人体透视科普');
   await expect(toggle).toHaveText('EN');

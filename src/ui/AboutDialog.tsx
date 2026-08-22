@@ -66,7 +66,9 @@ export function AboutDialog({ onOpenHelp }: { onOpenHelp(): void }) {
           >
             {t.helpTitle}
           </button>
-          <button className="hyi-btn" onClick={() => setOpen(false)}>
+          {/* autoFocus：aria-modal 把对话框以外的内容对读屏隐藏了，焦点必须
+              跟着进来，否则读屏用户"站在不存在的地方"（同 ShortcutHelp 的做法） */}
+          <button className="hyi-btn" onClick={() => setOpen(false)} autoFocus>
             {t.close}
           </button>
         </div>

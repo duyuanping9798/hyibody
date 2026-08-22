@@ -40,6 +40,10 @@ describe('urlState', () => {
     const state: ViewerUrlState = { layer: 0, mix: { skeleton: 1, organs: 0.35 } };
     expect(decodeUrlState(encodeUrlState(state))).toEqual(state);
 
+    // 全黑画面编码成 { skin: 0 }（显式 0 键），解码端不能把它丢掉
+    const black: ViewerUrlState = { layer: 0, mix: { skin: 0 } };
+    expect(decodeUrlState(encodeUrlState(black))).toEqual(black);
+
     const dirty = decodeUrlState(
       encodeUrlState({
         layer: 0,

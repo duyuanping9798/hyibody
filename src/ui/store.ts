@@ -23,6 +23,7 @@ import {
 } from '../wonders/draft';
 import type { AtlasScene, AtlasView } from '../data/views';
 import { computeSystemOpacity, HOME_STOPS, materializeMix } from '../viewer/layers';
+import { FIRST_SCREEN_SYSTEMS } from '../viewer/loadOrder';
 import type { ClipAxis } from '../viewer/clipping';
 import type { ViewPresetId } from '../viewer/camera';
 import type { HyiViewer } from '../viewer/HyiViewer';
@@ -128,7 +129,8 @@ interface UiState {
   backToBody(): void;
   setClip(clip: { axis: ClipAxis; pos: number; flip?: boolean } | null): void;
   applyPreset(id: ViewPresetId): void;
-  focus(slug: string, from?: ViewPresetId, zoomOut?: number): void;
+  /** reveal=false：不做"挪到看得清的位置"（奥秘 mix 步骤的画面是作者钦定的） */
+  focus(slug: string, from?: ViewPresetId, zoomOut?: number, reveal?: boolean): void;
   setAboutOpen(open: boolean): void;
   setInfoExpanded(open: boolean): void;
   openGallery(kind: GalleryKind): void;
@@ -239,13 +241,16 @@ function applyScene(step: AtlasScene): void {
     st.applyManualMix(step.mix, false);
   } else {
     st.setLayer(step.layer);
+    // setLayer 退出混合模式时会把六个倍率重置为 1——下面必须拿**重置后**的
+    // 状态比较，否则"步骤要的值恰好等于混合遗留值"时会漏设（审查逮到的）
+    const cur = useUiStore.getState();
     for (const id of SYSTEM_IDS) {
       const want = step.systems?.[id] ?? true;
       // false = 关掉；数字 = 压暗到该不透明度；true/缺省 = 完全可见
       const visible = want !== false;
-      if (st.systemsVisible[id] !== visible) st.toggleSystem(id);
+      if (cur.systemsVisible[id] !== visible) cur.toggleSystem(id);
       const opacity = typeof want === 'number' ? Math.min(1, Math.max(0, want)) : 1;
-      if (st.systemOpacity[id] !== opacity) st.setSystemOpacity(id, opacity);
+      if (cur.systemOpacity[id] !== opacity) cur.setSystemOpacity(id, opacity);
     }
   }
   // 展开/剖切要在选中之前定好：内部件得先登场，才轮得到选中它
@@ -254,8 +259,11 @@ function applyScene(step: AtlasScene): void {
   if (step.preset) st.applyPreset(step.preset);
   if (step.selected) {
     st.select(step.selected);
-    // from 只定方向、focus 定距离；preset 是整具人体宽景，给了就不再特写
-    if (step.focus !== false && !step.preset) st.focus(step.selected, step.from, step.zoomOut);
+    // from 只定方向、focus 定距离；preset 是整具人体宽景，给了就不再特写。
+    // mix 步骤跳过 reveal：这一步的混合就是作者钦定的画面，"挪到看得清的
+    // 位置"会把整份 mix 撤销成主场跳转（审查逮到的 P1）
+    if (step.focus !== false && !step.preset)
+      st.focus(step.selected, step.from, step.zoomOut, !step.mix);
   } else {
     st.select(null);
   }
@@ -290,10 +298,13 @@ wonderEngine.addEventListener('end', (e) => {
   // 最后一步可能是混合步骤（mix）：先回扫描模式，否则下面把倍率还原成 1 之后
   // 曲线不参与，六层全 1 叠在一起就是一团白
   if (st.mixMode) st.setLayer(st.layer, true);
+  // 用 setLayer 之后的**新鲜**状态，且倍率无条件还原——store 与 viewer 的
+  // 倍率在混合往返里可能错位过，按旧快照比较会漏还原（审查逮到的）
+  const fresh = useUiStore.getState();
   for (const id of SYSTEM_IDS) {
-    if (!st.systemsVisible[id]) st.toggleSystem(id);
+    if (!fresh.systemsVisible[id]) fresh.toggleSystem(id);
     // 步骤可能把某个系统压暗过，退出时要还原，否则画面一直是灰的
-    if (st.systemOpacity[id] !== 1) st.setSystemOpacity(id, 1);
+    fresh.setSystemOpacity(id, 1);
   }
   if (recorder.recording) {
     // 留 800 ms 尾巴：最后一句字幕刚浮完就切黑，看着像断片
@@ -446,7 +457,21 @@ export const useUiStore = create<UiState>((set, get) => ({
   },
   setLoadState: (loadState) => set({ loadState }),
   setManifest: (manifest) =>
-    set({ manifest, loadedSystems: manifest.systems.map((s) => s.id) as string[] }),
+    set((s) => {
+      // ready 时真正就位的只有首屏系统，其余等 'systemloaded' 逐个报到。
+      // 原来这里把全部系统一次性标为已加载，LayerBar 的"补载中"待机样式因此
+      // 从不出现（审查逮到的；旧系统面板的「加载中…」同样从没显示过）。
+      // 占位/异常 manifest（没有任何首屏系统）时全量都在 ready 前加载完，标全。
+      const firstIds = manifest.systems
+        .map((x) => x.id)
+        .filter((id) => (FIRST_SCREEN_SYSTEMS as readonly string[]).includes(id));
+      return {
+        manifest,
+        loadedSystems: firstIds.length
+          ? [...new Set([...s.loadedSystems, ...firstIds])]
+          : (manifest.systems.map((x) => x.id) as string[]),
+      };
+    }),
   markSystemLoaded: (id) =>
     set((s) => ({
       loadedSystems: s.loadedSystems.includes(id) ? s.loadedSystems : [...s.loadedSystems, id],
@@ -473,9 +498,14 @@ export const useUiStore = create<UiState>((set, get) => ({
   setMix: (id, v) => {
     const s = get();
     const value = Math.min(1, Math.max(0, v));
-    // 第一次拖推子：把扫描模式的当前画面固化成六个绝对值，画面这一帧纹丝不动，
-    // 用户看到的只有"我拖的那层在变"
-    const base = s.mixMode ? s.systemOpacity : materializeMix(s.layer, s.systemOpacity);
+    // 第一次拖推子：把当前画面固化成六个绝对值，画面这一帧纹丝不动，
+    // 用户看到的只有"我拖的那层在变"。固化基准取 viewer 的**屏幕真值**——
+    // store.layer 是缓动终点，点完主场立刻拖推子时两者不同（审查逮到的跳变）。
+    const base = viewer
+      ? viewer.getDisplayMix()
+      : s.mixMode
+        ? s.systemOpacity
+        : materializeMix(s.layer, s.systemOpacity);
     const mix = { ...base, [id]: value };
     viewer?.setMix(mix, true);
     // 拖起一个被隐藏（键盘 1–6）的层就是想看它，顺手解除隐藏
@@ -562,8 +592,8 @@ export const useUiStore = create<UiState>((set, get) => ({
   applyPreset: (id) => {
     viewer?.applyPreset(id);
   },
-  focus: (slug, from, zoomOut) => {
-    revealLayerFor(slug);
+  focus: (slug, from, zoomOut, reveal = true) => {
+    if (reveal) revealLayerFor(slug);
     viewer?.focus(slug, from, zoomOut);
   },
   setAboutOpen: (aboutOpen) => set({ aboutOpen }),
@@ -824,6 +854,9 @@ export function toUrlState(): ViewerUrlState {
       const value = s.systemsVisible[id] ? s.systemOpacity[id] : 0;
       if (value > 0.004) mix[id] = Math.round(value * 100) / 100;
     }
+    // 六层全 0（全黑画面）时留一个显式 0 键：空对象在解码端会被当坏数据丢掉，
+    // 分享者的全黑往返回来会变成一整张皮肤
+    if (Object.keys(mix).length === 0) mix.skin = 0;
     state.mix = mix;
   }
   const hiddenSystems = s.mixMode ? [] : Object.entries(s.systemsVisible).filter(([, v]) => !v);

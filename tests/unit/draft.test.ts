@@ -113,6 +113,19 @@ describe('UGC：抓一步', () => {
     expect(step.layer).toBe(0);
     expect(step.systems).toBeUndefined();
   });
+
+  it('全零混合（作者要一帧全黑）保留一个显式 0 键——空 mix 会被清洗当坏数据丢掉', () => {
+    const zero = { skin: 0, muscles: 0, skeleton: 0, organs: 0, vessels: 0, nerves: 0 };
+    const step = captureStep(snapshot({ mixMode: true, systemOpacity: zero }));
+    expect(step.mix).toEqual({ skin: 0 });
+    // 且它能原样活过 sanitize（localStorage / ?w= 往返）
+    const w = sanitizeWonder({
+      id: 'ok',
+      title: { zh: 'a', en: 'b' },
+      steps: [{ text: { zh: 'a', en: 'b' }, layer: 0, durationMs: 8000, mix: { skin: 0 } }],
+    });
+    expect(w?.steps[0]!.mix).toEqual({ skin: 0 });
+  });
 });
 
 describe('UGC：校验', () => {

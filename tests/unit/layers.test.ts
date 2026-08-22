@@ -6,7 +6,7 @@ import {
   materializeMix,
 } from '../../src/viewer/layers';
 
-/** 滑块上六个刻度的真实值（与 src/ui/LayerSlider.tsx 的 STOPS 一致）。 */
+/** 六个主场的真实值。独立于 HOME_STOPS 手抄一份作交叉校验（实现抄错任何一边都会红）。 */
 const STOPS = {
   skin: 0,
   muscles: 0.2,

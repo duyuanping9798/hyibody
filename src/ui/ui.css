@@ -310,6 +310,10 @@
   position: absolute;
   right: 12px;
   bottom: 84px;
+  /* 卡片压在控制条**之上**：v1.7 控制条比旧滑块高一截，721–1055px 宽度下两者
+     会相交——不给层级的话后渲染的控制条盖住卡片按钮，点「隐藏」会误拖推子
+     （审查用 768×1024 实测逮到的）。配合下面 721–1080px 的避让规则一起用。 */
+  z-index: 6;
   width: min(320px, calc(100% - 24px));
   padding: 14px 16px;
   max-height: calc(56% - 84px);
@@ -1074,17 +1078,23 @@ body.hyi-kiosk .hyi-btn {
   font-size: 16px;
   border-radius: 10px;
 }
-/* 展厅：推子按触摸放大（KICKOFF：无键鼠可完全操作，目标 ≥ 56 px 宽高量级） */
+/* 展厅：控制条与菜单全部放大到 ≥56px（KICKOFF 第 6 节的硬规则，
+   demo.spec 的点按目标扫描现在把 chip-label / fader / 菜单项都算在内） */
 body.hyi-kiosk .hyi-chip {
-  width: 68px;
+  width: 76px;
 }
 body.hyi-kiosk .hyi-chip-fader {
-  width: 44px;
-  height: 96px;
+  width: 56px;
+  height: 110px;
 }
 body.hyi-kiosk .hyi-chip-label {
-  font-size: 14px;
-  min-height: 32px;
+  font-size: 15px;
+  min-width: 56px;
+  min-height: 56px;
+}
+body.hyi-kiosk .hyi-popover button {
+  min-height: 56px;
+  font-size: 16px;
 }
 body.hyi-kiosk .hyi-range::-webkit-slider-thumb {
   width: 28px;
@@ -1146,7 +1156,7 @@ body.hyi-kiosk .hyi-info .blurb {
     /* 要让开底部那条全局控制条，再留 8 px 空隙。高度由 useSafeInsets 量
        真实 DOM 写进 --hyi-bottombar-h：写死常数对不上——v0.8 把滑块从 90 px
        压到 39 px 之后，这里一直还按 90 算，白空出约 60 px。 */
-    bottom: calc(var(--hyi-bottombar-h, 90px) + 18px);
+    bottom: calc(var(--hyi-bottombar-h, 90px) + 18px + env(safe-area-inset-bottom, 0px));
     left: 8px;
     right: 8px;
     width: auto;
@@ -1495,11 +1505,9 @@ body.hyi-kiosk .hyi-info .blurb {
     padding-top: 8px;
     background: linear-gradient(180deg, transparent, var(--hyi-panel) 40%);
   }
-  /* index.html 声明了 viewport-fit=cover，内容会铺到 home 指示条底下，
-     所以贴底的两块都要把安全区加回来 */
-  .hyi-dock {
-    bottom: calc(106px + env(safe-area-inset-bottom, 0px));
-  }
+  /* 这里原来还有一条写死 bottom:106px 的 .hyi-dock 规则——同特异性、更靠后，
+     把上面那条按 --hyi-bottombar-h 定位的规则整个压成死代码（v0.8 时代那道
+     60px 的缝其实就是它，"修复"从没生效过；审查逮到的）。安全区已并进上面。 */
   /* 小屏上标签引线容易压住抽屉，缩短并缩小字号 */
   .hyi-label .zh {
     font-size: 12px;
@@ -1520,6 +1528,16 @@ body.hyi-kiosk .hyi-info .blurb {
 @media (prefers-reduced-motion: reduce) {
   .hyi-info {
     animation: none;
+  }
+}
+
+/* 中等宽度（平板竖屏、窄笔电窗口）：信息卡右锚 354px、控制条居中 392px，
+   721–1055px 下必然相交。卡片打开时把控制条挪到剩余空间的中央，两者互不遮挡。 */
+@media (min-width: 721px) and (max-width: 1080px) {
+  body:has(.hyi-info) .hyi-layerbar {
+    /* transform 仍是 translateX(-50%)，left 给的是条的中心：
+       max() 保证最窄时左沿也不出屏（条半宽约 196px + 8px 边距） */
+    left: max(204px, calc((100% - 378px) / 2));
   }
 }
 

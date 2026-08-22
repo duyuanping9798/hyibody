@@ -82,6 +82,9 @@ export function captureStep(snapshot: ViewSnapshot, opts: CaptureOptions = {}): 
       const value = snapshot.systemsVisible[id] ? snapshot.systemOpacity[id] : 0;
       if (value > 0.004) mix[id] = Math.round(value * 100) / 100;
     }
+    // 六层全 0（作者就是要一帧全黑）时留一个显式 0 键：
+    // 空对象会被 sanitizeWonder 当坏数据丢掉，往返后这一步会变成一整张皮肤
+    if (Object.keys(mix).length === 0) mix.skin = 0;
     step.mix = mix;
   }
   if (snapshot.selected) {

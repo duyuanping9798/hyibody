@@ -1,5 +1,5 @@
 import { STRINGS } from './i18n';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ShareIcon, UserIcon } from './Icon';
 import { useUiStore } from './store';
 
@@ -13,14 +13,32 @@ export function PersonalMenu({ onShare }: { onShare(): void }) {
   const [open, setOpen] = useState(false);
   const openEditor = useUiStore((s) => s.openEditor);
   const wonder = useUiStore((s) => s.wonder);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+
+  // Esc 关菜单。菜单的 open 是组件局部状态，keyboard.ts 的全局 Esc 优先级链
+  // 不知道它——不拦的话按 Esc 菜单原样开着、背后的选中反被清掉（审查逮到的）。
+  // 用捕获阶段抢在全局快捷键之前，关掉后把焦点还给触发按钮。
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      e.stopPropagation();
+      setOpen(false);
+      triggerRef.current?.focus();
+    };
+    window.addEventListener('keydown', onKey, true);
+    return () => window.removeEventListener('keydown', onKey, true);
+  }, [open]);
 
   return (
     <div className="hyi-personal">
       <button
+        ref={triggerRef}
         className="hyi-btn hyi-btn-icon"
         aria-label={t.personalTitle}
         title={t.personalTitle}
         aria-expanded={open}
+        aria-haspopup="menu"
         onClick={() => setOpen(!open)}
       >
         <UserIcon />
@@ -32,6 +50,7 @@ export function PersonalMenu({ onShare }: { onShare(): void }) {
           <div className="hyi-popover" role="menu" data-testid="personal-menu">
             <button
               role="menuitem"
+              autoFocus
               onClick={() => {
                 setOpen(false);
                 onShare();

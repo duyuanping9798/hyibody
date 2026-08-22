@@ -1588,8 +1588,10 @@ Anatomy 并优化），右上角版权信息和语言放进同一个图标增加
   （神经在 0.8 只有 0.1 透明度，搜索神经后"挪到看得清"等于没挪）——主场表
   合并进 layers.ts 的 `HOME_STOPS` 单一来源，单测锁"主场上曲线 = 1"。
 
-**验收**：单测 255（+5：HOME_STOPS/materializeMix/mix 清洗与抓取）、
-lint/prettier/tsc 干净、e2e 全量见下、`pnpm build` 通过。
+**验收**：单测 256（+6：HOME_STOPS/materializeMix/mix 清洗与抓取/全零哨兵）、
+lint/prettier/tsc 干净、e2e 32 条全量两轮（首版一轮 + 审查修复后一轮）、
+`pnpm build` 通过。首版随后过了一轮四维对抗式审查，确认并修掉 13 处缺陷
+（最重的是"混合值与倍率共用存储"这个设计错误，详见 DECISIONS 同日第二条）。
 
 ## 未完成 / 下一步（2026-08-22）
 
