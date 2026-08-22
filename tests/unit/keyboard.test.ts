@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { LAYER_STEP, isTypingTarget, resolveShortcut } from '../../src/ui/keyboard';
+import { isTypingTarget, resolveShortcut } from '../../src/ui/keyboard';
 
 const idle = { wonderActive: false, typing: false };
 const wonder = { wonderActive: true, typing: false };
@@ -26,9 +26,9 @@ describe('resolveShortcut', () => {
     expect(resolveShortcut({ key: '?' }, idle)).toEqual({ kind: 'toggleHelp' });
   });
 
-  it('[ ] 调透视深度', () => {
-    expect(resolveShortcut({ key: '[' }, idle)).toEqual({ kind: 'layer', delta: -LAYER_STEP });
-    expect(resolveShortcut({ key: ']' }, idle)).toEqual({ kind: 'layer', delta: LAYER_STEP });
+  it('[ ] 已随分层扫描滑块一起退役（控制条改成六个独立推子）', () => {
+    expect(resolveShortcut({ key: '[' }, idle)).toEqual({ kind: 'none' });
+    expect(resolveShortcut({ key: ']' }, idle)).toEqual({ kind: 'none' });
   });
 
   it('1–6 对应六个系统，7 及以上不接管', () => {

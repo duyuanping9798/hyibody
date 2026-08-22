@@ -114,21 +114,28 @@ test('heartbeat wonder plays from the menu', async ({ page }) => {
   await expect(player).not.toBeVisible();
 });
 
-/** M2-5 冒烟：中英切换按钮实时切换界面语言。 */
+/** M2-5 冒烟：语言切换收进了「关于」弹层（2026-08-22 顶栏收拢），实时切换界面语言。 */
 test('language toggle switches UI to English and back', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
     timeout: 60_000,
   });
+  await page.getByRole('button', { name: '关于' }).click();
+  const about = page.getByTestId('about-dialog');
+  await expect(about).toBeVisible();
+  // 简介与署名合在同一层里：CC BY 的署名义务不能因为收拢顶栏而丢
+  await expect(about).toContainText('BodyParts3D');
   const toggle = page.getByRole('button', { name: '切换语言 / Switch language' });
   await expect(page.locator('header')).toContainText('人体透视科普');
   await expect(toggle).toHaveText('EN');
   await toggle.click();
   await expect(page.locator('header')).toContainText('See-through Human Anatomy');
-  await expect(page.getByRole('button', { name: 'Wonders' })).toBeVisible();
   await expect(toggle).toHaveText('中文');
   await toggle.click();
   await expect(page.locator('header')).toContainText('人体透视科普');
+  await about.getByRole('button', { name: '关闭' }).click();
+  await expect(about).toHaveCount(0);
+  await expect(page.getByRole('button', { name: '奥秘' })).toBeVisible();
 });
 
 /** M2-2/M2-3 冒烟：Kiosk 闲置吸引动画出现（?idle=2 加速），分享弹层出二维码。 */
@@ -146,8 +153,9 @@ test('kiosk attract mode and share dialog', async ({ page }) => {
   await page.mouse.click(640, 400);
   await expect(page.getByTestId('kiosk-attract')).not.toBeVisible();
 
-  // 分享弹层：二维码 canvas 有内容
-  await page.getByRole('button', { name: '分享' }).click();
+  // 分享收进了个人中心（👤）菜单：二维码 canvas 有内容
+  await page.getByRole('button', { name: '个人中心' }).click();
+  await page.getByTestId('personal-menu').getByRole('menuitem', { name: '分享' }).click();
   const qr = page.getByTestId('share-qr');
   await expect(qr).toBeVisible();
   const size = await qr.evaluate((c) => (c as HTMLCanvasElement).width);
@@ -187,11 +195,11 @@ test.describe('retina viewport', () => {
   });
 });
 
-/** M1-7 移动端冒烟：竖屏视口下抽屉面板可唤出、信息卡可见、留存截图。 */
+/** M1-7 移动端冒烟：竖屏视口下六格控制条完整、信息卡可见、留存截图。 */
 test.describe('mobile viewport', () => {
   test.use({ viewport: { width: 390, height: 844 }, hasTouch: true });
 
-  test('drawer panels and info card usable on small screen', async ({ page }) => {
+  test('layer bar and info card usable on small screen', async ({ page }) => {
     const state = encodeUrlState({ layer: 0.62, selected: 'skull' });
     await page.goto(`/?v=${state}`);
     await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
@@ -201,12 +209,17 @@ test.describe('mobile viewport', () => {
     await expect(page.getByTestId('info-card')).toBeVisible({ timeout: 20_000 });
     await expect(page.getByTestId('info-card')).toContainText('颅骨');
 
-    // 工具抽屉：默认全收起 → 点"系统"这一格展开
-    const systemsTab = page.getByRole('button', { name: '系统', exact: true });
-    await expect(systemsTab).toBeVisible();
-    await expect(page.getByRole('button', { name: '皮肤 显示/隐藏' })).toHaveCount(0);
-    await systemsTab.click();
-    await expect(page.getByRole('button', { name: '皮肤 显示/隐藏' })).toBeVisible();
+    // 六格调音台：六个推子都在（390px 宽也得一行放下），器官层主场上器官满档
+    const bar = page.getByTestId('layer-bar');
+    await expect(bar).toBeVisible();
+    await expect(bar.getByRole('slider')).toHaveCount(6);
+    await expect(bar.locator('[data-system="organs"] .hyi-chip-fader')).toHaveAttribute(
+      'aria-valuenow',
+      '100',
+    );
+    // 一行放得下：条宽不超过视口
+    const box = await bar.boundingBox();
+    expect(box!.width).toBeLessThanOrEqual(390);
 
     await page.screenshot({ path: 'test-results/smoke-mobile.png' });
   });
@@ -311,34 +324,32 @@ test('info card shows blurb and fact, selection gets a 3D label', async ({ page 
 });
 
 /**
- * 剖切封盖 + 沿结构半剖：隔离心脏 → 一键把剖切面移到它中心并切掉朝向相机的那半。
- * 封盖是模板缓冲效果（截图人工比对），这里只锁住交互链路与状态。
+ * 剖切从旧分享链接恢复（2026-08-22 界面上的剖切面板砍掉了，能力留在引擎里：
+ * 奥秘的剖切步骤与存量分享链接都还要用）。恢复后它算"脏状态"，
+ * 「返回全身」必须出现并且能把它清干净——这是删掉面板后唯一的关闭入口。
  */
-test('half-section cuts through the selected structure', async ({ page }) => {
-  // 和下面那条一样要先把心脏解出来再重算取景，软件渲染下 120 秒不够用
+test('a legacy share link with a clip still restores and can be cleared', async ({ page }) => {
   test.setTimeout(240_000);
-  const state = encodeUrlState({ layer: 0.55, selected: 'heart' });
+  const state = encodeUrlState({
+    layer: 0.55,
+    selected: 'heart',
+    clip: { axis: 'y', pos: 0.05, flip: true },
+  });
   await page.goto(`/?v=${state}`);
   await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
     timeout: 60_000,
   });
   await expect(page.getByTestId('info-card')).toBeVisible({ timeout: 30_000 });
 
-  // 剖切工具在抽屉里，先展开那一格
-  await page.getByRole('button', { name: '剖切', exact: true }).click();
-
-  // 剖切默认关闭时不出现"反向"
-  await expect(page.getByRole('button', { name: '反向' })).toHaveCount(0);
-
-  await page.getByRole('button', { name: '沿此结构半剖' }).click();
-  // 剖切被打开：轴向按钮进入选中态，反向开关出现
-  await expect(page.getByRole('button', { name: '反向' })).toBeVisible();
-  await expect(page.locator('.hyi-clip-row .hyi-btn.active')).toHaveCount(1);
-
+  const back = page.getByRole('button', { name: /返回全身/ });
+  await expect(back).toBeVisible();
   await page.evaluate(
     () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))),
   );
   await page.screenshot({ path: 'test-results/smoke-halfcut.png' });
+
+  await back.click();
+  await expect(page.getByRole('button', { name: /返回全身/ })).toHaveCount(0);
 });
 
 /**
@@ -439,7 +450,10 @@ test('english info card shows english blurb', async ({ page }) => {
   const infoCard = page.getByTestId('info-card');
   await expect(infoCard).toBeVisible({ timeout: 30_000 });
 
+  // 语言开关在「关于」弹层里，切完关掉弹层再看卡片
+  await page.getByRole('button', { name: '关于' }).click();
   await page.getByRole('button', { name: '切换语言 / Switch language' }).click();
+  await page.getByTestId('about-dialog').getByRole('button', { name: 'Close' }).click();
   await expect(infoCard.locator('h2')).toHaveText('Heart');
   await expect(infoCard.locator('.blurb')).toContainText('muscular pump');
   await expect(infoCard.locator('.blurb')).not.toContainText('coming soon');
@@ -570,6 +584,8 @@ test('a self-made wonder can be captured, shared by link and played back', async
     timeout: 60_000,
   });
 
+  // 创作入口收进了个人中心（👤）菜单
+  await page.getByRole('button', { name: '个人中心' }).click();
   await page.getByTestId('editor-open').click();
   const editor = page.getByTestId('wonder-editor');
   await expect(editor).toBeVisible();
@@ -664,15 +680,10 @@ test('share link keeps its camera angle instead of snapping back to full body', 
   // setSafeInsets 是界面量完真实高度才推进来的，等它跑过
   await page.waitForTimeout(4000);
 
-  // 地址栏的 ?v= 只在分层/显隐/剖切/选中变化时才回写，所以拨一下分层触发它，
-  // 回写时带的是**当前**相机位姿——机位被顶掉的话这里就能读出来
-  await page.evaluate(() => {
-    const el = document.querySelector('.hyi-range-layer') as HTMLInputElement;
-    const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!;
-    setter.call(el, '0.63');
-    el.dispatchEvent(new Event('input', { bubbles: true }));
-    el.dispatchEvent(new Event('change', { bubbles: true }));
-  });
+  // 地址栏的 ?v= 只在分层/混合/显隐/剖切/选中变化时才回写，所以点一下
+  // 「肌肉」的主场跳转触发它（分层动、相机不动），回写时带的是**当前**
+  // 相机位姿——机位被顶掉的话这里就能读出来
+  await page.getByRole('button', { name: '看肌肉层' }).click({ force: true });
   await expect
     .poll(() => new URL(page.url()).searchParams.get('v'), { timeout: 30_000 })
     .not.toBe(state);
@@ -720,9 +731,9 @@ test('a broken ?w= link falls back to the plain viewer', async ({ page }) => {
     timeout: 60_000,
   });
   await expect(page.getByTestId('wonder-player')).toHaveCount(0);
-  // 普通界面照常在：搜索框、分层滑块
+  // 普通界面照常在：搜索框、六格控制条
   await expect(page.locator('.hyi-search input')).toBeVisible();
-  await expect(page.locator('.hyi-layer-slider')).toBeVisible();
+  await expect(page.getByTestId('layer-bar')).toBeVisible();
 });
 
 test('局部细剖：卡片墙点一张，画面就摆成那个视角', async ({ page }) => {
@@ -756,6 +767,65 @@ test('局部细剖：卡片墙点一张，画面就摆成那个视角', async ({
   await expect(page.locator('.hyi-info')).toContainText('肋骨');
 });
 
+/**
+ * 六格调音台（2026-08-22 控制条重做）的主路径：
+ * 点名字跳主场（扫描模式）→ 拖/键一个推子进入混合模式 → 独立值不受曲线钳制
+ * → 链接带 mix → 重开链接还原。混合是这轮改造的全部新行为，值得一条完整链路。
+ */
+test('layer mixer: individual faders, mix in the share url, restore on reload', async ({
+  page,
+}) => {
+  test.setTimeout(300_000);
+  await page.goto(`/?v=${encodeUrlState({ layer: 0.45 })}`);
+  await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
+    timeout: 60_000,
+  });
+
+  const bar = page.getByTestId('layer-bar');
+  const skeleton = bar.locator('[data-system="skeleton"] .hyi-chip-fader');
+  const organs = bar.locator('[data-system="organs"] .hyi-chip-fader');
+  // 骨骼主场：骨骼满档，器官只有曲线给的 8% 底噪
+  await expect(skeleton).toHaveAttribute('aria-valuenow', '100');
+  await expect(organs).toHaveAttribute('aria-valuenow', '8');
+
+  // 键盘压骨骼三档：100 → 85（KEY_STEP 5%），首次触碰即固化进混合模式
+  await skeleton.focus();
+  for (let i = 0; i < 3; i += 1) await page.keyboard.press('ArrowDown');
+  await expect(skeleton).toHaveAttribute('aria-valuenow', '85');
+  // 器官独立拉满——扫描曲线在这一档只肯给 8%，混合模式下不受它钳制
+  await organs.focus();
+  await page.keyboard.press('End');
+  await expect(organs).toHaveAttribute('aria-valuenow', '100');
+
+  // 回写的 ?v= 带 mix；等防抖落地
+  await expect
+    .poll(() => decodeUrlState(new URL(page.url()).searchParams.get('v')).mix?.organs, {
+      timeout: 30_000,
+    })
+    .toBe(1);
+  const encoded = new URL(page.url()).searchParams.get('v')!;
+  expect(decodeUrlState(encoded).mix?.skeleton).toBeCloseTo(0.85, 2);
+
+  await page.evaluate(
+    () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))),
+  );
+  await page.screenshot({ path: 'test-results/smoke-mixer.png', timeout: 120_000 });
+
+  // 重开这条链接：混合原样还原
+  await page.goto(`/?v=${encoded}`);
+  await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
+    timeout: 60_000,
+  });
+  await expect(bar.locator('[data-system="organs"] .hyi-chip-fader')).toHaveAttribute(
+    'aria-valuenow',
+    '100',
+  );
+  await expect(bar.locator('[data-system="skeleton"] .hyi-chip-fader')).toHaveAttribute(
+    'aria-valuenow',
+    '85',
+  );
+});
+
 test('奥秘画廊：整页卡片墙，按系统分标签', async ({ page }) => {
   test.setTimeout(180_000);
   await page.goto('/');
@@ -780,7 +850,7 @@ test('奥秘画廊：整页卡片墙，按系统分标签', async ({ page }) => 
   // 关掉之后回到普通界面
   await gallery.getByRole('button', { name: '关闭' }).click();
   await expect(gallery).toHaveCount(0);
-  await expect(page.locator('.hyi-layer-slider')).toBeVisible();
+  await expect(page.getByTestId('layer-bar')).toBeVisible();
 
   // 点一张卡：奥秘开演，**画廊必须一起消失**。
   // 这条是真 bug 的回归锁：startWonder 原来只清 activePanel、不清 gallery，

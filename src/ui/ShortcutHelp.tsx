@@ -7,7 +7,6 @@ type ShortcutKey = keyof (typeof STRINGS)['zh']['shortcuts'];
 const ROWS: { keys: string[]; key: ShortcutKey }[] = [
   { keys: ['/'], key: 'search' },
   { keys: ['?'], key: 'help' },
-  { keys: ['[', ']'], key: 'layer' },
   { keys: ['1', '–', '6'], key: 'systems' },
   { keys: ['F'], key: 'focusSelected' },
   { keys: ['0'], key: 'backToBody' },

@@ -77,6 +77,41 @@ const CURVES: Record<SystemId, ReadonlyArray<readonly [number, number]>> = {
 /** 拾取只对不透明度 > 0.15 的结构生效（KICKOFF 第 6 节）。 */
 export const PICKABLE_OPACITY_THRESHOLD = 0.15;
 
+/**
+ * 各系统的"主场"：曲线在这个滑块值上等于 1。控制条的六个跳转按钮、
+ * 搜索选中后的"把画面挪到看得清的位置"都以它为准。
+ *
+ * 这张表原来在 store.ts 里手抄了一份（HOME_LAYER），而且抄旧了：organs 写 0.6
+ * （曲线峰在 0.62）、nerves 写 0.8——那是血管/神经共用一档时代的值，拆档之后
+ * 神经的主场是 1.0，0.8 上神经只有 0.1，"挪到看得清的位置"挪了个寂寞。
+ * 单一来源，别再抄。
+ */
+export const HOME_STOPS: Record<SystemId, number> = {
+  skin: 0,
+  muscles: 0.2,
+  skeleton: 0.45,
+  organs: 0.62,
+  vessels: 0.8,
+  nerves: 1,
+};
+
+/**
+ * 把"扫描模式"的当前画面固化成一份手动混合值：曲线 × 手动倍率，逐系统。
+ *
+ * 用户第一次拖某个推子时调用——从这一刻起六层各自独立（mix 模式），
+ * 固化保证画面在切换的那一帧纹丝不动，用户看到的只是"我拖的那层变了"。
+ */
+export function materializeMix(
+  layer: number,
+  systemOpacity: Record<SystemId, number>,
+): Record<SystemId, number> {
+  const out = {} as Record<SystemId, number>;
+  for (const system of Object.keys(CURVES) as SystemId[]) {
+    out[system] = computeSystemOpacity(system, layer) * systemOpacity[system];
+  }
+  return out;
+}
+
 export function computeSystemOpacity(system: SystemId, layer: number): number {
   const t = Math.min(1, Math.max(0, layer));
   const points = CURVES[system];

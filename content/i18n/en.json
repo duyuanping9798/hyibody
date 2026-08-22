@@ -23,7 +23,8 @@
     "lower_limb": "Lower limb",
     "whole": "Whole body"
   },
-  "layerSlider": "Peel depth",
+  "opacityOf": "{system} opacity",
+  "layerJump": "Show the {system} layer",
   "searchPlaceholder": "Search structures (zh/en)…",
   "searchNoResult": "No matching structure",
   "infoBlurbPending": "One-line description coming soon — contribute in content/definitions.",
@@ -36,24 +37,10 @@
   "actionFocus": "Focus",
   "actionRestore": "Restore all",
   "hiddenCount": "{n} structures hidden",
-  "presetsTitle": "Views",
-  "presets": {
-    "front": "Front",
-    "back": "Back",
-    "left": "Left",
-    "right": "Right",
-    "top": "Top",
-    "hero": "Hero"
-  },
-  "clipTitle": "Clip",
-  "clipOff": "Off",
-  "clipAxis": {
-    "x": "L-R",
-    "y": "F-B",
-    "z": "U-D"
-  },
-  "systemsTitle": "Systems",
-  "systemLoading": "loading…",
+  "aboutTitle": "About",
+  "aboutIntro": "HyiBody is a web-only 3D tour of the human body: hundreds of core structures from skin to nerves, six layers you can fade in and out independently, and everything identifiable with a tap. \"Wonders\" walk you shot by shot through what is happening inside. All meshes come from the openly licensed BodyParts3D and HuBMAP HRA.",
+  "languageLabel": "界面语言 / Language",
+  "personalTitle": "My space",
   "close": "Close",
   "wondersTitle": "Wonders",
   "wonderPrev": "Back",
@@ -101,8 +88,6 @@
     "none": "—",
     "both": "Both"
   },
-  "clipThroughSelected": "Cut through this structure",
-  "clipFlip": "Flip",
   "expandParts": "Open up ({n})",
   "collapseParts": "Close up",
   "backToBody": "Back to full body",
@@ -110,7 +95,6 @@
   "shortcuts": {
     "search": "Search structures",
     "help": "Open / close this page",
-    "layer": "X-ray depth out / in",
     "systems": "Show / hide layers 1–6",
     "focusSelected": "Point the camera at the selected structure",
     "backToBody": "Back to full body (clears isolate, expand, clip and hidden)",
@@ -118,8 +102,6 @@
     "wonderToggle": "Wonder play / pause",
     "escape": "Step back out: dialog → wonder → deselect → full body"
   },
-  "searchTitle": "Search",
-  "toolsTitle": "Tools",
   "helpTitle": "Help",
   "unsupportedWebgl": "This browser does not support WebGL2, so the 3D model cannot be shown. Please upgrade to Chrome/Edge 105+, Safari 15.4+ or Firefox 121+; on a remote desktop or virtual machine, make sure hardware acceleration is enabled.",
   "infoMore": "More",

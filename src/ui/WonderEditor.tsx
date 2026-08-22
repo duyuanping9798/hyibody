@@ -22,19 +22,6 @@ function problemText(problem: DraftProblem, t: (typeof STRINGS)['zh']): string {
 }
 
 /** 顶栏上的「创作」入口。播放中不出现——那会儿屏幕归内容。 */
-export function EditorButton() {
-  const t = STRINGS[useUiStore((s) => s.lang)];
-  const openEditor = useUiStore((s) => s.openEditor);
-  const draft = useUiStore((s) => s.draft);
-  const wonder = useUiStore((s) => s.wonder);
-  if (draft || wonder) return null;
-  return (
-    <button className="hyi-btn" data-testid="editor-open" onClick={openEditor}>
-      {t.editor.open}
-    </button>
-  );
-}
-
 function StepEditor({ index }: { index: number }) {
   const lang = useUiStore((s) => s.lang);
   const t = STRINGS[lang];

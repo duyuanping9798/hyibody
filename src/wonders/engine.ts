@@ -34,6 +34,13 @@ export interface WonderStep {
    * "在肋骨里面看心脏"要的是把骨骼压到 0.2 而不是关掉，二选一不够用。
    */
   systems?: Partial<Record<SystemId, boolean | number>>;
+  /**
+   * 手动混合（2026-08-22 控制条改独立推子）：逐系统的**最终**不透明度，
+   * 缺席的系统 = 0。带 mix 的步骤忽略 layer 与 systems——那两个是扫描模式的
+   * 语言（曲线 × 覆盖），mix 是混合模式的语言。内置内容仍全部用 layer；
+   * 这个字段只出自 UGC 在混合模式下"把当前画面抓成一步"。
+   */
+  mix?: Partial<Record<SystemId, number>>;
   /** 展开某个结构的内部件（心脏 → 心室壁/瓣膜…）；不给则收起 */
   expand?: string;
   /** 剖切面；不给则关闭剖切 */

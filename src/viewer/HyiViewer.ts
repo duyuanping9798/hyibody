@@ -47,7 +47,7 @@ import {
   type MotionId,
 } from './cinematic';
 import { CAP_MIN_OPACITY, ClipCaps } from './clipCaps';
-import { clipPlaneFor, clipPosForCoordinate, type ClipAxis } from './clipping';
+import { clipPlaneFor, type ClipAxis } from './clipping';
 import { HIGHLIGHT_COLOR, HIGHLIGHT_TINT, type HighlightLevel } from './highlight';
 import { SystemBatch, type BatchInput } from './batching';
 import { computeSystemOpacity, PICKABLE_OPACITY_THRESHOLD } from './layers';
@@ -287,6 +287,15 @@ export class HyiViewer extends EventTarget {
   /** 分层滑块缓动：大跳（奥秘、预设）平滑过渡，小步（拖滑块）立即跟手 */
   private layerTarget = 0;
   private layerEasing = false;
+  /**
+   * 扫描/混合两种模式（2026-08-22 控制条改独立推子）。
+   * true = 扫描：不透明度 = 曲线(layer) × systemOpacity——奥秘、展厅吸引动画、
+   * 主场跳转与旧分享链接都走这条老路，行为一个字没改。
+   * false = 混合：曲线不参与，systemOpacity 就是最终值——六个推子各管各的。
+   */
+  private layerActive = true;
+  /** 混合模式的缓动目标（奥秘 mix 步骤的跨步过渡用；拖推子是立即的） */
+  private mixTarget: Record<SystemId, number> | null = null;
 
   constructor(
     container: HTMLElement,
@@ -557,6 +566,8 @@ export class HyiViewer extends EventTarget {
   // ---- 分层与显隐 ----------------------------------------------------------
 
   setLayer(value: number, immediate = false): void {
+    this.layerActive = true;
+    this.mixTarget = null;
     const next = Math.min(1, Math.max(0, value));
     this.layerTarget = next;
     // 拖滑块时每帧都在小步变化，缓动会拖泥带水；奥秘/预设是大跳，缓动才有意义
@@ -569,8 +580,32 @@ export class HyiViewer extends EventTarget {
     this.layerEasing = true;
   }
 
+  /**
+   * 手动混合：六个系统各给一个 0–1 的最终不透明度，曲线不再参与。
+   * 拖推子传 immediate（要跟手）；奥秘 mix 步骤不传，沿用分层同款的指数缓动。
+   */
+  setMix(mix: Record<SystemId, number>, immediate = false): void {
+    this.layerActive = false;
+    this.layerEasing = false;
+    const target = {} as Record<SystemId, number>;
+    for (const [system, value] of Object.entries(mix) as [SystemId, number][]) {
+      target[system] = Math.min(1, Math.max(0, value));
+    }
+    if (immediate) {
+      this.mixTarget = null;
+      this.state.systemOpacity = target;
+      this.applyVisibility();
+      return;
+    }
+    this.mixTarget = target;
+  }
+
   /** 每帧把当前分层值指数逼近目标值。 */
   private tickLayer(dt: number): void {
+    if (this.mixTarget) {
+      this.tickMix(dt);
+      return;
+    }
     if (!this.layerEasing) return;
     const k = 1 - Math.exp(-dt / LAYER_EASE_TAU);
     const next = this.state.layer + (this.layerTarget - this.state.layer) * k;
@@ -580,6 +615,26 @@ export class HyiViewer extends EventTarget {
     } else {
       this.state.layer = next;
     }
+    this.applyVisibility();
+  }
+
+  /** 混合模式的缓动：对六维向量做同一款指数逼近。 */
+  private tickMix(dt: number): void {
+    const target = this.mixTarget;
+    if (!target) return;
+    const k = 1 - Math.exp(-dt / LAYER_EASE_TAU);
+    let settled = true;
+    for (const system of Object.keys(target) as SystemId[]) {
+      const cur = this.state.systemOpacity[system];
+      const next = cur + (target[system] - cur) * k;
+      if (Math.abs(target[system] - next) < 0.002) {
+        this.state.systemOpacity[system] = target[system];
+      } else {
+        this.state.systemOpacity[system] = next;
+        settled = false;
+      }
+    }
+    if (settled) this.mixTarget = null;
     this.applyVisibility();
   }
 
@@ -668,7 +723,8 @@ export class HyiViewer extends EventTarget {
     // 层级现在有三层（颅骨 → 额骨、脑 → 大脑 → 额叶）：只让位一级的话，
     // 钻进「大脑」时外面那层「脑」会重新冒出来，把刚露出的脑叶又罩住。
     if (s.expanded !== null && this.coversExpanded(entry.slug, s.expanded)) return 0;
-    let opacity = computeSystemOpacity(entry.system, s.layer) * s.systemOpacity[entry.system];
+    const scan = this.layerActive ? computeSystemOpacity(entry.system, s.layer) : 1;
+    let opacity = scan * s.systemOpacity[entry.system];
     if (s.isolated) {
       // 隔离 = 只看这一个。其他结构压到只剩一点点轮廓做参照——
       // 0.06 × 130 个结构叠起来仍是一团糊，主角照样看不清
@@ -1245,27 +1301,8 @@ export class HyiViewer extends EventTarget {
   }
 
   // ---- 剖切 ----------------------------------------------------------------
-
-  /**
-   * 沿某个结构半剖：把剖切面移到该结构的中心，正好把它切成两半。
-   * "想看心脏内部"最短的一条路——否则要手动拖滑块试半天。
-   */
-  clipThroughStructure(slug: string, axis: ClipAxis = 'y'): boolean {
-    const entry = this.structures.get(slug);
-    const box = entry?.mesh.geometry.boundingBox;
-    if (!entry || !box || this.contentBox.isEmpty()) return false;
-    const center = box.getCenter(new Vector3());
-    entry.mesh.localToWorld(center);
-    const pos = clipPosForCoordinate(
-      center[axis],
-      this.contentBox.min[axis],
-      this.contentBox.max[axis],
-    );
-    // 切掉朝向相机的那一半，否则剖开了也只看到完整的外表面
-    const flip = this.rig.camera.position[axis] < center[axis];
-    this.setClip({ axis, pos, flip });
-    return true;
-  }
+  // （2026-08-22 界面上的剖切面板随「沿此结构半剖」一起砍掉了；剖切能力保留，
+  // 由奥秘步骤与旧分享链接经 setClip 使用。）
 
   setClip(clip: { axis: ClipAxis; pos: number; flip?: boolean } | null): void {
     this.state.clip = clip;

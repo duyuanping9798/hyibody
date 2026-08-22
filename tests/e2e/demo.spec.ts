@@ -215,7 +215,9 @@ test.describe('演示前自检 · 展厅与分享', () => {
     await ready(page);
     await page.waitForTimeout(4000);
 
-    await page.getByRole('button', { name: '分享' }).click({ force: true });
+    // 分享收进了个人中心（👤）菜单
+    await page.getByRole('button', { name: '个人中心' }).click({ force: true });
+    await page.getByRole('menuitem', { name: '分享' }).click({ force: true });
     const qr = page.locator('.hyi-share canvas');
     await expect(qr).toBeVisible();
     const box = await qr.boundingBox();

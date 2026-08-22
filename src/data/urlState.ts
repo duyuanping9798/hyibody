@@ -1,10 +1,15 @@
 import { fromBase64Url, toBase64Url } from './base64url';
-import type { SystemId } from './types';
+import { SYSTEM_IDS, type SystemId } from './types';
 
 /** 可通过 URL `?v=` 分享/恢复的查看器状态（KICKOFF 第 6 节）。 */
 export interface ViewerUrlState {
-  /** 分层滑块 0–1 */
+  /** 分层扫描值 0–1（扫描模式；带 mix 时忽略） */
   layer: number;
+  /**
+   * 手动混合（2026-08-22 控制条改独立推子）：逐系统的最终不透明度，
+   * 缺席的系统 = 0。带这个字段的链接不看 layer 曲线。
+   */
+  mix?: Partial<Record<SystemId, number>>;
   /** 各系统显隐开关；缺省为全部可见 */
   systems?: Partial<Record<SystemId, boolean>>;
   /** 剖切：轴 + 位置（-1..1），undefined 表示未开启 */
@@ -36,6 +41,17 @@ export function decodeUrlState(encoded: string | null | undefined): ViewerUrlSta
     const s = parsed as Partial<ViewerUrlState>;
     const layer = typeof s.layer === 'number' ? Math.min(1, Math.max(0, s.layer)) : 0;
     const state: ViewerUrlState = { layer };
+    if (s.mix && typeof s.mix === 'object') {
+      // 地址栏来的数据不可信：只收合法系统名 + 0–1 的数字
+      const mix: Partial<Record<SystemId, number>> = {};
+      for (const id of SYSTEM_IDS) {
+        const value = (s.mix as Record<string, unknown>)[id];
+        if (typeof value === 'number' && Number.isFinite(value)) {
+          mix[id] = Math.min(1, Math.max(0, value));
+        }
+      }
+      if (Object.keys(mix).length) state.mix = mix;
+    }
     if (s.systems && typeof s.systems === 'object') state.systems = s.systems;
     if (s.clip && (s.clip.axis === 'x' || s.clip.axis === 'y' || s.clip.axis === 'z'))
       state.clip = {

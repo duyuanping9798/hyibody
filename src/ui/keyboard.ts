@@ -11,7 +11,6 @@ export type ShortcutAction =
   | { kind: 'escape' }
   | { kind: 'focusSearch' }
   | { kind: 'toggleHelp' }
-  | { kind: 'layer'; delta: number }
   | { kind: 'toggleSystem'; index: number }
   | { kind: 'focusSelected' }
   | { kind: 'backToBody' }
@@ -24,9 +23,6 @@ export interface ShortcutContext {
   /** 焦点在输入框里——除 Esc 外一律放行，不然打字会触发快捷键。 */
   typing: boolean;
 }
-
-/** 分层滑块一次按键走多少（0–1）。 */
-export const LAYER_STEP = 0.08;
 
 interface KeyLike {
   key: string;
@@ -49,10 +45,6 @@ export function resolveShortcut(event: KeyLike, ctx: ShortcutContext): ShortcutA
       return { kind: 'focusSearch' };
     case '?':
       return { kind: 'toggleHelp' };
-    case '[':
-      return { kind: 'layer', delta: -LAYER_STEP };
-    case ']':
-      return { kind: 'layer', delta: LAYER_STEP };
     case 'f':
     case 'F':
       return { kind: 'focusSelected' };
@@ -115,7 +107,7 @@ export function useKeyboardShortcuts(handlers: KeyboardHandlers): void {
         case 'escape':
           if (helpOpen) setHelpOpen(false);
           else if (shareOpen) setShareOpen(false);
-          else if (st.attributionOpen) st.setAttributionOpen(false);
+          else if (st.aboutOpen) st.setAboutOpen(false);
           else if (st.wonder) st.exitWonder();
           else if (st.selected) st.select(null);
           else if (st.isolated || st.expanded || st.clip || st.hiddenCount > 0) st.backToBody();
@@ -130,9 +122,6 @@ export function useKeyboardShortcuts(handlers: KeyboardHandlers): void {
         }
         case 'toggleHelp':
           setHelpOpen(!helpOpen);
-          break;
-        case 'layer':
-          st.setLayer(Math.min(1, Math.max(0, st.layer + action.delta)));
           break;
         case 'toggleSystem': {
           const id = SYSTEM_ORDER[action.index];

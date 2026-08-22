@@ -126,6 +126,18 @@
             }
           }
         },
+        "mix": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "手动混合：逐系统的最终不透明度，缺席 = 0；带 mix 的步骤忽略 layer 与 systems。内置内容请继续用 layer——这个字段出自 UGC 混合模式下的抓取",
+          "patternProperties": {
+            "^(skin|muscles|skeleton|organs|vessels|nerves)$": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          }
+        },
         "clip": {
           "type": "object",
           "required": ["axis", "pos"],

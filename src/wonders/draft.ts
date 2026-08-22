@@ -35,6 +35,8 @@ export interface DraftProblem {
 /** 抓一步时能从界面拿到的全部状态。刻意用普通对象，方便单测直接造。 */
 export interface ViewSnapshot {
   layer: number;
+  /** true = 混合模式：systemOpacity 就是最终值，layer 曲线不参与（缺省 false） */
+  mixMode?: boolean;
   selected: string | null;
   expanded: string | null;
   clip: { axis: 'x' | 'y' | 'z'; pos: number; flip?: boolean } | null;
@@ -71,6 +73,17 @@ export function captureStep(snapshot: ViewSnapshot, opts: CaptureOptions = {}): 
     layer: Math.min(1, Math.max(0, snapshot.layer)),
     durationMs: clampDuration(opts.durationMs ?? DEFAULT_STEP_MS),
   };
+  // 混合模式：六层各自独立，抓成 mix（最终值，缺席 = 0），layer/systems 不适用。
+  // 隐藏的系统直接不写——mix 语义里"没写"就是 0，muted 状态被自然折叠进去。
+  if (snapshot.mixMode) {
+    step.layer = 0;
+    const mix: Partial<Record<SystemId, number>> = {};
+    for (const id of SYSTEM_IDS) {
+      const value = snapshot.systemsVisible[id] ? snapshot.systemOpacity[id] : 0;
+      if (value > 0.004) mix[id] = Math.round(value * 100) / 100;
+    }
+    step.mix = mix;
+  }
   if (snapshot.selected) {
     step.selected = snapshot.selected;
     // 抓画面这个动作本身就意味着"我要你拍这个"，所以默认给特写
@@ -90,7 +103,7 @@ export function captureStep(snapshot: ViewSnapshot, opts: CaptureOptions = {}): 
       ...(snapshot.clip.flip ? { flip: true } : {}),
     };
   }
-  if (Object.keys(systems).length) step.systems = systems;
+  if (!snapshot.mixMode && Object.keys(systems).length) step.systems = systems;
   if (opts.motion && opts.motion !== 'push') step.motion = opts.motion;
   return step;
 }
@@ -221,6 +234,17 @@ export function sanitizeWonder(parsed: unknown): Wonder | null {
         else if (typeof value === 'number') out[id] = Math.min(1, Math.max(0, value));
       }
       if (Object.keys(out).length) step.systems = out;
+    }
+    if (typeof s.mix === 'object' && s.mix !== null) {
+      const out: Partial<Record<SystemId, number>> = {};
+      for (const id of SYSTEM_IDS) {
+        const value = (s.mix as Record<string, unknown>)[id];
+        if (typeof value === 'number' && Number.isFinite(value))
+          out[id] = Math.min(1, Math.max(0, value));
+      }
+      // mix 允许为空对象吗？空 = 六层全 0 = 黑屏，多半是坏数据——丢掉这个字段，
+      // 步骤退回 layer 语义（sanitize 的原则：能救一部分就救一部分）
+      if (Object.keys(out).length) step.mix = out;
     }
     steps.push(step);
   }

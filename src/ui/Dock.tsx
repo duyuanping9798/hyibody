@@ -1,41 +1,14 @@
 import { STRINGS } from './i18n';
-import type { ReactNode } from 'react';
-import { ClipTools, ViewTools } from './ViewTools';
-import { SystemPanel } from './SystemPanel';
-import { useUiStore, type PanelId } from './store';
-
-function Drawer({ id, title, children }: { id: PanelId; title: string; children: ReactNode }) {
-  const activePanel = useUiStore((s) => s.activePanel);
-  const togglePanel = useUiStore((s) => s.togglePanel);
-  const open = activePanel === id;
-  return (
-    <div className={`hyi-drawer${open ? ' open' : ''}`}>
-      <button
-        className="hyi-drawer-head"
-        aria-expanded={open}
-        aria-controls={`hyi-drawer-${id}`}
-        onClick={() => togglePanel(id)}
-      >
-        <span>{title}</span>
-        <span className="hyi-chevron" aria-hidden>
-          ›
-        </span>
-      </button>
-      {open && (
-        <div className="hyi-drawer-body" id={`hyi-drawer-${id}`}>
-          {children}
-        </div>
-      )}
-    </div>
-  );
-}
+import { useUiStore } from './store';
 
 /**
- * 工具抽屉。
+ * 右侧的两个逃生按钮。
  *
- * 原来右侧常驻两块大面板（六行滑块 + 十个按钮 + 一段画质说明），用户的原话是
- * "页面设计杂乱"。现在收成三个标题条，一次只展开一格，默认全收起——画面留给人体，
- * 需要哪一格点哪一格。桌面和小屏共用同一套结构，只是靠 CSS 换位置。
+ * 这里原来是三格工具抽屉（系统/视角/剖切）。2026-08-22 按用户拍板全部砍掉：
+ * 系统控制并进了底部控制条（LayerBar 六个独立推子），预设视角与剖切不再
+ * 提供界面入口（能力保留在引擎里，奥秘步骤与旧分享链接还在用）。
+ * 「收起内部」「返回全身」必须常驻——钻进心脏内部之后总得有条出路，
+ * 而剖切/隐藏状态从旧链接或奥秘退场时带进来，也只能靠「返回全身」清掉。
  */
 export function Dock() {
   const t = STRINGS[useUiStore((s) => s.lang)];
@@ -47,30 +20,20 @@ export function Dock() {
   const collapseParts = useUiStore((s) => s.collapseParts);
   const dirty = hiddenCount > 0 || isolated !== null || expanded !== null || clip !== null;
 
+  if (!dirty) return null;
   return (
     <div className="hyi-dock" data-testid="dock">
-      <Drawer id="systems" title={t.systemsTitle}>
-        <SystemPanel />
-      </Drawer>
-      <Drawer id="views" title={t.presetsTitle}>
-        <ViewTools />
-      </Drawer>
-      <Drawer id="clip" title={t.clipTitle}>
-        <ClipTools />
-      </Drawer>
-      {/* 展开内部之后 store 会清掉选中，信息卡跟着消失——"收起内部"必须挂在
-          抽屉外面常驻，否则钻进心脏里就只剩"返回全身"这一条退路了 */}
+      {/* 展开内部之后 store 会清掉选中，信息卡跟着消失——"收起内部"必须常驻，
+          否则钻进心脏里就只剩"返回全身"这一条退路了 */}
       {expanded !== null && (
         <button className="hyi-btn hyi-collapse-parts" onClick={collapseParts}>
           {t.collapseParts}
         </button>
       )}
-      {dirty && (
-        <button className="hyi-btn hyi-back-to-body" onClick={backToBody}>
-          {t.backToBody}
-          {hiddenCount > 0 ? `（${t.hiddenCount.replace('{n}', String(hiddenCount))}）` : ''}
-        </button>
-      )}
+      <button className="hyi-btn hyi-back-to-body" onClick={backToBody}>
+        {t.backToBody}
+        {hiddenCount > 0 ? `（${t.hiddenCount.replace('{n}', String(hiddenCount))}）` : ''}
+      </button>
     </div>
   );
 }

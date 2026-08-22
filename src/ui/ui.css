@@ -105,139 +105,124 @@
   outline-offset: 3px;
 }
 
-.hyi-layer-slider {
+/* 底部控制条：六格调音台（2026-08-22，替代单条分层滑块 + 右侧系统面板）。
+   一格一个系统：竖推子调透明度、名字按钮跳主场。参考 Complete Anatomy 的
+   分层控制，但每层独立可调——任意混合都摆得出来。 */
+.hyi-layerbar {
   position: absolute;
   left: 50%;
-  bottom: 14px;
+  bottom: calc(10px + env(safe-area-inset-bottom, 0px));
   transform: translateX(-50%);
-  /* 2026-08-21 人类反馈"控制条回到更改前的设计，并且要细化控制效果"：
-     宽度与内边距退回瘦身前（460 → 560，约 52 → 66 px 高）。
-     **这不是审美问题是精度问题**：分层是 0–1 连续值，滑块越短，同样一像素的
-     拖动跨过的层数越多——460 px 宽时一像素约合 0.0022，拖不出想要的那一档。
-     560 px 下降到 0.0018，再加上下面把滑块手柄放大，按得准也拖得准。 */
-  width: min(560px, calc(100% - 24px));
-  padding: 9px 18px 3px;
+  display: flex;
+  gap: 10px;
+  padding: 10px 14px 6px;
+}
+.hyi-chip {
   display: flex;
   flex-direction: column;
-  gap: 0;
+  align-items: center;
+  gap: 3px;
+  width: 52px;
 }
-/* 刻度按真实值绝对定位（见 LayerSlider.tsx 的注释），所以这里不能再用 flex 等距排 */
-.hyi-layer-labels {
+.hyi-chip-fader {
   position: relative;
-  height: 26px;
-  font-size: 10.5px;
+  width: 30px;
+  height: 64px;
+  border-radius: 8px;
+  background: rgba(6, 10, 20, 0.62);
+  box-shadow: inset 0 0 0 1px rgba(140, 190, 255, 0.14);
+  overflow: hidden;
+  cursor: ns-resize;
+  /* 竖向拖动就是这个控件的本职，别让浏览器拿去滚页面 */
+  touch-action: none;
+}
+.hyi-chip-fader:focus-visible {
+  outline: 2px solid var(--hyi-accent);
+  outline-offset: 2px;
+}
+.hyi-chip-fill {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* 顶端一道白光当"液面"；color-mix 在目标下限（Chrome 105/Safari 15.4）
+     还不可用，整条声明会作废，所以用叠加渐变做同样的事 */
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.35), transparent 7px), var(--hyi-chip-color);
+  opacity: 0.92;
+  pointer-events: none;
+}
+.hyi-chip-pct {
+  position: absolute;
+  top: 3px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 9px;
+  font-variant-numeric: tabular-nums;
   color: var(--hyi-text-dim);
-  letter-spacing: 0.06em;
+  pointer-events: none;
+  /* 推子填满时数字压在色块上，描一圈深底保证读得出来 */
+  text-shadow: 0 0 4px rgba(5, 8, 15, 0.9);
+}
+.hyi-chip-label {
+  appearance: none;
+  border: 0;
+  background: none;
+  padding: 2px 4px;
+  font: inherit;
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  color: var(--hyi-text-dim);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.15s;
+}
+.hyi-chip-label:hover,
+.hyi-chip-label.active {
+  color: var(--hyi-text);
+}
+.hyi-chip-label.active {
+  text-shadow: 0 0 8px rgba(79, 227, 224, 0.6);
+}
+.hyi-chip-label:focus-visible {
+  outline: 2px solid var(--hyi-accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+.hyi-chip.muted .hyi-chip-fader {
+  opacity: 0.45;
+}
+.hyi-chip.muted .hyi-chip-label {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+/* 该系统的 glb 还在后台补载：能调，但先打个待机的样子 */
+.hyi-chip.loading .hyi-chip-fader {
+  animation: hyi-chip-loading 1.6s ease-in-out infinite;
+}
+@keyframes hyi-chip-loading {
+  50% {
+    box-shadow: inset 0 0 0 1px rgba(140, 190, 255, 0.4);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hyi-chip.loading .hyi-chip-fader {
+    animation: none;
+  }
 }
 
-/* 工具抽屉（界面减负）：右上角三条标题栏，一次只展开一格，默认全收起。
-   原来这里是两块常驻大面板，六行滑块 + 十个按钮 + 一段画质说明常年挂在画面上。 */
-/* 抽屉和信息卡同在右边一列（2026-08-20 按用户要求）。
-   历史上这两个正是因为会互相压住才被拆到左右两边的——「沿此结构半剖」点不到。
-   同列的解法不是靠运气，是把右侧竖着切开：抽屉占上 45%、信息卡占下 45%，
-   中间那 10% 是谁也不许进的缓冲区，两边各自 overflow-y: auto。 */
+/* 右侧只剩两个逃生按钮（2026-08-22 三格工具抽屉砍掉之后）：
+   「收起内部」「返回全身」。有脏状态才出现。 */
 .hyi-dock {
   position: absolute;
   top: 58px;
   right: 12px;
-  /* 216 → 240：剖切那一格是四个轴向按钮并排，216 px 下「关闭」「前后」会折成两行 */
-  width: 240px;
+  width: 150px;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  /* 40 / 56 而不是对半分：抽屉是手风琴，一次只展开一格，最高也就两百出头；
-     信息卡要装标签、科普、小知识、来源、相关奥秘和一排操作，长得多。 */
-  max-height: calc(40% - 58px);
-  overflow-y: auto;
-  overscroll-behavior: contain;
   z-index: 4;
-}
-.hyi-drawer {
-  background: var(--hyi-panel);
-  border: 1px solid var(--hyi-panel-border);
-  border-radius: 10px;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  color: var(--hyi-text);
-}
-.hyi-drawer-head {
-  display: flex;
-  width: 100%;
-  box-sizing: border-box;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 9px 12px;
-  border: none;
-  background: none;
-  color: var(--hyi-text-dim);
-  font: inherit;
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  cursor: pointer;
-}
-.hyi-drawer-head:focus-visible {
-  outline: 2px solid var(--hyi-accent);
-  outline-offset: -2px;
-  border-radius: 10px;
-}
-.hyi-drawer.open .hyi-drawer-head {
-  color: var(--hyi-accent);
-}
-.hyi-chevron {
-  opacity: 0.55;
-  transition: transform 0.15s;
-}
-.hyi-drawer.open .hyi-chevron {
-  transform: rotate(90deg);
-}
-.hyi-drawer-body {
-  padding: 0 12px 12px;
-  max-height: 52vh;
-  overflow-y: auto;
-}
-
-.hyi-system-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 3px 0;
-  font-size: 13px;
-}
-.hyi-system-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  flex: none;
-}
-.hyi-system-row .hyi-range {
-  width: 64px;
-  margin-left: auto;
-}
-.hyi-eye {
-  appearance: none;
-  border: none;
-  background: none;
-  cursor: pointer;
-  font-size: 14px;
-  line-height: 1;
-  padding: 2px;
-  opacity: 0.9;
-}
-.hyi-eye[aria-pressed='false'] {
-  opacity: 0.35;
-}
-
-.hyi-preset-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 6px;
-}
-
-.hyi-clip-row {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 8px;
 }
 
 /* 搜索框常驻左上角（2026-08-20 按用户要求改回原位）。
@@ -393,7 +378,7 @@
   justify-content: center;
   z-index: 20;
 }
-.hyi-attribution {
+.hyi-about {
   width: min(460px, calc(100% - 40px));
   max-height: 70%;
   overflow-y: auto;
@@ -401,10 +386,88 @@
   font-size: 13px;
   line-height: 1.6;
 }
-.hyi-attribution h2 {
-  margin: 0 0 10px;
-  font-size: 16px;
+.hyi-about h2 {
+  margin: 0 0 2px;
+  font-size: 18px;
+  letter-spacing: 0.04em;
   color: var(--hyi-accent);
+}
+.hyi-about h3 {
+  margin: 14px 0 6px;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--hyi-text-dim);
+}
+.hyi-about-sub {
+  margin: 0 0 10px;
+  font-size: 12px;
+  color: var(--hyi-text-dim);
+}
+.hyi-about-intro {
+  margin: 0 0 12px;
+}
+.hyi-about-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 0;
+  border-top: 1px solid var(--hyi-panel-border);
+  border-bottom: 1px solid var(--hyi-panel-border);
+}
+.hyi-about-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+/* 个人中心（👤）：分享与创作收在一个小菜单里 */
+.hyi-personal {
+  position: relative;
+}
+.hyi-popover-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 19;
+}
+.hyi-popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 148px;
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  border-radius: 10px;
+  background: var(--hyi-panel);
+  border: 1px solid var(--hyi-panel-border);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 20;
+}
+.hyi-popover button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 10px;
+  border: 0;
+  border-radius: 7px;
+  background: none;
+  color: var(--hyi-text);
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+.hyi-popover button:hover,
+.hyi-popover button:focus-visible {
+  background: rgba(79, 227, 224, 0.12);
+  outline: none;
+}
+.hyi-popover-glyph {
+  font-size: 13px;
+  line-height: 1;
 }
 
 .hyi-topbar {
@@ -1011,12 +1074,17 @@ body.hyi-kiosk .hyi-btn {
   font-size: 16px;
   border-radius: 10px;
 }
-body.hyi-kiosk .hyi-layer-slider {
-  width: min(720px, calc(100% - 32px));
-  padding: 16px 22px 12px;
+/* 展厅：推子按触摸放大（KICKOFF：无键鼠可完全操作，目标 ≥ 56 px 宽高量级） */
+body.hyi-kiosk .hyi-chip {
+  width: 68px;
 }
-body.hyi-kiosk .hyi-layer-labels {
+body.hyi-kiosk .hyi-chip-fader {
+  width: 44px;
+  height: 96px;
+}
+body.hyi-kiosk .hyi-chip-label {
   font-size: 14px;
+  min-height: 32px;
 }
 body.hyi-kiosk .hyi-range::-webkit-slider-thumb {
   width: 28px;
@@ -1071,11 +1139,11 @@ body.hyi-kiosk .hyi-info .blurb {
   }
 }
 
-/* 小屏（手机）：工具抽屉横过来贴在滑块上方，展开的那格从上方弹出 */
+/* 小屏（手机）：逃生按钮横过来贴在控制条上方 */
 @media (max-width: 720px) {
   .hyi-dock {
     top: auto;
-    /* 抽屉要让开底部那条全局控制条，再留 8 px 空隙。高度由 useSafeInsets 量
+    /* 要让开底部那条全局控制条，再留 8 px 空隙。高度由 useSafeInsets 量
        真实 DOM 写进 --hyi-bottombar-h：写死常数对不上——v0.8 把滑块从 90 px
        压到 39 px 之后，这里一直还按 90 算，白空出约 60 px。 */
     bottom: calc(var(--hyi-bottombar-h, 90px) + 18px);
@@ -1084,33 +1152,9 @@ body.hyi-kiosk .hyi-info .blurb {
     width: auto;
     flex-direction: row;
     gap: 8px;
-    max-height: none;
     z-index: 5;
   }
-  .hyi-drawer {
-    flex: 1;
-  }
-  .hyi-drawer-head {
-    justify-content: center;
-    min-height: 42px;
-  }
-  .hyi-drawer .hyi-chevron {
-    display: none;
-  }
-  .hyi-drawer-body {
-    position: absolute;
-    bottom: calc(100% + 8px);
-    left: 0;
-    right: 0;
-    max-height: 44vh;
-    padding: 10px 12px;
-    background: var(--hyi-panel);
-    border: 1px solid var(--hyi-panel-border);
-    border-radius: 10px;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-  }
-  .hyi-dock .hyi-back-to-body {
+  .hyi-dock .hyi-btn {
     flex: 1;
   }
   .hyi-info {
@@ -1128,9 +1172,18 @@ body.hyi-kiosk .hyi-info .blurb {
     right: 8px;
     width: auto;
   }
-  .hyi-layer-slider {
-    width: calc(100% - 16px);
-    bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  /* 六格挤 402 px 宽的屏：格距收紧、推子稍窄，一行放得下 */
+  .hyi-layerbar {
+    gap: 5px;
+    padding: 8px 10px 5px;
+    max-width: calc(100% - 12px);
+  }
+  .hyi-chip {
+    width: 46px;
+  }
+  .hyi-chip-fader {
+    width: 32px;
+    height: 58px;
   }
 }
 
@@ -1139,10 +1192,6 @@ body.hyi-kiosk .hyi-info .blurb {
   .hyi-btn {
     min-height: 44px;
     padding: 8px 12px;
-  }
-  .hyi-eye {
-    font-size: 18px;
-    padding: 6px;
   }
   .hyi-range::-webkit-slider-thumb {
     width: 22px;
@@ -1289,118 +1338,6 @@ body.hyi-kiosk .hyi-info .blurb {
   background: linear-gradient(90deg, #4fe3e0, #7aa2ff);
   transition: width 0.4s ease;
   box-shadow: 0 0 10px #4fe3e07a;
-}
-
-/* 彩色分层滑块 */
-.hyi-layer-track {
-  position: relative;
-  padding: 1px 0 3px;
-}
-/*
- * range 是行内替换元素：默认排在文字基线上，父块的行盒会连带算上下沿的空隙。
- * 实测这一块 28 px，而输入框本身只有 4 px、padding 只有 4 px——多出来的 20 px
- * 全是行盒和 UA 默认外边距。改成块级并清掉外边距，滑块面板从 59 px 降到 40 上下。
- */
-.hyi-layer-track .hyi-range {
-  display: block;
-  margin: 0;
-}
-/*
- * 轨道退回"按系统色铺的渐变"（020c6c1 之前的设计）。
- *
- * 当初换成暗槽 + 青紫发光进度，理由是皮肤刚换成真肤色、渐变起点一段米黄看着发脏。
- * 皮肤已经退回 X-ray 青壳，那个理由不成立了，而系统色轨道有暗槽给不了的东西：
- * **一眼看得出这条槽从哪一层通向哪一层**。渐变由 LayerSlider.tsx 按真实刻度生成。
- *
- * 还没走到的一段压暗（--hyi-layer-pos 之后盖一层黑），"走到哪儿了"这个信息不丢。
- */
-.hyi-range-layer::-webkit-slider-runnable-track {
-  background:
-    linear-gradient(
-      90deg,
-      transparent var(--hyi-layer-pos, 0%),
-      rgba(6, 10, 20, 0.62) var(--hyi-layer-pos, 0%)
-    ),
-    var(--hyi-layer-track);
-  height: 7px;
-  border-radius: 999px;
-  box-shadow: inset 0 0 0 1px rgba(140, 190, 255, 0.14);
-}
-.hyi-range-layer::-moz-range-track {
-  background:
-    linear-gradient(
-      90deg,
-      transparent var(--hyi-layer-pos, 0%),
-      rgba(6, 10, 20, 0.62) var(--hyi-layer-pos, 0%)
-    ),
-    var(--hyi-layer-track);
-  height: 7px;
-  border-radius: 999px;
-}
-/* 手柄 13 → 20 px：分层是全站唯一一个要"拖到精确位置"的控件（0–1 连续值，
-   五个主场挤在一条 560 px 的轨道上），手柄越小越难落在想要的那一档。
-   别的滑块（各系统不透明度）拖个大概就行，所以只放大这一个。 */
-.hyi-range-layer::-webkit-slider-thumb {
-  width: 20px;
-  height: 20px;
-  margin-top: -7px;
-  background: #d8f6ff;
-  border: 2px solid #10203a;
-  box-shadow: 0 0 8px rgba(45, 224, 255, 0.75);
-}
-.hyi-range-layer::-moz-range-thumb {
-  width: 20px;
-  height: 20px;
-  background: #d8f6ff;
-  border: 2px solid #10203a;
-  box-shadow: 0 0 8px rgba(45, 224, 255, 0.75);
-}
-/* 这里本来想加一排等距刻线。没加：五个主场在 0/20/45/62/85%，等距刻线
-   又会画在错的地方——正是刚修掉的那个毛病。刻度由下面的圆点负责，槽保持干净。 */
-.hyi-layer-stop {
-  appearance: none;
-  border: 0;
-  background: none;
-  padding: 10px 3px 1px;
-  font: inherit;
-  font-size: 10.5px;
-  color: var(--hyi-text-dim);
-  cursor: pointer;
-  position: absolute;
-  top: 0;
-  white-space: nowrap;
-  transition: color 0.15s;
-}
-/* 圆点绝对定位在**真实刻度**上：两端的文字为了不伸出轨道要偏移，
-   圆点不能跟着偏，否则又回到"点画在这儿、值在那儿"。 */
-.hyi-layer-stop::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: var(--hyi-stop-dot, 50%);
-  transform: translateX(-50%);
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--hyi-stop-color);
-  opacity: 0.55;
-  transition:
-    opacity 0.15s,
-    transform 0.15s;
-}
-.hyi-layer-stop.active {
-  color: var(--hyi-text);
-}
-.hyi-layer-stop.active::before {
-  opacity: 1;
-  /* 必须带上 translateX(-50%)：只写 scale 会把上面的居中位移覆盖掉，
-     选中的那个点会往右跳半个身位 */
-  transform: translateX(-50%) scale(1.5);
-}
-.hyi-layer-stop:focus-visible {
-  outline: 2px solid var(--hyi-accent);
-  outline-offset: 2px;
-  border-radius: 6px;
 }
 
 /* 3D 标签引线 */
@@ -1558,12 +1495,8 @@ body.hyi-kiosk .hyi-info .blurb {
     padding-top: 8px;
     background: linear-gradient(180deg, transparent, var(--hyi-panel) 40%);
   }
-  /* 抽屉弹出时把滑块与侧栏标签让开 */
   /* index.html 声明了 viewport-fit=cover，内容会铺到 home 指示条底下，
      所以贴底的两块都要把安全区加回来 */
-  .hyi-layer-slider {
-    bottom: calc(8px + env(safe-area-inset-bottom, 0px));
-  }
   .hyi-dock {
     bottom: calc(106px + env(safe-area-inset-bottom, 0px));
   }
@@ -1597,32 +1530,25 @@ body.hyi-kiosk .hyi-info .blurb {
     max-height: 46vh;
   }
   /* --hyi-info-h 由 useSafeInsets 量真实 DOM 写进来；没有 JS 时退回 46vh */
-  body:has(.hyi-info) .hyi-layer-slider {
+  body:has(.hyi-info) .hyi-layerbar {
     bottom: calc(var(--hyi-info-h, 46vh) + 10px);
   }
-  /* 抽屉叠在控制条之上：控制条在 --hyi-info-h + 10，高 --hyi-bottombar-h，
-     再留 8 空隙。曾经试过卡片打开就把抽屉藏起来，只换回 44 px（屏幕的 6.9%），
-     代价却是一个控件在用户眼皮底下无解释地消失——不划算，撤了。
-     真正的大头是信息卡本身那 326 px，得靠两段式抽屉解决。 */
+  /* 逃生按钮叠在控制条之上：控制条在 --hyi-info-h + 10，高 --hyi-bottombar-h，
+     再留 8 空隙。曾经试过卡片打开就把它们藏起来——一个控件在用户眼皮底下
+     无解释地消失，不划算，撤了。 */
   body:has(.hyi-info) .hyi-dock {
     bottom: calc(var(--hyi-info-h, 46vh) + var(--hyi-bottombar-h, 90px) + 18px);
   }
 }
 
 /* iOS Safari 的 vh 指的是"工具栏收起后"的高度，比实际可见区域大一截；
-   有 dvh 的浏览器改用 dvh，弹出的抽屉才不会顶出屏幕 */
+   有 dvh 的浏览器改用 dvh，弹出的面板才不会顶出屏幕 */
 @supports (height: 100dvh) {
-  .hyi-drawer-body {
-    max-height: 52dvh;
-  }
   @media (max-width: 720px) {
-    .hyi-drawer-body {
-      max-height: 44dvh;
-    }
     .hyi-info {
       max-height: 46dvh;
     }
-    body:has(.hyi-info) .hyi-layer-slider {
+    body:has(.hyi-info) .hyi-layerbar {
       bottom: calc(var(--hyi-info-h, 46dvh) + 10px);
     }
     body:has(.hyi-info) .hyi-dock {
@@ -1631,19 +1557,8 @@ body.hyi-kiosk .hyi-info .blurb {
   }
 }
 
-/* "沿此结构半剖"：剖切面直接移到选中结构中心，看内部最短的一条路 */
-.hyi-clip-through {
-  margin-top: 8px;
-  width: 100%;
-}
-/* 剖切方向翻转：决定切掉哪一半——想看进去就得切掉朝自己的那半 */
-.hyi-clip-flip {
-  margin-top: 8px;
-  width: 100%;
-}
-
 /* 一键回全身 / 收起内部：钻进某个器官内部之后总得有条出路。
-   这两条挂在抽屉外面常驻——展开内部会清掉选中，信息卡上的那个入口跟着没了 */
+   这两条常驻右上——展开内部会清掉选中，信息卡上的那个入口跟着没了 */
 .hyi-back-to-body,
 .hyi-dock .hyi-collapse-parts {
   width: 100%;
@@ -1674,12 +1589,6 @@ body.hyi-kiosk .hyi-info .blurb {
   line-height: 1;
   min-width: 32px;
 }
-/* 语言按钮是两三个字母，别跟图标一样窄 */
-.hyi-btn-lang {
-  font-size: 12px;
-  letter-spacing: 0.04em;
-}
-
 /* 键盘快捷键说明 */
 .hyi-shortcuts {
   width: min(460px, calc(100% - 40px));
@@ -1726,13 +1635,6 @@ body.hyi-kiosk .hyi-info .blurb {
   font: inherit;
   font-size: 11px;
   text-align: center;
-}
-
-@media (max-width: 720px) {
-  /* 手机上没有键盘，快捷键说明按钮只会占地方；其余图标按钮要留着 */
-  .hyi-btn-help {
-    display: none;
-  }
 }
 
 /* 信息卡上的"关于它的 N 则奥秘"：点开一个结构就能看到讲到它的内容 */
