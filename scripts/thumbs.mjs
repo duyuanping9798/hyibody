@@ -74,7 +74,10 @@ page.on('pageerror', (e) => console.log('  PAGEERROR ' + String(e).slice(0, 160)
 const t0 = Date.now();
 const el = () => ((Date.now() - t0) / 1000).toFixed(0) + 's';
 
-await page.goto(`${BASE}?thumbs=1&hq=medium`, { waitUntil: 'load' });
+// low 而不是 medium（2026-08-22）：medium 修完 AO 分辨率并开了 MSAA 之后，
+// SwiftShader 一帧要接近一分钟，逐张截图直接超时。low 档没有 AO/bloom，
+// 但烘焙的腔隙顶点色照样在——封面的体积感靠它补，实测够用。
+await page.goto(`${BASE}?thumbs=1&hq=low`, { waitUntil: 'load' });
 await page.waitForSelector('[data-testid="viewer"][data-hyi-loaded="1"]');
 await page.waitForFunction(() => typeof window.__hyiPose === 'function');
 // 界面全藏起来：缩略图里不该出现搜索框、控制条、信息卡
