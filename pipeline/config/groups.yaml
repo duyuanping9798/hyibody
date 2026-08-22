@@ -393,26 +393,9 @@ groups:
   # BP3D 的对应概念是扫描分割出来的碎壳，四个瓣挤成一坨、心室壁只有一层皮，
   # 放大看不成样子（2026-08-18 决策，见 docs/DECISIONS.md）。
 
-  - slug: lung_right
-    zh: 右肺
-    en: Right lung
-    system: organs
-    region: thorax
-    side: right
-    set: partof
-    priority: 1
-    target_faces: 15000
-    concepts: [right lung]
-  - slug: lung_left
-    zh: 左肺
-    en: Left lung
-    system: organs
-    region: thorax
-    side: left
-    set: partof
-    priority: 1
-    target_faces: 15000
-    concepts: [left lung]
+  # 肺不再从 BP3D 取（2026-08-22）：两个集都没有肺实质，partof 的"肺"组合
+  # 只有肺内支气管与血管（87 cm³ 的两棵树）。肺实质走 HRA 的 20 个肺段实体，
+  # 直接写在 content/structures.yaml（hra 结构不经这份规则文件）。
   - slug: trachea
     zh: 气管
     en: Trachea
@@ -724,6 +707,25 @@ groups:
     priority: 2
     target_faces: 3600
     concepts: [vertebral artery]
+  # 颅内动脉（2026-08-22 补）：脑底动脉环 + 三对大脑动脉主干。MCA/PCA 在
+  # isa 集里只有分段概念（蝶骨段/岛叶段、交通前段/交通后段），拼起来即主干
+  - slug: cerebral_arteries
+    zh: 脑动脉
+    en: Cerebral arteries
+    system: vessels
+    region: head
+    side: both
+    priority: 2
+    target_faces: 9000
+    concepts:
+      - basilar artery
+      - anterior cerebral artery
+      - sphenoid part of middle cerebral artery
+      - insular part of middle cerebral artery
+      - precommunicating part of posterior cerebral artery
+      - postcommunicating part of posterior cerebral artery
+      - anterior communicating artery
+      - posterior communicating artery
   - slug: brachiocephalic_trunk
     zh: 头臂干
     en: Brachiocephalic trunk

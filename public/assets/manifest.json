@@ -1,6 +1,6 @@
 {
   "version": "0.0.1",
-  "generatedAt": "2026-08-22T01:25:27+00:00",
+  "generatedAt": "2026-08-22T08:01:06+00:00",
   "systems": [
     {
       "id": "skin",
@@ -120,7 +120,7 @@
     {
       "id": "organs",
       "file": "assets/organs.glb",
-      "bytes": 5160648,
+      "bytes": 4350244,
       "structures": [
         "heart",
         "lung_right",
@@ -204,7 +204,7 @@
     {
       "id": "vessels",
       "file": "assets/vessels.glb",
-      "bytes": 3882624,
+      "bytes": 3948188,
       "structures": [
         "aorta",
         "pulmonary_trunk",
@@ -217,6 +217,7 @@
         "internal_carotid_arteries",
         "internal_jugular_veins",
         "vertebral_arteries",
+        "cerebral_arteries",
         "brachiocephalic_trunk",
         "brachiocephalic_veins",
         "subclavian_arteries",
@@ -2149,14 +2150,15 @@
       "fma": [
         "FMA7309"
       ],
-      "source": "bp3d_partof",
+      "uberon": "UBERON:0002167",
+      "source": "hra",
       "bbox": [
-        -116.47,
-        -73.34,
-        227.87,
-        6.1,
-        80.43,
-        561.39
+        -114.07,
+        -65.26,
+        354.13,
+        2.4,
+        113.38,
+        568.55
       ]
     },
     "lung_left": {
@@ -2168,14 +2170,15 @@
       "fma": [
         "FMA7310"
       ],
-      "source": "bp3d_partof",
+      "uberon": "UBERON:0002168",
+      "source": "hra",
       "bbox": [
-        20.11,
-        -77.74,
-        335.9,
-        126.15,
-        81.33,
-        569.23
+        7.9,
+        -65.43,
+        362.1,
+        130.44,
+        112.22,
+        570.1
       ]
     },
     "esophagus": {
@@ -3858,6 +3861,32 @@
         34.31,
         42.19,
         719.28
+      ]
+    },
+    "cerebral_arteries": {
+      "zh": "脑动脉",
+      "en": "Cerebral arteries",
+      "system": "vessels",
+      "region": "head",
+      "side": "both",
+      "fma": [
+        "FMA50542",
+        "FMA50028",
+        "FMA50365",
+        "FMA50368",
+        "FMA50590",
+        "FMA50591",
+        "FMA50169",
+        "FMA50084"
+      ],
+      "source": "bp3d",
+      "bbox": [
+        -52.74,
+        -20.44,
+        715.87,
+        54.04,
+        39.11,
+        783.65
       ]
     },
     "brachiocephalic_trunk": {
