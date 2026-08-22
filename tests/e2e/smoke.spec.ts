@@ -274,6 +274,11 @@ test('share link restores an organ selection without flooding the background', a
  * 高画质开关出现且可切换。
  */
 test('quality tier falls back on software rendering and can be forced on', async ({ page }) => {
+  // 这条用例的后半程运行在 medium/high 档 + 软件渲染——一帧要好几秒，
+  // 可点击性等待与整页截图都会被饿死（2026-08-22 一轮全量里它和 14 分钟的
+  // 奥秘长用例挤同一时段，默认 120s 预算两次都不够）。预算放宽 + force
+  // （口径见 demo.spec 文件头：断言状态变化，不赌帧稳定）。
+  test.setTimeout(300_000);
   await page.goto('/');
   await expect(page.getByTestId('viewer')).toHaveAttribute('data-hyi-ready', '1', {
     timeout: 60_000,
@@ -292,9 +297,9 @@ test('quality tier falls back on software rendering and can be forced on', async
   const toggle = page.getByRole('checkbox');
   await expect(toggle).toBeVisible();
   await expect(toggle).not.toBeChecked();
-  await toggle.check();
-  await expect(toggle).toBeChecked();
-  await page.screenshot({ path: 'test-results/smoke-quality.png' });
+  await toggle.check({ force: true });
+  await expect(toggle).toBeChecked({ timeout: 30_000 });
+  await page.screenshot({ path: 'test-results/smoke-quality.png', timeout: 180_000 });
 });
 
 /**
