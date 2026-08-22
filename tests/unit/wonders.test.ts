@@ -7,7 +7,6 @@ import Ajv from 'ajv/dist/2020';
 import { WONDERS, wondersForStructure } from '../../src/wonders';
 import { WONDER_SCHEMA, estimatedSeconds, structuresOf } from '../../src/wonders/engine';
 import { clipConstant } from '../../src/viewer/clipping';
-import { computeSystemOpacity } from '../../src/viewer/layers';
 import type { SystemId } from '../../src/data/types';
 
 interface StructureInfo {
@@ -182,20 +181,23 @@ describe('奥秘内容契约', () => {
     }
   });
 
-  /** 主角必须看得见：选中结构所属系统在该 layer 下不透明度得大于拾取阈值。 */
-  it('每一步的主角在该分层下可见', () => {
+  /**
+   * 主角必须看得见。2026-08-22 起这由引擎保证：`effectiveOpacity` 对选中结构
+   * 取 `max(curve, 1)`，批不实心时改走实心代理——所以曲线值不再是判据。
+   * 唯一能把主角弄没的是这一步自己的 `systems` 覆盖把主角所在系统关掉
+   * （显隐开关在提升之前生效），这在内容上永远是笔误，直接判错。
+   */
+  it('步骤的 systems 覆盖不许关掉主角自己所在的系统', () => {
     for (const wonder of WONDERS) {
       for (const [i, step] of wonder.steps.entries()) {
         if (!step.selected) continue;
         const info = manifest.structures[step.selected];
         if (!info) continue;
-        if (step.systems?.[info.system as SystemId] === false) continue;
-        const opacity = computeSystemOpacity(info.system as SystemId, step.layer);
         expect(
-          opacity,
-          `${wonder.id}[${i}] 主角 ${step.selected}（${info.system}）在 layer=${step.layer} 下` +
-            `不透明度只有 ${opacity.toFixed(2)}，观众看不到它`,
-        ).toBeGreaterThan(0.15);
+          step.systems?.[info.system as SystemId],
+          `${wonder.id}[${i}] 把主角 ${step.selected} 所在的 ${info.system} 关掉了，` +
+            `选中提升救不了显隐开关`,
+        ).not.toBe(false);
       }
     }
   });

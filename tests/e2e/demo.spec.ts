@@ -151,7 +151,7 @@ test.describe('演示前自检 · 手机（Retina）', () => {
 
     const player = page.getByTestId('wonder-player');
     await expect(player).toBeVisible();
-    const progress = player.locator('.progress');
+    const progress = page.getByTestId('wonder-caption').locator('.progress');
     const total = Number((await progress.innerText()).split('/')[1]!.trim());
     expect(total).toBeGreaterThan(1);
 

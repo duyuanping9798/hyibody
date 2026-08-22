@@ -48,41 +48,65 @@ export function WonderPlayer() {
   const toggleNarration = useUiStore((s) => s.toggleNarration);
 
   if (!wonder) return null;
+  /**
+   * 图标 + 文字的双形态按钮：桌面显示文字，手机（≤720px）只留图标排成一行。
+   * 2026-08-22 真机实拍：六个中文文字按钮合计 412px，塞不进手机 342px 的
+   * 内容宽度，「录成视频」孤零零折到第二行，面板长高后又把字幕顶进来叠压。
+   * 无障碍名固定走 aria-label，文字藏不藏都不影响读屏与测试。
+   */
+  const label = (text: string, icon: string) => (
+    <>
+      <span className="ico" aria-hidden="true">
+        {icon}
+      </span>
+      <span className="lbl">{text}</span>
+    </>
+  );
   return (
     <div className="hyi-panel hyi-wonder" data-testid="wonder-player">
-      <header>
-        <strong>{wonder.title[lang]}</strong>
-        {recording && (
-          <span className="rec" data-testid="wonder-recording">
-            <i />
-            {`${t.wonderRecording} ${Math.floor(recordElapsedMs / 1000)}s`}
-          </span>
-        )}
-        <span className="progress">
-          {index + 1} / {wonder.steps.length}
+      {/* 标题与 n/m 进度挪去了字幕带的 kicker（WonderStage）——和章节格条、
+          片头卡是同一信息，在这里常驻一行只会把手机上的面板撑高 */}
+      {recording && (
+        <span className="rec" data-testid="wonder-recording">
+          <i />
+          {`${t.wonderRecording} ${Math.floor(recordElapsedMs / 1000)}s`}
         </span>
-      </header>
+      )}
       <div className="controls">
-        <button className="hyi-btn" onClick={wonderPrev} disabled={index === 0}>
-          {t.wonderPrev}
+        <button
+          className="hyi-btn"
+          aria-label={t.wonderPrev}
+          onClick={wonderPrev}
+          disabled={index === 0}
+        >
+          {label(t.wonderPrev, '‹')}
         </button>
-        <button className="hyi-btn hyi-btn-warm" onClick={wonderToggle}>
-          {playing ? t.wonderPause : t.wonderPlay}
+        <button
+          className="hyi-btn hyi-btn-warm"
+          aria-label={playing ? t.wonderPause : t.wonderPlay}
+          onClick={wonderToggle}
+        >
+          {label(playing ? t.wonderPause : t.wonderPlay, playing ? '❚❚' : '▶')}
         </button>
-        <button className="hyi-btn" onClick={wonderNext}>
-          {index + 1 >= wonder.steps.length ? t.wonderFinish : t.wonderNext}
+        <button
+          className="hyi-btn"
+          aria-label={index + 1 >= wonder.steps.length ? t.wonderFinish : t.wonderNext}
+          onClick={wonderNext}
+        >
+          {label(index + 1 >= wonder.steps.length ? t.wonderFinish : t.wonderNext, '›')}
         </button>
-        <button className="hyi-btn" onClick={exitWonder}>
-          {t.wonderExit}
+        <button className="hyi-btn" aria-label={t.wonderExit} onClick={exitWonder}>
+          {label(t.wonderExit, '✕')}
         </button>
         {canNarrate && (
           <button
             className={narrating ? 'hyi-btn hyi-btn-warm' : 'hyi-btn'}
             data-testid="wonder-narrate"
             aria-pressed={narrating}
+            aria-label={narrating ? t.wonderNarrateOff : t.wonderNarrate}
             onClick={toggleNarration}
           >
-            {narrating ? t.wonderNarrateOff : t.wonderNarrate}
+            {label(narrating ? t.wonderNarrateOff : t.wonderNarrate, narrating ? '🔊' : '🔈')}
           </button>
         )}
         {/* 录不了就不摆按钮：Safari 17 之前没有 MediaRecorder 的 mp4 支持，
@@ -91,9 +115,10 @@ export function WonderPlayer() {
           <button
             className={recording ? 'hyi-btn hyi-btn-rec' : 'hyi-btn'}
             data-testid="wonder-record"
+            aria-label={recording ? t.wonderRecordStop : t.wonderRecord}
             onClick={recording ? stopRecording : startRecording}
           >
-            {recording ? t.wonderRecordStop : t.wonderRecord}
+            {label(recording ? t.wonderRecordStop : t.wonderRecord, recording ? '■' : '●')}
           </button>
         )}
       </div>

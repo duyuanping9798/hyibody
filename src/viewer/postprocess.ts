@@ -26,6 +26,15 @@ export interface RenderPipeline {
   outline: OutlinePass | null;
   setSize(width: number, height: number, pixelRatio: number): void;
   setSelected(objects: Object3D[]): void;
+  /**
+   * AO 闸门：GTAO 渲法线/深度前后各回调一次。
+   *
+   * GTAO 用 overrideMaterial 渲场景，逐实例 alpha 完全不参与——0.12 的半透明
+   * 骨骼会以**实体**进深度缓冲，AO 把它的轮廓当真实遮挡物整片印在器官上
+   * （2026-08-22 真机马赛克的另一半成因）。查看器用这个闸门在 AO 通道里
+   * 临时藏起"不够实"的批，渲完恢复。
+   */
+  setAOGate(gate: { prepare(): void; restore(): void } | null): void;
   render(): void;
   dispose(): void;
 }
@@ -49,6 +58,10 @@ export function createRenderPipeline(
   const target = new WebGLRenderTarget(Math.max(1, size.x), Math.max(1, size.y), {
     type: HalfFloatType,
     stencilBuffer: true,
+    // MSAA：走 EffectComposer 之后 canvas 自带的 antialias 完全失效（场景画进
+    // 这个自建 target），SMAA 是形态学 AA，救不了解剖网格这种亚像素三角形密度。
+    // WebGL2 的多重采样 target 由 three 自动 blit 解析，iOS 也支持。
+    samples: 4,
   });
   const composer = new EffectComposer(renderer, target);
   composer.addPass(new RenderPass(scene, camera));
@@ -104,6 +117,21 @@ export function createRenderPipeline(
     composer.addPass(ao);
   }
 
+  // AO 闸门（见接口注释）。包的是 pass.render 而不是加新 pass：
+  // GTAO 的法线/深度预通道在它自己的 render 里，外面没有别的挂点。
+  let aoGate: { prepare(): void; restore(): void } | null = null;
+  if (ao) {
+    const originalRender = ao.render.bind(ao);
+    ao.render = (...args: Parameters<GTAOPass['render']>) => {
+      aoGate?.prepare();
+      try {
+        originalRender(...args);
+      } finally {
+        aoGate?.restore();
+      }
+    };
+  }
+
   let outline: OutlinePass | null = null;
   if (caps.outline) {
     outline = new OutlinePass(new Vector2(1, 1), scene, camera);
@@ -137,17 +165,25 @@ export function createRenderPipeline(
     outline,
     setSize(width, height, pixelRatio) {
       composer.setPixelRatio(pixelRatio);
+      // composer.setSize 内部会以 width × pixelRatio 调每个 pass 的 setSize——
+      // **不要再用 CSS 像素覆盖回去**。原来这里跟着一行
+      // `outline?.setSize(width, height)`，等于把描边缓冲降回 1/pixelRatio；
+      // AO 那行更糟：CSS × aoScale，而帧缓冲是 CSS × pixelRatio——iPhone
+      // （DPR 3，pixelRatio 取 2）上 AO 只有帧缓冲 1/4 的线性分辨率，放大回屏
+      // 就是人类实拍里 4–8px 的硬锯齿色块。桌面恰好 aoScale=1、DPR=1 抵消，
+      // e2e 又全跑无 AO 的 low 档，这个 bug 藏了三个版本（2026-08-22 真机逮到）。
       composer.setSize(width, height);
-      outline?.setSize(width, height);
-      // AO 可以按比例降分辨率跑：它是低频信号，半分辨率肉眼看不出，
-      // 但填充率省一半——手机上开不开 AO 的分界线就在这儿
+      // AO 仍按比例降分辨率（低频信号，省一半填充率），但基数必须是设备像素
       ao?.setSize(
-        Math.max(1, Math.round(width * caps.aoScale)),
-        Math.max(1, Math.round(height * caps.aoScale)),
+        Math.max(1, Math.round(width * pixelRatio * caps.aoScale)),
+        Math.max(1, Math.round(height * pixelRatio * caps.aoScale)),
       );
     },
     setSelected(objects) {
       if (outline) outline.selectedObjects = objects;
+    },
+    setAOGate(gate) {
+      aoGate = gate;
     },
     render() {
       composer.render();

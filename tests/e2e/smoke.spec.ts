@@ -94,11 +94,12 @@ test('heartbeat wonder plays from the menu', async ({ page }) => {
 
   const player = page.getByTestId('wonder-player');
   await expect(player).toBeVisible();
-  await expect(player).toContainText('心跳与血液的旅程');
+  // 2026-08-22：标题与 n/m 进度从播放器 header 挪进了字幕带的 kicker
+  await expect(page.getByTestId('wonder-caption')).toContainText('心跳与血液的旅程');
 
   // 先暂停自动播放，再手动步进（避免 9s/步 的自动推进造成竞态）
   await player.getByRole('button', { name: '暂停' }).click();
-  const progress = player.locator('.progress');
+  const progress = page.getByTestId('wonder-caption').locator('.progress');
   const [before, total] = (await progress.innerText()).split('/').map((n) => Number(n.trim()));
   expect(total).toBeGreaterThan(1);
   await player.getByRole('button', { name: '下一步' }).click();
@@ -684,6 +685,30 @@ test('share link keeps its camera angle instead of snapping back to full body', 
   // 默认全身取景在 1000 毫米开外，被顶掉的话这个距离是几百毫米量级；
   // 留 60 毫米余量给分层缓动带来的细微移动
   expect(dist, `相机被挪了 ${Math.round(dist)} 毫米，机位没保住`).toBeLessThan(60);
+});
+
+test.describe('wonder player on a phone', () => {
+  test.use({ viewport: { width: 402, height: 874 }, hasTouch: true });
+
+  test('caption and control bar never overlap on a narrow screen', async ({ page }) => {
+    // 2026-08-22 真机回归锁：字幕带写死 bottom:118px + 按钮折行，白色字幕
+    // 直接砸进控制条、盖住标题。修法是动态锚点 + 手机图标化单行——这条
+    // 断言两个层的包围盒不相交，且控制条没有折行。
+    test.setTimeout(300_000);
+    await page.goto('/?hq=low&wonder=aorta');
+    const player = page.getByTestId('wonder-player');
+    await expect(player).toBeVisible({ timeout: 240_000 });
+    await player.getByRole('button', { name: '暂停' }).click();
+    // 第 3 步的字幕有三行——正是真机上叠压最重的现场
+    await player.getByRole('button', { name: '下一步' }).click();
+    await page.waitForTimeout(4000);
+    const cap = await page.getByTestId('wonder-caption').boundingBox();
+    const bar = await player.boundingBox();
+    expect(cap).toBeTruthy();
+    expect(bar).toBeTruthy();
+    expect(cap!.y + cap!.height, '字幕带的下沿压进了控制条').toBeLessThanOrEqual(bar!.y + 1);
+    expect(bar!.height, '控制条折行了').toBeLessThan(90);
+  });
 });
 
 test('a broken ?w= link falls back to the plain viewer', async ({ page }) => {

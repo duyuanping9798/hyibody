@@ -445,38 +445,39 @@
 .hyi-wonder {
   position: absolute;
   left: 50%;
-  bottom: 18px;
+  /* viewport-fit=cover 下 18px 会压进 iPhone 的 home 指示条区域 */
+  bottom: calc(10px + env(safe-area-inset-bottom, 0px));
   transform: translateX(-50%);
   width: min(560px, calc(100% - 24px));
-  padding: 14px 18px;
-}
-.hyi-wonder header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 6px;
-}
-.hyi-wonder header strong {
-  color: #f0a046;
-  font-size: 14px;
-}
-.hyi-wonder .progress {
-  font-size: 11px;
-  color: var(--hyi-text-dim);
-  font-variant-numeric: tabular-nums;
+  padding: 10px 14px;
+  /* 字幕带 pointer-events:none 之后不抢点击，但层级上按钮永远在最上 */
+  z-index: 7;
 }
 .hyi-wonder .controls {
   display: flex;
   gap: 8px;
-  flex-wrap: wrap;
+  justify-content: center;
+  /* 2026-08-22：换行是真机上面板撑高、字幕叠压的直接原因——现在按钮在手机上
+     图标化（见下方媒体查询），一行永远放得下，这里禁掉换行兜底 */
+  flex-wrap: nowrap;
 }
-/* 录制指示：一颗会呼吸的红点 + 秒数。录像机上是什么样，这里就该是什么样。 */
+.hyi-wonder .controls .ico {
+  display: none;
+  font-size: 14px;
+  line-height: 1;
+}
 .hyi-wonder .rec {
+  position: absolute;
+  top: -30px;
+  right: 0;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(10, 17, 33, 0.85);
+  color: #ff6961;
   font-size: 11px;
-  color: #ff6b6b;
   font-variant-numeric: tabular-nums;
 }
 .hyi-wonder .rec i {
@@ -836,13 +837,31 @@
 .hyi-cinema-caption {
   position: absolute;
   left: 50%;
-  bottom: 118px;
+  /* 2026-08-22 真机叠压修复：原来写死 bottom:118px 给控制条让 100px 净空，
+     手机上按钮折行后面板长到 ~168px，字幕直接砸进面板里。现在锚在控制条的
+     **真实高度**上（useSafeInsets 每帧写 --hyi-bottombar-h），怎么变都贴合。 */
+  bottom: calc(var(--hyi-bottombar-h, 90px) + 24px + env(safe-area-inset-bottom, 0px));
   transform: translateX(-50%);
   width: min(760px, calc(100% - 32px));
   text-align: center;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  /* 纯展示层：永远不挡按钮的点击 */
+  pointer-events: none;
+}
+.hyi-cinema-caption .kicker {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: #f0a046;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+.hyi-cinema-caption .kicker .progress {
+  font-style: normal;
+  margin-left: 10px;
+  color: rgba(238, 244, 255, 0.72);
+  font-variant-numeric: tabular-nums;
 }
 .hyi-cinema-caption p {
   margin: 0;
@@ -2029,4 +2048,18 @@ body.hyi-kiosk .hyi-info .blurb {
   font-size: 11px;
   color: var(--hyi-text-dim);
   font-variant-numeric: tabular-nums;
+}
+
+/* ---------- 奥秘播放器：手机上图标化单行（2026-08-22 真机叠压修复的另一半） ---------- */
+@media (max-width: 720px) {
+  .hyi-wonder .controls .lbl {
+    display: none;
+  }
+  .hyi-wonder .controls .ico {
+    display: inline;
+  }
+  .hyi-wonder .controls .hyi-btn {
+    min-width: 44px;
+    flex: 0 1 auto;
+  }
 }

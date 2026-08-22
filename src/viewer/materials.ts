@@ -976,6 +976,22 @@ export function shouldWriteDepth(opacity: number): boolean {
   return opacity > DEPTH_WRITE_MIN_OPACITY;
 }
 
+/** 批的渲染形态：整批实心 / 半透明但写深度 / 纯混合。 */
+export type BatchMode = 'opaque' | 'blend-depth' | 'blend';
+
+/**
+ * 一个系统批该走哪条渲染路径（判据抽成纯函数，测试对着真正生效的这条）。
+ *
+ * @param peak 批内可见实例的峰值不透明度（实心特例除外）
+ * @param minVisible 批内可见实例的最小不透明度；批里没有可见实例时传 1
+ * @param additive 加色混合的批（X-ray 壳）永远纯混合，不写深度
+ */
+export function batchModeFor(peak: number, minVisible: number, additive: boolean): BatchMode {
+  if (additive) return 'blend';
+  if (peak >= 0.999 && minVisible >= 0.999) return 'opaque';
+  return shouldWriteDepth(peak) ? 'blend-depth' : 'blend';
+}
+
 /** 统一设置材质整体不透明度（分层滑块用）。 */
 export function setMaterialOpacity(material: Material, opacity: number): void {
   if (material instanceof ShaderMaterial && material.uniforms.uOpacity) {
