@@ -13,7 +13,10 @@ import {
   Vector2,
   Vector3,
   WebGLRenderer,
+  Color,
+  NormalBlending,
   type Material,
+  type MeshStandardMaterial,
   type Plane,
   type Side,
 } from 'three';
@@ -50,11 +53,12 @@ import { SystemBatch, type BatchInput } from './batching';
 import { computeSystemOpacity, PICKABLE_OPACITY_THRESHOLD } from './layers';
 import { probeBody, type Bbox, type ProbeResult, type ProbeTarget } from './regions';
 import {
+  batchModeFor,
   colorForStructure,
   createSystemMaterial,
   createXRayMaterial,
   setSurfaceDetail,
-  shouldWriteDepth,
+  type BatchMode,
   type SurfaceDetailLevel,
 } from './materials';
 import { createRenderPipeline, type RenderPipeline } from './postprocess';
@@ -254,6 +258,15 @@ export class HyiViewer extends EventTarget {
    * 235 次白画——所以只留**一份**，选中谁就把谁的几何体与变换换上来。
    * 材质 `colorWrite: false`：它自己什么都不画，只为 OutlinePass 提供一份可描的形。
    */
+  /** 每个系统批当前的渲染形态（applyVisibility 里刷新，AO 闸门也读它） */
+  private readonly batchMode = new Map<SystemId, BatchMode>();
+  /** 正在走实心代理绘制的那一个结构（选中/隔离的特例），null = 没有 */
+  private soloProxy: StructureEntry | null = null;
+  /** 实心代理的材质缓存（每系统一份，省着色器编译） */
+  private readonly soloMaterials = new Map<SystemId, MeshStandardMaterial>();
+  /** AO 闸门每帧临时藏起来的批，渲完恢复 */
+  private readonly aoHiddenMeshes: Mesh[] = [];
+
   private readonly outlineProxy = new Mesh(
     new BufferGeometry(),
     new MeshBasicMaterial({ colorWrite: false, depthWrite: false }),
@@ -669,38 +682,109 @@ export class HyiViewer extends EventTarget {
   }
 
   private applyVisibility(): void {
+    // 第一遍：算好每个结构的不透明度
+    for (const entry of this.structures.values()) entry.opacity = this.effectiveOpacity(entry);
+
+    // 选中/隔离的"实心特例"：它是 1.0，但它所在的批可能整批半透明。
+    // 老做法是让它把整批峰值抬到 1、整批 depthWrite 打开——批里其他 0.12–0.78
+    // 的半透明实例互相深度淘汰，碎成一片（2026-08-22 真机实拍的"硬切"乱象）。
+    // 新做法：批的形态按**除它之外**的实例判定；批不实心时它改走实心代理绘制。
+    const soloSlug = this.state.isolated ?? this.state.selected;
+    const soloEntry = soloSlug ? (this.structures.get(soloSlug) ?? null) : null;
+
     const peak = new Map<SystemId, number>();
+    const minVisible = new Map<SystemId, number>();
     for (const entry of this.structures.values()) {
-      entry.opacity = this.effectiveOpacity(entry);
-      this.paint(entry);
-      const cur = peak.get(entry.system) ?? 0;
-      if (entry.opacity > cur) peak.set(entry.system, entry.opacity);
+      if (entry === soloEntry) continue;
+      if (entry.opacity <= 0.005) continue;
+      peak.set(entry.system, Math.max(peak.get(entry.system) ?? 0, entry.opacity));
+      minVisible.set(entry.system, Math.min(minVisible.get(entry.system) ?? 1, entry.opacity));
     }
-    this.syncDepthWrite(peak);
+    this.updateBatchModes(peak, minVisible);
+
+    const routed =
+      soloEntry !== null &&
+      soloEntry.opacity >= 0.999 &&
+      this.batchMode.get(soloEntry.system) !== 'opaque'
+        ? soloEntry
+        : null;
+    this.syncSoloProxy(routed);
+
+    // 第二遍：落到批。代理接管的那一个在批里隐藏，免得同一份几何画两遍
+    for (const entry of this.structures.values()) {
+      if (entry === routed) entry.batch.setAppearance(entry.slug, 0, 0);
+      else this.paint(entry);
+    }
     this.updateClipCaps();
   }
 
   /**
-   * 半透明的那一层不要写深度，否则同一个结构的正面片元互相遮挡，看着像碎的。
+   * 批的三种渲染形态。
    *
-   * **这是合批改造时弄丢的一条老修复**。合批之前每个结构一份材质，
-   * `setMaterialOpacity` 里有 `material.depthWrite = opacity > 0.55`，
-   * 注释写得很清楚："半透明叠加时关闭深度写入，减少互相遮挡的闪面"。
-   * 改成一个系统一份材质之后，`depthWrite` 在建材质时被写死成 true，
-   * 而 `setMaterialOpacity` 从此一个调用者都没有了——那条修复静默失效。
+   * - `opaque`：整批实心（可见实例最小 alpha ≥ 0.999）→ 真正的不透明路径：
+   *   transparent=false 进不透明队列、写深度。这是 2026-08-22 那条"器官刻度下
+   *   位于器官前方的血管被 α=1 的器官盖掉"的修复：不透明的批先画、写下深度，
+   *   半透明批随后对着这份深度混合，前后关系立刻正确。
+   * - `blend-depth`：半透明但峰值 > 0.55 → 沿用旧的峰值判据写深度。
+   * - `blend`：纯混合，不写深度。X-ray 加色壳（皮肤）**永远**在这一档——
+   *   它天生 AdditiveBlending + depthWrite:false，旧的 syncDepthWrite 会在
+   *   分层 0 时把它的深度写入静默改成 true，这里顺带修掉。
    *
-   * 后果人类实拍看到了："似乎还看到了许多断裂的地方"。颅骨是 21 块骨头的并集、
-   * 表面互相重叠，半透明又写深度时只留下赢了深度测试的那些片，于是碎成一片。
-   *
-   * 按**整批的峰值不透明度**决定：一个批共用一份材质状态，逐结构切不了。
-   * 峰值而不是均值——只要这一层里还有实心的结构，就该正常参与遮挡。
+   * AO 闸门用同一份形态表：`blend` 档的批在 GTAO 的法线/深度通道里被藏起来，
+   * 半透明的骨骼/血管不再以实体进 AO 深度（真机马赛克的另一半成因）。
    */
-  private syncDepthWrite(peak: ReadonlyMap<SystemId, number>): void {
+  private updateBatchModes(
+    peak: ReadonlyMap<SystemId, number>,
+    minVisible: ReadonlyMap<SystemId, number>,
+  ): void {
     for (const [sys, batch] of this.batches) {
-      const material = batch.mesh.material as Material & { depthWrite: boolean };
-      const solid = shouldWriteDepth(peak.get(sys) ?? 0);
-      if (material.depthWrite !== solid) material.depthWrite = solid;
+      const material = batch.mesh.material as Material & {
+        depthWrite: boolean;
+        transparent: boolean;
+      };
+      const additive = material.blending !== NormalBlending;
+      const mode = batchModeFor(peak.get(sys) ?? 0, minVisible.get(sys) ?? 1, additive);
+      this.batchMode.set(sys, mode);
+      const transparent = additive || mode !== 'opaque';
+      // transparent 只影响渲染队列归属，不改着色器程序，来回切没有编译开销
+      if (material.transparent !== transparent) material.transparent = transparent;
+      const write = !additive && mode !== 'blend';
+      if (material.depthWrite !== write) material.depthWrite = write;
     }
+  }
+
+  /** 实心特例的代理材质：每系统缓存一份，颜色/高亮在启用时现写。 */
+  private soloMaterialFor(system: SystemId): MeshStandardMaterial {
+    let material = this.soloMaterials.get(system);
+    if (!material) {
+      material = createSystemMaterial(system, 0xffffff, this.surfaceDetailLevel());
+      material.transparent = false;
+      material.depthWrite = true;
+      // 代理几何体带 ensureVertexColor 补的白色 COLOR_0（alpha=1）；开着它，
+      // 流水线烘焙的顶点 AO 在代理路径上同样生效
+      material.vertexColors = true;
+      this.soloMaterials.set(system, material);
+    }
+    const planes = this.clipPlane ? [this.clipPlane] : null;
+    material.clippingPlanes = planes;
+    material.side = planes ? DoubleSide : FrontSide;
+    return material;
+  }
+
+  /** 把实心特例切到代理网格上绘制（或撤下来）。 */
+  private syncSoloProxy(entry: StructureEntry | null): void {
+    if (this.soloProxy && this.soloProxy !== entry) {
+      // 回到隐形代理：材质 visible:false，绘制立刻停，标签/拾取/封盖照旧
+      this.soloProxy.mesh.material = this.soloProxy.material;
+      this.soloProxy = null;
+    }
+    if (!entry) return;
+    const material = this.soloMaterialFor(entry.system);
+    entry.mesh.material = material;
+    material.color.setHex(entry.color);
+    const tint = HIGHLIGHT_TINT[entry.highlight];
+    if (tint > 0) material.color.lerp(new Color(HIGHLIGHT_COLOR), tint);
+    this.soloProxy = entry;
   }
 
   /**
@@ -1204,6 +1288,12 @@ export class HyiViewer extends EventTarget {
       if ('side' in material) (material as { side: Side }).side = planes ? DoubleSide : FrontSide;
       material.needsUpdate = true;
     }
+    // 实心代理（选中/隔离的特例）不在批里画，剖切平面要单独同步
+    for (const material of this.soloMaterials.values()) {
+      material.clippingPlanes = planes;
+      material.side = planes ? DoubleSide : FrontSide;
+      material.needsUpdate = true;
+    }
     this.clipCaps.setPlane(this.clipPlane);
     this.updateClipCaps();
   }
@@ -1294,6 +1384,22 @@ export class HyiViewer extends EventTarget {
     this.pipeline = caps.postprocessing
       ? createRenderPipeline(this.renderer, this.scene, this.rig.camera, caps)
       : null;
+    // AO 只喂"够实"的几何：纯混合档的批在 GTAO 的法线/深度通道里临时藏起来。
+    // 不藏的话 0.12 的半透明骨骼会以实体进 AO 深度，把幽灵暗影整片印在器官上。
+    this.pipeline?.setAOGate({
+      prepare: () => {
+        for (const [sys, batch] of this.batches) {
+          if (this.batchMode.get(sys) === 'blend' && batch.mesh.visible) {
+            batch.mesh.visible = false;
+            this.aoHiddenMeshes.push(batch.mesh);
+          }
+        }
+      },
+      restore: () => {
+        for (const mesh of this.aoHiddenMeshes) mesh.visible = true;
+        this.aoHiddenMeshes.length = 0;
+      },
+    });
 
     this.renderer.shadowMap.enabled = caps.softShadows;
     this.renderer.shadowMap.type = PCFSoftShadowMap;

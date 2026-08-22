@@ -75,6 +75,15 @@ export function WonderStage() {
 
       {wonder && step && (
         <div className="hyi-cinema-caption" data-testid="wonder-caption">
+          {/* 标题与进度原来常驻在底部控制条的 header 里——那一行在手机上把面板
+              撑高、和这条字幕带互相叠压（2026-08-22 真机）。挪到这里成一行小字：
+              与章节格条同属"讲到哪儿了"的信息，摆在一起才是一件事 */}
+          <span className="kicker">
+            {wonder.title[lang]}
+            <i className="progress">
+              {index + 1} / {wonder.steps.length}
+            </i>
+          </span>
           <div className="chapters" aria-hidden="true">
             {wonder.steps.map((s, i) => (
               <span key={i} className={i < index ? 'done' : i === index ? 'now' : ''}>

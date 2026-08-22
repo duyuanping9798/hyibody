@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { ShaderLib, MeshStandardMaterial, type Material } from 'three';
 import {
+  batchModeFor,
   createSystemMaterial,
   createXRayMaterial,
   DEPTH_WRITE_MIN_OPACITY,
@@ -213,5 +214,29 @@ describe('半透明的层不写深度', () => {
     expect(m.depthWrite).toBe(shouldWriteDepth(0.35));
     setMaterialOpacity(m, 0.9);
     expect(m.depthWrite).toBe(shouldWriteDepth(0.9));
+  });
+});
+
+describe('批的渲染形态（batchModeFor）——2026-08-22 真机马赛克的修复判据', () => {
+  it('整批实心走真正的不透明路径', () => {
+    expect(batchModeFor(1, 1, false)).toBe('opaque');
+  });
+
+  it('批里还有半透明实例时不能进不透明队列——器官 1.0 + 展开件 0.6 仍是混合', () => {
+    expect(batchModeFor(1, 0.6, false)).toBe('blend-depth');
+  });
+
+  it('峰值过了 0.55 写深度、没过不写（沿用旧判据）', () => {
+    expect(batchModeFor(0.78, 0.78, false)).toBe('blend-depth');
+    expect(batchModeFor(0.3, 0.3, false)).toBe('blend');
+  });
+
+  it('加色壳（X-ray 皮肤）永远纯混合——旧的 syncDepthWrite 会在分层 0 时把它的深度写入静默改成 true', () => {
+    expect(batchModeFor(1, 1, true)).toBe('blend');
+  });
+
+  it('空批（没有可见实例）不实心也不写深度', () => {
+    // applyVisibility 对空批传 peak=0 / minVisible=1
+    expect(batchModeFor(0, 1, false)).toBe('blend');
   });
 });

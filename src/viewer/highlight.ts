@@ -1,14 +1,6 @@
-import { Color, MeshStandardMaterial, ShaderMaterial, type Mesh } from 'three';
+import { Color } from 'three';
 
 export type HighlightLevel = 'none' | 'hover' | 'selected';
-
-const EMISSIVE: Record<HighlightLevel, [number, number]> = {
-  // [emissive 强度, X-ray uHighlight]。选中的识别度交给 OutlinePass 描边，
-  // 自发光只做很轻的提亮——0.35 会把器官本色洗成一片白，近看完全看不出是心脏
-  none: [0, 0],
-  hover: [0.14, 0.3],
-  selected: [0.18, 0.42],
-};
 
 export const HIGHLIGHT_COLOR = new Color(0x4fe3e0); // 青色强调（原型视觉基调）
 
@@ -22,20 +14,9 @@ export const HIGHLIGHT_COLOR = new Color(0x4fe3e0); // 青色强调（原型视�
 export const HIGHLIGHT_TINT: Record<HighlightLevel, number> = {
   none: 0,
   hover: 0.18,
-  selected: 0.24,
+  // 0.24 → 0.45（2026-08-22）：对标 Complete Anatomy 的"选中整块高亮成色"。
+  // 原来靠描边 + 一点点染色，手机上选没选中要凑近找那圈青线。第一版试过 0.6，
+  // 同机位截图里心脏成了一块青色玻璃、红色本性没了——0.45 是"一眼定位"与
+  // "看得出这是心脏"之间实拍选出来的点，配合腔隙顶点色保住表面细节。
+  selected: 0.45,
 };
-
-/**
- * 悬停 / 选中高亮：标准材质用自发光叠加青色；X-ray 材质用 uHighlight 混白。
- * 不引入后处理描边（无 GPU 的云端冒烟也要能跑），强度差异区分悬停与选中。
- */
-export function applyHighlight(mesh: Mesh, level: HighlightLevel): void {
-  const material = mesh.material;
-  const [intensity, xray] = EMISSIVE[level];
-  if (material instanceof MeshStandardMaterial) {
-    material.emissive.copy(HIGHLIGHT_COLOR);
-    material.emissiveIntensity = intensity;
-  } else if (material instanceof ShaderMaterial && material.uniforms.uHighlight) {
-    material.uniforms.uHighlight.value = xray;
-  }
-}

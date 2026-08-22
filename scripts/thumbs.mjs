@@ -74,7 +74,10 @@ page.on('pageerror', (e) => console.log('  PAGEERROR ' + String(e).slice(0, 160)
 const t0 = Date.now();
 const el = () => ((Date.now() - t0) / 1000).toFixed(0) + 's';
 
-await page.goto(`${BASE}?thumbs=1&hq=medium`, { waitUntil: 'load' });
+// low 而不是 medium（2026-08-22）：medium 修完 AO 分辨率并开了 MSAA 之后，
+// SwiftShader 一帧要接近一分钟，逐张截图直接超时。low 档没有 AO/bloom，
+// 但烘焙的腔隙顶点色照样在——封面的体积感靠它补，实测够用。
+await page.goto(`${BASE}?thumbs=1&hq=low`, { waitUntil: 'load' });
 await page.waitForSelector('[data-testid="viewer"][data-hyi-loaded="1"]');
 await page.waitForFunction(() => typeof window.__hyiPose === 'function');
 // 界面全藏起来：缩略图里不该出现搜索框、控制条、信息卡
@@ -84,13 +87,24 @@ await page.addStyleTag({
 });
 console.log(`场景就绪 ${el()}`);
 
-const viewer = page.locator('[data-testid="viewer"]');
+// 整页截图 + clip，而不是元素截图：locator.screenshot 会等"元素稳定"，
+// 软件渲染下 rAF 偶尔被长帧饿死，那个等待就 80 多秒超时把整批弄死（实测两次）。
+// 画布反正铺满视口，clip 一次算好就够。单张失败记下继续，别拖死全队。
+const viewerBox = await page.locator('[data-testid="viewer"]').boundingBox();
+const failed = [];
 let done = 0;
 for (const job of todo) {
   await page.evaluate((scene) => window.__hyiPose(scene), job.scene);
   // 相机是瞬移的（poseScene 用 transitionMs:0），但材质与分层的过渡还要几帧
   await page.waitForTimeout(1800);
-  const buf = await viewer.screenshot({ type: 'png', timeout: 120000 });
+  let buf;
+  try {
+    buf = await page.screenshot({ type: 'png', clip: viewerBox, timeout: 120000 });
+  } catch (e) {
+    failed.push(job.name);
+    console.log(`  ✗ ${job.name}: ${String(e).slice(0, 90)}`);
+    continue;
+  }
   const webp = await page.evaluate(
     async ([b64, size]) => {
       const img = new Image();
@@ -113,4 +127,5 @@ for (const job of todo) {
 
 await ctx.close();
 await browser.close();
+if (failed.length) console.log(`失败 ${failed.length} 张（重跑本脚本只补缺的）: ${failed.join(' ')}`);
 console.log(`完成 ${el()}`);
