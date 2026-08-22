@@ -205,11 +205,7 @@ test.describe('演示前自检 · 展厅与分享', () => {
     // 都不是 .hyi-btn——只扫 .hyi-btn 的话这条检查对新控制条完全空转（审查逮到：
     // 当时 chip-label 只有 32px 高照样绿灯）。按**短边**判：宽或高任一低于 56 都算小。
     const tooSmall = await page.evaluate(() =>
-      [
-        ...document.querySelectorAll(
-          '.hyi-btn, .hyi-chip-label, .hyi-chip-fader, .hyi-popover button',
-        ),
-      ]
+      [...document.querySelectorAll('.hyi-btn, .hyi-chip, .hyi-popover button')]
         .map((b) => {
           const r = b.getBoundingClientRect();
           return {
